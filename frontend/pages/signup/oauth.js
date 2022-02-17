@@ -1,7 +1,11 @@
-export default function oAuth() {
+import OAuth from "../../components/OAuth";
+
+const oAuth = () => {
   return (
     <div>
-      <h1>oAuth</h1>;
+      <OAuth />
     </div>
   );
-}
+};
+
+export default oAuth;
