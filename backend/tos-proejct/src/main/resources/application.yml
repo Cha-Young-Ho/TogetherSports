@@ -1,0 +1,31 @@
+server:
+  servlet:
+    context-path: /
+    session:
+      timeout: 30m
+      tracking-modes: cookie
+  encoding:
+    charset: UTF-8
+    enabled: true
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/together_sports_db?serverTimezone=UTC&characterEncoding=UTF-8
+    username: admin1
+    password: 1234
+  http:
+    encoding:
+      charset:
+        utf-8 force: true
+
+  jpa:
+    open-in-view: true
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      use-new-id-generator-mappings: false
+    show-sql: true
+    properties:
+      hibernate.format_sql: true
