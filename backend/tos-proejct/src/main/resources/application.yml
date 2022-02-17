@@ -11,7 +11,7 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/crawl?serverTimezone=UTC&characterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/together_sports_db?serverTimezone=UTC&characterEncoding=UTF-8
     username: admin1
     password: 1234
   http:
