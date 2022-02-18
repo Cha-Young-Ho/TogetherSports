@@ -1,12 +1,19 @@
 package com.togethersports.tosproejct.user;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
 
+@Builder
 @Data
 @Entity
 @Table(name = "T_USER")
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
     @Id
@@ -27,8 +34,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @Column(name = "ADMIN", length = 1)
+    @Column(name = "ADMIN", length = 4)
     @Enumerated(EnumType.STRING)
     private Admin admin;
+
 
 }
