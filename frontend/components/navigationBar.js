@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-const NavBar = () => {
+const NavigationBar = () => {
   return (
     <>
       <div className="header">
@@ -36,7 +36,7 @@ const NavBar = () => {
             </div>
           </div>
           <div className="sign">
-            <Link href="/">
+            <Link href="/signup/oauth">
               <a>
                 <div className="tag">회원가입</div>
               </a>
@@ -52,30 +52,24 @@ const NavBar = () => {
 
       <style jsx>{`
         .header {
-          //position: fixed;
-          top:0
-          width: 100vw;
-          height: 150px;
-          z-index: 2022;
-          transform: translateY(0);
-          transition: transform 0.3s ease;
+          display: flex;
+          justify-content: space-around;
+          align-items: center;
+          height: 120px;
+          min-height: 8vh;
           font-family: "NanumBarunGothic";
           border-bottom: 1px solid #e4e8eb;
         }
 
         .container_bg {
           display: flex;
-          width: 100vw;
-          height: 100%;
-          padding: 0 205px;
-          padding-top: 70px;
-          flex-direction: row;
-          align-items: center;
-          justify-content: space-between;
+          margin-top: 50px;
         }
 
-        .groups{
+        .groups {
+          width: 1024px;
           display: flex;
+          flex-direction: space-around;
         }
 
         .logo {
@@ -86,11 +80,9 @@ const NavBar = () => {
         }
 
         .category {
-          margin-left: 30px;
           width: 420px;
-          position: relative;
           display: flex;
-          justify-content: space-between;
+          justify-content: space-around;
           font-size: 1.5rem;
         }
 
@@ -102,12 +94,18 @@ const NavBar = () => {
           font-size: 1.5rem;
         }
 
-        .tag{
+        .tag {
           padding: 2rem;
+        }
+
+        @media (max-width: 1300px) {
+          * {
+            display: none;
+          }
         }
       `}</style>
     </>
   );
 };
 
-export default NavBar;
+export default NavigationBar;
