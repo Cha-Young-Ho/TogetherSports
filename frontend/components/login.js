@@ -1,26 +1,24 @@
 const Login = () => {
   return (
     <>
-      <div className="signup-page">
+      <div className="login-page">
         <section className="section-left">
           <div className="logo">
             <h1>Together Sports</h1>
           </div>
-          <div className="signup-box">
-            <h1 className="signup-text">로그인</h1>
-            <div className="signup-button">
-              <button className="signup-button-facebook">
-                페이스북 로그인
-              </button>
-              <button className="signup-button-kakao">카카오톡 로그인</button>
-              <button className="signup-button-google">구글 로그인</button>
+          <div className="login-box">
+            <h1 className="login-text">로그인</h1>
+            <div className="login-button">
+              <button className="login-button-facebook">페이스북 로그인</button>
+              <button className="login-button-kakao">카카오톡 로그인</button>
+              <button className="login-button-google">구글 로그인</button>
             </div>
           </div>
         </section>
         <section className="section-right"></section>
       </div>
       <style jsx>{`
-        .signup-page {
+        .login-page {
           width: 100vw;
           height: 100vh;
           display: flex;
@@ -40,7 +38,7 @@ const Login = () => {
           text-align: center;
         }
 
-        .signup-box {
+        .login-box {
           margin: 20px;
           padding: 20px;
           width: 350px;
@@ -54,11 +52,11 @@ const Login = () => {
           flex-direction: column;
         }
 
-        .signup-text {
+        .login-text {
           text-align: center;
         }
 
-        .signup-button button {
+        .login-button button {
           width: 90%;
           margin: 15px;
           padding: 15px 30px;
@@ -66,18 +64,18 @@ const Login = () => {
           border-radius: 10px;
         }
 
-        .signup-button-facebook {
+        .login-button-facebook {
           //로고 이미지
           color: white;
           background-color: #4469b0;
         }
 
-        .signup-button-kakao {
+        .login-button-kakao {
           //로고 이미지
           background-color: #fee934;
         }
 
-        .signup-button-google {
+        .login-button-google {
           //로고 이미지
           background-color: #ffffff;
           -webkit-box-shadow: 0px 0px 20px 0px rgba(117, 110, 117, 0.15);
