@@ -1,7 +1,8 @@
+import { useSession, signIn } from "next-auth/react";
+
 export default function Home() {
-  return (
-    <div>
-      <h1>home</h1>
-    </div>
-  );
+  const { data: session, status } = useSession();
+  const loading = status === "loading";
+
+  return <h1>Home</h1>;
 }
