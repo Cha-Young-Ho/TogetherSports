@@ -1,4 +1,9 @@
+import { useSession, signIn } from "next-auth/react";
+
 const OAuth = () => {
+  const { data: session, status } = useSession();
+  const loading = status === "loading";
+
   return (
     <>
       <div className="signup-page">
@@ -13,7 +18,9 @@ const OAuth = () => {
                 페이스북 회원가입
               </button>
               <button className="signup-button-kakao">카카오톡 회원가입</button>
-              <button className="signup-button-google">구글 회원가입</button>
+              <button onClick={signIn} className="signup-button-google">
+                구글 회원가입
+              </button>
             </div>
           </div>
         </section>
@@ -83,6 +90,7 @@ const OAuth = () => {
           -webkit-box-shadow: 0px 0px 20px 0px rgba(117, 110, 117, 0.15);
           -moz-box-shadow: 0px 0px 20px 0px rgba(117, 110, 117, 0.15);
           box-shadow: 0px 0px 20px 0px rgba(117, 110, 117, 0.25);
+          cursor: pointer;
         }
 
         .section-right {
