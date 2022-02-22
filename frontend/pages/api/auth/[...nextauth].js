@@ -34,6 +34,10 @@ export default NextAuth({
       return session;
     },
     // redirect: async (url, _baseUrl) => {
+    //   if (url.startsWith(_baseUrl)) return url;
+    //   else if (url.startsWith("/")) return new URL(url, _baseUrl).toString();
+    //   return _baseUrl;
+    // },
     //   if (url === "/profile") {
     //     return Promise.resolve("/");
     //   }

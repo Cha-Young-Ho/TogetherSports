@@ -23,19 +23,13 @@ const NavigationBar = () => {
             </div>
             <div className="category">
               <Link href="/">
-                <a>
-                  <div className="tag">소개</div>
-                </a>
+                <div className="tag">소개</div>
               </Link>
               <Link href="/">
-                <a>
-                  <div className="tag">방 목록</div>
-                </a>
+                <div className="tag">방 목록</div>
               </Link>
               <Link href="/">
-                <a>
-                  <div className="tag">방 개설</div>
-                </a>
+                <div className="tag">방 개설</div>
               </Link>
             </div>
           </div>
@@ -45,14 +39,10 @@ const NavigationBar = () => {
                 {!session ? (
                   <>
                     <Link href="/signup/oauth">
-                      <a>
-                        <div className="tag">회원가입</div>
-                      </a>
+                      <div className="tag">회원가입</div>
                     </Link>
                     <Link href="/">
-                      <a>
-                        <div className="tag">로그인</div>
-                      </a>
+                      <div className="tag">로그인</div>
                     </Link>
                   </>
                 ) : (
@@ -76,7 +66,7 @@ const NavigationBar = () => {
           display: flex;
           justify-content: space-around;
           align-items: center;
-          height: 120px;
+          height: 80px;
           min-height: 8vh;
           font-family: "NanumBarunGothic";
           border-bottom: 1px solid #e4e8eb;
@@ -84,7 +74,7 @@ const NavigationBar = () => {
 
         .container_bg {
           display: flex;
-          margin-top: 50px;
+          margin-top: 20px;
         }
 
         .groups {
@@ -117,6 +107,8 @@ const NavigationBar = () => {
 
         .tag {
           padding: 2rem;
+          cursor: pointer;
+          transition: 800ms ease all;
         }
 
         .logOn {
@@ -126,11 +118,10 @@ const NavigationBar = () => {
 
         .btn_signout {
           position: relative;
-          top: 20px;
           background: #fff;
           color: black;
           border: none;
-          padding: 0.2rem;
+          padding: 2rem;
           position: relative;
           cursor: pointer;
           transition: 800ms ease all;
@@ -138,31 +129,15 @@ const NavigationBar = () => {
           font-family: "NanumBarunGothic";
         }
 
-        .btn_signout:hover {
-          background: #fff;
-          color: #1aab8a;
+        .btn_signout:hover,
+        .tag:hover {
+          color: #23a188;
+          box-shadow: 0 2px 0 #23a188;
         }
-        .btn_signout:before,
-        .btn_signout:after {
-          content: "";
-          position: absolute;
-          top: 0;
-          right: 0;
-          height: 2px;
-          width: 0;
-          background: #1aab8a;
-          transition: 400ms ease all;
-        }
-        .btn_signout:after {
-          right: inherit;
-          top: inherit;
-          left: 0;
-          bottom: 0;
-        }
-        .btn_signout:hover:before,
-        .btn_signout:hover:after {
-          width: 100%;
-          transition: 800ms ease all;
+        .btn_signout:active,
+        .tag:active {
+          top: 3px;
+          box-shadow: none;
         }
 
         @media (max-width: 1300px) {

@@ -1,8 +1,17 @@
 import { useSession, signIn } from "next-auth/react";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 const OAuth = () => {
+  const router = useRouter();
   const { data: session, status } = useSession();
   const loading = status === "loading";
+
+  useEffect(() => {
+    if (loading && session) {
+      router.replace("/");
+    }
+  }, [session, loading]);
 
   return (
     <>
@@ -28,8 +37,8 @@ const OAuth = () => {
       </div>
       <style jsx>{`
         .signup-page {
-          width: 100vw;
-          height: 100vh;
+          width: 100%;
+          height: -webkit-calc(100vh - 80px);
           display: flex;
           flex-direction: row;
         }
