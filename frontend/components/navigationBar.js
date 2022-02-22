@@ -98,7 +98,7 @@ const NavigationBar = () => {
         }
 
         .sign {
-          width: 250px;
+          width: 300px;
           display: flex;
           position: relative;
           justify-content: space-between;
@@ -117,6 +117,7 @@ const NavigationBar = () => {
         }
 
         .btn_signout {
+          width: 100px;
           position: relative;
           background: #fff;
           color: black;
