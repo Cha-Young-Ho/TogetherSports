@@ -1,4 +1,19 @@
+import Link from "next/link";
+import { useSession, signIn } from "next-auth/react";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+
 const OAuth = () => {
+  const router = useRouter();
+  const { data: token, status } = useSession();
+  const loading = status === "loading";
+
+  useEffect(() => {
+    if (loading && token) {
+      router.replace("/");
+    }
+  }, [token, loading]);
+
   return (
     <>
       <div className="signup-page">
@@ -9,11 +24,15 @@ const OAuth = () => {
           <div className="signup-box">
             <h1 className="signup-text">회원 가입</h1>
             <div className="signup-button">
-              <button className="signup-button-facebook">
+              <button className="signup-button-facebook" type="button">
                 페이스북 회원가입
               </button>
-              <button className="signup-button-kakao">카카오톡 회원가입</button>
-              <button className="signup-button-google">구글 회원가입</button>
+              <button className="signup-button-kakao" onClick={signIn}>
+                카카오톡 회원가입
+              </button>
+              <button className="signup-button-google" type="button">
+                구글 회원가입
+              </button>
             </div>
           </div>
         </section>
@@ -21,8 +40,8 @@ const OAuth = () => {
       </div>
       <style jsx>{`
         .signup-page {
-          width: 100vw;
-          height: 100vh;
+          width: 100%;
+          height: -webkit-calc(100vh - 80px);
           display: flex;
           flex-direction: row;
         }
@@ -70,11 +89,13 @@ const OAuth = () => {
           //로고 이미지
           color: white;
           background-color: #4469b0;
+          cursor: pointer;
         }
 
         .signup-button-kakao {
           //로고 이미지
           background-color: #fee934;
+          cursor: pointer;
         }
 
         .signup-button-google {
@@ -83,6 +104,7 @@ const OAuth = () => {
           -webkit-box-shadow: 0px 0px 20px 0px rgba(117, 110, 117, 0.15);
           -moz-box-shadow: 0px 0px 20px 0px rgba(117, 110, 117, 0.15);
           box-shadow: 0px 0px 20px 0px rgba(117, 110, 117, 0.25);
+          cursor: pointer;
         }
 
         .section-right {
