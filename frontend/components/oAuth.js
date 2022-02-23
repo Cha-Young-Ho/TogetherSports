@@ -1,18 +1,7 @@
-import { useSession, signIn } from "next-auth/react";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { getProviders, signIn, getSession } from "next-auth/react";
+import AuthButton from "./authButton";
 
-const OAuth = () => {
-  const router = useRouter();
-  const { data: session, status } = useSession();
-  const loading = status === "loading";
-
-  useEffect(() => {
-    if (loading && session) {
-      router.replace("/");
-    }
-  }, [session, loading]);
-
+function OAuth() {
   return (
     <>
       <div className="signup-page">
@@ -65,7 +54,6 @@ const OAuth = () => {
           -webkit-box-shadow: 0px 0px 20px 0px rgba(117, 110, 117, 0.15);
           -moz-box-shadow: 0px 0px 20px 0px rgba(117, 110, 117, 0.15);
           box-shadow: 0px 0px 20px 0px rgba(117, 110, 117, 0.2);
-
           display: flex;
           flex-direction: column;
         }
@@ -128,6 +116,6 @@ const OAuth = () => {
       `}</style>
     </>
   );
-};
+}
 
 export default OAuth;

@@ -1,8 +1,13 @@
 import { useSession, signIn } from "next-auth/react";
+//import axios from "axios";
 
 export default function Home() {
-  const { data: session, status } = useSession();
-  const loading = status === "loading";
+  const { data: session, loading } = useSession();
 
-  return <h1>Home</h1>;
+  // axios({
+  //   method: 'GET',
+  //   URL: '/user/'
+  // })
+
+  return <h1>{console.log(session)}</h1>;
 }

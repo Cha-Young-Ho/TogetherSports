@@ -16,32 +16,35 @@ export default NextAuth({
     }),
   ],
   jwt: {
-    encryption: true,
+    secret: process.env.JWT_SECRET,
   },
+  secret: process.env.SECRET,
+
   theme: {
     colorScheme: "auto",
     brandColor: "",
     logo: "",
   },
-  //secret: process.env.SECRET,
+
+  // pages: {
+  //   signIn: "/signup/oauth",
+  // },
+
   callbacks: {
-    jwt: async ({ token, user }) => {
-      user && (token.user = user);
+    async jwt({ token, account }) {
+      // Persist the OAuth access_token to the token right after signin
+      if (account) {
+        token.accessToken = account.access_token;
+      }
       return token;
     },
-    session: async ({ session, token }) => {
-      session.user = token.user;
+    async session({ session, token, user }) {
+      // Send properties to the client, like an access_token from a provider.
+      session.accessToken = token.accessToken;
       return session;
     },
-    // redirect: async (url, _baseUrl) => {
-    //   if (url.startsWith(_baseUrl)) return url;
-    //   else if (url.startsWith("/")) return new URL(url, _baseUrl).toString();
-    //   return _baseUrl;
-    // },
-    //   if (url === "/profile") {
-    //     return Promise.resolve("/");
-    //   }
-    //   return Promise.resolve("/");
-    // },
+    async redirect({ url, _baseUrl }) {
+      return Promise.resolve("/");
+    },
   },
 });
