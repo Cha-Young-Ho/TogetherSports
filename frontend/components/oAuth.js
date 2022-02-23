@@ -1,7 +1,7 @@
-import { getProviders, signIn, getSession } from "next-auth/react";
-import AuthButton from "./authButton";
+import Link from "next/link";
+import { signIn } from "next-auth/react";
 
-function OAuth() {
+const OAuth = () => {
   return (
     <>
       <div className="signup-page">
@@ -12,11 +12,13 @@ function OAuth() {
           <div className="signup-box">
             <h1 className="signup-text">회원 가입</h1>
             <div className="signup-button">
-              <button className="signup-button-facebook">
-                페이스북 회원가입
+              <button className="signup-button-naver" onClick={signIn}>
+                네이버 회원가입
               </button>
-              <button className="signup-button-kakao">카카오톡 회원가입</button>
-              <button onClick={signIn} className="signup-button-google">
+              <button className="signup-button-kakao" onClick={signIn}>
+                카카오톡 회원가입
+              </button>
+              <button className="signup-button-google" onClick={signIn}>
                 구글 회원가입
               </button>
             </div>
@@ -70,15 +72,17 @@ function OAuth() {
           border-radius: 10px;
         }
 
-        .signup-button-facebook {
+        .signup-button-naver {
           //로고 이미지
           color: white;
-          background-color: #4469b0;
+          background-color: #00c73c;
+          cursor: pointer;
         }
 
         .signup-button-kakao {
           //로고 이미지
           background-color: #fee934;
+          cursor: pointer;
         }
 
         .signup-button-google {
