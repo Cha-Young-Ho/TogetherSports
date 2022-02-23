@@ -1,11 +1,16 @@
 import NextAuth from "next-auth";
 import KakaoProvider from "next-auth/providers/kakao";
 import GoogleProvider from "next-auth/providers/google";
+import NaverProvider from "next-auth/providers/naver";
 
 export default NextAuth({
   providers: [
+    NaverProvider({
+      clientId: process.env.NAVER_CLIENT_ID,
+      clientSecret: process.env.NAVER_CLIENT_SECRET,
+    }),
+
     KakaoProvider({
-      name: "kakao-oauth-login", //해당 인증방식의 이름
       clientId: process.env.KAKAO_ID,
       clientSecret: process.env.KAKAO_SECRET,
       authorization: {
@@ -34,6 +39,7 @@ export default NextAuth({
       },
       checks: ["state"],
     }),
+
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -45,20 +51,24 @@ export default NextAuth({
         },
       },
     }),
-    // ...add more providers here
   ],
+
+  jwt: {
+    secret: process.env.JWT_SECRET,
+  },
+  secret: process.env.SECRET,
 
   callbacks: {
     async jwt({ token, account }) {
       if (account) {
         token.accessToken = account.access_token;
       }
-      <div>{console.log(token)}</div>;
+
       return token;
     },
+
     async session({ session, token, user }) {
       session.accessToken = token.accessToken;
-      <div>{console.log(session)}</div>;
       return session;
     },
 
