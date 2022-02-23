@@ -1,19 +1,7 @@
 import Link from "next/link";
-import { useSession, signIn } from "next-auth/react";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { signIn } from "next-auth/react";
 
 const OAuth = () => {
-  const router = useRouter();
-  const { data: token, status } = useSession();
-  const loading = status === "loading";
-
-  useEffect(() => {
-    if (loading && token) {
-      router.replace("/");
-    }
-  }, [token, loading]);
-
   return (
     <>
       <div className="signup-page">
@@ -30,7 +18,7 @@ const OAuth = () => {
               <button className="signup-button-kakao" onClick={signIn}>
                 카카오톡 회원가입
               </button>
-              <button className="signup-button-google" type="button">
+              <button onClick={signIn} className="signup-button-google">
                 구글 회원가입
               </button>
             </div>
