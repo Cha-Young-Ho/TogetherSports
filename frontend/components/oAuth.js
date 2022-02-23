@@ -56,7 +56,6 @@ const OAuth = () => {
           -webkit-box-shadow: 0px 0px 20px 0px rgba(117, 110, 117, 0.15);
           -moz-box-shadow: 0px 0px 20px 0px rgba(117, 110, 117, 0.15);
           box-shadow: 0px 0px 20px 0px rgba(117, 110, 117, 0.2);
-
           display: flex;
           flex-direction: column;
         }
@@ -121,6 +120,6 @@ const OAuth = () => {
       `}</style>
     </>
   );
-};
+}
 
 export default OAuth;
