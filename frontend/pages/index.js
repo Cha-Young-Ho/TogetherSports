@@ -1,8 +1,7 @@
-import { useSession, signIn } from "next-auth/react";
+import React from "react";
+import { signIn, useSession } from "next-auth/react";
 
 export default function Home() {
   const { data: session, status } = useSession();
-  const loading = status === "loading";
-
-  return <h1>Home</h1>;
+  return <h1>{console.log(session)}</h1>;
 }

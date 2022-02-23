@@ -1,8 +1,45 @@
 import NextAuth from "next-auth";
+import KakaoProvider from "next-auth/providers/kakao";
 import GoogleProvider from "next-auth/providers/google";
+import NaverProvider from "next-auth/providers/naver";
 
 export default NextAuth({
   providers: [
+    NaverProvider({
+      clientId: process.env.NAVER_CLIENT_ID,
+      clientSecret: process.env.NAVER_CLIENT_SECRET,
+    }),
+
+    KakaoProvider({
+      clientId: process.env.KAKAO_ID,
+      clientSecret: process.env.KAKAO_SECRET,
+      authorization: {
+        url: "https://kauth.kakao.com/oauth/authorize",
+        params: {
+          //동의 항목들
+          scope: "profile_nickname account_email",
+        },
+      },
+      token: {
+        url: "https://kauth.kakao.com/oauth/token",
+        request: async ({ provider, params, checks, client }) => {
+          const excangeBody = {
+            client_id: provider.clientId,
+            client_secret: provider.clientSecret,
+          };
+          return {
+            tokens: await client.oauthCallback(
+              provider.callbackUrl,
+              params,
+              checks,
+              { excangeBody }
+            ),
+          };
+        },
+      },
+      checks: ["state"],
+    }),
+
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -15,33 +52,28 @@ export default NextAuth({
       },
     }),
   ],
+
   jwt: {
-    encryption: true,
+    secret: process.env.JWT_SECRET,
   },
-  theme: {
-    colorScheme: "auto",
-    brandColor: "",
-    logo: "",
-  },
-  //secret: process.env.SECRET,
+  secret: process.env.SECRET,
+
   callbacks: {
-    jwt: async ({ token, user }) => {
-      user && (token.user = user);
+    async jwt({ token, account }) {
+      if (account) {
+        token.accessToken = account.access_token;
+      }
+
       return token;
     },
-    session: async ({ session, token }) => {
-      session.user = token.user;
+
+    async session({ session, token, user }) {
+      session.accessToken = token.accessToken;
       return session;
     },
-    // redirect: async (url, _baseUrl) => {
-    //   if (url.startsWith(_baseUrl)) return url;
-    //   else if (url.startsWith("/")) return new URL(url, _baseUrl).toString();
-    //   return _baseUrl;
-    // },
-    //   if (url === "/profile") {
-    //     return Promise.resolve("/");
-    //   }
-    //   return Promise.resolve("/");
-    // },
+
+    async redirect({ url, _baseUrl }) {
+      return Promise.resolve("/");
+    },
   },
 });
