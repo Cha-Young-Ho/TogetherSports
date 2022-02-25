@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import KakaoProvider from "next-auth/providers/kakao";
 import GoogleProvider from "next-auth/providers/google";
 import NaverProvider from "next-auth/providers/naver";
+import { getSession } from "next-auth/react";
 
 export default NextAuth({
   providers: [
@@ -58,26 +59,25 @@ export default NextAuth({
   },
   secret: process.env.SECRET,
 
-  // pages: {
-  //   signIn: "/signup/oauth",
-  // },
-
   callbacks: {
     async jwt({ token, account }) {
       if (account) {
         token.accessToken = account.access_token;
+        token.provider = account.provider;
       }
 
       return token;
     },
 
-    async session({ session, token, user }) {
+    async session({ session, token }) {
       session.accessToken = token.accessToken;
+      session.provider = token.provider;
+
       return session;
     },
 
-    async redirect({ url, _baseUrl }) {
-      return Promise.resolve("/");
+    async redirect() {
+      return Promise.resolve("/test");
     },
   },
 });

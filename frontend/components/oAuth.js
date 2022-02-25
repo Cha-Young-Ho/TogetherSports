@@ -120,6 +120,6 @@ const OAuth = () => {
       `}</style>
     </>
   );
-}
+};
 
 export default OAuth;
