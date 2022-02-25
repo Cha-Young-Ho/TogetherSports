@@ -1,8 +1,5 @@
 package com.togethersports.tosproejct.jwt;
 
-
-
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -13,12 +10,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
-
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+
 // 토큰을 생성하고 검증하는 클래스입니다.
 // 해당 컴포넌트는 필터클래스에서 사전 검증을 거칩니다.
 @RequiredArgsConstructor
@@ -51,7 +48,7 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    // JWT 토큰에서 인증 정보 조회
+    // JWT 토큰에서 인증 정보 조회, 실제 db에서 토큰 정보에 대한 정보를 가져온다. 그리고 userdetails에 대한 정보를 넘겨준다.
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserPk(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
@@ -62,12 +59,12 @@ public class JwtTokenProvider {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
-    // Request의 Header에서 token 값을 가져옵니다. "X-AUTH-TOKEN" : "TOKEN값'
+    // Request의 Header에서 token 값을 가져옵니다. "Authorization" : "TOKEN값'
     public String resolveToken(HttpServletRequest request) {
         return request.getHeader("Authorization");
     }
 
-    // 토큰의 유효성 + 만료일자 확인
+    // 토큰의 유효성 + 만료일자 확인, 이 부분에서 토큰에 대한 유효성 검증을 하게 된다.
     public boolean validateToken(String jwtToken) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);

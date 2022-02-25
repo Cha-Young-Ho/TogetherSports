@@ -40,9 +40,6 @@ public class User implements UserDetails { //UserDetails는 시큐리티가 관�
     @Column(name = "GENDER", length = 1)
     @Enumerated(EnumType.STRING)
     private Gender gender;
-//
-//    @Column(length = 150, nullable = false)
-//    private String password;
 
     @Column(name = "ADMIN", length = 4)
     @Enumerated(EnumType.STRING)
