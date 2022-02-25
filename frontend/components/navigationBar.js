@@ -13,11 +13,7 @@ const NavigationBar = () => {
             <div className="logo">
               <Link href="/">
                 <a>
-                  <div>
-                    TOGETHER
-                    <br />
-                    SPORTS
-                  </div>
+                  <img src="/logo-navbar.png" alt="Together Sports"></img>
                 </a>
               </Link>
             </div>
@@ -70,6 +66,12 @@ const NavigationBar = () => {
           min-height: 8vh;
           font-family: "NanumBarunGothic";
           border-bottom: 1px solid #e4e8eb;
+
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          background-color: #ffffff;
         }
 
         .container_bg {

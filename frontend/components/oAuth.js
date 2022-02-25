@@ -7,7 +7,7 @@ const OAuth = () => {
       <div className="signup-page">
         <section className="section-left">
           <div className="logo">
-            <h1>Together Sports</h1>
+            <img src="/logo-sign.png" alt="Together Sports"></img>
           </div>
           <div className="signup-box">
             <h1 className="signup-text">회원 가입</h1>
@@ -38,7 +38,8 @@ const OAuth = () => {
       <style jsx>{`
         .signup-page {
           width: 100%;
-          height: -webkit-calc(100vh - 80px);
+          /* height: -webkit-calc(100vh - 80px); */
+          height: 100%;
           display: flex;
           flex-direction: row;
         }
@@ -49,19 +50,26 @@ const OAuth = () => {
           display: grid;
           justify-content: center;
           align-content: center;
+          background-color: #f2f2f2;
         }
 
         .logo {
-          //로고 이미지
           text-align: center;
+          height: 100px;
+        }
+
+        .logo img {
+          width: auto;
+          max-height: 100%;
         }
 
         .signup-box {
           margin: 20px;
           padding: 20px;
           width: 350px;
-          height: 500px;
+          height: 430px;
           border-radius: 20px;
+          background-color: #ffffff;
           -webkit-box-shadow: 0px 0px 20px 0px rgba(117, 110, 117, 0.15);
           -moz-box-shadow: 0px 0px 20px 0px rgba(117, 110, 117, 0.15);
           box-shadow: 0px 0px 20px 0px rgba(117, 110, 117, 0.2);
@@ -71,6 +79,7 @@ const OAuth = () => {
 
         .signup-text {
           text-align: center;
+          font-size: 2rem;
         }
 
         .signup-button button {
@@ -82,20 +91,17 @@ const OAuth = () => {
         }
 
         .signup-button-naver {
-          //로고 이미지
           color: white;
           background-color: #00c73c;
           cursor: pointer;
         }
 
         .signup-button-kakao {
-          //로고 이미지
           background-color: #fee934;
           cursor: pointer;
         }
 
         .signup-button-google {
-          //로고 이미지
           background-color: #ffffff;
           -webkit-box-shadow: 0px 0px 20px 0px rgba(117, 110, 117, 0.15);
           -moz-box-shadow: 0px 0px 20px 0px rgba(117, 110, 117, 0.15);
