@@ -12,13 +12,22 @@ const OAuth = () => {
           <div className="signup-box">
             <h1 className="signup-text">회원 가입</h1>
             <div className="signup-button">
-              <button className="signup-button-naver" onClick={signIn}>
+              <button
+                className="signup-button-naver"
+                onClick={() => signIn("naver")}
+              >
                 네이버 회원가입
               </button>
-              <button className="signup-button-kakao" onClick={signIn}>
+              <button
+                className="signup-button-kakao"
+                onClick={() => signIn("kakao")}
+              >
                 카카오톡 회원가입
               </button>
-              <button className="signup-button-google" onClick={signIn}>
+              <button
+                className="signup-button-google"
+                onClick={() => signIn("google")}
+              >
                 구글 회원가입
               </button>
             </div>
@@ -120,6 +129,6 @@ const OAuth = () => {
       `}</style>
     </>
   );
-}
+};
 
 export default OAuth;
