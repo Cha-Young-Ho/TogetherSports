@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 public class CustomUserDetailService implements UserDetailsService {
 
     private final UserRepository userRepository;
+    //private final RefreshTokenRepository refreshTokenRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -20,4 +21,17 @@ public class CustomUserDetailService implements UserDetailsService {
 
 
     }
+
+//    public Token login(User member){
+//
+//        Token tokens = jwtTokenProvider.createAccessToken(member.getUsername(), member.getRoles());
+//        refreshTokenRepository.save(RefreshToken.builder().token(tokens.getRefreshToken()).keyEmail(tokens.getKey()).build());
+//        return tokens;
+//    }
+//
+//    public void saveToken(RefreshToken refreshToken){
+//
+//        refreshTokenRepository.save(refreshToken);
+//
+//    }
 }
