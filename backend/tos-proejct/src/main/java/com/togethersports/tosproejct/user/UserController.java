@@ -28,13 +28,12 @@ public class UserController {
     final String NICKNAME = "침착맨";
     final Long SEQUENCEID = Long.valueOf(1);
     final Gender GENDER = Gender.남;
-    final Admin ADMIN = Admin.일반회원;
+
 
     User user = User.builder()
             .userEmail(EMAIL)
             .userBirth(BIRTH)
             .userNickname(NICKNAME)
-            .admin(ADMIN)
             .gender(GENDER)
             .userSequenceId(SEQUENCEID)
             .roles(Collections.singletonList("ROLE_USER")) // 최초 가입시 USER 로 설정
@@ -60,7 +59,9 @@ public class UserController {
                 .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 E-MAIL 입니다."));
        // return jwtService.login(member);
 
-        return jwtTokenProvider.createAccessToken(member.getUsername(), member.getRoles());
+        Token tokenDto = jwtTokenProvider.createAccessToken(member.getUsername(), member.getRoles());
+        jwtService.login(tokenDto);
+        return tokenDto;
 
     }
 }

@@ -16,26 +16,17 @@ import javax.persistence.*;
 @AllArgsConstructor
 public class RefreshToken {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "REFRESH_TOKEN_ID", nullable = false)
     private Long refreshTokenId;
 
-    @Column(name = "TOKEN", nullable = false)
-    private String token;
+    @Column(name = "REFRESH_TOKEN", nullable = false)
+    private String refreshToken;
 
     @Column(name = "KEY_EMAIL", nullable = false)
     private String keyEmail;
-//
-//    @Column(name = "ACCESS_TOKEN", nullable = false)
-//    private String accessToken;
-
-
-
-    public RefreshToken updateAccessToken(String accessToken){
-        this.token = token;
-        return this;
-    }
 
 
 }
