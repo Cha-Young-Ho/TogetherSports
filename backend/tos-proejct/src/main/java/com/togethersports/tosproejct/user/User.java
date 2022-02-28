@@ -38,10 +38,5 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Admin admin;
 
-    @Column(name = "OAUTH_ID", unique = true)
-    private Long oauthId;
 
-    @Column(name = "OAUTH_PROVIDER", length = 20, unique = true)
-    @Enumerated(EnumType.STRING)
-    private Provider oauthProvider;
 }
