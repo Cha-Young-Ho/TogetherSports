@@ -1,10 +1,7 @@
 package com.togethersports.tosproejct.userCrudTest;
 
 
-import com.togethersports.tosproejct.user.Admin;
-import com.togethersports.tosproejct.user.Gender;
-import com.togethersports.tosproejct.user.User;
-import com.togethersports.tosproejct.user.UserRepository;
+import com.togethersports.tosproejct.user.*;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.Assertions;
@@ -37,13 +34,19 @@ public class JpaTest {
     final int SEQUENCEID = 1;
     final Gender GENDER = Gender.남;
     final Admin ADMIN = Admin.일반회원;
+    final Long OAUTHID = 100000001L;
+    final Provider OAUTHPROVIDER = Provider.구글;
+
     User user = User.builder()
+            .userSequenceId(SEQUENCEID)
             .userEmail(EMAIL)
-            .userBirth(BIRTH)
             .userNickname(NICKNAME)
-            .admin(ADMIN)
+            .userBirth(BIRTH)
             .gender(GENDER)
-            .userSequenceId(SEQUENCEID).build();
+            .admin(ADMIN)
+            .oauthId(OAUTHID)
+            .oauthProvider(OAUTHPROVIDER)
+            .build();
 
 
 
@@ -55,11 +58,13 @@ public class JpaTest {
         final User testUser = userRepository.save(user);
 
         //then
-        Assertions.assertEquals(testUser.getUserBirth(), BIRTH);
         Assertions.assertEquals(testUser.getUserEmail(), EMAIL);
         Assertions.assertEquals(testUser.getUserNickname(), NICKNAME);
-        Assertions.assertEquals(testUser.getAdmin(), ADMIN);
+        Assertions.assertEquals(testUser.getUserBirth(), BIRTH);
         Assertions.assertEquals(testUser.getGender(), GENDER);
+        Assertions.assertEquals(testUser.getAdmin(), ADMIN);
+        Assertions.assertEquals(testUser.getOauthId(), OAUTHID);
+        Assertions.assertEquals(testUser.getOauthProvider(), OAUTHPROVIDER);
 
     }
 
@@ -73,12 +78,13 @@ public class JpaTest {
 
 
         //then
-        Assertions.assertEquals(testUser.getUserBirth(), BIRTH);
         Assertions.assertEquals(testUser.getUserEmail(), EMAIL);
         Assertions.assertEquals(testUser.getUserNickname(), NICKNAME);
-        Assertions.assertEquals(testUser.getUserSequenceId(), SEQUENCEID);
-        Assertions.assertEquals(testUser.getAdmin(), ADMIN);
+        Assertions.assertEquals(testUser.getUserBirth(), BIRTH);
         Assertions.assertEquals(testUser.getGender(), GENDER);
+        Assertions.assertEquals(testUser.getAdmin(), ADMIN);
+        Assertions.assertEquals(testUser.getOauthId(), OAUTHID);
+        Assertions.assertEquals(testUser.getOauthProvider(), OAUTHPROVIDER);
 
     }
 
