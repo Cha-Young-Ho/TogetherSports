@@ -1,4 +1,4 @@
-package com.togethersports.tosproejct.enums;
+package com.togethersports.tosproejct.user;
 
 public enum Provider {
     구글, 카카오, 네이버, 페이스북
