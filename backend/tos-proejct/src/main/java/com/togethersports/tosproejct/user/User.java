@@ -45,9 +45,11 @@ public class User implements UserDetails { //UserDetails는 시큐리티가 관�
     @Enumerated(EnumType.STRING)
     private Admin admin;
 
+
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
     private List<String> roles = new ArrayList<>();
+
 
 
     @Override

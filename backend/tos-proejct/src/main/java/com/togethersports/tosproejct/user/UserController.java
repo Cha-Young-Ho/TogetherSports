@@ -21,7 +21,6 @@ public class UserController {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
-    private final CustomUserDetailService customUserDetailService;
     private final JwtService jwtService;
 
     final String BIRTH = "001200";
@@ -46,6 +45,8 @@ public class UserController {
         log.info("로그인 시도됨");
 
         userRepository.save(user);
+
+        // role을 지정해주는 기능이 필요하다.
 
 
         return user.toString();
