@@ -13,20 +13,23 @@ public class RefreshApiResponseMessage {
 
         // HttpStatus
         private String status;
+
         // Http Default Message
         private String message;
-        // Error Message to USER
-        private String errorMessage;
+
         // Error Code
         private String errorCode;
+
+        // Access Token
+        private String accessToken;
 
         public RefreshApiResponseMessage() {}
 
         public RefreshApiResponseMessage(Map<String, String> source) {
-            this.status = status;
-            this.message = message;
-            this.errorCode = errorCode;
-            this.errorMessage = errorMessage;
+            this.status = source.get("status");
+            this.message = source.get("message");
+            this.errorCode = source.get("errorCode");
+            this.accessToken = source.get("accessToken");
         }
 
 }

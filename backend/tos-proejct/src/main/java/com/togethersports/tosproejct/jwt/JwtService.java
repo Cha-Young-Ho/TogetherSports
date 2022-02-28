@@ -38,14 +38,15 @@ public class JwtService {
         if(createdAccessToken == null){
 
             map.put("errortype", "Forbidden");
-            map.put("code", "402");
+            map.put("status", "402");
             map.put("message", "Refresh 토큰이 만료되었습니다. 로그인이 필요합니다.");
+
 
             return map;
         }
 
 
-        map.put("code", "200");
+        map.put("status", "200");
         map.put("message", "Refresh 토큰을 통한 Access Token 생성이 완료되었습니다.");
         map.put("accessToken", createdAccessToken);
 

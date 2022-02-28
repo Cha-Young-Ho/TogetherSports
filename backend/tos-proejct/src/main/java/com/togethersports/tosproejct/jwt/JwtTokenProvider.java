@@ -32,11 +32,10 @@ public class JwtTokenProvider {
 
 
     // 토큰 유효시간 30분
-    private long accessTokenValidTime = 5*1000L;//30 * 60 * 1000L; // 30 minutes
+    private long accessTokenValidTime = 30 * 60 * 1000L; // 30 minutes
     private long refreshTokenValidTime = 7* 24 * 60 * 60 * 1000L; // 7 days
 
     private final UserDetailsService userDetailsService;
-    //private final JwtService jwtService;
 
     // 객체 초기화, secretKey를 Base64로 인코딩한다.
     @PostConstruct
@@ -131,9 +130,6 @@ public class JwtTokenProvider {
 
             return !claims.getBody().getExpiration().before(new Date());
 
-
-            // access 토큰 만료 시, 프론트에 재요청 과정이 필요할 수도 있음.
-            // 현재 아래 구현 코드는 refresh validation check를 바로 하는 로직.
 
     }
 
