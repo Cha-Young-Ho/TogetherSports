@@ -7,7 +7,16 @@ import lombok.ToString;
 @ToString
 public class UserDTO {
 
-    private String userName;
+    private int userSequenceId;
     private String userEmail;
-    private String provider;
+    private String userName;
+    private String userNickname;
+    private String userBirth;
+    private String userState;
+    private int mannerPoint;
+    private Double locationX;
+    private Double locationY;
+    private Gender gender;
+    private Admin admin;
+    private Provider provider;
 }

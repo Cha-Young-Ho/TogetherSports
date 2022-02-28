@@ -35,7 +35,7 @@ public class JpaTest {
     final Gender GENDER = Gender.남;
     final Admin ADMIN = Admin.일반회원;
     final Long OAUTHID = 100000001L;
-    final Provider OAUTHPROVIDER = Provider.구글;
+    final Provider OAUTHPROVIDER = Provider.KAKAO;
 
     User user = User.builder()
             .userSequenceId(SEQUENCEID)
@@ -44,8 +44,7 @@ public class JpaTest {
             .userBirth(BIRTH)
             .gender(GENDER)
             .admin(ADMIN)
-            .oauthId(OAUTHID)
-            .oauthProvider(OAUTHPROVIDER)
+            .provider(OAUTHPROVIDER)
             .build();
 
 
@@ -63,8 +62,6 @@ public class JpaTest {
         Assertions.assertEquals(testUser.getUserBirth(), BIRTH);
         Assertions.assertEquals(testUser.getGender(), GENDER);
         Assertions.assertEquals(testUser.getAdmin(), ADMIN);
-        Assertions.assertEquals(testUser.getOauthId(), OAUTHID);
-        Assertions.assertEquals(testUser.getOauthProvider(), OAUTHPROVIDER);
 
     }
 
@@ -83,8 +80,6 @@ public class JpaTest {
         Assertions.assertEquals(testUser.getUserBirth(), BIRTH);
         Assertions.assertEquals(testUser.getGender(), GENDER);
         Assertions.assertEquals(testUser.getAdmin(), ADMIN);
-        Assertions.assertEquals(testUser.getOauthId(), OAUTHID);
-        Assertions.assertEquals(testUser.getOauthProvider(), OAUTHPROVIDER);
 
     }
 

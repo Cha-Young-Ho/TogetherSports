@@ -31,8 +31,6 @@ public class userRepositoryTest {
                 .userNickname("야스오")
                 .admin(Admin.일반회원)
                 .gender(Gender.남)
-                .oauthId(100000001L)
-                .oauthProvider(Provider.구글)
                 .build();
 
         User newUser = userRepository.save(user);
