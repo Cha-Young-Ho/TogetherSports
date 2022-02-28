@@ -1,6 +1,5 @@
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 
 const mock = new AxiosMockAdapter(axios);
@@ -29,10 +28,13 @@ mock
 
 const Test = () => {
   const router = useRouter();
-  const { data: session, status } = useSession();
-
+  //http://localhost:8080/test
   axios
     .get("/user/check", {
+      headers: {
+        Authorization:
+          "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhYWJiY2NAZ21haWwuY29tIiwicm9sZXMiOlsiUk9MRV9VU0VSIl0sImlhdCI6MTY0NjAzMDUzMSwiZXhwIjoxNjQ2MDMyMzMxfQ.aHoNnDVMjFMs3IaYUULkSEcqspFPZRjW40pWW13PAXA",
+      },
       params: {
         userEmail: "asdfa@gmail.com",
         userName: "홍길동",
@@ -40,6 +42,7 @@ const Test = () => {
       },
     })
     .then((res) => {
+      console.log(res);
       // 성공적으로 true 값을 받는다면
       if (res.data.signUpCheckValue) {
         router.replace("/");
@@ -47,7 +50,7 @@ const Test = () => {
     })
     .catch((error) => {
       // 없는 정보 입력 시
-      router.replace("/xxx");
+      router.replace("/signup/addinfo/interest");
     });
 
   return <h1>Test</h1>;
