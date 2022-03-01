@@ -124,11 +124,11 @@ public class JwtTokenProvider {
     public boolean validateToken(String jwtToken) throws ParseException{
 
 
-            // 토큰 만료시 jwtExceptionFilter의 expired exception으로 던져짐, 토큰 변조 시 jwtexceiption으로 던져짐
-            Jws<Claims> claims = Jwts.parser().setSigningKey(accessSecretKey).parseClaimsJws(jwtToken);
-            log.info("claims의 get email = {}", claims.getBody().get("sub"));
+        // 토큰 만료시 jwtExceptionFilter의 expired exception으로 던져짐, 토큰 변조 시 jwtexceiption으로 던져짐
+        Jws<Claims> claims = Jwts.parser().setSigningKey(accessSecretKey).parseClaimsJws(jwtToken);
+        log.info("claims의 get email = {}", claims.getBody().get("sub"));
 
-            return !claims.getBody().getExpiration().before(new Date());
+        return !claims.getBody().getExpiration().before(new Date());
 
 
     }
