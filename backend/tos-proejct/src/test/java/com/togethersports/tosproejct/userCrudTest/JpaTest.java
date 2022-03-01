@@ -6,12 +6,18 @@ import com.togethersports.tosproejct.user.Gender;
 import com.togethersports.tosproejct.user.User;
 import com.togethersports.tosproejct.user.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
+import org.springframework.util.Assert;
+
+import javax.persistence.EntityNotFoundException;
 
 /*
     JPA연동 테스트 클래스 파일입니다.
@@ -28,9 +34,9 @@ public class JpaTest {
     final String BIRTH = "001200";
     final String EMAIL = "aabbcc@gmail.com";
     final String NICKNAME = "침착맨";
-    final Long SEQUENCEID = Long.valueOf(1);
+    final int SEQUENCEID = 1;
     final Gender GENDER = Gender.남;
-    final Admin ADMIN = Admin.ROLE_ADMIN;
+    final Admin ADMIN = Admin.일반회원;
     User user = User.builder()
             .userEmail(EMAIL)
             .userBirth(BIRTH)
@@ -63,7 +69,7 @@ public class JpaTest {
 
         //when
         userRepository.save(user);
-        User testUser = userRepository.getById(1L);
+        User testUser = userRepository.getById(1);
 
 
         //then
@@ -89,7 +95,7 @@ public class JpaTest {
         //then
 
         Exception exception = Assertions.assertThrows(JpaObjectRetrievalFailureException.class, () ->{
-            User testUser = userRepository.getById(1L);
+            User testUser = userRepository.getById(1);
         });
 
         String expectedMessage = "Unable to find";
@@ -105,11 +111,11 @@ public class JpaTest {
 
         //when
         userRepository.save(user);
-        User testUser = userRepository.getById(1L);
+        User testUser = userRepository.getById(1);
 
         testUser.setUserBirth("19901220");
 
-        User testUser2 = userRepository.getById(1L);
+        User testUser2 = userRepository.getById(1);
         //then
 
         Assertions.assertEquals(testUser2.getUserBirth(), "19901220");
