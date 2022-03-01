@@ -6,7 +6,6 @@ import com.togethersports.tosproejct.jwt.JwtTokenProvider;
 import com.togethersports.tosproejct.jwt.Token;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -56,8 +55,8 @@ public class UserController {
     // 로그인
     @PostMapping("/login")
     public Token login(@RequestBody Map<String, String> user) {
-        log.info("user email = {}", user.get("email"));
-        User member = userRepository.findByUserEmail(user.get("email"))
+        log.info("user email = {}", user.get("userEmail"));
+        User member = userRepository.findByUserEmail(user.get("userEmail"))
                 .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 E-MAIL 입니다."));
        // return jwtService.login(member);
 
@@ -67,12 +66,5 @@ public class UserController {
 
     }
 
-    //테스트
-    @GetMapping("/aa")
-    public String testCheck(@RequestBody String body){
-
-        log.info("받은 body = {}", body);
-        return body;
-    }
 
 }

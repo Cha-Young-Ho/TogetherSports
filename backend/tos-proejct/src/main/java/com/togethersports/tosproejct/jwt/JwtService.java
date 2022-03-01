@@ -1,21 +1,30 @@
 package com.togethersports.tosproejct.jwt;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class JwtService {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
+    @Transactional
     public void login(Token tokenDto){
 
         RefreshToken refreshToken = RefreshToken.builder().keyEmail(tokenDto.getKey()).refreshToken(tokenDto.getRefreshToken()).build();
+        String loginUserEmail = refreshToken.getKeyEmail();
+        if(refreshTokenRepository.existsByKeyEmail(loginUserEmail)){
+            log.info("기존의 존재하는 refresh 토큰 삭제");
+            refreshTokenRepository.deleteByKeyEmail(loginUserEmail);
+        }
         refreshTokenRepository.save(refreshToken);
 
     }
@@ -44,6 +53,7 @@ public class JwtService {
 
             return map;
         }
+        //기존에 존재하는 accessToken 제거
 
 
         map.put("status", "200");

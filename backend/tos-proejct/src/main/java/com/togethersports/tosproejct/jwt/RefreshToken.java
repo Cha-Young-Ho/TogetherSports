@@ -4,10 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
-
-
 @Builder
 @Entity
 @Getter
@@ -15,7 +12,6 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RefreshToken {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +23,5 @@ public class RefreshToken {
 
     @Column(name = "KEY_EMAIL", nullable = false)
     private String keyEmail;
-
 
 }
