@@ -25,83 +25,39 @@ const PersonalInfo = () => {
           </div>
           <div className="birth">
             <div className="text-birth">생년월일</div>
-            <div className="year">
-              <select className="dropdown-year">
-                <option>1998</option>
-                <option>1997</option>
-                <option>1996</option>
-                <option>1995</option>
-                <option>1994</option>
-                <option>1993</option>
-                <option>1992</option>
-                <option>1991</option>
-                <option>1990</option>
-              </select>
-              <span className="text-year">년</span>
-            </div>
-            <div className="month">
-              <select className="dropdown-month">
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-                <option>6</option>
-                <option>7</option>
-                <option>8</option>
-                <option>9</option>
-                <option>10</option>
-                <option>11</option>
-                <option>12</option>
-              </select>
-              <span className="text-month">월</span>
-            </div>
-            <div className="day">
-              <select className="dropdown-day">
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-                <option>6</option>
-                <option>7</option>
-                <option>8</option>
-                <option>9</option>
-                <option>10</option>
-                <option>11</option>
-                <option>12</option>
-                <option>13</option>
-                <option>14</option>
-                <option>15</option>
-                <option>16</option>
-                <option>17</option>
-                <option>18</option>
-                <option>19</option>
-                <option>20</option>
-                <option>21</option>
-                <option>22</option>
-                <option>23</option>
-                <option>24</option>
-                <option>25</option>
-                <option>26</option>
-                <option>27</option>
-                <option>28</option>
-                <option>29</option>
-                <option>30</option>
-                <option>31</option>
-              </select>
-              <span className="text-day">일</span>
+            <div className="dropdown-birth">
+              <div className="year">
+                <select className="dropdown-year">
+                  <option>1998</option>
+                </select>
+              </div>
+              <div className="month">
+                <select className="dropdown-month">
+                  <option>1</option>
+                </select>
+              </div>
+              <div className="day">
+                <select className="dropdown-day">
+                  <option>1</option>
+                </select>
+              </div>
             </div>
           </div>
           <div className="gender">
             <div className="text-gender">성별</div>
-            <div>
-              <input type="radio" id="male" />
-              <label>남</label>
-            </div>
-            <div>
-              <input type="radio" id="female" />
-              <label>여</label>
+            <div className="radio-gender">
+              <div className="male">
+                <label className="text-male" for="radio-male">
+                  남
+                </label>
+                <input type="radio" name="gender" id="radio-male" />
+              </div>
+              <div className="female">
+                <label className="text-male" for="radio-male">
+                  여
+                </label>
+                <input type="radio" name="gender" id="radio-female" />
+              </div>
             </div>
           </div>
         </div>
@@ -211,11 +167,45 @@ const PersonalInfo = () => {
           padding: 5px 10px 5px 14px;
           display: flex;
           justify-content: space-between;
+          align-items: center;
         }
 
         .text-birth {
           font-weight: bold;
           font-size: 1.5em;
+        }
+
+        .dropdown-birth {
+          display: flex;
+          flex-direction: row:
+          justify-content: space-between;
+        }
+
+        .dropdown-year {
+          width: 180px;
+          padding: 9px 11.8px 10.3px 27px;
+          margin: 5px;
+          border-radius: 10px;
+          border: solid 1px #e8e8e8;
+          font-weight: bold;
+        }
+
+        .dropdown-month {
+          width: 120px;
+          padding: 9px 12.8px 10.3px 15px;
+          margin: 5px;
+          border-radius: 10px;
+          border: solid 1px #e8e8e8;
+          font-weight: bold;
+        }
+
+        .dropdown-day {
+          width: 120px;
+          padding: 9px 12.8px 10.3px 15px;
+          margin: 5px;
+          border-radius: 10px;
+          border: solid 1px #e8e8e8;
+          font-weight: bold;
         }
 
         .gender {
@@ -225,11 +215,60 @@ const PersonalInfo = () => {
           padding: 5px 10px 5px 14px;
           display: flex;
           justify-content: space-between;
+          align-items: center;
         }
 
         .text-gender {
           font-weight: bold;
           font-size: 1.5em;
+        }
+
+        .radio-gender {
+          width: 150px;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+        }
+
+        .male,
+        .female {
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .text-male,
+        .text-female {
+          width: 30px;
+          font-size: 1.5em;
+          font-weight: bold;
+        }
+
+        #radio-male,
+        #radio-female {
+          width: 17px;
+          height: 17px;
+          -webkit-appearance: none;
+          border: 1px solid darkgray;
+          border-radius: 50%;
+          outline: none;
+          background: #ffffff;
+        }
+
+        #radio-male:before,
+        #radio-female:before {
+          content: "";
+          display: block;
+          width: 70%;
+          height: 70%;
+          margin: 15% auto;
+          border-radius: 50%;
+        }
+
+        #radio-male:checked:before,
+        #radio-female:checked:before {
+          background: #08555f;
         }
 
         .button-next {
