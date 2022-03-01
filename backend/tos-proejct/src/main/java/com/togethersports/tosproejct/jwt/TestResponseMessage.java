@@ -8,10 +8,6 @@ import lombok.ToString;
 public class TestResponseMessage {
 
     private String signUpCheckValue;
-
-    public TestResponseMessage(){
-        ;
-    }
     public TestResponseMessage(String sign){
         this.signUpCheckValue = sign;
     }

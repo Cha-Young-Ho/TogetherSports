@@ -1,10 +1,10 @@
 package com.togethersports.tosproejct.exception;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.ToString;
 
 @ToString
-@Data
+@Getter
 public class ErrorResponse {
     // HttpStatus
     private String status;
