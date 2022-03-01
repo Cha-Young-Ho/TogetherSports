@@ -77,7 +77,7 @@ export default NextAuth({
     },
 
     async redirect() {
-      return Promise.resolve("/test");
+      return Promise.resolve("/userCheck");
     },
   },
 });
