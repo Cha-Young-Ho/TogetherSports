@@ -37,7 +37,6 @@ public class UserController {
 
         log.info("/user 요청됨");
         Map<String, String> map = new HashMap<>();
-
         map.put("userSignup", "true");
 
         // 잘못된 인수가 메서드에 요청될 경우 exception 발생
@@ -64,10 +63,9 @@ public class UserController {
                 .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 E-MAIL 입니다."));
        // return jwtService.login(member);
         Token tokenDto = jwtTokenProvider.createAccessToken(member.getUsername(), member.getRoles());
+        log.info("getroleeeee = {}", member.getRoles());
         jwtService.login(tokenDto);
         return tokenDto;
-        //eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhYWJiY2MxQGdtYWlsLmNvbSIsInJvbGVzIjpbXSwiaWF0IjoxNjQ2MTM3MjczLCJleHAiOjE2NDYxMzc1MTN9.qCdi-nFV5-t4I5_4M8GGAWX0m4OCkhpnvbx2NimmcG4
-        //eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhYWJiY2MxQGdtYWlsLmNvbSIsInJvbGVzIjpbXSwiaWF0IjoxNjQ2MTM3MjczLCJleHAiOjE2NDY3NDIwNzN9.DXbZsfjU60SBfuHPwIy_2gP8b6jsJtR3IKuphg6xE_Y
     }
     @GetMapping("/user/check")
     public Map<String, String> userCheck(@RequestBody UserDTO userDTO) {
@@ -80,9 +78,12 @@ public class UserController {
             // 회원 조회에 성공했을 경우. (데이터가 있을 경우)
             if (user.isPresent()) {
                 map.put("userCheck", "true");
-            } else {
-                map.put("userCheck", "false");
+                return map;
+
             }
+                map.put("userCheck", "false");
+                return map;
+
         } catch (NoSuchElementException e) {
             log.info("요청 데이터의 값이 없습니다. -> " + e.getMessage());
         } catch (IllegalArgumentException e) {
@@ -94,3 +95,4 @@ public class UserController {
 
 
 }
+
