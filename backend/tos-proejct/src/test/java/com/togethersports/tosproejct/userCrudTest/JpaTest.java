@@ -1,10 +1,7 @@
 package com.togethersports.tosproejct.userCrudTest;
 
 
-import com.togethersports.tosproejct.user.Admin;
-import com.togethersports.tosproejct.user.Gender;
-import com.togethersports.tosproejct.user.User;
-import com.togethersports.tosproejct.user.UserRepository;
+import com.togethersports.tosproejct.user.*;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.Assertions;
@@ -31,20 +28,32 @@ public class JpaTest {
     @Autowired
     private UserRepository userRepository;
 
-    final String BIRTH = "001200";
-    final String EMAIL = "aabbcc@gmail.com";
-    final String NICKNAME = "침착맨";
-    final int SEQUENCEID = 1;
+    final int USERSEQUENCEID = 1;
+    final String USEREMAIL = "test@gmail.com";
+    final String USERNAME = "이병건";
+    final String USERNICKNAME = "침착맨";
+    final String USERBIRTH = "810211";
+    final String USERSTATE = "정상회원";
+    final int MANNERPOINT = 0;
+    final Double LOCATIONX = 1111.11;
+    final Double LOCATIONY = 2222.22;
     final Gender GENDER = Gender.남;
     final Admin ADMIN = Admin.일반회원;
-    User user = User.builder()
-            .userEmail(EMAIL)
-            .userBirth(BIRTH)
-            .userNickname(NICKNAME)
-            .admin(ADMIN)
-            .gender(GENDER)
-            .userSequenceId(SEQUENCEID).build();
+    final Provider PROVIDER = Provider.KAKAO;
 
+    User user = User.builder()
+            .userEmail(USEREMAIL)
+            .userName(USERNAME)
+            .userNickname(USERNICKNAME)
+            .userBirth(USERBIRTH)
+            .userState(USERSTATE)
+            .mannerPoint(MANNERPOINT)
+            .locationX(LOCATIONX)
+            .locationY(LOCATIONY)
+            .gender(GENDER)
+            .admin(ADMIN)
+            .provider(PROVIDER)
+            .build();
 
 
     @Test
@@ -55,11 +64,17 @@ public class JpaTest {
         final User testUser = userRepository.save(user);
 
         //then
-        Assertions.assertEquals(testUser.getUserBirth(), BIRTH);
-        Assertions.assertEquals(testUser.getUserEmail(), EMAIL);
-        Assertions.assertEquals(testUser.getUserNickname(), NICKNAME);
-        Assertions.assertEquals(testUser.getAdmin(), ADMIN);
+        Assertions.assertEquals(testUser.getUserEmail(), USEREMAIL);
+        Assertions.assertEquals(testUser.getUserName(), USERNAME);
+        Assertions.assertEquals(testUser.getUserNickname(), USERNICKNAME);
+        Assertions.assertEquals(testUser.getUserBirth(), USERBIRTH);
+        Assertions.assertEquals(testUser.getUserState(), USERSTATE);
+        Assertions.assertEquals(testUser.getMannerPoint(), MANNERPOINT);
+        Assertions.assertEquals(testUser.getLocationX(), LOCATIONX);
+        Assertions.assertEquals(testUser.getLocationY(), LOCATIONY);
         Assertions.assertEquals(testUser.getGender(), GENDER);
+        Assertions.assertEquals(testUser.getAdmin(), ADMIN);
+        Assertions.assertEquals(testUser.getProvider(), PROVIDER);
 
     }
 
@@ -73,12 +88,17 @@ public class JpaTest {
 
 
         //then
-        Assertions.assertEquals(testUser.getUserBirth(), BIRTH);
-        Assertions.assertEquals(testUser.getUserEmail(), EMAIL);
-        Assertions.assertEquals(testUser.getUserNickname(), NICKNAME);
-        Assertions.assertEquals(testUser.getUserSequenceId(), SEQUENCEID);
-        Assertions.assertEquals(testUser.getAdmin(), ADMIN);
+        Assertions.assertEquals(testUser.getUserEmail(), USEREMAIL);
+        Assertions.assertEquals(testUser.getUserName(), USERNAME);
+        Assertions.assertEquals(testUser.getUserNickname(), USERNICKNAME);
+        Assertions.assertEquals(testUser.getUserBirth(), USERBIRTH);
+        Assertions.assertEquals(testUser.getUserState(), USERSTATE);
+        Assertions.assertEquals(testUser.getMannerPoint(), MANNERPOINT);
+        Assertions.assertEquals(testUser.getLocationX(), LOCATIONX);
+        Assertions.assertEquals(testUser.getLocationY(), LOCATIONY);
         Assertions.assertEquals(testUser.getGender(), GENDER);
+        Assertions.assertEquals(testUser.getAdmin(), ADMIN);
+        Assertions.assertEquals(testUser.getProvider(), PROVIDER);
 
     }
 
