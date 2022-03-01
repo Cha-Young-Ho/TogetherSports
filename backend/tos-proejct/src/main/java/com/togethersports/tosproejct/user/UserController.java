@@ -40,6 +40,15 @@ public class UserController {
         return map;
     }
 
+    // 로그인
+    @PostMapping("/login")
+    public Token login(@RequestBody Map<String, String> user) {
+        log.info("user email = {}", user.get("userEmail"));
+        User member = userRepository.findByUserEmail(user.get("userEmail"))
+                .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 E-MAIL 입니다."));
+       // return jwtService.login(member);
+
+    }
     @GetMapping("/user/check")
     public Map<String, String> userCheck(@RequestBody UserDTO userDTO) {
 
@@ -62,4 +71,6 @@ public class UserController {
 
         return map;
     }
+
+
 }
