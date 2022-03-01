@@ -1,4 +1,19 @@
+import Link from "next/link";
+import { useState, useEffect } from "react";
+
 const PersonalInfo = () => {
+  const [nickname, setNickname] = useState("");
+  const [gender, setGender] = useState(false);
+
+  const handleClickRadioButton = (radioBtnName) => {
+    setGender(radioBtnName);
+  };
+
+  useEffect(() => {
+    console.log(nickname);
+    console.log(gender);
+  });
+
   return (
     <>
       <div className="bg-container">
@@ -20,7 +35,13 @@ const PersonalInfo = () => {
         <div className="content-showbox">
           <div className="nickname">
             <div className="text-nickname">닉네임</div>
-            <input type="text" id="input-nickname" />
+            <input
+              type="text"
+              id="input-nickname"
+              value={nickname}
+              name="nickname"
+              onChange={(e) => setNickname(e.target.value)}
+            />
             <button className="button-dup-check">중복확인</button>
           </div>
           <div className="birth">
@@ -50,18 +71,32 @@ const PersonalInfo = () => {
                 <label className="text-male" for="radio-male">
                   남
                 </label>
-                <input type="radio" name="gender" id="radio-male" />
+                <input
+                  type="radio"
+                  name="gender"
+                  id="radio-male"
+                  checked={gender === "male"}
+                  onClick={() => handleClickRadioButton("male")}
+                />
               </div>
               <div className="female">
-                <label className="text-male" for="radio-male">
+                <label className="text-male" for="radio-female">
                   여
                 </label>
-                <input type="radio" name="gender" id="radio-female" />
+                <input
+                  type="radio"
+                  name="gender"
+                  id="radio-female"
+                  checked={gender === "female"}
+                  onClick={() => handleClickRadioButton("female")}
+                />
               </div>
             </div>
           </div>
         </div>
-        <button className="button-next">다음</button>
+        <Link href="/signup/addinfo/interest">
+          <button className="button-next">다음</button>
+        </Link>
       </div>
 
       <style jsx>{`
