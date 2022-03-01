@@ -1,13 +1,13 @@
 package com.togethersports.tosproejct.user;
 
+import com.togethersports.tosproejct.jwt.JwtService;
+import com.togethersports.tosproejct.jwt.JwtTokenProvider;
+import com.togethersports.tosproejct.jwt.Token;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @RestController
@@ -16,10 +16,26 @@ import java.util.Optional;
 public class UserController {
 
     private final UserService userService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final UserRepository userRepository;
+    private final JwtService jwtService;
 
+
+    /*
+    샘플 유저 객체
+     */
+
+    final String BIRTH = "001200";
+    final String EMAIL = "aabbcc@gmail.com";
+    final String NICKNAME = "침착맨";
+    final Long SEQUENCEID = Long.valueOf(1);
+    final Gender GENDER = Gender.남;
+
+    // 회원가입 요청
     @PostMapping("/user")
     public Map<String, String> userSignup(@RequestBody UserDTO userDTO) {
 
+        log.info("/user 요청됨");
         Map<String, String> map = new HashMap<>();
 
         map.put("userSignup", "true");
@@ -40,6 +56,19 @@ public class UserController {
         return map;
     }
 
+    // 로그인
+    @PostMapping("/login")
+    public Token login(@RequestBody Map<String, String> user) {
+        log.info("user email = {}", user.get("userEmail"));
+        User member = userRepository.findByUserEmail(user.get("userEmail"))
+                .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 E-MAIL 입니다."));
+       // return jwtService.login(member);
+        Token tokenDto = jwtTokenProvider.createAccessToken(member.getUsername(), member.getRoles());
+        jwtService.login(tokenDto);
+        return tokenDto;
+        //eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhYWJiY2MxQGdtYWlsLmNvbSIsInJvbGVzIjpbXSwiaWF0IjoxNjQ2MTM3MjczLCJleHAiOjE2NDYxMzc1MTN9.qCdi-nFV5-t4I5_4M8GGAWX0m4OCkhpnvbx2NimmcG4
+        //eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhYWJiY2MxQGdtYWlsLmNvbSIsInJvbGVzIjpbXSwiaWF0IjoxNjQ2MTM3MjczLCJleHAiOjE2NDY3NDIwNzN9.DXbZsfjU60SBfuHPwIy_2gP8b6jsJtR3IKuphg6xE_Y
+    }
     @GetMapping("/user/check")
     public Map<String, String> userCheck(@RequestBody UserDTO userDTO) {
 
@@ -62,4 +91,6 @@ public class UserController {
 
         return map;
     }
+
+
 }
