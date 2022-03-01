@@ -13,7 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class MySQLTest {
 
     private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
-    private static final String URL = "jdbc:mysql://localhost:3306/together_sports_db?serverTimezone=UTC&characterEncoding=UTF-8";
+    private static final String URL = "jdbc:mysql://127.0.0.1:3306/together_sports_db?serverTimezone=UTC&characterEncoding=UTF-8";
     private static final String USER = "admin1";
     private static final String PW = "1234";
 

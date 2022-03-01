@@ -32,7 +32,7 @@ public class UserController {
 
         try {
             userService.userSignup(userDTO);
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             e.getMessage();
             map.put("userSignup", "false");
         }
@@ -49,18 +49,17 @@ public class UserController {
             Optional<User> user = userService.getUserFindByEmail(userDTO.getUserEmail());
 
             // 회원 조회에 성공했을 경우. (데이터가 있을 경우)
-            if(user.isPresent()) {
+            if (user.isPresent()) {
                 map.put("userCheck", "true");
             } else {
                 map.put("userCheck", "false");
             }
-        } catch(NoSuchElementException e) {
+        } catch (NoSuchElementException e) {
             log.info("요청 데이터의 값이 없습니다. -> " + e.getMessage());
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             log.info("잘못된 파라미터 요청 입니다. -> " + e.getMessage());
         }
 
         return map;
     }
-
 }
