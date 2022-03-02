@@ -18,11 +18,14 @@ spring:
     encoding:
       charset:
         utf-8 force: true
+  jwt:
+    secret: abcabc
+
 
   jpa:
     open-in-view: true
     hibernate:
-      ddl-auto: update # DB TEST를 위해 임시 변경
+      ddl-auto: create
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
       use-new-id-generator-mappings: false
