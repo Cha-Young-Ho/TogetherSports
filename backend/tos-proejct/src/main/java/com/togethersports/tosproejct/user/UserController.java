@@ -3,6 +3,7 @@ package com.togethersports.tosproejct.user;
 import com.togethersports.tosproejct.jwt.JwtService;
 import com.togethersports.tosproejct.jwt.JwtTokenProvider;
 import com.togethersports.tosproejct.jwt.Token;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +12,7 @@ import java.util.*;
 
 @Slf4j
 @RestController
-@RequiredArgsConstructor
+@AllArgsConstructor
 @RequestMapping
 public class UserController {
 
@@ -30,6 +31,9 @@ public class UserController {
     final String NICKNAME = "침착맨";
     final Long SEQUENCEID = Long.valueOf(1);
     final Gender GENDER = Gender.남;
+
+
+
 
     // 회원가입 요청
     @PostMapping("/user")

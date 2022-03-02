@@ -2,9 +2,7 @@ package com.togethersports.tosproejct.jwt;
 
 import com.togethersports.tosproejct.user.UserController;
 import com.togethersports.tosproejct.user.UserService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.parser.ParseException;
 import org.junit.Before;
@@ -21,7 +19,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.mockito.Mockito.when;
 
@@ -107,6 +107,9 @@ public class JwtTest {
         Assertions.assertNotNull(createdAccessToken);
     }
 
+    /*
+        만료 테스트는 메세지 관리기법 적용 후에 작성할 예정입니다.
+     */
     @Test
     public void jwt_엑세스토큰만료테스트(){
 
@@ -118,24 +121,76 @@ public class JwtTest {
     }
 
     @Test
-    public void jwt_엑세스토큰변조성공테스트(){
+    public void jwt_변조되지않은엑세스토큰테스트() throws ParseException {
         //given
         Token token = jwtTokenProvider.createAccessToken(userEmail, roles);
+        boolean expected = true;
         //when
         String accessToken = token.getAccessToken();
-        //jwtTokenProvider.validateToken()
+        boolean actual = jwtTokenProvider.validateToken(token.getAccessToken());
         //then
         // millisecond 단위로 빠르게 생성해서 같은 코드가 생성됩니다. 그래서 null로 검증
-        //Assertions.assertNotNull(createdAccessToken);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
-    public void jwt_리프레시토큰변조성공테스트(){
+    public void jwt_변조된엑세스토큰변조테스트 () throws ParseException {
 
+        //given
+        Token token = jwtTokenProvider.createAccessToken(userEmail, roles);
+        boolean expected = false;
+        //when
+        String accessToken = token.getAccessToken();
+
+        //then
+        Assertions.assertThrows(SignatureException.class,
+                () -> jwtTokenProvider.validateToken(token.getAccessToken()+"as"));
+
+    }
+
+    @Test
+    public void jwt_변조되지않은리프레시토큰테스트() throws ParseException {
+        //given
+        Token token = jwtTokenProvider.createAccessToken(userEmail, roles);
+        boolean expected = true;
+        //when
+
+        RefreshToken refreshToken = RefreshToken.builder()
+                .refreshToken(token.getRefreshToken()) // 변조하지않음
+                .keyEmail(userEmail)
+                .refreshTokenId(1L)
+                .build();
+        String actual = jwtTokenProvider.validateRefreshToken(refreshToken);
+        //then
+        // millisecond 단위로 빠르게 생성해서 같은 코드가 생성됩니다. 그래서 null로 검증
+        Assertions.assertNotNull(actual);
+    }
+    @Test
+    public void jwt_변조된리프레시토큰테스트() throws ParseException {
+        //given
+        Token token = jwtTokenProvider.createAccessToken(userEmail, roles);
+
+        //when
+
+        RefreshToken refreshTokenObj = RefreshToken.builder()
+                .refreshToken(token.getRefreshToken() + "as") // as를 추가해서 변조함
+                .keyEmail(userEmail)
+                .refreshTokenId(1L)
+                .build();
+        String expected = jwtTokenProvider.validateRefreshToken(refreshTokenObj);
+        //then
+        Assertions.assertEquals(expected, null);
     }
 
     @Test
     public void jwt_엑세스토큰재발급테스트(){
+        //given
+        Token token = jwtTokenProvider.createAccessToken(userEmail, roles);
+        boolean expected = false;
+        //when
+        String accessToken = token.getAccessToken();
+        Assertions.assertThrows(SignatureException.class,
+                () -> jwtTokenProvider.validateToken(token.getRefreshToken()+"as"));
 
     }
 
