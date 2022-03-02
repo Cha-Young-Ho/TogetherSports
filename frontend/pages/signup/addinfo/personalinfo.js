@@ -5,10 +5,12 @@ import $ from "jquery";
 
 const PersonalInfo = () => {
   const [nickname, setNickname] = useState("");
-  const [birthYear, setBirthYear] = useState("YY");
+  const [birthYear, setBirthYear] = useState("YYYY");
   const [birthMonth, setBirthMonth] = useState("MM");
   const [birthDay, setBirthDay] = useState("DD");
-  const [gender, setGender] = useState(false);
+  const [gender, setGender] = useState("male");
+
+  const getDuplicationCheck = (e) => {};
 
   const getBirthDay = () => {
     $(document).ready(function () {
@@ -53,23 +55,43 @@ const PersonalInfo = () => {
     setGender(genderType);
   };
 
-  const getNext = () => {
+  //예외처리
+  const getNext = (e) => {
     const checkNickname = $("#input-nickname").val();
 
+    //닉네임 입력 안했을 경우
     if (checkNickname === "" || checkNickname === null) {
+      e.preventDefault();
       alert("닉네임을 입력해주세요.");
       return false;
     }
 
-    const blank_pattern = /^\s+|\s+$/g;
-    if (checkNickname.replace(blank_pattern, "") === "") {
+    //닉네임에 공백이 있을 경우
+    const blank_pattern = /[\s]/g;
+    if (blank_pattern.test(checkNickname) === true) {
+      e.preventDefault();
       alert("닉네임을 공백없이 입력해주세요.");
       return false;
     }
 
+    //특수문자 사용했을 경우
     const special_pattern = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
     if (special_pattern.test(checkNickname) === true) {
+      e.preventDefault();
       alert("닉네임에 특수문자는 사용할 수 없습니다.");
+      return false;
+    }
+
+    if (
+      birthYear === "YYYY" ||
+      birthMonth === "MM" ||
+      birthDay === "DD" ||
+      birthYear === "" ||
+      birthMonth === "" ||
+      birthDay === ""
+    ) {
+      e.preventDefault();
+      alert("생년월일을 확인해주세요.");
       return false;
     }
   };
@@ -78,7 +100,7 @@ const PersonalInfo = () => {
   //test
   useEffect(() => {
     console.log(nickname);
-    console.log(`${birthYear.slice(2)}${birthMonth}${birthDay}`);
+    console.log(`${birthYear}${birthMonth}${birthDay}`);
     console.log(gender);
   });
 
@@ -152,6 +174,7 @@ const PersonalInfo = () => {
                   type="radio"
                   name="gender"
                   id="radio-male"
+                  checked="checked"
                   checked={gender === "male"}
                   onClick={() => getGender("male")}
                 />
