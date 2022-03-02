@@ -1,9 +1,6 @@
 package com.togethersports.tosproejct.user;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -78,6 +75,10 @@ public class User implements UserDetails {
     @Override
     public String getPassword() {
         return null;
+    }
+
+    public String getUserName() {
+        return userName;
     }
 
     @Override

@@ -36,21 +36,6 @@ public class MockMvcTest {
 
         Map<String, String> map = new HashMap<>();
 
-        User user = User.builder()
-                .userSequenceId(1)
-                .userEmail("ZZZZ@gmail.com")
-                .userName("날려버림")
-                .userBirth("990101")
-                .userNickname("울고싶다")
-                .userState("정상회원")
-                .admin(Admin.일반회원)
-                .gender(Gender.남)
-                .mannerPoint(0)
-                .locationX(11111.1111)
-                .locationY(2222.222)
-                .provider(Provider.NAVER)
-                .build();
-
         map.put("userSequenceId", "1");
         map.put("userEmail", "ZZZZ@gmail.com");
         map.put("userName", "날려버림");
