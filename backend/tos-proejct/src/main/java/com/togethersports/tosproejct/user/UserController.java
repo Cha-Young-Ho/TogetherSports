@@ -1,4 +1,96 @@
 package com.togethersports.tosproejct.user;
 
+import com.togethersports.tosproejct.jwt.JwtService;
+import com.togethersports.tosproejct.jwt.JwtTokenProvider;
+import com.togethersports.tosproejct.jwt.Token;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.*;
+
+@Slf4j
+@RestController
+@RequiredArgsConstructor
+@RequestMapping
 public class UserController {
+
+    private final UserService userService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final UserRepository userRepository;
+    private final JwtService jwtService;
+
+
+    /*
+    샘플 유저 객체
+     */
+
+    final String BIRTH = "001200";
+    final String EMAIL = "aabbcc@gmail.com";
+    final String NICKNAME = "침착맨";
+    final Long SEQUENCEID = Long.valueOf(1);
+    final Gender GENDER = Gender.남;
+
+    // 회원가입 요청
+    @PostMapping("/user")
+    public Map<String, String> userSignup(@RequestBody UserDTO userDTO) {
+
+        log.info("/user 요청됨");
+        Map<String, String> map = new HashMap<>();
+
+        map.put("userSignup", "true");
+
+        // 잘못된 인수가 메서드에 요청될 경우 exception 발생
+        /*Optional.of(userService.userSignup(userDTO)).orElseThrow(
+                () -> new IllegalArgumentException("부적절한 파라미터가 요청되었습니다. -> "));*/
+
+        log.info("userDTO -------------------> " + userDTO);
+
+        try {
+            userService.userSignup(userDTO);
+        } catch (IllegalArgumentException e) {
+            e.getMessage();
+            map.put("userSignup", "false");
+        }
+
+        return map;
+    }
+
+    // 로그인
+    @PostMapping("/login")
+    public Token login(@RequestBody Map<String, String> user) {
+        log.info("user email = {}", user.get("userEmail"));
+        User member = userRepository.findByUserEmail(user.get("userEmail"))
+                .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 E-MAIL 입니다."));
+       // return jwtService.login(member);
+        Token tokenDto = jwtTokenProvider.createAccessToken(member.getUsername(), member.getRoles());
+        jwtService.login(tokenDto);
+        return tokenDto;
+        //eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhYWJiY2MxQGdtYWlsLmNvbSIsInJvbGVzIjpbXSwiaWF0IjoxNjQ2MTM3MjczLCJleHAiOjE2NDYxMzc1MTN9.qCdi-nFV5-t4I5_4M8GGAWX0m4OCkhpnvbx2NimmcG4
+        //eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhYWJiY2MxQGdtYWlsLmNvbSIsInJvbGVzIjpbXSwiaWF0IjoxNjQ2MTM3MjczLCJleHAiOjE2NDY3NDIwNzN9.DXbZsfjU60SBfuHPwIy_2gP8b6jsJtR3IKuphg6xE_Y
+    }
+    @GetMapping("/user/check")
+    public Map<String, String> userCheck(@RequestBody UserDTO userDTO) {
+
+        Map<String, String> map = new HashMap<>();
+
+        try {
+            Optional<User> user = userService.getUserFindByEmail(userDTO.getUserEmail());
+
+            // 회원 조회에 성공했을 경우. (데이터가 있을 경우)
+            if (user.isPresent()) {
+                map.put("userCheck", "true");
+            } else {
+                map.put("userCheck", "false");
+            }
+        } catch (NoSuchElementException e) {
+            log.info("요청 데이터의 값이 없습니다. -> " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            log.info("잘못된 파라미터 요청 입니다. -> " + e.getMessage());
+        }
+
+        return map;
+    }
+
+
 }
