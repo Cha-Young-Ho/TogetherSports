@@ -1,16 +1,84 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import jquery from "jquery";
+import $ from "jquery";
 
 const PersonalInfo = () => {
   const [nickname, setNickname] = useState("");
+  const [birthYear, setBirthYear] = useState("YY");
+  const [birthMonth, setBirthMonth] = useState("MM");
+  const [birthDay, setBirthDay] = useState("DD");
   const [gender, setGender] = useState(false);
 
-  const handleClickRadioButton = (radioBtnName) => {
-    setGender(radioBtnName);
+  const getBirthDay = () => {
+    $(document).ready(function () {
+      const now = new Date();
+      const year = now.getFullYear();
+      const mon =
+        now.getMonth() + 1 > 9
+          ? "" + (now.getMonth() + 1)
+          : "0" + (now.getMonth() + 1);
+      const day = now.getDate() > 9 ? "" + now.getDate() : "0" + now.getDate();
+
+      $(".dropdown-year").append("<option value=''>년도</option>");
+      for (let i = year; i >= 1920; i--) {
+        $(".dropdown-year").append(
+          '<option value="' + i + '">' + i + "</option>"
+        );
+      }
+
+      $(".dropdown-month").append("<option value=''>월</option>");
+      for (let i = 1; i <= 12; i++) {
+        const mm = i > 9 ? i : "0" + i;
+        $(".dropdown-month").append(
+          '<option value="' + mm + '">' + mm + "</option>"
+        );
+      }
+
+      $(".dropdown-day").append("<option value=''>일</option>");
+      for (let i = 1; i <= 31; i++) {
+        const dd = i > 9 ? i : "0" + i;
+        $(".dropdown-day").append(
+          '<option value="' + dd + '">' + dd + "</option>"
+        );
+      }
+
+      // $(".dropdown-year > option[value=" + year + "]").attr("selected", "true");
+      // $(".dropdown-month > option[value=" + mon + "]").attr("selected", "true");
+      // $(".dropdown-day > option[value=" + day + "]").attr("selected", "true");
+    });
   };
 
+  const getGender = (genderType) => {
+    setGender(genderType);
+  };
+
+  const getNext = () => {
+    const checkNickname = $("#input-nickname").val();
+
+    if (checkNickname === "" || checkNickname === null) {
+      alert("닉네임을 입력해주세요.");
+      return false;
+    }
+
+    const blank_pattern = /^\s+|\s+$/g;
+    if (checkNickname.replace(blank_pattern, "") === "") {
+      alert("닉네임을 공백없이 입력해주세요.");
+      return false;
+    }
+
+    const special_pattern = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
+    if (special_pattern.test(checkNickname) === true) {
+      alert("닉네임에 특수문자는 사용할 수 없습니다.");
+      return false;
+    }
+  };
+
+  useEffect(getBirthDay, []);
+  //test
   useEffect(() => {
     console.log(nickname);
+    console.log(`${birthYear.slice(2)}${birthMonth}${birthDay}`);
     console.log(gender);
   });
 
@@ -48,19 +116,28 @@ const PersonalInfo = () => {
             <div className="text-birth">생년월일</div>
             <div className="dropdown-birth">
               <div className="year">
-                <select className="dropdown-year">
-                  <option>1998</option>
-                </select>
+                <select
+                  className="dropdown-year"
+                  title="년도"
+                  value={birthYear}
+                  onChange={(e) => setBirthYear(e.target.value)}
+                ></select>
               </div>
               <div className="month">
-                <select className="dropdown-month">
-                  <option>1</option>
-                </select>
+                <select
+                  className="dropdown-month"
+                  title="월"
+                  value={birthMonth}
+                  onChange={(e) => setBirthMonth(e.target.value)}
+                ></select>
               </div>
               <div className="day">
-                <select className="dropdown-day">
-                  <option>1</option>
-                </select>
+                <select
+                  className="dropdown-day"
+                  title="일"
+                  value={birthDay}
+                  onChange={(e) => setBirthDay(e.target.value)}
+                ></select>
               </div>
             </div>
           </div>
@@ -76,7 +153,7 @@ const PersonalInfo = () => {
                   name="gender"
                   id="radio-male"
                   checked={gender === "male"}
-                  onClick={() => handleClickRadioButton("male")}
+                  onClick={() => getGender("male")}
                 />
               </div>
               <div className="female">
@@ -88,14 +165,16 @@ const PersonalInfo = () => {
                   name="gender"
                   id="radio-female"
                   checked={gender === "female"}
-                  onClick={() => handleClickRadioButton("female")}
+                  onClick={() => getGender("female")}
                 />
               </div>
             </div>
           </div>
         </div>
         <Link href="/signup/addinfo/interest">
-          <button className="button-next">다음</button>
+          <button className="button-next" onClick={getNext}>
+            다음
+          </button>
         </Link>
       </div>
 
