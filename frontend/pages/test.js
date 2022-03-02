@@ -5,8 +5,15 @@ const Test = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch({ type: "REQUESTUSERS" });
-    console.log();
+    dispatch({
+      type: "PERSONALINFO",
+      payload: {
+        userNickname: "ad",
+        userBirth: "20200303",
+        gender: "male",
+      },
+    });
+    console.log("redux에 값 넣었음.");
   });
 
   return <>Test</>;
