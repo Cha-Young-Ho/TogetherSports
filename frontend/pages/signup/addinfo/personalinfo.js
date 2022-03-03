@@ -124,15 +124,33 @@ const PersonalInfo = () => {
         <h1>회원가입</h1>
         <div className="title">
           <div>
-            <div className="title-circle-personalinfo"></div>
+            <div>
+              <img
+                src="/personalinfo-activation.png"
+                alt="인적사항"
+                className="title-circle-personalinfo"
+              ></img>
+            </div>
             <p>인적사항</p>
           </div>
           <div>
-            <div className="title-circle-interest"></div>
+            <div>
+              <img
+                src="/interests-deactivation.png"
+                alt="관심종목"
+                className="title-circle-interest"
+              ></img>
+            </div>
             <p>관심종목</p>
           </div>
           <div>
-            <div className="title-circle-activearea"></div>
+            <div>
+              <img
+                src="/activearea-deactivation.png"
+                alt="활동지역"
+                className="title-circle-activearea"
+              ></img>
+            </div>
             <p>활동지역</p>
           </div>
         </div>
@@ -151,7 +169,7 @@ const PersonalInfo = () => {
           <div className="birth">
             <div className="text-birth">생년월일</div>
             <div className="dropdown-birth">
-              <div className="year">
+              <div>
                 <select
                   className="dropdown-year"
                   title="년도"
@@ -159,7 +177,7 @@ const PersonalInfo = () => {
                   onChange={(e) => setBirthYear(e.target.value)}
                 ></select>
               </div>
-              <div className="month">
+              <div>
                 <select
                   className="dropdown-month"
                   title="월"
@@ -167,7 +185,7 @@ const PersonalInfo = () => {
                   onChange={(e) => setBirthMonth(e.target.value)}
                 ></select>
               </div>
-              <div className="day">
+              <div>
                 <select
                   className="dropdown-day"
                   title="일"
@@ -244,15 +262,9 @@ const PersonalInfo = () => {
         .title-circle-interest,
         .title-circle-activearea {
           border-radius: 50px;
-          border: 1px solid #e4e8eb;
-          background-color: #e4e8eb;
           width: 90px;
           height: 90px;
           margin: 10px;
-        }
-
-        .title-circle-personalinfo {
-          background-color: #468f5b;
         }
 
         p {
@@ -437,6 +449,7 @@ const PersonalInfo = () => {
           outline: 0;
           cursor: pointer;
           border-radius: 10px;
+          margin-bottom: 30px;
         }
       `}</style>
     </>
