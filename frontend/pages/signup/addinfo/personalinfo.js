@@ -2,8 +2,11 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import jquery from "jquery";
 import $ from "jquery";
+import { useDispatch } from "react-redux";
 
 const PersonalInfo = () => {
+  const dispatch = useDispatch();
+
   const [nickname, setNickname] = useState("");
   const [birthYear, setBirthYear] = useState("YYYY");
   const [birthMonth, setBirthMonth] = useState("MM");
@@ -94,6 +97,17 @@ const PersonalInfo = () => {
       alert("생년월일을 확인해주세요.");
       return false;
     }
+
+    dispatch({
+      type: "PERSONALINFO",
+      payload: {
+        userNickname: nickname,
+        userBirthYear: birthYear,
+        userBirthMonday: birthMonth,
+        userBirthDay: birthDay,
+        gender: gender,
+      },
+    });
   };
 
   useEffect(getBirthDay, []);
@@ -176,7 +190,7 @@ const PersonalInfo = () => {
                   id="radio-male"
                   checked="checked"
                   checked={gender === "male"}
-                  onClick={() => getGender("male")}
+                  onChange={() => getGender("male")}
                 />
               </div>
               <div className="female">
@@ -188,7 +202,7 @@ const PersonalInfo = () => {
                   name="gender"
                   id="radio-female"
                   checked={gender === "female"}
-                  onClick={() => getGender("female")}
+                  onChange={() => getGender("female")}
                 />
               </div>
             </div>

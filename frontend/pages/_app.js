@@ -1,6 +1,8 @@
+import React from "react";
 import "../styles/globals.css";
 import NavigationBar from "../components/navigationBar";
-import { SessionProvider, Provider } from "next-auth/react";
+import { SessionProvider } from "next-auth/react";
+import { wrapper } from "../store/userRequestReducer";
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   return (
@@ -11,4 +13,4 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   );
 }
 
-export default MyApp;
+export default wrapper.withRedux(MyApp);
