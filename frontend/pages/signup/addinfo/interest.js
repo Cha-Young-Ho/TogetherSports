@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
 const Interest = () => {
+  const dispatch = useDispatch();
   const [interests, setInterests] = useState({});
 
   const changeInterests = (e) => {
@@ -17,9 +19,18 @@ const Interest = () => {
     });
   };
 
-  useEffect(() => {
-    console.log(interests);
-  }, [interests]);
+  const BtnClickedNext = () => {
+    dispatch({
+      type: "INTERESTS",
+      payload: {
+        interests: interests,
+      },
+    });
+  };
+
+  // useEffect(() => {
+  //   console.log(interests);
+  // }, [interests]);
 
   return (
     <>
@@ -77,9 +88,9 @@ const Interest = () => {
             11
           </div>
         </div>
-        <Link href="/signup/addinfo/activearea">
-          <div className="next-button">다음</div>
-        </Link>
+        <div onClick={BtnClickedNext} className="next-button">
+          다음
+        </div>
       </div>
 
       <style jsx>{`
