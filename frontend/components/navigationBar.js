@@ -46,7 +46,14 @@ const NavigationBar = () => {
                     <div className="logOn">
                       {session.user.name} 님 반갑습니다!
                     </div>
-                    <button className="btn_signout" onClick={signOut}>
+                    <button
+                      className="btn_signout"
+                      onClick={() =>
+                        signOut({
+                          callbackUrl: "/",
+                        })
+                      }
+                    >
                       로그아웃
                     </button>
                   </>
