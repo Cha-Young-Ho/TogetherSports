@@ -6,12 +6,13 @@ const initialState = {
   userEmail: "",
   userName: "",
   userNickname: "",
-  userBirth: "YYMMDD",
+  userBirthYear: "",
+  userBirthMonday: "",
+  userBirthDay: "",
   gender: "",
   admin: "",
   provider: "",
-  locationX: "",
-  locationY: "",
+  activeArea: [""],
   interests: [],
 };
 
@@ -30,15 +31,12 @@ const userRequestReducer = (state = initialState, action) => {
       return {
         ...state,
         userNickname: action.payload.userNickname,
-        userBirth: action.payload.userBirth,
+        userBirthYear: action.payload.userBirthYear,
+        userBirthMonday: action.payload.userBirthMonday,
+        userBirthDay: action.payload.userBirthDay,
         gender: action.payload.gender,
       };
     case INTERESTS:
-      // console.log(
-      //   Object.entries(action.payload.interests)
-      //     .filter((el) => el[1] === true)
-      //     .map((el) => el[0])
-      // );
       console.log(state);
       return {
         ...state,

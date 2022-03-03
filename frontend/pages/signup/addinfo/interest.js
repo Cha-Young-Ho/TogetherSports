@@ -88,9 +88,11 @@ const Interest = () => {
             11
           </div>
         </div>
-        <div onClick={BtnClickedNext} className="next-button">
-          다음
-        </div>
+        <Link href="/">
+          <div onClick={BtnClickedNext} className="next-button">
+            다음
+          </div>
+        </Link>
       </div>
 
       <style jsx>{`
