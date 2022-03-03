@@ -59,11 +59,10 @@ const getUserInfoCheck = () => {
       if (res.data.signUpCheckValue === "false") {
         router.replace("/");
       } else {
-        router.replace("/signup/addinfo/interest");
+        router.replace("/signup/addinfo/personalinfo");
       }
     })
     .catch((error) => {
-      // 없는 정보 입력 시
       console.log(error);
     });
 };
