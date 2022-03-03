@@ -6,7 +6,7 @@ const TestMock = () => {
   const mock = new AxiosMockAdapter(axios);
 
   const tempData = {
-    signUpCheckValue: "false",
+    signUpCheckValue: "true",
   };
 
   mock
