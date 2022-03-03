@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
-import { getSession, signIn, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import Banner from "../components/banner";
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -7,7 +8,11 @@ export default function Home() {
   useEffect(() => {
     console.log(session);
   }, []);
-  return <h1>this is mainPage</h1>;
+  return (
+    <div>
+      <Banner />
+    </div>
+  );
 }
 
 // export async function getServerSideProps(context) {
