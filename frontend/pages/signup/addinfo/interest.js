@@ -38,15 +38,33 @@ const Interest = () => {
         <h1>회원가입</h1>
         <div className="title">
           <div>
-            <div className="title-circle-personalinfo"></div>
+            <div>
+              <img
+                src="/personalinfo-deactivation.png"
+                alt="인적사항"
+                className="title-circle-personalinfo"
+              ></img>
+            </div>
             <p>인적사항</p>
           </div>
           <div>
-            <div className="title-circle-interest"></div>
+            <div>
+              <img
+                src="/interests-activation.png"
+                alt="관심종목"
+                className="title-circle-interest"
+              ></img>
+            </div>
             <p>관심종목</p>
           </div>
           <div>
-            <div className="title-circle-activearea"></div>
+            <div>
+              <img
+                src="/activearea-deactivation.png"
+                alt="활동지역"
+                className="title-circle-activearea"
+              ></img>
+            </div>
             <p>활동지역</p>
           </div>
         </div>
@@ -88,7 +106,7 @@ const Interest = () => {
             11
           </div>
         </div>
-        <Link href="/">
+        <Link href="/signup/addinfo/activearea">
           <div onClick={BtnClickedNext} className="next-button">
             다음
           </div>
@@ -124,15 +142,9 @@ const Interest = () => {
         .title-circle-interest,
         .title-circle-activearea {
           border-radius: 50px;
-          border: 1px solid #e4e8eb;
-          background-color: #e4e8eb;
           width: 90px;
           height: 90px;
           margin: 10px;
-        }
-
-        .title-circle-interest {
-          background-color: #468f5b;
         }
 
         p {
@@ -193,6 +205,8 @@ const Interest = () => {
           border: 0;
           outline: 0;
           cursor: pointer;
+          border-radius: 10px;
+          margin-bottom: 30px;
         }
       `}</style>
     </>
