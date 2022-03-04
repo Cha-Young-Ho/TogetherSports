@@ -37,7 +37,7 @@ public class MockMvcTest {
         Map<String, String> map = new HashMap<>();
 
         map.put("userSequenceId", "1");
-        map.put("userEmail", "ZZZZ@gmail.com");
+        map.put("userEmail", "TTTTT@gmail.com");
         map.put("userName", "날려버림");
         map.put("userBirth", "990101");
         map.put("userNickname", "울고싶다");

@@ -20,7 +20,7 @@ public class UserService {
     public void userSignup(UserDTO userDTO) {
 
         User user = User.builder()
-                .userSequenceId(1)
+                .userSequenceId(userDTO.getUserSequenceId())
                 .userEmail(userDTO.getUserEmail())
                 .userName(userDTO.getUserName())
                 .userBirth(userDTO.getUserBirth())

@@ -57,7 +57,7 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Admin admin;
 
-    @Column(name = "PROVIDER", length = 20, unique = true)
+    @Column(name = "PROVIDER", length = 20)
     @Enumerated(EnumType.STRING)
     private Provider provider;
 
