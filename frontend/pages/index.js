@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import Banner from "../components/banner";
+import HotRoom from "../components/hotRoom";
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -11,6 +12,7 @@ export default function Home() {
   return (
     <div>
       <Banner />
+      <HotRoom />
     </div>
   );
 }
