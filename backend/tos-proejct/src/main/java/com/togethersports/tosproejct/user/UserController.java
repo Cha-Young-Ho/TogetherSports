@@ -22,16 +22,6 @@ public class UserController {
     private final JwtService jwtService;
 
 
-    /*
-    샘플 유저 객체
-     */
-
-    final String BIRTH = "001200";
-    final String EMAIL = "aabbcc@gmail.com";
-    final String NICKNAME = "침착맨";
-    final Long SEQUENCEID = Long.valueOf(1);
-    final Gender GENDER = Gender.남;
-
 
 
 
