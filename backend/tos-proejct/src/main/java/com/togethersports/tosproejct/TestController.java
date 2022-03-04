@@ -49,4 +49,10 @@ public class TestController {
         return "a2";
     }
 
+    @PostMapping("/admin/test")
+    public String adminTest(){
+
+        return "<h1> admin 권한이 있어서 통과 </h1>";
+    }
+
 }

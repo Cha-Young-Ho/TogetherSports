@@ -63,7 +63,7 @@ public class JpaTest {
 
         //then
         Assertions.assertEquals(testUser.getUserEmail(), USEREMAIL);
-        Assertions.assertEquals(testUser.getUserName(), USERNAME);
+        Assertions.assertEquals(testUser.getUsername(), USERNAME);
         Assertions.assertEquals(testUser.getUserNickname(), USERNICKNAME);
         Assertions.assertEquals(testUser.getUserBirth(), USERBIRTH);
         Assertions.assertEquals(testUser.getUserState(), USERSTATE);
@@ -87,7 +87,7 @@ public class JpaTest {
 
         //then
         Assertions.assertEquals(testUser.getUserEmail(), USEREMAIL);
-        Assertions.assertEquals(testUser.getUserName(), USERNAME);
+        Assertions.assertEquals(testUser.getUsername(), USERNAME);
         Assertions.assertEquals(testUser.getUserNickname(), USERNICKNAME);
         Assertions.assertEquals(testUser.getUserBirth(), USERBIRTH);
         Assertions.assertEquals(testUser.getUserState(), USERSTATE);

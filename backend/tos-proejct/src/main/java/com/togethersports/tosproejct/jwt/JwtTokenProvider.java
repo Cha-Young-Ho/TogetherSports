@@ -1,9 +1,6 @@
 package com.togethersports.tosproejct.jwt;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
@@ -20,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 // 토큰을 생성하고 검증하는 클래스입니다.
 // 해당 컴포넌트는 필터클래스에서 사전 검증을 거칩니다.
@@ -104,6 +102,8 @@ public class JwtTokenProvider {
     public Authentication getAuthentication(String token) throws ParseException {
         UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserPk(token));
         log.info("토큰 인증 정보 조회");
+
+        log.info("권한 => {}", userDetails.getAuthorities().toString());
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
@@ -142,6 +142,7 @@ public class JwtTokenProvider {
 
         try {
             // 검증
+            log.info("여기 통과");
             Jws<Claims> claims = Jwts.parser().setSigningKey(refreshSecretKey).parseClaimsJws(refreshToken);
 
             //refresh 토큰의 만료시간이 지나지 않았을 경우, 새로운 access 토큰을 생성합니다.
@@ -151,8 +152,8 @@ public class JwtTokenProvider {
         }catch (Exception e) {
 
             //refresh 토큰이 만료되었을 경우, 로그인이 필요합니다.
-
             return null;
+
         }
 
         return null;
@@ -168,6 +169,14 @@ public class JwtTokenProvider {
 
         return jsonObject;
 
+    }
+
+    //jwt 복호화 후, 유저 정보 받아오기
+    public Claims getClaims(String accessToken){
+
+        Jws<Claims> claims = Jwts.parser().setSigningKey(accessSecretKey).parseClaimsJws(accessToken);
+
+        return claims.getBody();
     }
 
 }
