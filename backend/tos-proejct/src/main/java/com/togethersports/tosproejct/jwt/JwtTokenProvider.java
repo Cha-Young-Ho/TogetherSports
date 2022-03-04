@@ -102,6 +102,8 @@ public class JwtTokenProvider {
     public Authentication getAuthentication(String token) throws ParseException {
         UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserPk(token));
         log.info("토큰 인증 정보 조회");
+
+        log.info("권한 => {}", userDetails.getAuthorities().toString());
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
@@ -167,6 +169,14 @@ public class JwtTokenProvider {
 
         return jsonObject;
 
+    }
+
+    //jwt 복호화 후, 유저 정보 받아오기
+    public Claims getClaims(String accessToken){
+
+        Jws<Claims> claims = Jwts.parser().setSigningKey(accessSecretKey).parseClaimsJws(accessToken);
+
+        return claims.getBody();
     }
 
 }

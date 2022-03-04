@@ -1,37 +1,9 @@
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useState, useEffect } from "react";
+import jquery from "jquery";
+import $ from "jquery";
 
-const Interest = () => {
-  const dispatch = useDispatch();
-  const [interests, setInterests] = useState({});
-
-  const changeInterests = (e) => {
-    if (e.target.classList[2] === "clicked") {
-      e.target.classList.remove("clicked");
-    } else {
-      e.target.classList.add("clicked");
-    }
-
-    setInterests({
-      ...interests,
-      [e.target.innerText]: !interests[e.target.innerText],
-    });
-  };
-
-  const BtnClickedNext = () => {
-    dispatch({
-      type: "INTERESTS",
-      payload: {
-        interests: interests,
-      },
-    });
-  };
-
-  // useEffect(() => {
-  //   console.log(interests);
-  // }, [interests]);
-
+const ActiveArea = () => {
   return (
     <>
       <div className="bg-container">
@@ -50,7 +22,7 @@ const Interest = () => {
           <div>
             <div>
               <img
-                src="/interests-activation.png"
+                src="/interests-deactivation.png"
                 alt="관심종목"
                 className="title-circle-interest"
               ></img>
@@ -60,7 +32,7 @@ const Interest = () => {
           <div>
             <div>
               <img
-                src="/activearea-deactivation.png"
+                src="/activearea-activation.png"
                 alt="활동지역"
                 className="title-circle-activearea"
               ></img>
@@ -69,47 +41,33 @@ const Interest = () => {
           </div>
         </div>
         <div className="content-showbox">
-          <p>관심있는 종목에 맞는 방을 추천 해드립니다!</p>
+          <p>지역 선택 후 지도에 원하는 활동지역을 찍어보세요!</p>
         </div>
-        <div className="grid-interest">
-          <div onClick={changeInterests} className="grid-items">
-            축구
-          </div>
-          <div onClick={changeInterests} className="grid-items">
-            야구
-          </div>
-          <div onClick={changeInterests} className="grid-items">
-            농구
-          </div>
-          <div onClick={changeInterests} className="grid-items">
-            풋살
-          </div>
-          <div onClick={changeInterests} className="grid-items">
-            배구
-          </div>
-          <div onClick={changeInterests} className="grid-items">
-            배드민턴
-          </div>
-          <div onClick={changeInterests} className="grid-items">
-            테니스
-          </div>
-          <div onClick={changeInterests} className="grid-items">
-            골프
-          </div>
-          <div onClick={changeInterests} className="grid-items">
-            9
-          </div>
-          <div onClick={changeInterests} className="grid-items">
-            10
-          </div>
-          <div onClick={changeInterests} className="grid-items">
-            11
+        <div className="area">
+          <div className="text-area">지역선택</div>
+          <div className="dropdown-area">
+            <div>
+              <select className="sido" title="시/도">
+                <option>서울특별시</option>
+              </select>
+            </div>
+            <div>
+              <select className="sigugun" title="구/군/시">
+                <option>서초구</option>
+              </select>
+            </div>
+            <div>
+              <select className="dong" title="동/읍/면">
+                <option>서초동</option>
+              </select>
+            </div>
           </div>
         </div>
-        <Link href="/signup/addinfo/activearea">
-          <div onClick={BtnClickedNext} className="next-button">
-            다음
-          </div>
+
+        <div className="map">map</div>
+        <div className="tag-map">위치 태그</div>
+        <Link href="/login">
+          <button className="button-done">완료</button>
         </Link>
       </div>
 
@@ -162,36 +120,71 @@ const Interest = () => {
           border-bottom: 1px solid #e4e8eb;
         }
 
-        .grid-interest {
-          display: grid;
-
-          margin-top: 20px;
-          grid-auto-rows: minmax(140px, auto);
-          grid-template-columns: repeat(4, minmax(140px, auto));
-          gap: 10px;
-        }
-
-        .grid-items {
+        .area {
+          width: 583px;
+          height: 40px;
+          margin: 44.5px 5.5px 27px;
+          padding: 5px 10px 5px 14px;
           display: flex;
+          justify-content: space-between;
           align-items: center;
-          justify-content: center;
-          background-color: gray;
-          color: white;
+        }
+
+        .text-area {
+          font-weight: bold;
+          font-size: 1.5em;
+        }
+
+        .dropdown-area {
+          margin: 20px;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .sido {
+          width: 180px;
+          padding: 9px 11.8px 10.3px 27px;
+          margin: 5px;
           border-radius: 10px;
-          font-size: 1.5rem;
+          border: solid 1px #e8e8e8;
+          font-weight: bold;
         }
 
-        .grid-items:hover {
-          transition-duration: 0.5s;
-          transform: scale(1.2);
-          background-color: #468f5b;
+        .sigugun {
+          width: 120px;
+          padding: 9px 12.8px 10.3px 15px;
+          margin: 5px;
+          border-radius: 10px;
+          border: solid 1px #e8e8e8;
+          font-weight: bold;
         }
 
-        .clicked {
-          background-color: #468f5b;
+        .dong {
+          width: 120px;
+          padding: 9px 12.8px 10.3px 15px;
+          margin: 5px;
+          border-radius: 10px;
+          border: solid 1px #e8e8e8;
+          font-weight: bold;
         }
 
-        .next-button {
+        .map {
+          width: 448px;
+          height: 448px;
+          margin: 30px 72.5px 20px 72.5px;
+          padding: 11px 13px 12px 10px;
+          border-radius: 10px;
+          border: solid 1px #e8e8e8;
+        }
+
+        .tag-map {
+          width: 448px;
+          align-items: left;
+        }
+
+        .button-done {
           display: flex;
           align-items: center;
           justify-content: center;
@@ -213,4 +206,4 @@ const Interest = () => {
   );
 };
 
-export default Interest;
+export default ActiveArea;
