@@ -12,6 +12,7 @@ const PersonalInfo = () => {
   const [birthMonth, setBirthMonth] = useState("MM");
   const [birthDay, setBirthDay] = useState("DD");
   const [gender, setGender] = useState("male");
+  const [profile, setProfile] = useState("");
 
   const getDuplicationCheck = (e) => {};
 
@@ -116,6 +117,7 @@ const PersonalInfo = () => {
     console.log(nickname);
     console.log(`${birthYear}${birthMonth}${birthDay}`);
     console.log(gender);
+    console.log(profile);
   });
 
   return (
@@ -206,7 +208,6 @@ const PersonalInfo = () => {
                   type="radio"
                   name="gender"
                   id="radio-male"
-                  checked="checked"
                   checked={gender === "male"}
                   onChange={() => getGender("male")}
                 />
@@ -225,6 +226,18 @@ const PersonalInfo = () => {
               </div>
             </div>
           </div>
+          <div className="profile">
+            <div className="text-profile">프로필</div>
+            <input readOnly className="upload-name" value={profile} />
+            <label for="filename">
+              <div>파일찾기</div>
+            </label>
+            <input
+              type="file"
+              id="filename"
+              onChange={(e) => setProfile(e.target.value)}
+            />
+          </div>
         </div>
         <Link href="/signup/addinfo/interest">
           <button className="button-next" onClick={getNext}>
@@ -234,6 +247,10 @@ const PersonalInfo = () => {
       </div>
 
       <style jsx>{`
+        * {
+          font-family: "NanumBarunGothic";
+        }
+
         .bg-container {
           margin-top: 10px;
           border-top: 1px solid #e4e8eb;
@@ -432,6 +449,60 @@ const PersonalInfo = () => {
         #radio-male:checked:before,
         #radio-female:checked:before {
           background: #08555f;
+        }
+
+        .profile {
+          width: 583px;
+          height: 40px;
+          margin: 44.5px 5.5px 27px;
+          padding: 5px 10px 5px 14px;
+          border-radius: 10px;
+          border: solid 1px #e8e8e8;
+          background-color: #fff;
+          display: flex;
+          justify-content: space-between;
+        }
+
+        .text-profile {
+          width: 45px;
+          height: 30px;
+          font-weight: bold;
+          font-size: 1.5em;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .upload-name {
+          width: 430px;
+          height: 30px;
+          border-style: none;
+          font-size: 1.5em;
+          padding: 5px;
+        }
+
+        .profile label {
+          width: 70px;
+          background-color: #08555f;
+          color: white;
+          font-family: "NanumBarunGothic";
+          font-size: 1.3em;
+          border: 0;
+          outline: 0;
+          cursor: pointer;
+          border-radius: 5px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .profile input[type="file"] {
+          position: absolute;
+          width: 0;
+          height: 0;
+          padding: 0;
+          border: 0;
+          overflow: hidden;
         }
 
         .button-next {

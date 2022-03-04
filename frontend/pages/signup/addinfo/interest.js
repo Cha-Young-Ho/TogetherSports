@@ -114,6 +114,10 @@ const Interest = () => {
       </div>
 
       <style jsx>{`
+        * {
+          font-family: "NanumBarunGothic";
+        }
+
         .bg-container {
           margin-top: 10px;
           border-top: 1px solid #e4e8eb;
