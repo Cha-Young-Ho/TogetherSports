@@ -56,7 +56,7 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @Column(name = "ADMIN", length = 4)
+    @Column(name = "ADMIN")
     @Enumerated(EnumType.STRING)
     private Admin admin;
 

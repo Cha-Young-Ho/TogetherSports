@@ -62,7 +62,7 @@ public class MyInformationTest {
                 .provider(Provider.KAKAO)
                 .locationX(12.12)
                 .locationY(12.22)
-                .admin(Admin.일반회원)
+                .admin(Admin.ROLE_USER)
                 .roles(this.roles)
                 .mannerPoint(10)
                 .build();
