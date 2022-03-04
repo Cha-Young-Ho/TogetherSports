@@ -6,11 +6,8 @@ const OAuth = () => {
     <>
       <div className="signup-page">
         <section className="section-left">
-          <div className="logo">
-            <img src="/logo-sign.png" alt="Together Sports"></img>
-          </div>
           <div className="signup-box">
-            <h1 className="signup-text">회원 가입</h1>
+            <p className="signup-text">🔥오늘도 한 판 ㄱ?🔥</p>
             <div className="signup-button">
               <button
                 className="signup-button-naver"
@@ -36,12 +33,19 @@ const OAuth = () => {
         <section className="section-right"></section>
       </div>
       <style jsx>{`
+        * {
+          font-family: "NanumBarunGothic";
+        }
+
         .signup-page {
           width: 100%;
-          /* height: -webkit-calc(100vh - 80px); */
-          height: 100%;
+          height: 100vh;
           display: flex;
           flex-direction: row;
+          background-image: url("/signup-bg.png");
+          background-size: cover;
+          background-repeat: no-repeat;
+          background-position: center center;
         }
 
         .section-left {
@@ -50,24 +54,13 @@ const OAuth = () => {
           display: grid;
           justify-content: center;
           align-content: center;
-          background-color: #f2f2f2;
-        }
-
-        .logo {
-          text-align: center;
-          height: 100px;
-        }
-
-        .logo img {
-          width: auto;
-          max-height: 100%;
         }
 
         .signup-box {
           margin: 20px;
           padding: 20px;
-          width: 350px;
-          height: 430px;
+          width: 460px;
+          height: 625px;
           border-radius: 20px;
           background-color: #ffffff;
           -webkit-box-shadow: 0px 0px 20px 0px rgba(117, 110, 117, 0.15);
@@ -79,7 +72,10 @@ const OAuth = () => {
 
         .signup-text {
           text-align: center;
-          font-size: 2rem;
+          font-size: 3rem;
+          font-weight: bold;
+          margin-top: 20px;
+          margin-bottom: 30px;
         }
 
         .signup-button button {
@@ -110,13 +106,11 @@ const OAuth = () => {
         }
 
         .section-right {
-          //배너 이미지
           float: left;
           width: 50%;
-          background-color: #468f5b;
         }
 
-        @media (max-width: 900px) {
+        /* @media (max-width: 900px) {
           .section-left {
             float: left;
             width: 100%;
@@ -131,7 +125,7 @@ const OAuth = () => {
             width: 0%;
             background-color: #468f5b;
           }
-        }
+        } */
       `}</style>
     </>
   );
