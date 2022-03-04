@@ -36,5 +36,10 @@ public class UserService {
 
         userRepository.save(user);
     }
+
+    public Optional<User> getMyInfo(String userEmail){
+
+        return userRepository.findByUserEmail(userEmail);
+    }
 }
 
