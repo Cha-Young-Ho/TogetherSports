@@ -169,4 +169,12 @@ public class JwtTokenProvider {
 
     }
 
+    //jwt 복호화 후, 유저 정보 받아오기
+    public Claims getClaims(String accessToken){
+
+        Jws<Claims> claims = Jwts.parser().setSigningKey(accessSecretKey).parseClaimsJws(accessToken);
+
+        return claims.getBody();
+    }
+
 }
