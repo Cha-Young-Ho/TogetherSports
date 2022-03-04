@@ -1,25 +1,11 @@
 package com.togethersports.tosproejct.file;
 
-import com.togethersports.tosproejct.room.Room;
 import com.togethersports.tosproejct.user.User;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
-@Entity
-@Table(name = "T_FILE")
-public class File {
+public class FileDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "FILE_SEQUENCE_ID")
     private Long fileSequenceId;
 
     @ManyToOne

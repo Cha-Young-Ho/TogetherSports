@@ -3,15 +3,13 @@ package com.togethersports.tosproejct.userCrudTest;
 
 import com.togethersports.tosproejct.user.*;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
+import org.springframework.test.annotation.Commit;
 import org.springframework.util.Assert;
 
 import javax.persistence.EntityNotFoundException;
@@ -23,12 +21,12 @@ import javax.persistence.EntityNotFoundException;
 @Slf4j
 @DataJpaTest // 해당 어노테이션은 실제 데이터베이스를 사용하지 않고, in memory jpa 공간에서 db 테스트를 지원해주는 어노테이션입니다.
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Commit
 public class JpaTest {
 
     @Autowired
     private UserRepository userRepository;
 
-    final int USERSEQUENCEID = 1;
     final String USEREMAIL = "test@gmail.com";
     final String USERNAME = "이병건";
     final String USERNICKNAME = "침착맨";
