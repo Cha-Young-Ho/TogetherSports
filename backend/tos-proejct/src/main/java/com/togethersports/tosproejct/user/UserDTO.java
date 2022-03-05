@@ -13,7 +13,9 @@ public class UserDTO {
     private String userEmail;
     private String userName;
     private String userNickname;
-    private String userBirth;
+    private String userBirthYear;
+    private String userBirthMonth;
+    private String userBirthDay;
     private String userState;
     private int mannerPoint;
     private Double locationX;

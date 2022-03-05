@@ -21,15 +21,24 @@ public class MyInfoController {
     @GetMapping("/user")
     public Optional<User> getMyInformation(@RequestHeader(value="Authorization") String accessToken){
         log.info("받아온 토큰 = {}", accessToken);
-        Claims claims = jwtTokenProvider.getClaims(accessToken);
-        return userService.getMyInfo(claims.get("sub").toString());
+        return userService.getMyInfo(accessToken);
     }
 
 
     @PutMapping("/user")
-    public Optional<User> modifyMyInformation(){
+    public Optional<User> modifyMyInformation(@RequestHeader(value="Authorization") String accessToken, @RequestBody UserDTO userDTO){
 
 
-        return null;
+       Optional<User> user =  userService.updateUser(accessToken, userDTO);
+
+
+
+
+
+
+
+
+        return user;
     }
+
 }
