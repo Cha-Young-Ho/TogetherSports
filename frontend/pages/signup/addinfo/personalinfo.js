@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import jquery from "jquery";
 import $ from "jquery";
 import { useDispatch } from "react-redux";
+import axios from "axios";
 
 const PersonalInfo = () => {
   const dispatch = useDispatch();
@@ -15,7 +16,31 @@ const PersonalInfo = () => {
   const [profile, setProfile] = useState("");
   const [imagesrc, setImagesrc] = useState("");
 
-  const getDuplicationCheck = (e) => {};
+  //닉네임 중복체크
+  const getDuplicationCheck = (e) => {
+    axios
+      .get("/duplication", {
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          Accept: "*/*",
+        },
+        params: {
+          userNickName: nickname,
+        },
+      })
+      .then((res) => {
+        //사용가능한 닉네임이면
+        if (res.data.duplicationCheck === "true") {
+          setNickname(e.target.value);
+        } else {
+          alert("이미 사용중인 닉네임입니다.");
+          setNickname("");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const getBirthDay = () => {
     $(document).ready(function () {
