@@ -41,7 +41,7 @@ const ActiveArea = () => {
           </div>
         </div>
         <div className="content-showbox">
-          <p>지역 선택 후 지도에 원하는 활동지역을 찍어보세요!</p>
+          <p>원하는 활동지역을 선택해주세요!</p>
         </div>
         <div className="area">
           <div className="text-area">지역선택</div>
@@ -64,7 +64,7 @@ const ActiveArea = () => {
           </div>
         </div>
 
-        <div className="map">map</div>
+        {/* <div className="map">map</div> */}
         <div className="tag-map">위치 태그</div>
         <Link href="/login">
           <button className="button-done">완료</button>
