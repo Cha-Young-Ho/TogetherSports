@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import jquery from "jquery";
 import $ from "jquery";
 import { useDispatch } from "react-redux";
+import axios from "axios";
 
 const PersonalInfo = () => {
   const dispatch = useDispatch();
@@ -13,8 +14,33 @@ const PersonalInfo = () => {
   const [birthDay, setBirthDay] = useState("DD");
   const [gender, setGender] = useState("male");
   const [profile, setProfile] = useState("");
+  const [imagesrc, setImagesrc] = useState("");
 
-  const getDuplicationCheck = (e) => {};
+  //닉네임 중복체크
+  const getDuplicationCheck = (e) => {
+    axios
+      .get("/duplication", {
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          Accept: "*/*",
+        },
+        params: {
+          userNickName: nickname,
+        },
+      })
+      .then((res) => {
+        //사용가능한 닉네임이면
+        if (res.data.duplicationCheck === "true") {
+          setNickname(e.target.value);
+        } else {
+          alert("이미 사용중인 닉네임입니다.");
+          setNickname("");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const getBirthDay = () => {
     $(document).ready(function () {
@@ -57,6 +83,18 @@ const PersonalInfo = () => {
 
   const getGender = (genderType) => {
     setGender(genderType);
+  };
+
+  //프로필 이미지 source 인코딩
+  const encodeFileToBase64 = (fileBlob) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(fileBlob);
+    return new Promise((resolve) => {
+      reader.onload = () => {
+        setImagesrc(reader.result);
+        resolve();
+      };
+    });
   };
 
   //예외처리
@@ -112,12 +150,13 @@ const PersonalInfo = () => {
   };
 
   useEffect(getBirthDay, []);
-  //test
+  //console test
   useEffect(() => {
     console.log(nickname);
     console.log(`${birthYear}${birthMonth}${birthDay}`);
     console.log(gender);
-    console.log(profile);
+    console.log(profile.substr(12).split("."));
+    console.log(imagesrc);
   });
 
   return (
@@ -166,7 +205,9 @@ const PersonalInfo = () => {
               name="nickname"
               onChange={(e) => setNickname(e.target.value)}
             />
-            <button className="button-dup-check">중복확인</button>
+            <button className="button-dup-check" onClick={getDuplicationCheck}>
+              중복확인
+            </button>
           </div>
           <div className="birth">
             <div className="text-birth">생년월일</div>
@@ -228,14 +269,22 @@ const PersonalInfo = () => {
           </div>
           <div className="profile">
             <div className="text-profile">프로필</div>
-            <input readOnly className="upload-name" value={profile} />
+            <input
+              readOnly
+              className="upload-name"
+              value={profile.substr(12)}
+            />
             <label for="filename">
               <div>파일찾기</div>
             </label>
             <input
               type="file"
               id="filename"
-              onChange={(e) => setProfile(e.target.value)}
+              accept=".jpg, .jpeg, .png"
+              onChange={(e) => {
+                setProfile(e.target.value);
+                encodeFileToBase64(e.target.files[0]);
+              }}
             />
           </div>
         </div>
