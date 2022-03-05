@@ -34,8 +34,14 @@ public class User implements UserDetails {
     @Column(name = "USER_NICKNAME", length = 15)
     private String userNickname;
 
-    @Column(name = "USER_BIRTH", length = 6)
-    private String userBirth;
+    @Column(name = "USER_BIRTH_YEAR", length = 4)
+    private String userBirthYear;
+
+    @Column(name = "USER_BIRTH_MONTH", length = 2)
+    private String userBirthMonth;
+
+    @Column(name = "USER_BIRTH_DAY", length = 2)
+    private String userBirthDay;
 
     @Column(name = "USER_STATE", length = 5)
     private String userState;
@@ -104,5 +110,20 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public void update(UserDTO userDTO){
+
+        this.userEmail = userDTO.getUserEmail();
+        this.userBirthYear = userDTO.getUserBirthYear();
+        this.userBirthMonth = userDTO.getUserBirthMonth();
+        this.userBirthDay = userDTO.getUserBirthDay();
+        this.userName = userDTO.getUserName();
+        this.userState = userDTO.getUserState();
+        this.locationX = userDTO.getLocationX();
+        this.locationY = userDTO.getLocationY();
+        this.mannerPoint = userDTO.getMannerPoint();
+        this.userNickname = userDTO.getUserNickname();
+
     }
 }
