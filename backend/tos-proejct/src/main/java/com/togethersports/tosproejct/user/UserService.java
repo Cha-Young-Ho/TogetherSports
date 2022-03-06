@@ -7,8 +7,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
+import javax.swing.filechooser.FileSystemView;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -74,5 +82,37 @@ public class UserService {
         return userRepository.findByUserEmail(claims.get("sub").toString());
 
     }
+
+    public void userImgUpload(UserDTO userDTO){
+
+        String uploadFolder = "C:/files/profile/img/"; // ! 설정파일로 따로 관리해야함
+
+        Path uploadPath = Paths.get(uploadFolder);
+
+        try {
+            //디렉토리 생성
+            Files.createDirectories(uploadPath);
+
+            //저장 파일명 생성
+            String fileSaveName = UUID.randomUUID()
+                    + "_"
+                    + userDTO.getUserProfileRealName()
+                    + "."
+                    + userDTO.getUserProfileExtension();
+
+            //최종 저장 디렉토리 + 저장 파일명
+            Path filePath = Paths.get(uploadFolder + fileSaveName);
+
+            byte[] decodeBytes = Base64.getDecoder().decode(userDTO.getImage());
+
+            //파일 생성
+            Files.write(filePath, decodeBytes);
+
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 }
 

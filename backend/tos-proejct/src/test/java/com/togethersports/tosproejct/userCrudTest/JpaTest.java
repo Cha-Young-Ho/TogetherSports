@@ -30,20 +30,23 @@ public class JpaTest {
     final String USEREMAIL = "test@gmail.com";
     final String USERNAME = "이병건";
     final String USERNICKNAME = "침착맨";
-    final String USERBIRTH = "810211";
     final String USERSTATE = "정상회원";
     final int MANNERPOINT = 0;
     final Double LOCATIONX = 1111.11;
     final Double LOCATIONY = 2222.22;
-    final Gender GENDER = Gender.남;
-    final Admin ADMIN = Admin.일반회원;
+    final Gender GENDER = Gender.MALE;
+    final Admin ADMIN = Admin.ROLE_ADMIN;
     final Provider PROVIDER = Provider.KAKAO;
+
+    final String BLINK = "";
 
     User user = User.builder()
             .userEmail(USEREMAIL)
             .userName(USERNAME)
             .userNickname(USERNICKNAME)
-            .userBirth(USERBIRTH)
+            .userBirthYear(BLINK)
+            .userBirthMonth(BLINK)
+            .userBirthDay(BLINK)
             .userState(USERSTATE)
             .mannerPoint(MANNERPOINT)
             .locationX(LOCATIONX)
@@ -65,7 +68,9 @@ public class JpaTest {
         Assertions.assertEquals(testUser.getUserEmail(), USEREMAIL);
         Assertions.assertEquals(testUser.getUsername(), USERNAME);
         Assertions.assertEquals(testUser.getUserNickname(), USERNICKNAME);
-        Assertions.assertEquals(testUser.getUserBirth(), USERBIRTH);
+        Assertions.assertEquals(testUser.getUserBirthYear(), BLINK);
+        Assertions.assertEquals(testUser.getUserBirthMonth(), BLINK);
+        Assertions.assertEquals(testUser.getUserBirthDay(), BLINK);
         Assertions.assertEquals(testUser.getUserState(), USERSTATE);
         Assertions.assertEquals(testUser.getMannerPoint(), MANNERPOINT);
         Assertions.assertEquals(testUser.getLocationX(), LOCATIONX);
@@ -89,7 +94,7 @@ public class JpaTest {
         Assertions.assertEquals(testUser.getUserEmail(), USEREMAIL);
         Assertions.assertEquals(testUser.getUsername(), USERNAME);
         Assertions.assertEquals(testUser.getUserNickname(), USERNICKNAME);
-        Assertions.assertEquals(testUser.getUserBirth(), USERBIRTH);
+        //Assertions.assertEquals(testUser.getUserBirth(), USERBIRTH);
         Assertions.assertEquals(testUser.getUserState(), USERSTATE);
         Assertions.assertEquals(testUser.getMannerPoint(), MANNERPOINT);
         Assertions.assertEquals(testUser.getLocationX(), LOCATIONX);
@@ -131,12 +136,12 @@ public class JpaTest {
         userRepository.save(user);
         User testUser = userRepository.getById(1);
 
-        testUser.setUserBirth("19901220");
+        //testUser.setUserBirth("19901220");
 
         User testUser2 = userRepository.getById(1);
         //then
 
-        Assertions.assertEquals(testUser2.getUserBirth(), "19901220");
+        //Assertions.assertEquals(testUser2.getUserBirth(), "19901220");
 
 
     }

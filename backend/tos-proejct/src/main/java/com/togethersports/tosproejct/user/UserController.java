@@ -22,25 +22,29 @@ public class UserController {
     private final JwtService jwtService;
 
 
-
-
-
     // 회원가입 요청
     @PostMapping("/user")
     public Map<String, String> userSignup(@RequestBody UserDTO userDTO) {
 
         log.info("/user 요청됨");
+
+        log.info("userDTO ----> {}", userDTO);
+
+        log.info("profileDTO ----> {}", userDTO.getImage());
+        log.info("profileDTO ----> {}", userDTO.getUserProfileRealName());
+        log.info("profileDTO ----> {}", userDTO.getUserProfileExtension());
+
         Map<String, String> map = new HashMap<>();
+
         map.put("userSignup", "true");
 
-        // 잘못된 인수가 메서드에 요청될 경우 exception 발생
-        /*Optional.of(userService.userSignup(userDTO)).orElseThrow(
-                () -> new IllegalArgumentException("부적절한 파라미터가 요청되었습니다. -> "));*/
-
-        log.info("userDTO -------------------> " + userDTO);
-
         try {
+
+            userService.userImgUpload(userDTO);
+
             userService.userSignup(userDTO);
+
+
         } catch (IllegalArgumentException e) {
             e.getMessage();
             map.put("userSignup", "false");

@@ -1,16 +1,17 @@
-package com.togethersports.tosproejct;
+package com.togethersports.tosproejct.controller;
 
+import com.togethersports.tosproejct.file.FileService;
 import com.togethersports.tosproejct.jwt.TestResponseMessage;
+import com.togethersports.tosproejct.user.ProfileDTO;
+import com.togethersports.tosproejct.user.UserDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Base64;
 import java.util.Map;
 
 @Slf4j
@@ -18,7 +19,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class TestController {
 
-
+    private final FileService fileService;
 
     @GetMapping("/test")
     public ResponseEntity<TestResponseMessage> test(@RequestParam Map<String, String> map, HttpServletRequest request){
@@ -55,4 +56,15 @@ public class TestController {
         return "<h1> admin 권한이 있어서 통과 </h1>";
     }
 
+    @PostMapping("/profile")
+    public String profileImgTest(@RequestBody ProfileDTO profileDTO) {
+
+        log.info("profileDTO ----> {}", profileDTO.getImage());
+        log.info("profileDTO ----> {}", profileDTO.getUserProfileRealName());
+        log.info("profileDTO ----> {}", profileDTO.getUserProfileExtension());
+
+        fileService.userImgUpload(profileDTO);
+
+        return "OK";
+    }
 }

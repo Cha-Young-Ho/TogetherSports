@@ -41,20 +41,7 @@ public class LoginTest {
     @Autowired
     private MockMvc mockMvc;
 
-    UserDTO userDTO = UserDTO.builder()
-            .userSequenceId(1)
-            .gender(Gender.남)
-            .locationX(12.12)
-            .locationY(11.11)
-            .admin(Admin.일반회원)
-            .mannerPoint(10)
-            .provider(Provider.KAKAO)
-            .userBirth("991010")
-            .userEmail("aabbcc@gmail.com")
-            .userNickname("침착맨")
-            .userName("이병건")
-            .userState("ㄱ")
-            .build();
+
 
 
 

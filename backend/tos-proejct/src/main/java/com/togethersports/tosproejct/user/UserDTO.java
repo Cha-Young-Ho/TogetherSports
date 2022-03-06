@@ -9,6 +9,7 @@ import lombok.ToString;
 @Builder
 public class UserDTO {
 
+    // User
     private int userSequenceId;
     private String userEmail;
     private String userName;
@@ -23,6 +24,12 @@ public class UserDTO {
     private Gender gender;
     private Admin admin;
     private Provider provider;
+
+    // file
+    private String image;
+    private String userProfileRealName;
+    private String userProfileExtension;
+
 }
 
 // 스프링 부트 / 스프링 시큐리티 -> 스프링 시큐리티
