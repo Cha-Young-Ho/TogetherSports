@@ -1,12 +1,12 @@
 package com.togethersports.tosproejct.user;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
 @Data // @Getter + Constructor로 바꿔야함
 @ToString
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserDTO {
 
     private int userSequenceId;

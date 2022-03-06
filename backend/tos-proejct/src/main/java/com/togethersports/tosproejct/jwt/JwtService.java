@@ -17,13 +17,14 @@ public class JwtService {
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
     @Transactional
-    public void login(Token tokenDto){
+    public void login(Token tokenDto, String userAgent){
 
-        RefreshToken refreshToken = RefreshToken.builder().keyEmail(tokenDto.getKey()).refreshToken(tokenDto.getRefreshToken()).build();
+        RefreshToken refreshToken = RefreshToken.builder().keyEmail(tokenDto.getKey()).refreshToken(tokenDto.getRefreshToken()).userAgent(userAgent).build();
         String loginUserEmail = refreshToken.getKeyEmail();
-        if(refreshTokenRepository.existsByKeyEmail(loginUserEmail)){
+        //여기서 refresh Token과 해당 agent로 저장되어있는지 확인을 해야한다.
+        if(refreshTokenRepository.existsByKeyEmailAndUserAgent(loginUserEmail, userAgent)){
             log.info("기존의 존재하는 refresh 토큰 삭제");
-            refreshTokenRepository.deleteByKeyEmail(loginUserEmail);
+            refreshTokenRepository.deleteByKeyEmailAndUserAgent(loginUserEmail, userAgent);
         }
         refreshTokenRepository.save(refreshToken);
 

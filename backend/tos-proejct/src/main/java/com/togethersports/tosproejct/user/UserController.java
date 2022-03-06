@@ -50,14 +50,14 @@ public class UserController {
 
     // 로그인
     @PostMapping("/login")
-    public Token login(@RequestBody Map<String, String> user) {
+    public Token login(@RequestBody Map<String, String> user, @RequestHeader("User-Agent") String userAgent) {
         log.info("user email = {}", user.get("userEmail"));
         User member = userRepository.findByUserEmail(user.get("userEmail"))
                 .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 E-MAIL 입니다."));
        // return jwtService.login(member);
         Token tokenDto = jwtTokenProvider.createAccessToken(member.getUsername(), member.getRoles());
         log.info("getroleeeee = {}", member.getRoles());
-        jwtService.login(tokenDto);
+        jwtService.login(tokenDto, userAgent);
         return tokenDto;
     }
     @GetMapping("/user/check")
