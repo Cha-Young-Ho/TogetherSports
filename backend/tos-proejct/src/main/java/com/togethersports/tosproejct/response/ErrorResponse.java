@@ -1,4 +1,4 @@
-package com.togethersports.tosproejct.exception;
+package com.togethersports.tosproejct.response;
 
 import lombok.Getter;
 import lombok.ToString;
