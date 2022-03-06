@@ -1,29 +1,23 @@
 package com.togethersports.tosproejct.jwt;
 
 import com.togethersports.tosproejct.user.UserController;
-import com.togethersports.tosproejct.user.UserService;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.parser.ParseException;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
-import java.util.NoSuchElementException;
-
-import static org.mockito.Mockito.when;
 
 @Slf4j
 @RunWith(SpringRunner.class)
@@ -43,6 +37,19 @@ public class JwtTest {
     String userEmail = "aabbcc@gmail.com";
     List<String> roles;
 
+    @Test
+    public void jwt_토큰생성테스트 () throws Exception{
+
+        //given
+        //when
+        Token token = jwtTokenProvider.createAccessToken("aabbcc@gmail.com", roles);
+
+
+        //then
+
+        Assertions.assertNotNull(token);
+
+    }
 
     @Test
     @DisplayName("jwt 엑세스 토큰 생성 테스트")

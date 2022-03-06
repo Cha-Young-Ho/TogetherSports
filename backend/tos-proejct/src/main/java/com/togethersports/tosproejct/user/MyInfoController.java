@@ -1,7 +1,6 @@
 package com.togethersports.tosproejct.user;
 
 import com.togethersports.tosproejct.jwt.JwtTokenProvider;
-import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
