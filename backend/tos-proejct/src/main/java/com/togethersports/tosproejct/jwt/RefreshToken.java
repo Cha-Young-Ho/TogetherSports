@@ -24,4 +24,7 @@ public class RefreshToken {
     @Column(name = "KEY_EMAIL", nullable = false)
     private String keyEmail;
 
+    @Column(name ="USER_AGENT", nullable = false)
+    private String userAgent;
+
 }
