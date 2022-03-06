@@ -2,6 +2,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import jquery from "jquery";
 import $ from "jquery";
+import Map from "../../../components/map";
 
 const ActiveArea = () => {
   return (
@@ -43,8 +44,10 @@ const ActiveArea = () => {
         <div className="content-showbox">
           <p>원하는 활동지역을 선택해주세요!</p>
         </div>
-        <div className="area">
-          <div className="text-area">지역선택</div>
+        <Map latitude="37.56682420062817" longitude="126.97864093976689" />
+        {/* <div id="map"></div> */}
+        <div className="tag-map">위치 태그</div>
+        {/* <div className="text-area">지역선택</div>
           <div className="dropdown-area">
             <div>
               <select className="sido" title="시/도">
@@ -61,11 +64,8 @@ const ActiveArea = () => {
                 <option>서초동</option>
               </select>
             </div>
-          </div>
-        </div>
+          </div> */}
 
-        {/* <div className="map">map</div> */}
-        <div className="tag-map">위치 태그</div>
         <Link href="/login">
           <button className="button-done">완료</button>
         </Link>
@@ -124,17 +124,22 @@ const ActiveArea = () => {
           border-bottom: 1px solid #e4e8eb;
         }
 
-        .area {
+        .tag-map {
+          width: 448px;
+          align-items: left;
+        }
+
+        /* .area {
           width: 583px;
           height: 40px;
           margin: 44.5px 5.5px 27px;
           padding: 5px 10px 5px 14px;
           display: flex;
-          justify-content: space-between;
+          flex-direction: column;
           align-items: center;
-        }
+        } */
 
-        .text-area {
+        /* .text-area {
           font-weight: bold;
           font-size: 1.5em;
         }
@@ -172,21 +177,7 @@ const ActiveArea = () => {
           border-radius: 10px;
           border: solid 1px #e8e8e8;
           font-weight: bold;
-        }
-
-        .map {
-          width: 448px;
-          height: 448px;
-          margin: 30px 72.5px 20px 72.5px;
-          padding: 11px 13px 12px 10px;
-          border-radius: 10px;
-          border: solid 1px #e8e8e8;
-        }
-
-        .tag-map {
-          width: 448px;
-          align-items: left;
-        }
+        } */
 
         .button-done {
           display: flex;
