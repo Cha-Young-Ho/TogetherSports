@@ -15,6 +15,8 @@ const PersonalInfo = () => {
   const [gender, setGender] = useState("male");
   const [profile, setProfile] = useState("");
   const [imagesrc, setImagesrc] = useState("");
+  const [fileName, setFileName] = useState("");
+  const [extention, setExtention] = useState("");
 
   //닉네임 중복체크
   const getDuplicationCheck = (e) => {
@@ -145,6 +147,9 @@ const PersonalInfo = () => {
         userBirthMonday: birthMonth,
         userBirthDay: birthDay,
         gender: gender,
+        profile_fileName: fileName,
+        profile_extention: extention,
+        imagesrc: imagesrc,
       },
     });
   };
@@ -284,6 +289,9 @@ const PersonalInfo = () => {
               onChange={(e) => {
                 setProfile(e.target.value);
                 encodeFileToBase64(e.target.files[0]);
+                const splitFiles = profile.substr(12).split(".");
+                setFileName(splitFiles[0]);
+                setExtention(splitFiles[1]);
               }}
             />
           </div>
