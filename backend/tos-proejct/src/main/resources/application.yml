@@ -41,8 +41,8 @@ spring:
 
   # 파일 경로 설정
   file:
-    path:
-      profileImg: 'C:\'
+    upload:
+      location: 'C:\files'
 
   # multipart 설정
 

@@ -3,6 +3,7 @@ package com.togethersports.tosproejct.user;
 import com.togethersports.tosproejct.jwt.JwtService;
 import com.togethersports.tosproejct.jwt.JwtTokenProvider;
 import com.togethersports.tosproejct.jwt.Token;
+import com.togethersports.tosproejct.userProfileImage.UserProfileImageService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,23 +22,16 @@ public class UserController {
     private final UserRepository userRepository;
     private final JwtService jwtService;
 
-
-
-
-
     // 회원가입 요청
     @PostMapping("/user")
     public Map<String, String> userSignup(@RequestBody UserDTO userDTO) {
 
         log.info("/user 요청됨");
+        log.info("userDTO ----> {}", userDTO);
+
         Map<String, String> map = new HashMap<>();
+
         map.put("userSignup", "true");
-
-        // 잘못된 인수가 메서드에 요청될 경우 exception 발생
-        /*Optional.of(userService.userSignup(userDTO)).orElseThrow(
-                () -> new IllegalArgumentException("부적절한 파라미터가 요청되었습니다. -> "));*/
-
-        log.info("userDTO -------------------> " + userDTO);
 
         try {
             userService.userSignup(userDTO);
@@ -61,6 +55,7 @@ public class UserController {
         jwtService.login(tokenDto, userAgent);
         return tokenDto;
     }
+
     @GetMapping("/user/check")
     public Map<String, String> userCheck(@RequestBody UserDTO userDTO) {
 

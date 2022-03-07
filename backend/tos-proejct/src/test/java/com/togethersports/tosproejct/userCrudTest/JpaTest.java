@@ -37,21 +37,22 @@ public class JpaTest {
     final int MANNERPOINT = 0;
     final Double LOCATIONX = 1111.11;
     final Double LOCATIONY = 2222.22;
-    final Gender GENDER = Gender.남;
+    final Gender GENDER = Gender.MALE;
     final Admin ADMIN = Admin.ROLE_ADMIN;
     final Provider PROVIDER = Provider.KAKAO;
+
+    final String BLINK = "";
 
     User user = User.builder()
             .userEmail(USEREMAIL)
             .userName(USERNAME)
             .userNickname(USERNICKNAME)
+            .userBirthYear(BLINK)
+            .userBirthMonth(BLINK)
+            .userBirthDay(BLINK)
             .userBirthYear(USER_BIRTH_YEAR)
             .userBirthMonth(USER_BIRTH_MONTH)
             .userBirthDay(USER_BIRTH_DAY)
-            .userState(USERSTATE)
-            .mannerPoint(MANNERPOINT)
-            .locationX(LOCATIONX)
-            .locationY(LOCATIONY)
             .gender(GENDER)
             .admin(ADMIN)
             .provider(PROVIDER)
@@ -69,13 +70,12 @@ public class JpaTest {
         Assertions.assertEquals(testUser.getUserEmail(), USEREMAIL);
         Assertions.assertEquals(testUser.getUsername(), USERNAME);
         Assertions.assertEquals(testUser.getUserNickname(), USERNICKNAME);
+        Assertions.assertEquals(testUser.getUserBirthYear(), BLINK);
+        Assertions.assertEquals(testUser.getUserBirthMonth(), BLINK);
+        Assertions.assertEquals(testUser.getUserBirthDay(), BLINK);
         Assertions.assertEquals(testUser.getUserBirthYear(), USER_BIRTH_YEAR);
         Assertions.assertEquals(testUser.getUserBirthMonth(), USER_BIRTH_MONTH);
         Assertions.assertEquals(testUser.getUserBirthDay(), USER_BIRTH_DAY);
-        Assertions.assertEquals(testUser.getUserState(), USERSTATE);
-        Assertions.assertEquals(testUser.getMannerPoint(), MANNERPOINT);
-        Assertions.assertEquals(testUser.getLocationX(), LOCATIONX);
-        Assertions.assertEquals(testUser.getLocationY(), LOCATIONY);
         Assertions.assertEquals(testUser.getGender(), GENDER);
         Assertions.assertEquals(testUser.getAdmin(), ADMIN);
         Assertions.assertEquals(testUser.getProvider(), PROVIDER);
@@ -98,10 +98,6 @@ public class JpaTest {
         Assertions.assertEquals(testUser.getUserBirthYear(), USER_BIRTH_YEAR);
         Assertions.assertEquals(testUser.getUserBirthMonth(), USER_BIRTH_MONTH);
         Assertions.assertEquals(testUser.getUserBirthDay(), USER_BIRTH_DAY);
-        Assertions.assertEquals(testUser.getUserState(), USERSTATE);
-        Assertions.assertEquals(testUser.getMannerPoint(), MANNERPOINT);
-        Assertions.assertEquals(testUser.getLocationX(), LOCATIONX);
-        Assertions.assertEquals(testUser.getLocationY(), LOCATIONY);
         Assertions.assertEquals(testUser.getGender(), GENDER);
         Assertions.assertEquals(testUser.getAdmin(), ADMIN);
         Assertions.assertEquals(testUser.getProvider(), PROVIDER);
@@ -131,5 +127,22 @@ public class JpaTest {
 
     }
 
+    @Test
+    public void user_수정테스트(){
+        //given
+
+        //when
+        userRepository.save(user);
+        User testUser = userRepository.getById(1);
+
+        //testUser.setUserBirth("19901220");
+
+        User testUser2 = userRepository.getById(1);
+        //then
+
+        //Assertions.assertEquals(testUser2.getUserBirth(), "19901220");
+
+
+    }
 
 }

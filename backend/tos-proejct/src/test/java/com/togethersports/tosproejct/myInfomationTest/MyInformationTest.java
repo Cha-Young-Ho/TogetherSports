@@ -70,19 +70,15 @@ public class MyInformationTest {
         this.token = jwtTokenProvider.createAccessToken(userEmail, roles);
         this.user = User.builder()
                 .userName("이병건")
-                .userState("1")
                 .userBirthYear("1999")
                 .userBirthMonth("01")
                 .userBirthDay("01")
                 .userNickname("침착맨")
                 .userEmail("aabbcc@gmail.com")
-                .gender(Gender.남)
+                .gender(Gender.MALE)
                 .provider(Provider.KAKAO)
-                .locationX(12.12)
-                .locationY(12.22)
                 .admin(Admin.ROLE_USER)
                 .roles(this.roles)
-                .mannerPoint(10)
                 .build();
 
         this.userRepository.save(user);
