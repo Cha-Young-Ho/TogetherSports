@@ -15,9 +15,10 @@ public enum Code {
     UNSUPPORTED_TOKEN(1006, "변조된 토큰입니다."),
     ACCESS_DENIED(1007, "권한이 없습니다."),
     USER_NOT_FOUND(1008, "유저를 찾을 수 없습니다."),
-    BAD_REQUEST(1009, "잘못된 요청입니다.");
+    BAD_REQUEST(1009, "잘못된 요청입니다."),
+    CONSTRAINT_ERROR(1101, "무결성 제약 조건에 위배됩니다.");
+
+
     private int code;
     private String message;
-
-
 }

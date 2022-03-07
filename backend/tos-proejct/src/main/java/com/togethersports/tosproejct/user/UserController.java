@@ -56,6 +56,7 @@ public class UserController {
         return tokenDto;
     }
 
+    // 회원 유무 확인
     @GetMapping("/user/check")
     public Map<String, String> userCheck(@RequestBody UserDTO userDTO) {
 

@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.NoSuchElementException;
 
 @Slf4j
@@ -30,7 +31,10 @@ public class ErrorControllerAdvice {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-
-
+    @ExceptionHandler(value = SQLIntegrityConstraintViolationException.class)
+    protected ResponseEntity<ErrorResponse> SQLIntegrityConstraintViolationException() {
+        ErrorResponse response = new ErrorResponse(Code.CONSTRAINT_ERROR);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
 
 }

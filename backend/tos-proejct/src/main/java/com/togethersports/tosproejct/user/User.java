@@ -1,5 +1,6 @@
 package com.togethersports.tosproejct.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.togethersports.tosproejct.userProfileImage.UserProfileImage;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -56,6 +57,7 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Provider provider;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<UserProfileImage> userProfileImageList = new ArrayList<>();
 
