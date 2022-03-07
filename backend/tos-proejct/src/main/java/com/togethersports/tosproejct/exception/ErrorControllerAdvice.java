@@ -17,7 +17,7 @@ public class ErrorControllerAdvice {
 
         log.info("NoSuch 시작");
         ErrorResponse response = new ErrorResponse();
-        return new ResponseEntity<ErrorResponse>(response, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 
     }
 

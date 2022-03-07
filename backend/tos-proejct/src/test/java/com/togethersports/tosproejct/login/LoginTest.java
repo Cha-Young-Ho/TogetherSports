@@ -1,33 +1,18 @@
 package com.togethersports.tosproejct.login;
 
-import com.togethersports.tosproejct.jwt.JwtService;
 import com.togethersports.tosproejct.jwt.JwtTokenProvider;
-import com.togethersports.tosproejct.jwt.Token;
-import com.togethersports.tosproejct.user.*;
+import com.togethersports.tosproejct.user.Admin;
+import com.togethersports.tosproejct.user.Gender;
+import com.togethersports.tosproejct.user.Provider;
+import com.togethersports.tosproejct.user.UserDTO;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import java.util.*;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @Slf4j
@@ -46,10 +31,12 @@ public class LoginTest {
             .gender(Gender.남)
             .locationX(12.12)
             .locationY(11.11)
-            .admin(Admin.일반회원)
+            .admin(Admin.ROLE_USER)
             .mannerPoint(10)
             .provider(Provider.KAKAO)
-            .userBirth("991010")
+            .userBirthYear("1999")
+            .userBirthMonth("01")
+            .userBirthDay("01")
             .userEmail("aabbcc@gmail.com")
             .userNickname("침착맨")
             .userName("이병건")

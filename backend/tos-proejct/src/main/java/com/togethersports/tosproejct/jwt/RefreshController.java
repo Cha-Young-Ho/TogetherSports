@@ -26,14 +26,14 @@ public class RefreshController {
         Map<String, String> map = jwtService.validateRefreshToken(bodyJson.get("refreshToken"));
 
         if(map.get("status").equals("402")){
-            log.info("RefreshController - Refresh Token이 만료.");
+            log.info("RefreshController - Refresh Token 이 만료.");
             RefreshApiResponseMessage refreshApiResponseMessage = new RefreshApiResponseMessage(map);
-            return new ResponseEntity<RefreshApiResponseMessage>(refreshApiResponseMessage, HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(refreshApiResponseMessage, HttpStatus.UNAUTHORIZED);
         }
 
-        log.info("RefreshController - Refresh Token이 유효.");
+        log.info("RefreshController - Refresh Token 이 유효.");
         RefreshApiResponseMessage refreshApiResponseMessage = new RefreshApiResponseMessage(map);
-        return new ResponseEntity<RefreshApiResponseMessage>(refreshApiResponseMessage, HttpStatus.OK);
+        return new ResponseEntity<>(refreshApiResponseMessage, HttpStatus.OK);
 
     }
 }
