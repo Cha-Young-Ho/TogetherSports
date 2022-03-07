@@ -1,7 +1,6 @@
-import { getUserInfoCheck, TestMock } from "../api/axios";
+import { getUserInfoCheck } from "../api/axios";
 
 const Usercheck = () => {
-  TestMock();
   getUserInfoCheck();
 
   return <></>;
