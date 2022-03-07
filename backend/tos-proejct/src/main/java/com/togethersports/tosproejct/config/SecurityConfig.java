@@ -1,6 +1,7 @@
 package com.togethersports.tosproejct.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.togethersports.tosproejct.exception.CustomAuthenticationEntryPoint;
 import com.togethersports.tosproejct.jwt.JwtAuthenticationFilter;
 import com.togethersports.tosproejct.jwt.JwtExceptionFilter;
 import com.togethersports.tosproejct.jwt.JwtTokenProvider;
@@ -22,6 +23,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final ObjectMapper objectMapper;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     // authenticationManager를 Bean 등록합니다.
     @Bean
@@ -41,6 +43,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/**").permitAll()
                 .and()
                 .cors()
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(customAuthenticationEntryPoint)
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
                         UsernamePasswordAuthenticationFilter.class)

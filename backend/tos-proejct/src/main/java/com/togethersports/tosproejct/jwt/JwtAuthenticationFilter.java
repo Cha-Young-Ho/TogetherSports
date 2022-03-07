@@ -12,6 +12,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 
 // 스프링 시큐리티에서 UsernamePasswordAuthenticationFilter가 존재한다.
@@ -53,7 +54,11 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
  // jwt -> test
-        log.info("JwtAuthenticationFilter 실행");
+
+        //HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        //log.info("path = {}", httpServletRequest.getRequestURI());
+
+
         // 헤더에서 JWT 를 받아옵니다.
         String token = jwtTokenProvider.resolveToken((HttpServletRequest) request);
         // 유효한 토큰인지 확인합니다.
