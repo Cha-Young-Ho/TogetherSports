@@ -28,11 +28,8 @@ public class LoginTest {
 
     UserDTO userDTO = UserDTO.builder()
             .userSequenceId(1)
-            .gender(Gender.남)
-            .locationX(12.12)
-            .locationY(11.11)
+            .gender(Gender.MALE)
             .admin(Admin.ROLE_USER)
-            .mannerPoint(10)
             .provider(Provider.KAKAO)
             .userBirthYear("1999")
             .userBirthMonth("01")
@@ -40,7 +37,6 @@ public class LoginTest {
             .userEmail("aabbcc@gmail.com")
             .userNickname("침착맨")
             .userName("이병건")
-            .userState("ㄱ")
             .build();
 
 
