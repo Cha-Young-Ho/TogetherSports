@@ -32,18 +32,22 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
         } catch (ExpiredJwtException e){
             //만료 에러
             request.setAttribute("exception", Code.EXPIRED_TOKEN.getCode());
+            filterChain.doFilter(request, response);
 
         } catch (MalformedJwtException e){
 
             //변조 에러
             request.setAttribute("exception", Code.WRONG_TYPE_TOKEN.getCode());
+            filterChain.doFilter(request, response);
 
 
         } catch (SignatureException e){
             //형식, 길이 에러
             request.setAttribute("exception", Code.WRONG_TYPE_TOKEN.getCode());
+            filterChain.doFilter(request, response);
         }
-        filterChain.doFilter(request, response);
+        log.info("exception filter 작동");
+
 
 
     }
