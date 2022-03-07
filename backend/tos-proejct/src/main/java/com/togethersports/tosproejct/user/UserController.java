@@ -5,6 +5,7 @@ import com.togethersports.tosproejct.jwt.JwtTokenProvider;
 import com.togethersports.tosproejct.jwt.Token;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -53,7 +54,7 @@ public class UserController {
     public Token login(@RequestBody Map<String, String> user, @RequestHeader("User-Agent") String userAgent) {
         log.info("user email = {}", user.get("userEmail"));
         User member = userRepository.findByUserEmail(user.get("userEmail"))
-                .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 E-MAIL 입니다."));
+                .orElseThrow(() -> new UsernameNotFoundException("가입되지 않은 E-MAIL 입니다."));
        // return jwtService.login(member);
         Token tokenDto = jwtTokenProvider.createAccessToken(member.getUsername(), member.getRoles());
         log.info("getroleeeee = {}", member.getRoles());

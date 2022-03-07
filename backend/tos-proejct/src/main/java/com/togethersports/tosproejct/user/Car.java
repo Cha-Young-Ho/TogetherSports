@@ -1,2 +1,6 @@
-package com.togethersports.tosproejct.user;public class Car {
+package com.togethersports.tosproejct.user;
+
+public class Car {
+
+
 }

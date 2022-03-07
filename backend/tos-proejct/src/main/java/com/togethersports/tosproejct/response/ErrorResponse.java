@@ -1,5 +1,6 @@
 package com.togethersports.tosproejct.response;
 
+import com.togethersports.tosproejct.code.Code;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -7,19 +8,15 @@ import lombok.ToString;
 @Getter
 public class ErrorResponse {
     // HttpStatus
-    private String status;
+    private int status;
 
     // Http Default Message
     private String message;
 
-    // Error Code
-    private String errorCode;
 
-
-    public ErrorResponse() {
-        this.status = "403";
-        this.message = "잘못된 요청입니다.";
-        this.errorCode = "403";
+    public ErrorResponse(Code code){
+        this.status = code.getCode();
+        this.message = code.getMessage();
     }
 
 }
