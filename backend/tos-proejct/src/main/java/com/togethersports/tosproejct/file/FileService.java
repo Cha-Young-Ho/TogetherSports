@@ -1,6 +1,7 @@
 package com.togethersports.tosproejct.file;
 
 import com.togethersports.tosproejct.user.ProfileDTO;
+import com.togethersports.tosproejct.user.UserDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +28,10 @@ public class FileService {
 
     private String uploadFolder = "C:/files/profile/img/"; // ! 설정파일로 따로 관리해야함
 
-    public void userImgUpload(ProfileDTO profileDTO){
+    /**
+     *  파일 업로드 기능
+     */
+    public void userImgUpload(UserDTO userDTO){
 
         Path uploadPath = Paths.get(uploadFolder);
 
@@ -38,16 +42,14 @@ public class FileService {
             //저장 파일명 생성
             String fileSaveName = UUID.randomUUID()
                     + "_"
-                    + profileDTO.getUserProfileRealName()
+                    + userDTO.getUserProfileRealName()
                     + "."
-                    + profileDTO.getUserProfileExtension();
+                    + userDTO.getUserProfileExtension();
 
             //최종 저장 디렉토리 + 저장 파일명
             Path filePath = Paths.get(uploadFolder + fileSaveName);
 
-            byte[] decodeBytes = Base64.getDecoder().decode(profileDTO.getImage());
-
-            System.out.println("base64 decodeing -> " + decodeBytes.toString());
+            byte[] decodeBytes = Base64.getDecoder().decode(userDTO.getImage());
 
             //파일 생성
             Files.write(filePath, decodeBytes);

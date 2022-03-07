@@ -21,7 +21,6 @@ public class UserController {
     private final UserRepository userRepository;
     private final JwtService jwtService;
 
-
     // 회원가입 요청
     @PostMapping("/user")
     public Map<String, String> userSignup(@RequestBody UserDTO userDTO) {
@@ -65,6 +64,7 @@ public class UserController {
         jwtService.login(tokenDto);
         return tokenDto;
     }
+
     @GetMapping("/user/check")
     public Map<String, String> userCheck(@RequestBody UserDTO userDTO) {
 

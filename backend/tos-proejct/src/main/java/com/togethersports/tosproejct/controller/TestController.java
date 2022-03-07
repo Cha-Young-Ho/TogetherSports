@@ -55,16 +55,4 @@ public class TestController {
 
         return "<h1> admin 권한이 있어서 통과 </h1>";
     }
-
-    @PostMapping("/profile")
-    public String profileImgTest(@RequestBody ProfileDTO profileDTO) {
-
-        log.info("profileDTO ----> {}", profileDTO.getImage());
-        log.info("profileDTO ----> {}", profileDTO.getUserProfileRealName());
-        log.info("profileDTO ----> {}", profileDTO.getUserProfileExtension());
-
-        fileService.userImgUpload(profileDTO);
-
-        return "OK";
-    }
 }
