@@ -1,12 +1,13 @@
 package com.togethersports.tosproejct.user;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.togethersports.tosproejct.userProfileImage.UserProfileImageDTO;
+import lombok.*;
 
 @Data // @Getter + Constructor로 바꿔야함
-@ToString
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserDTO {
 
     // User
@@ -17,19 +18,12 @@ public class UserDTO {
     private String userBirthYear;
     private String userBirthMonth;
     private String userBirthDay;
-    private String userState;
-    private int mannerPoint;
-    private Double locationX;
-    private Double locationY;
     private Gender gender;
     private Admin admin;
     private Provider provider;
 
-    // file
-    private String image;
-    private String userProfileRealName;
-    private String userProfileExtension;
-
+    @JsonProperty("userProfileImage")
+    private UserProfileImageDTO userProfileImage;
 }
 
 // 스프링 부트 / 스프링 시큐리티 -> 스프링 시큐리티

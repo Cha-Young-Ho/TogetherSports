@@ -1,5 +1,6 @@
 package com.togethersports.tosproejct.exception;
 
+import com.togethersports.tosproejct.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public class ErrorControllerAdvice {
 
         log.info("NoSuch 시작");
         ErrorResponse response = new ErrorResponse();
-        return new ResponseEntity<ErrorResponse>(response, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 
     }
 

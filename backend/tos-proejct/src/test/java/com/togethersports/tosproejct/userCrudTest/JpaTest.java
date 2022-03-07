@@ -30,6 +30,9 @@ public class JpaTest {
     final String USEREMAIL = "test@gmail.com";
     final String USERNAME = "이병건";
     final String USERNICKNAME = "침착맨";
+    final String USER_BIRTH_YEAR = "1999";
+    final String USER_BIRTH_MONTH = "01";
+    final String USER_BIRTH_DAY = "01";
     final String USERSTATE = "정상회원";
     final int MANNERPOINT = 0;
     final Double LOCATIONX = 1111.11;
@@ -47,10 +50,9 @@ public class JpaTest {
             .userBirthYear(BLINK)
             .userBirthMonth(BLINK)
             .userBirthDay(BLINK)
-            .userState(USERSTATE)
-            .mannerPoint(MANNERPOINT)
-            .locationX(LOCATIONX)
-            .locationY(LOCATIONY)
+            .userBirthYear(USER_BIRTH_YEAR)
+            .userBirthMonth(USER_BIRTH_MONTH)
+            .userBirthDay(USER_BIRTH_DAY)
             .gender(GENDER)
             .admin(ADMIN)
             .provider(PROVIDER)
@@ -71,10 +73,9 @@ public class JpaTest {
         Assertions.assertEquals(testUser.getUserBirthYear(), BLINK);
         Assertions.assertEquals(testUser.getUserBirthMonth(), BLINK);
         Assertions.assertEquals(testUser.getUserBirthDay(), BLINK);
-        Assertions.assertEquals(testUser.getUserState(), USERSTATE);
-        Assertions.assertEquals(testUser.getMannerPoint(), MANNERPOINT);
-        Assertions.assertEquals(testUser.getLocationX(), LOCATIONX);
-        Assertions.assertEquals(testUser.getLocationY(), LOCATIONY);
+        Assertions.assertEquals(testUser.getUserBirthYear(), USER_BIRTH_YEAR);
+        Assertions.assertEquals(testUser.getUserBirthMonth(), USER_BIRTH_MONTH);
+        Assertions.assertEquals(testUser.getUserBirthDay(), USER_BIRTH_DAY);
         Assertions.assertEquals(testUser.getGender(), GENDER);
         Assertions.assertEquals(testUser.getAdmin(), ADMIN);
         Assertions.assertEquals(testUser.getProvider(), PROVIDER);
@@ -94,11 +95,9 @@ public class JpaTest {
         Assertions.assertEquals(testUser.getUserEmail(), USEREMAIL);
         Assertions.assertEquals(testUser.getUsername(), USERNAME);
         Assertions.assertEquals(testUser.getUserNickname(), USERNICKNAME);
-        //Assertions.assertEquals(testUser.getUserBirth(), USERBIRTH);
-        Assertions.assertEquals(testUser.getUserState(), USERSTATE);
-        Assertions.assertEquals(testUser.getMannerPoint(), MANNERPOINT);
-        Assertions.assertEquals(testUser.getLocationX(), LOCATIONX);
-        Assertions.assertEquals(testUser.getLocationY(), LOCATIONY);
+        Assertions.assertEquals(testUser.getUserBirthYear(), USER_BIRTH_YEAR);
+        Assertions.assertEquals(testUser.getUserBirthMonth(), USER_BIRTH_MONTH);
+        Assertions.assertEquals(testUser.getUserBirthDay(), USER_BIRTH_DAY);
         Assertions.assertEquals(testUser.getGender(), GENDER);
         Assertions.assertEquals(testUser.getAdmin(), ADMIN);
         Assertions.assertEquals(testUser.getProvider(), PROVIDER);
