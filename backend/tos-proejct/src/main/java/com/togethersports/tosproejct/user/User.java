@@ -48,10 +48,6 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @Column(name = "ADMIN")
-    @Enumerated(EnumType.STRING)
-    private Admin admin;
-
     @Column(name = "PROVIDER", length = 20)
     @Enumerated(EnumType.STRING)
     private Provider provider;
