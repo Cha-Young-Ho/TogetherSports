@@ -15,7 +15,7 @@ const initialState = {
   imagesrc: "",
   admin: "",
   provider: "",
-  activeArea: [],
+  activeAreas: [],
   interests: [],
 };
 

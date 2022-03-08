@@ -6,8 +6,7 @@ axios 모듈 모음
 */
 
 // 유저가 이미 가입되어 있는지 확인하는 모듈
-const getUserInfoCheck = () => {
-  const router = useRouter();
+const getUserInfoCheck = async () => {
   //http://localhost:8080/test
 
   const promise = axios.get("/user/check", {
@@ -24,21 +23,7 @@ const getUserInfoCheck = () => {
     },
   });
 
-  const dataPromise = promise
-    .then((res) => {
-      res.data;
-      // 성공적으로 true 값을 받는다면
-      // if (res.data.signUpCheckValue === "false") {
-      //   router.replace("/");
-      // } else {
-      //   router.replace("/signup/addinfo/personalinfo");
-      // }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-
-  return dataPromise;
+  return promise;
 };
 
 //닉네임 중복체크
