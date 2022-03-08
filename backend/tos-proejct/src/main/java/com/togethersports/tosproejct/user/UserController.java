@@ -1,10 +1,16 @@
 package com.togethersports.tosproejct.user;
 
+import com.togethersports.tosproejct.code.Code;
 import com.togethersports.tosproejct.jwt.JwtService;
 import com.togethersports.tosproejct.jwt.JwtTokenProvider;
 import com.togethersports.tosproejct.jwt.Token;
+import com.togethersports.tosproejct.response.TokenResponse;
+import com.togethersports.tosproejct.userProfileImage.UserProfileImageService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -20,23 +26,16 @@ public class UserController {
     private final UserRepository userRepository;
     private final JwtService jwtService;
 
-
-
-
-
     // 회원가입 요청
     @PostMapping("/user")
     public Map<String, String> userSignup(@RequestBody UserDTO userDTO) {
 
         log.info("/user 요청됨");
+        log.info("userDTO ----> {}", userDTO);
+
         Map<String, String> map = new HashMap<>();
+
         map.put("userSignup", "true");
-
-        // 잘못된 인수가 메서드에 요청될 경우 exception 발생
-        /*Optional.of(userService.userSignup(userDTO)).orElseThrow(
-                () -> new IllegalArgumentException("부적절한 파라미터가 요청되었습니다. -> "));*/
-
-        log.info("userDTO -------------------> " + userDTO);
 
         try {
             userService.userSignup(userDTO);
@@ -50,16 +49,18 @@ public class UserController {
 
     // 로그인
     @PostMapping("/login")
-    public Token login(@RequestBody Map<String, String> user, @RequestHeader("User-Agent") String userAgent) {
+    public ResponseEntity<TokenResponse> login(@RequestBody Map<String, String> user, @RequestHeader("User-Agent") String userAgent) {
         log.info("user email = {}", user.get("userEmail"));
         User member = userRepository.findByUserEmail(user.get("userEmail"))
-                .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 E-MAIL 입니다."));
+                .orElseThrow(() -> new UsernameNotFoundException("가입되지 않은 E-MAIL 입니다."));
        // return jwtService.login(member);
         Token tokenDto = jwtTokenProvider.createAccessToken(member.getUsername(), member.getRoles());
         log.info("getroleeeee = {}", member.getRoles());
         jwtService.login(tokenDto, userAgent);
-        return tokenDto;
+        TokenResponse tokenResponse = new TokenResponse(Code.GOOD_REQUEST, tokenDto);
+        return new ResponseEntity<>(tokenResponse, HttpStatus.OK);
     }
+
     @GetMapping("/user/check")
     public Map<String, String> userCheck(@RequestBody UserDTO userDTO) {
 

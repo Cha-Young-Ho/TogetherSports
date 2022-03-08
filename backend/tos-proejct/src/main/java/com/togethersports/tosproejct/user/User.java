@@ -1,5 +1,6 @@
 package com.togethersports.tosproejct.user;
 
+import com.togethersports.tosproejct.userProfileImage.UserProfileImage;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -43,29 +44,21 @@ public class User implements UserDetails {
     @Column(name = "USER_BIRTH_DAY", length = 2)
     private String userBirthDay;
 
-    @Column(name = "USER_STATE", length = 5)
-    private String userState;
-
-    @Column(name = "MANNER_POINT")
-    private int mannerPoint;
-
-    @Column(name = "LOCATION_X")
-    private Double locationX;
-
-    @Column(name = "LOCATION_Y")
-    private Double locationY;
-
-    @Column(name = "GENDER", length = 1)
+    @Column(name = "GENDER")
     @Enumerated(EnumType.STRING)
     private Gender gender;
-
-    @Column(name = "ADMIN")
-    @Enumerated(EnumType.STRING)
-    private Admin admin;
 
     @Column(name = "PROVIDER", length = 20)
     @Enumerated(EnumType.STRING)
     private Provider provider;
+
+    @OneToMany(mappedBy = "user")
+    private List<UserProfileImage> userProfileImageList = new ArrayList<>();
+
+    /*public void add(UserProfileImage userProfileImage) {
+        userProfileImage.setUser(this);
+        getUserProfileImageList().add(userProfileImage);
+    }*/
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
@@ -119,10 +112,6 @@ public class User implements UserDetails {
         this.userBirthMonth = userDTO.getUserBirthMonth();
         this.userBirthDay = userDTO.getUserBirthDay();
         this.userName = userDTO.getUserName();
-        this.userState = userDTO.getUserState();
-        this.locationX = userDTO.getLocationX();
-        this.locationY = userDTO.getLocationY();
-        this.mannerPoint = userDTO.getMannerPoint();
         this.userNickname = userDTO.getUserNickname();
 
     }

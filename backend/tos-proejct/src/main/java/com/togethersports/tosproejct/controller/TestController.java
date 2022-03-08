@@ -1,4 +1,4 @@
-package com.togethersports.tosproejct;
+package com.togethersports.tosproejct.controller;
 
 import com.togethersports.tosproejct.jwt.TestResponseMessage;
 import lombok.RequiredArgsConstructor;
@@ -14,8 +14,6 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 public class TestController {
-
-
 
     @GetMapping("/test")
     public ResponseEntity<TestResponseMessage> test(@RequestParam Map<String, String> map, HttpServletRequest request){
@@ -58,5 +56,4 @@ public class TestController {
 
         return userAgent;
     }
-
 }
