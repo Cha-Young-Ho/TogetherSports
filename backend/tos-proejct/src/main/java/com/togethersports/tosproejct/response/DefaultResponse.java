@@ -6,7 +6,7 @@ import lombok.ToString;
 
 @ToString
 @Getter
-public class ErrorResponse {
+public class DefaultResponse {
     // HttpStatus
     private int status;
 
@@ -14,7 +14,7 @@ public class ErrorResponse {
     private String message;
 
 
-    public ErrorResponse(Code code){
+    public DefaultResponse(Code code){
         this.status = code.getCode();
         this.message = code.getMessage();
     }
