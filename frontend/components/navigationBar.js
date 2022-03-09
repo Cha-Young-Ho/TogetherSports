@@ -2,8 +2,8 @@ import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 
 const NavigationBar = () => {
-  // const { data: session, status } = useSession();
-  // const loading = status === "loading";
+  const { data: session, status } = useSession();
+  const loading = status === "loading";
 
   // 여기에 어떤 화면이든 로컬에 담긴 토큰 확인하고,
   // 로컬에 토큰이 없으면 비 로그인 상태로
