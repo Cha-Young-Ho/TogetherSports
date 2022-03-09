@@ -14,10 +14,10 @@ const Interest = () => {
       e.target.classList.add("clicked");
     }
 
-    setInterests({
-      ...interests,
+    setInterests((prev) => ({
+      ...prev,
       [e.target.innerText]: !interests[e.target.innerText],
-    });
+    }));
   };
 
   const BtnClickedNext = () => {
