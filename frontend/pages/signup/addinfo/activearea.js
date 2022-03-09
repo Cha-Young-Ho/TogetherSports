@@ -44,27 +44,8 @@ const ActiveArea = () => {
         <div className="content-showbox">
           <p>원하는 활동지역을 선택해주세요!</p>
         </div>
-        <Map latitude="37.56682420062817" longitude="126.97864093976689" />
-        {/* <div id="map"></div> */}
+        <Map />
         <div className="tag-map">위치 태그</div>
-        {/* <div className="text-area">지역선택</div>
-          <div className="dropdown-area">
-            <div>
-              <select className="sido" title="시/도">
-                <option>서울특별시</option>
-              </select>
-            </div>
-            <div>
-              <select className="sigugun" title="구/군/시">
-                <option>서초구</option>
-              </select>
-            </div>
-            <div>
-              <select className="dong" title="동/읍/면">
-                <option>서초동</option>
-              </select>
-            </div>
-          </div> */}
 
         <Link href="/login">
           <button className="button-done">완료</button>
