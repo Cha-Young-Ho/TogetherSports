@@ -35,6 +35,7 @@ const OAuth = () => {
         </section>
         <section className="section-right"></section>
       </div>
+
       <style jsx>{`
         .signup-page {
           width: 100%;
