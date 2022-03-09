@@ -2,8 +2,15 @@ import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 
 const NavigationBar = () => {
-  const { data: session, status } = useSession();
-  const loading = status === "loading";
+  // const { data: session, status } = useSession();
+  // const loading = status === "loading";
+
+  // 여기에 어떤 화면이든 로컬에 담긴 토큰 확인하고,
+  // 로컬에 토큰이 없으면 비 로그인 상태로
+  // 로컬에 토큰이 있으면, 서버에 토큰 전달하고,
+  // 서버가 토큰이 올바른 정보가 아니라고 하면 정보주고
+  // 만약 여기서 토큰이 틀린 값이면 refresh 토큰도 보내기
+  // 만약 refresh 토큰도 틀리다면 새로 로그인하게 유도
 
   return (
     <>

@@ -52,9 +52,8 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @Column(name = "ADMIN")
-    @Enumerated(EnumType.STRING)
-    private Admin admin;
+    @Column(name = "MANNER_POINT", columnDefinition = "integer default 0")
+    private int mannerPoint;
 
     @Column(name = "PROVIDER", length = 20)
     @Enumerated(EnumType.STRING)

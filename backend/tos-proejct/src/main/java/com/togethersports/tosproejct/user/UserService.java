@@ -36,8 +36,12 @@ public class UserService {
     private final UserProfileImageService userProfileImageService;
     private final FileHandler fileHandler;
 
-    public Optional<User> getUserFindByEmail(String userEmail) {
+    public Optional<User> findByUserEmail(String userEmail) {
         return userRepository.findByUserEmail(userEmail);
+    }
+
+    public Optional<User> findByUserNickname(String userNickname) {
+        return userRepository.findByUserNickname(userNickname);
     }
 
     /**
@@ -83,12 +87,16 @@ public class UserService {
 
     public Optional<User> updateUser(String accessToken, UserDTO userDTO){
 
-
         User user = getUserByEmailFromAccessToken(accessToken).get();
 
         user.update(userDTO);
 
         userRepository.save(user);
+
+        if (userDTO.getUserProfileImage() != null) {
+            fileHandler.userProfileImageUpload(userDTO); // 프로필 이미지 저장
+            userProfileImageService.userProfileImageSave(user, userDTO); // 회원프로필이미지 TB 데이터 등록
+        }
 
         return Optional.of(user);
 
@@ -99,6 +107,14 @@ public class UserService {
         Claims claims = jwtTokenProvider.getClaims(accessToken);
 
         return userRepository.findByUserEmail(claims.get("sub").toString());
+
+    }
+
+    public Optional<OtherUserDTO> getOtherInformationByUserNickname(String userNickname){
+
+        Optional<User> foundUser = userRepository.findByUserNickname(userNickname);
+
+        return new OtherUserDTO().parsingUser(foundUser);
 
     }
 

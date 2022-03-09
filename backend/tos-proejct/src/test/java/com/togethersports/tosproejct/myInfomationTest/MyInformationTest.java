@@ -80,7 +80,6 @@ public class MyInformationTest {
                 .userEmail("aabbcc@gmail.com")
                 .gender(Gender.MALE)
                 .provider(Provider.KAKAO)
-                .admin(Admin.ROLE_USER)
                 .roles(this.roles)
                 .build();
 

@@ -51,7 +51,6 @@ public class JpaTest {
             .userBirthMonth(USER_BIRTH_MONTH)
             .userBirthDay(USER_BIRTH_DAY)
             .gender(GENDER)
-            .admin(ADMIN)
             .provider(PROVIDER)
             .build();
 
@@ -71,7 +70,6 @@ public class JpaTest {
         Assertions.assertEquals(testUser.getUserBirthMonth(), USER_BIRTH_MONTH);
         Assertions.assertEquals(testUser.getUserBirthDay(), USER_BIRTH_DAY);
         Assertions.assertEquals(testUser.getGender(), GENDER);
-        Assertions.assertEquals(testUser.getAdmin(), ADMIN);
         Assertions.assertEquals(testUser.getProvider(), PROVIDER);
 
     }
@@ -93,7 +91,6 @@ public class JpaTest {
         Assertions.assertEquals(testUser.getUserBirthMonth(), USER_BIRTH_MONTH);
         Assertions.assertEquals(testUser.getUserBirthDay(), USER_BIRTH_DAY);
         Assertions.assertEquals(testUser.getGender(), GENDER);
-        Assertions.assertEquals(testUser.getAdmin(), ADMIN);
         Assertions.assertEquals(testUser.getProvider(), PROVIDER);
 
     }

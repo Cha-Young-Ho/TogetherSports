@@ -29,7 +29,6 @@ public class CustomUserMockSecurityContextFactory implements WithSecurityContext
                 .userNickname("침착맨")
                 .gender(Gender.MALE)
                 .provider(Provider.KAKAO)
-                .admin(Admin.ROLE_ADMIN)
                 .build();
         UsernamePasswordAuthenticationToken token =
                 new UsernamePasswordAuthenticationToken(authUser, "password", List.of(new SimpleGrantedAuthority(role)));
