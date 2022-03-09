@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -22,45 +23,18 @@ public class UserProfileImageService {
     private final UserRepository userRepository;
     private final UserProfileImageRepository userProfileImageRepository;
 
-    private String uploadFolder = "C:/files/profile/img/"; // ! 설정파일로 따로 관리해야함
+    //회원 프로필 이미지 DB 저장 (연관관계로 부모 user 객체가 필요하여 파라미터를 DTO와 따로 받음)
+    public void userProfileImageSave(User user, UserDTO userDTO) {
 
-    /**
-     *  파일 업로드 기능 분할을 위한 서비스 로직 (미구현)
-     */
-    public void userProfileImgUpload(UserDTO userDTO){
+        UserProfileImage userProfileImage = UserProfileImage
+                .builder()
+                .user(user)
+                .userProfileRealName(userDTO.getUserProfileImage().getUserProfileRealName())
+                .userProfileSaveName(userDTO.getUserProfileImage().getUserProfileSaveName())
+                .userProfileExtension( userDTO.getUserProfileImage().getUserProfileExtension())
+                .build();
 
-        log.info("회원 프로필 이미지 업로드 호출");
-
-        String realName = userDTO.getUserProfileImage().getUserProfileRealName();
-        String extension = userDTO.getUserProfileImage().getUserProfileExtension();
-        String image = userDTO.getUserProfileImage().getImage();
-        int userSequenceId = userDTO.getUserSequenceId();
-
-        log.info("getImage --> {}", image);
-
-        Path uploadPath = Paths.get(uploadFolder);
-
-        try {
-            //디렉토리 생성
-            Files.createDirectories(uploadPath);
-
-            //저장 파일명 생성
-            String fileSaveName = UUID.randomUUID()
-                    + "_"
-                    + realName
-                    + "."
-                    + extension;
-
-            //최종 저장 디렉토리 + 저장 파일명
-            Path filePath = Paths.get(uploadFolder + fileSaveName);
-
-            byte[] decodeBytes = Base64.getDecoder().decode(userDTO.getUserProfileImage().getImage());
-
-            //파일 생성
-            Files.write(filePath, decodeBytes);
-
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
+        userProfileImageRepository.save(userProfileImage);
     }
+
 }

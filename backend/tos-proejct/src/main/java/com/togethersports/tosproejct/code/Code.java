@@ -7,6 +7,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum Code {
 
+    INDEX_NOT_FOUND(1001, "인덱스가 존재하지 않습니다."),
+    UNSUPPORTED_TOKEN(1006, "변조된 토큰입니다."),
+
     //실패
     BAD_REQUEST(1000, "잘못된 요청입니다."),
     //유저 1100~ 1199
@@ -27,6 +30,4 @@ public enum Code {
 
     private int code;
     private String message;
-
-
 }

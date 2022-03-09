@@ -1,8 +1,11 @@
 package com.togethersports.tosproejct.user;
 
+import com.togethersports.tosproejct.file.FileHandler;
 import com.togethersports.tosproejct.jwt.JwtTokenProvider;
 import com.togethersports.tosproejct.userProfileImage.UserProfileImage;
+import com.togethersports.tosproejct.userProfileImage.UserProfileImageDTO;
 import com.togethersports.tosproejct.userProfileImage.UserProfileImageRepository;
+import com.togethersports.tosproejct.userProfileImage.UserProfileImageService;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,93 +13,69 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import javax.swing.filechooser.FileSystemView;
+import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
-@Service
 @RequiredArgsConstructor
+//@Transactional
+@Service
 public class UserService {
 
     private final JwtTokenProvider jwtTokenProvider;
-
     private final UserRepository userRepository;
+    private final UserProfileImageService userProfileImageService;
+    private final FileHandler fileHandler;
 
-    private final UserProfileImageRepository userProfileImageRepository;
-
-    public Optional<User> getUserFindByEmail(String userEmail) {
+    public Optional<User> findByUserEmail(String userEmail) {
         return userRepository.findByUserEmail(userEmail);
     }
 
-    private String uploadFolder = "C:/files/profile/img/"; // ! 설정파일로 따로 관리해야함
+    public Optional<User> findByUserNickname(String userNickname) {
+        return userRepository.findByUserNickname(userNickname);
+    }
 
     /**
      *  회원가입 서비스
      */
-    public void userSignup(UserDTO userDTO) {
-
-        log.info("userDTD auth -> {}", userDTO.getAdmin());
-
-        User user = User.builder()
-                .userSequenceId(userDTO.getUserSequenceId())
-                .userEmail(userDTO.getUserEmail())
-                .userName(userDTO.getUserName())
-                .userBirthYear(userDTO.getUserBirthYear())
-                .userBirthMonth(userDTO.getUserBirthMonth())
-                .userBirthDay(userDTO.getUserBirthDay())
-                .userNickname(userDTO.getUserNickname())
-                .roles(Arrays.asList(new SimpleGrantedAuthority(userDTO.getAdmin().toString()).toString()))
-                .gender(userDTO.getGender())
-                .provider(userDTO.getProvider())
-                .build();
-
-        userRepository.save(user);
-
-        String realName = userDTO.getUserProfileImage().getUserProfileRealName();
-        String extension = userDTO.getUserProfileImage().getUserProfileExtension();
-
-        Path uploadPath = Paths.get(uploadFolder);
+    public String userSignup(UserDTO userDTO) {
 
         try {
-            //디렉토리 생성
-            Files.createDirectories(uploadPath);
-
-            //저장 파일명 생성
-            String fileSaveName = UUID.randomUUID()
-                    + "_"
-                    + realName
-                    + "."
-                    + extension;
-
-            //최종 저장 디렉토리 + 저장 파일명
-            Path filePath = Paths.get(uploadFolder + fileSaveName);
-
-            byte[] decodeBytes = Base64.getDecoder().decode(userDTO.getUserProfileImage().getImage());
-
-            //파일 생성
-            Files.write(filePath, decodeBytes);
-
-            //회원 프로필 이미지 DB 저장
-            UserProfileImage userProfileImage = UserProfileImage
-                    .builder()
-                    .user(user)
-                    .userProfileRealName(realName)
-                    .userProfileSaveName(fileSaveName)
-                    .userProfileExtension(extension)
+            User user = User.builder()
+                    .userSequenceId(userDTO.getUserSequenceId())
+                    .userEmail(userDTO.getUserEmail())
+                    .userName(userDTO.getUserName())
+                    .userBirthYear(userDTO.getUserBirthYear())
+                    .userBirthMonth(userDTO.getUserBirthMonth())
+                    .userBirthDay(userDTO.getUserBirthDay())
+                    .userNickname(userDTO.getUserNickname())
+                    .roles(Arrays.asList(new SimpleGrantedAuthority(userDTO.getAdmin().toString()).toString()))
+                    .gender(userDTO.getGender())
+                    .provider(userDTO.getProvider())
                     .build();
 
-            userProfileImageRepository.save(userProfileImage);
+            userRepository.save(user); // 회원 TB 데이터 등록
 
-        } catch(IOException e) {
+            if (userDTO.getUserProfileImage() != null) {
+
+                fileHandler.userProfileImageUpload(userDTO); // 프로필 이미지 저장
+                userProfileImageService.userProfileImageSave(user, userDTO); // 회원프로필이미지 TB 데이터 등록
+            }
+        } catch(Exception e) {
             e.printStackTrace();
+            return "FAIL";
         }
+
+        return "SUCCESS";
     }
 
 
@@ -108,12 +87,16 @@ public class UserService {
 
     public Optional<User> updateUser(String accessToken, UserDTO userDTO){
 
-
         User user = getUserByEmailFromAccessToken(accessToken).get();
 
         user.update(userDTO);
 
         userRepository.save(user);
+
+        if (userDTO.getUserProfileImage() != null) {
+            fileHandler.userProfileImageUpload(userDTO); // 프로필 이미지 저장
+            userProfileImageService.userProfileImageSave(user, userDTO); // 회원프로필이미지 TB 데이터 등록
+        }
 
         return Optional.of(user);
 
