@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import jquery from "jquery";
 import $ from "jquery";
 import { useDispatch } from "react-redux";
+import axios from "axios";
 
 const PersonalInfo = () => {
   const dispatch = useDispatch();
@@ -12,8 +13,10 @@ const PersonalInfo = () => {
   const [birthMonth, setBirthMonth] = useState("MM");
   const [birthDay, setBirthDay] = useState("DD");
   const [gender, setGender] = useState("male");
-
-  const getDuplicationCheck = (e) => {};
+  const [profile, setProfile] = useState("");
+  const [imagesrc, setImagesrc] = useState("");
+  const [fileName, setFileName] = useState("");
+  const [extention, setExtention] = useState("");
 
   const getBirthDay = () => {
     $(document).ready(function () {
@@ -56,6 +59,18 @@ const PersonalInfo = () => {
 
   const getGender = (genderType) => {
     setGender(genderType);
+  };
+
+  //프로필 이미지 source 인코딩
+  const encodeFileToBase64 = (fileBlob) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(fileBlob);
+    return new Promise((resolve) => {
+      reader.onload = () => {
+        setImagesrc(reader.result);
+        resolve();
+      };
+    });
   };
 
   //예외처리
@@ -106,16 +121,21 @@ const PersonalInfo = () => {
         userBirthMonday: birthMonth,
         userBirthDay: birthDay,
         gender: gender,
+        profile_fileName: fileName,
+        profile_extention: extention,
+        imagesrc: imagesrc,
       },
     });
   };
 
   useEffect(getBirthDay, []);
-  //test
+  //console test
   useEffect(() => {
     console.log(nickname);
     console.log(`${birthYear}${birthMonth}${birthDay}`);
     console.log(gender);
+    console.log(profile.substr(12).split("."));
+    console.log(imagesrc);
   });
 
   return (
@@ -164,7 +184,9 @@ const PersonalInfo = () => {
               name="nickname"
               onChange={(e) => setNickname(e.target.value)}
             />
-            <button className="button-dup-check">중복확인</button>
+            <button className="button-dup-check" onClick={getDuplicationCheck}>
+              중복확인
+            </button>
           </div>
           <div className="birth">
             <div className="text-birth">생년월일</div>
@@ -206,7 +228,6 @@ const PersonalInfo = () => {
                   type="radio"
                   name="gender"
                   id="radio-male"
-                  checked="checked"
                   checked={gender === "male"}
                   onChange={() => getGender("male")}
                 />
@@ -225,6 +246,29 @@ const PersonalInfo = () => {
               </div>
             </div>
           </div>
+          <div className="profile">
+            <div className="text-profile">프로필</div>
+            <input
+              readOnly
+              className="upload-name"
+              value={profile.substr(12)}
+            />
+            <label for="filename">
+              <div>파일찾기</div>
+            </label>
+            <input
+              type="file"
+              id="filename"
+              accept=".jpg, .jpeg, .png"
+              onChange={(e) => {
+                setProfile(e.target.value);
+                encodeFileToBase64(e.target.files[0]);
+                const splitFiles = profile.substr(12).split(".");
+                setFileName(splitFiles[0]);
+                setExtention(splitFiles[1]);
+              }}
+            />
+          </div>
         </div>
         <Link href="/signup/addinfo/interest">
           <button className="button-next" onClick={getNext}>
@@ -234,6 +278,10 @@ const PersonalInfo = () => {
       </div>
 
       <style jsx>{`
+        * {
+          font-family: "NanumBarunGothic";
+        }
+
         .bg-container {
           margin-top: 10px;
           border-top: 1px solid #e4e8eb;
@@ -432,6 +480,60 @@ const PersonalInfo = () => {
         #radio-male:checked:before,
         #radio-female:checked:before {
           background: #08555f;
+        }
+
+        .profile {
+          width: 583px;
+          height: 40px;
+          margin: 44.5px 5.5px 27px;
+          padding: 5px 10px 5px 14px;
+          border-radius: 10px;
+          border: solid 1px #e8e8e8;
+          background-color: #fff;
+          display: flex;
+          justify-content: space-between;
+        }
+
+        .text-profile {
+          width: 45px;
+          height: 30px;
+          font-weight: bold;
+          font-size: 1.5em;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .upload-name {
+          width: 430px;
+          height: 30px;
+          border-style: none;
+          font-size: 1.5em;
+          padding: 5px;
+        }
+
+        .profile label {
+          width: 70px;
+          background-color: #08555f;
+          color: white;
+          font-family: "NanumBarunGothic";
+          font-size: 1.3em;
+          border: 0;
+          outline: 0;
+          cursor: pointer;
+          border-radius: 5px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .profile input[type="file"] {
+          position: absolute;
+          width: 0;
+          height: 0;
+          padding: 0;
+          border: 0;
+          overflow: hidden;
         }
 
         .button-next {

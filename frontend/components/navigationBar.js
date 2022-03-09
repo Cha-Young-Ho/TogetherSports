@@ -1,9 +1,37 @@
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { deleteLogout } from "../api/members";
 
 const NavigationBar = () => {
+  let loginData = true;
   const { data: session, status } = useSession();
   const loading = status === "loading";
+
+  // 로컬 스토리지에 accessToken 가져오기
+  useEffect(() => {
+    loginData = localStorage.getItem("accessToken");
+  }, []);
+
+  const deleteLogout = () => {
+    deleteLogout().then((res) => {
+      console.log(res.data.message);
+      if (res.data.code === "5000") {
+        localStorage.removeItem("accessToken");
+        console.log("로그아웃 완료");
+      } else {
+        console.log("잘못 된 요청입니다.");
+      }
+    });
+    console.log("로그아웃 시도");
+  };
+
+  // 여기에 어떤 화면이든 로컬에 담긴 토큰 확인하고,
+  // 로컬에 토큰이 없으면 비 로그인 상태로
+  // 로컬에 토큰이 있으면, 서버에 토큰 전달하고,
+  // 서버가 토큰이 올바른 정보가 아니라고 하면 정보주고
+  // 만약 여기서 토큰이 틀린 값이면 refresh 토큰도 보내기
+  // 만약 refresh 토큰도 틀리다면 새로 로그인하게 유도
 
   return (
     <>
@@ -32,7 +60,7 @@ const NavigationBar = () => {
           <div>
             {!loading ? (
               <div className="sign">
-                {!session ? (
+                {!session || !loginData ? (
                   <>
                     <Link href="/signup/oauth">
                       <div className="tag">회원가입</div>
@@ -48,11 +76,12 @@ const NavigationBar = () => {
                     </div>
                     <button
                       className="btn_signout"
-                      onClick={() =>
+                      onClick={() => {
                         signOut({
                           callbackUrl: "/",
-                        })
-                      }
+                        });
+                        deleteLogout();
+                      }}
                     >
                       로그아웃
                     </button>

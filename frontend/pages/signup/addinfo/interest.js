@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
+import UserInfoNavBar from "../../../components/userInfoNavBar";
 
 const Interest = () => {
   const dispatch = useDispatch();
@@ -13,10 +14,10 @@ const Interest = () => {
       e.target.classList.add("clicked");
     }
 
-    setInterests({
-      ...interests,
+    setInterests((prev) => ({
+      ...prev,
       [e.target.innerText]: !interests[e.target.innerText],
-    });
+    }));
   };
 
   const BtnClickedNext = () => {
@@ -28,46 +29,14 @@ const Interest = () => {
     });
   };
 
-  // useEffect(() => {
-  //   console.log(interests);
-  // }, [interests]);
-
   return (
     <>
       <div className="bg-container">
-        <h1>회원가입</h1>
-        <div className="title">
-          <div>
-            <div>
-              <img
-                src="/personalinfo-deactivation.png"
-                alt="인적사항"
-                className="title-circle-personalinfo"
-              ></img>
-            </div>
-            <p>인적사항</p>
-          </div>
-          <div>
-            <div>
-              <img
-                src="/interests-activation.png"
-                alt="관심종목"
-                className="title-circle-interest"
-              ></img>
-            </div>
-            <p>관심종목</p>
-          </div>
-          <div>
-            <div>
-              <img
-                src="/activearea-deactivation.png"
-                alt="활동지역"
-                className="title-circle-activearea"
-              ></img>
-            </div>
-            <p>활동지역</p>
-          </div>
-        </div>
+        <UserInfoNavBar
+          personal_atv={"deactivation"}
+          interest_atv={"activation"}
+          activearea={"deactivation"}
+        />
         <div className="content-showbox">
           <p>관심있는 종목에 맞는 방을 추천 해드립니다!</p>
         </div>
@@ -114,6 +83,10 @@ const Interest = () => {
       </div>
 
       <style jsx>{`
+        * {
+          font-family: "NanumBarunGothic";
+        }
+
         .bg-container {
           margin-top: 10px;
           border-top: 1px solid #e4e8eb;
@@ -124,34 +97,10 @@ const Interest = () => {
           justify-content: center;
         }
 
-        h1 {
-          padding: 35px 0;
-          font-family: "NanumBarunGothic";
-          font-weight: bold;
-          font-size: 2.5rem;
-        }
-
-        .title {
-          width: 500px;
-          display: flex;
-          justify-content: space-around;
-          margin-bottom: 20px;
-        }
-
-        .title-circle-personalinfo,
-        .title-circle-interest,
-        .title-circle-activearea {
-          border-radius: 50px;
-          width: 90px;
-          height: 90px;
-          margin: 10px;
-        }
-
         p {
           display: flex;
           justify-content: center;
           font-size: 1.5rem;
-          font-family: "NanumBarunGothic";
           align-items: center;
           margin: 5px 0;
         }

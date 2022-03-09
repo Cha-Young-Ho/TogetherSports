@@ -10,15 +10,19 @@ const initialState = {
   userBirthMonday: "",
   userBirthDay: "",
   gender: "",
+  profile_fileName: "",
+  profile_extention: "",
+  imagesrc: "",
   admin: "",
   provider: "",
-  activeArea: [""],
+  activeAreas: [],
   interests: [],
 };
 
 const PERSONALINFO = "PERSONALINFO";
 const REQUESTUSERS = "REQUESTUSERS";
 const INTERESTS = "INTERESTS";
+const AUTHDATA = "AUTHDATA";
 
 const userRequestReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -26,6 +30,13 @@ const userRequestReducer = (state = initialState, action) => {
       // Attention! This will overwrite client state! Real apps should use proper reconciliation.
       console.log("hydrate");
       return { ...state, ...action.payload };
+    case AUTHDATA:
+      return {
+        ...state,
+        userEmail: action.payload.userEmail,
+        userName: action.payload.userName,
+        provider: action.payload.provider,
+      };
     case PERSONALINFO:
       console.log(state);
       return {
@@ -35,6 +46,9 @@ const userRequestReducer = (state = initialState, action) => {
         userBirthMonday: action.payload.userBirthMonday,
         userBirthDay: action.payload.userBirthDay,
         gender: action.payload.gender,
+        profile_fileName: action.payload.profile_fileName,
+        profile_extention: action.payload.profile_extention,
+        imagesrc: action.payload.imagesrc,
       };
     case INTERESTS:
       console.log(state);
