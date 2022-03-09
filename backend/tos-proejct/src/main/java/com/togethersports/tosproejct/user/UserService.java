@@ -127,5 +127,13 @@ public class UserService {
 
     }
 
+    public Optional<OtherUserDTO> getOtherInformationByUserNickname(String userNickname){
+
+        Optional<User> foundUser = userRepository.findByUserNickname(userNickname);
+
+        return new OtherUserDTO().parsingUser(foundUser);
+
+    }
+
 }
 
