@@ -184,9 +184,7 @@ const PersonalInfo = () => {
               name="nickname"
               onChange={(e) => setNickname(e.target.value)}
             />
-            <button className="button-dup-check" onClick={getDuplicationCheck}>
-              중복확인
-            </button>
+            <button className="button-dup-check">중복확인</button>
           </div>
           <div className="birth">
             <div className="text-birth">생년월일</div>

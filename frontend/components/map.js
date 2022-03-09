@@ -84,16 +84,24 @@ const Map = () => {
         mouseEvent.latLng,
         function (result, status) {
           if (status === kakao.maps.services.Status.OK) {
-            if (result[0].region_2depth_name === "") {
-              result[0].region_2depth_name = "정보 없음";
+            let Region = result[0].region_1depth_name; //시도
+            let District = result[0].region_2depth_name; //구군
+            let EupMyunDong = result[0].region_3depth_name; //읍면동
+            //예외 처리
+            if (District === "") {
+              District = "정보 없음";
+            }
+            if (EupMyunDong === "") {
+              EupMyunDong = "정보 없음";
             }
 
             activeareas.push({
-              region: result[0].region_1depth_name, //시도
-              district: result[0].region_2depth_name, //구군시
-              eupMyunDong: result[0].region_3depth_name, //읍면동
+              region: Region,
+              district: District,
+              eupMyunDong: EupMyunDong,
             });
 
+            //중복된 지역은 push X
             activeareas = activeareas.filter((area, idx, arr) => {
               return (
                 arr.findIndex(
