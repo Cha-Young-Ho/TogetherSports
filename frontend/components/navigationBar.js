@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { deleteLogout } from "../api/members";
 
 const NavigationBar = () => {
+<<<<<<< HEAD
   let loginData = true;
   const { data: session, status } = useSession();
   const loading = status === "loading";
@@ -25,6 +26,10 @@ const NavigationBar = () => {
     });
     console.log("로그아웃 시도");
   };
+=======
+  const { data: session, status } = useSession();
+  const loading = status === "loading";
+>>>>>>> 3a80d73abe571e3fa84f082e4269121675ecb594
 
   // 여기에 어떤 화면이든 로컬에 담긴 토큰 확인하고,
   // 로컬에 토큰이 없으면 비 로그인 상태로

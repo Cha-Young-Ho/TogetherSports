@@ -11,7 +11,7 @@ public class UserProfileImageDTO {
 
     private int userProfileSequenceId;
     private int userSequenceId;
-    private String image;
+    private String imageSource;
     private String userProfileRealName;
     private String userProfileSaveName;
     private String userProfileExtension;
