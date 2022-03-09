@@ -1,8 +1,8 @@
 package com.togethersports.tosproejct.myInfomationTest;
 
-import com.togethersports.tosproejct.user.Admin;
-import com.togethersports.tosproejct.user.Gender;
-import com.togethersports.tosproejct.user.Provider;
+import com.togethersports.tosproejct.enums.Admin;
+import com.togethersports.tosproejct.enums.Gender;
+import com.togethersports.tosproejct.enums.Provider;
 import com.togethersports.tosproejct.user.User;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

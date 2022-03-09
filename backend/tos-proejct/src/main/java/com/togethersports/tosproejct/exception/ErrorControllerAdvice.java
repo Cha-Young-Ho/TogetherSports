@@ -6,10 +6,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 @Slf4j
@@ -22,12 +26,17 @@ public class ErrorControllerAdvice {
         log.info("NoSuch 시작");
         ErrorResponse response = new ErrorResponse(Code.BAD_REQUEST);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-
     }
 
     @ExceptionHandler(value = UsernameNotFoundException.class)
     protected ResponseEntity<ErrorResponse> handleUserNameNotFoundException(){
         ErrorResponse response = new ErrorResponse(Code.BOARD_NOT_FOUND);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = CustomSignatureException.class)
+    protected ResponseEntity<ErrorResponse> handleSignatureException(){
+        ErrorResponse response = new ErrorResponse(Code.WRONG_TYPE_TOKEN);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
@@ -37,4 +46,11 @@ public class ErrorControllerAdvice {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex){
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors()
+                .forEach(c -> errors.put(((FieldError) c).getField(), c.getDefaultMessage()));
+        return ResponseEntity.badRequest().body(errors);
+    }
 }

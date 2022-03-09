@@ -1,6 +1,9 @@
 package com.togethersports.tosproejct.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.togethersports.tosproejct.enums.Admin;
+import com.togethersports.tosproejct.enums.Gender;
+import com.togethersports.tosproejct.enums.Provider;
 import com.togethersports.tosproejct.userProfileImage.UserProfileImage;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;

@@ -1,5 +1,6 @@
 package com.togethersports.tosproejct.user;
 
+import com.togethersports.tosproejct.file.FileHandler;
 import com.togethersports.tosproejct.jwt.JwtService;
 import com.togethersports.tosproejct.jwt.JwtTokenProvider;
 import com.togethersports.tosproejct.jwt.Token;
@@ -9,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.*;
 
 @Slf4j
@@ -24,19 +26,19 @@ public class UserController {
 
     // 회원가입 요청
     @PostMapping("/user")
-    public Map<String, String> userSignup(@RequestBody UserDTO userDTO) {
+    public Map<String, String> userSignup(@Valid @RequestBody UserDTO userDTO) {
 
         log.info("/user 요청됨");
         log.info("userDTO ----> {}", userDTO);
 
         Map<String, String> map = new HashMap<>();
 
-        map.put("userSignup", "true");
+        String result = userService.userSignup(userDTO);
 
-        try {
-            userService.userSignup(userDTO);
-        } catch (IllegalArgumentException e) {
-            e.getMessage();
+        if(result.equals("SUCCESS")) {
+            map.put("userSignup", "true");
+        }
+        if(result.equals("FAIL")) {
             map.put("userSignup", "false");
         }
 

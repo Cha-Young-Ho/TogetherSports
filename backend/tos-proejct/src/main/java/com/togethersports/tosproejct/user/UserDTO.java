@@ -1,8 +1,15 @@
 package com.togethersports.tosproejct.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.togethersports.tosproejct.enums.Admin;
+import com.togethersports.tosproejct.enums.Gender;
+import com.togethersports.tosproejct.enums.Provider;
 import com.togethersports.tosproejct.userProfileImage.UserProfileImageDTO;
 import lombok.*;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Data // @Getter + Constructor로 바꿔야함
 @Builder
@@ -12,15 +19,24 @@ public class UserDTO {
 
     // User
     private int userSequenceId;
+
+    @NotBlank(message = "email 필드 값이 존재하지 않습니다.")
+    @Email
     private String userEmail;
+    @NotBlank(message = "userName 필드 값이 존재하지 않습니다.")
     private String userName;
+    @NotBlank(message = "userNickname 필드 값이 존재하지 않습니다.")
     private String userNickname;
+    @NotBlank(message = "userBirthYear 필드 값이 존재하지 않습니다.")
     private String userBirthYear;
+    @NotBlank(message = "userBirthMonth 필드 값이 존재하지 않습니다.")
     private String userBirthMonth;
+    @NotBlank(message = "userBirthDay 필드 값이 존재하지 않습니다.")
     private String userBirthDay;
+
     private Gender gender;
-    private Admin admin;
     private Provider provider;
+    private Admin admin;
 
     @JsonProperty("userProfileImage")
     private UserProfileImageDTO userProfileImage;

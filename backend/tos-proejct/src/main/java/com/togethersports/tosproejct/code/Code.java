@@ -18,7 +18,6 @@ public enum Code {
     BAD_REQUEST(1009, "잘못된 요청입니다."),
     CONSTRAINT_ERROR(1101, "무결성 제약 조건에 위배됩니다.");
 
-
     private int code;
     private String message;
 }
