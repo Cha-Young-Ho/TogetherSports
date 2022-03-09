@@ -22,6 +22,7 @@ const initialState = {
 const PERSONALINFO = "PERSONALINFO";
 const REQUESTUSERS = "REQUESTUSERS";
 const INTERESTS = "INTERESTS";
+const AUTHDATA = "AUTHDATA";
 
 const userRequestReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -29,6 +30,13 @@ const userRequestReducer = (state = initialState, action) => {
       // Attention! This will overwrite client state! Real apps should use proper reconciliation.
       console.log("hydrate");
       return { ...state, ...action.payload };
+    case AUTHDATA:
+      return {
+        ...state,
+        userEmail: action.payload.userEmail,
+        userName: action.payload.userName,
+        provider: action.payload.provider,
+      };
     case PERSONALINFO:
       console.log(state);
       return {

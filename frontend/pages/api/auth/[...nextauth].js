@@ -61,7 +61,6 @@ export default NextAuth({
   callbacks: {
     async jwt({ token, account }) {
       if (account) {
-        token.accessToken = account.access_token;
         token.provider = account.provider;
       }
 
@@ -69,14 +68,9 @@ export default NextAuth({
     },
 
     async session({ session, token }) {
-      session.accessToken = token.accessToken;
-      session.provider = token.provider;
+      session.user.provider = token.provider;
 
       return session;
-    },
-
-    async redirect() {
-      return Promise.resolve("/usercheck");
     },
   },
 });

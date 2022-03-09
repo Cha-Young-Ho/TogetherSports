@@ -67,16 +67,16 @@ const HotRoom = () => {
         <div className="slider-container">
           <div className="slider-wrapper">
             <div className="slider-view" ref={slideRef}>
-              {tempData.map((data) => {
+              {tempData.map((data, index) => {
                 return (
-                  <div className="slider">
+                  <div key={index} className="slider">
                     <div className="room-container">
                       <div className="room-info">
                         <div className="room-title-ppl">
-                          <p1>{`${data.title}`}</p1>
-                          <p2>{`${data.ppl}`}</p2>
+                          <p className="data-title">{`${data.title}`}</p>
+                          <p className="p2">{`${data.ppl}`}</p>
                         </div>
-                        <p2>{`${data.text}`}</p2>
+                        <p className="p2">{`${data.text}`}</p>
                       </div>
                     </div>
                   </div>
@@ -158,13 +158,13 @@ const HotRoom = () => {
           justify-content: space-between;
         }
 
-        p1 {
+        .data-title {
           font-weight: bold;
           margin: 10px;
           font-size: 2rem;
         }
 
-        p2 {
+        .p2 {
           margin: 10px;
           font-size: 1.5rem;
           color: #a5a5a5;

@@ -14,19 +14,31 @@ const OAuth = () => {
             <div className="signup-button">
               <button
                 className="signup-button-naver"
-                onClick={() => signIn("naver")}
+                onClick={() =>
+                  signIn("naver", {
+                    callbackUrl: "/usercheck",
+                  })
+                }
               >
                 네이버 회원가입
               </button>
               <button
                 className="signup-button-kakao"
-                onClick={() => signIn("kakao")}
+                onClick={() =>
+                  signIn("kakao", {
+                    callbackUrl: "/usercheck",
+                  })
+                }
               >
                 카카오톡 회원가입
               </button>
               <button
                 className="signup-button-google"
-                onClick={() => signIn("google")}
+                onClick={() =>
+                  signIn("google", {
+                    callbackUrl: "/usercheck",
+                  })
+                }
               >
                 구글 회원가입
               </button>
