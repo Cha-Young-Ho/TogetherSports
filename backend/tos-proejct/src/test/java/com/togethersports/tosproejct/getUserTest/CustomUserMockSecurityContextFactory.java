@@ -1,4 +1,4 @@
-package com.togethersports.tosproejct.myInfomationTest;
+package com.togethersports.tosproejct.getUserTest;
 
 import com.togethersports.tosproejct.user.Admin;
 import com.togethersports.tosproejct.user.Gender;
