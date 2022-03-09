@@ -1,5 +1,8 @@
 package com.togethersports.tosproejct.myInfomationTest;
 
+import com.togethersports.tosproejct.enums.Admin;
+import com.togethersports.tosproejct.enums.Gender;
+import com.togethersports.tosproejct.enums.Provider;
 import com.togethersports.tosproejct.jwt.JwtTokenProvider;
 import com.togethersports.tosproejct.jwt.Token;
 import com.togethersports.tosproejct.user.*;
@@ -77,7 +80,6 @@ public class MyInformationTest {
                 .userEmail("aabbcc@gmail.com")
                 .gender(Gender.MALE)
                 .provider(Provider.KAKAO)
-                .admin(Admin.ROLE_USER)
                 .roles(this.roles)
                 .build();
 

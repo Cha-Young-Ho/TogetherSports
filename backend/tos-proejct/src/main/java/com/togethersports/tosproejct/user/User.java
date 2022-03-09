@@ -1,5 +1,9 @@
 package com.togethersports.tosproejct.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.togethersports.tosproejct.enums.Admin;
+import com.togethersports.tosproejct.enums.Gender;
+import com.togethersports.tosproejct.enums.Provider;
 import com.togethersports.tosproejct.userProfileImage.UserProfileImage;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -48,10 +52,14 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
+    @Column(name = "MANNER_POINT", columnDefinition = "integer default 0")
+    private int mannerPoint;
+
     @Column(name = "PROVIDER", length = 20)
     @Enumerated(EnumType.STRING)
     private Provider provider;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<UserProfileImage> userProfileImageList = new ArrayList<>();
 

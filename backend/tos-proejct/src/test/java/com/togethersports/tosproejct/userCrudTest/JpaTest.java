@@ -1,6 +1,9 @@
 package com.togethersports.tosproejct.userCrudTest;
 
 
+import com.togethersports.tosproejct.enums.Admin;
+import com.togethersports.tosproejct.enums.Gender;
+import com.togethersports.tosproejct.enums.Provider;
 import com.togethersports.tosproejct.user.*;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -10,9 +13,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.test.annotation.Commit;
-import org.springframework.util.Assert;
-
-import javax.persistence.EntityNotFoundException;
 
 /*
     JPA연동 테스트 클래스 파일입니다.
@@ -47,14 +47,10 @@ public class JpaTest {
             .userEmail(USEREMAIL)
             .userName(USERNAME)
             .userNickname(USERNICKNAME)
-            .userBirthYear(BLINK)
-            .userBirthMonth(BLINK)
-            .userBirthDay(BLINK)
             .userBirthYear(USER_BIRTH_YEAR)
             .userBirthMonth(USER_BIRTH_MONTH)
             .userBirthDay(USER_BIRTH_DAY)
             .gender(GENDER)
-            .admin(ADMIN)
             .provider(PROVIDER)
             .build();
 
@@ -70,14 +66,10 @@ public class JpaTest {
         Assertions.assertEquals(testUser.getUserEmail(), USEREMAIL);
         Assertions.assertEquals(testUser.getUsername(), USERNAME);
         Assertions.assertEquals(testUser.getUserNickname(), USERNICKNAME);
-        Assertions.assertEquals(testUser.getUserBirthYear(), BLINK);
-        Assertions.assertEquals(testUser.getUserBirthMonth(), BLINK);
-        Assertions.assertEquals(testUser.getUserBirthDay(), BLINK);
         Assertions.assertEquals(testUser.getUserBirthYear(), USER_BIRTH_YEAR);
         Assertions.assertEquals(testUser.getUserBirthMonth(), USER_BIRTH_MONTH);
         Assertions.assertEquals(testUser.getUserBirthDay(), USER_BIRTH_DAY);
         Assertions.assertEquals(testUser.getGender(), GENDER);
-        Assertions.assertEquals(testUser.getAdmin(), ADMIN);
         Assertions.assertEquals(testUser.getProvider(), PROVIDER);
 
     }
@@ -99,7 +91,6 @@ public class JpaTest {
         Assertions.assertEquals(testUser.getUserBirthMonth(), USER_BIRTH_MONTH);
         Assertions.assertEquals(testUser.getUserBirthDay(), USER_BIRTH_DAY);
         Assertions.assertEquals(testUser.getGender(), GENDER);
-        Assertions.assertEquals(testUser.getAdmin(), ADMIN);
         Assertions.assertEquals(testUser.getProvider(), PROVIDER);
 
     }
