@@ -3,9 +3,7 @@ import { useDispatch } from "react-redux";
 
 const Map = () => {
   const dispatch = useDispatch();
-  //const [area, setArea] = useState([]);
   let activeareas = [];
-  const [marekr, setMarker] = useState(false);
 
   useEffect(() => {
     getMap();
@@ -67,10 +65,26 @@ const Map = () => {
     marker.setMap(map);
 
     kakao.maps.event.addListener(marker, "click", function () {
-      marker.setMap(null);
+      marker.setMap(null); //지도에서 마커제거
       searchAddrFromCoords(geocoder, position, function (result, status) {
         if (status === kakao.maps.services.Status.OK) {
-          console.log("삭제할 지역 : " + result[0].address_name);
+          let Region = result[0].region_1depth_name; //시도
+          let District = result[0].region_2depth_name; //구군
+          let EupMyunDong = result[0].region_3depth_name; //읍면동
+
+          const idx = activeareas.findIndex(function (item) {
+            if (item.district === "정보 없음") {
+              District = "정보 없음";
+            }
+            return (
+              item.region === Region &&
+              item.district === District &&
+              item.eupMyunDong === EupMyunDong
+            );
+          });
+          if (idx !== -1) {
+            activeareas.splice(idx, 1);
+          }
           console.log(activeareas);
         }
       });
@@ -87,12 +101,10 @@ const Map = () => {
             let Region = result[0].region_1depth_name; //시도
             let District = result[0].region_2depth_name; //구군
             let EupMyunDong = result[0].region_3depth_name; //읍면동
+
             //예외 처리
             if (District === "") {
               District = "정보 없음";
-            }
-            if (EupMyunDong === "") {
-              EupMyunDong = "정보 없음";
             }
 
             activeareas.push({
