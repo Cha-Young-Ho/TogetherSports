@@ -48,6 +48,9 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
+    @Column(name = "MANNER_POINT", columnDefinition = "integer default 0")
+    private int mannerPoint;
+
     @Column(name = "PROVIDER", length = 20)
     @Enumerated(EnumType.STRING)
     private Provider provider;
