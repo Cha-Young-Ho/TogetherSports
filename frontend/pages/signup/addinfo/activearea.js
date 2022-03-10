@@ -1,20 +1,37 @@
 import Link from "next/link";
-import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { postUserRequest } from "../../../api/members";
+import { useSelector } from "react-redux";
 
 const ActiveArea = () => {
-  const dispatch = useDispatch();
-
-  const getDone = () => {
-    dispatch({
-      type: "ACTIVEAREA",
-      payload: {
-        activeAreas: activeAreas,
-      },
-    });
-  };
+  const userInfo = useSelector((state) => state);
 
   let activeAreas = [];
+
+  // 서버에 회원가입 요청
+  const callUserRequest = () => {
+    postUserRequest(
+      activeAreas,
+      userInfo.gender,
+      userInfo.interests,
+      userInfo.mannerPoint,
+      userInfo.provider,
+      userInfo.userBirthDay,
+      userInfo.userBirthMonday,
+      userInfo.userBirthYear,
+      userInfo.userEmail,
+      userInfo.userName,
+      userInfo.userNickname,
+      userInfo.userProfileImage
+    ).then((res) => {
+      console.log(res.data.message);
+      if (res.data.code === "5000") {
+        alert("회원가입이 성공했습니다.");
+      } else {
+        alert("알 수 없는 이유로 요청이 실패했습니다.");
+      }
+    });
+  };
 
   useEffect(() => {
     getMap();
@@ -167,14 +184,16 @@ const ActiveArea = () => {
         <div id="map"></div>
         <div className="tag-map">위치 태그</div>
 
-        {/* <Link href="/login">
-          <button className="button-done" onClick={getDone}>
+        <Link href="/login">
+          <button
+            className="button-done"
+            onClick={() => {
+              callUserRequest();
+            }}
+          >
             완료
           </button>
-        </Link> */}
-        <button className="button-done" onClick={getDone}>
-          완료
-        </button>
+        </Link>
       </div>
 
       <style jsx>{`
