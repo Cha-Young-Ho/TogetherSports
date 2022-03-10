@@ -67,16 +67,16 @@ const HotRoom = () => {
         <div className="slider-container">
           <div className="slider-wrapper">
             <div className="slider-view" ref={slideRef}>
-              {tempData.map((data, index) => {
+              {tempData.map((room, index) => {
                 return (
                   <div key={index} className="slider">
                     <div className="room-container">
                       <div className="room-info">
                         <div className="room-title-ppl">
-                          <p className="data-title">{`${data.title}`}</p>
-                          <p className="p2">{`${data.ppl}`}</p>
+                          <p className="data-title">{`${room.title}`}</p>
+                          <p className="p2">{`${room.ppl}`}</p>
                         </div>
-                        <p className="p2">{`${data.text}`}</p>
+                        <p className="p2">{`${room.text}`}</p>
                       </div>
                     </div>
                   </div>
@@ -94,10 +94,6 @@ const HotRoom = () => {
       </div>
 
       <style jsx>{`
-        * {
-          font-family: "NanumBarunGothic";
-        }
-
         .root-bg {
           z-index: 1;
           margin: 20px 0;

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { deleteLogout } from "../api/members";
 
 const NavigationBar = () => {
-  let loginData = true;
+  let loginData = false;
   const { data: session, status } = useSession();
   const loading = status === "loading";
 
@@ -25,13 +25,6 @@ const NavigationBar = () => {
     });
     console.log("로그아웃 시도");
   };
-
-  // 여기에 어떤 화면이든 로컬에 담긴 토큰 확인하고,
-  // 로컬에 토큰이 없으면 비 로그인 상태로
-  // 로컬에 토큰이 있으면, 서버에 토큰 전달하고,
-  // 서버가 토큰이 올바른 정보가 아니라고 하면 정보주고
-  // 만약 여기서 토큰이 틀린 값이면 refresh 토큰도 보내기
-  // 만약 refresh 토큰도 틀리다면 새로 로그인하게 유도
 
   return (
     <>
@@ -77,10 +70,10 @@ const NavigationBar = () => {
                     <button
                       className="btn_signout"
                       onClick={() => {
+                        deleteLogout();
                         signOut({
                           callbackUrl: "/",
                         });
-                        deleteLogout();
                       }}
                     >
                       로그아웃
@@ -100,9 +93,8 @@ const NavigationBar = () => {
           align-items: center;
           height: 80px;
           min-height: 8vh;
-          font-family: "NanumBarunGothic";
           border-bottom: 1px solid #e4e8eb;
-
+          z-index: 9999;
           position: fixed;
           top: 0;
           left: 0;
@@ -125,11 +117,11 @@ const NavigationBar = () => {
           width: 138px;
           display: flex;
           font-size: 2rem;
-          font-weight: bold;
         }
 
         .category {
           width: 420px;
+          height: 62px;
           display: flex;
           justify-content: space-around;
           font-size: 1.5rem;
@@ -137,6 +129,7 @@ const NavigationBar = () => {
 
         .sign {
           width: 300px;
+          height: 62px;
           display: flex;
           position: relative;
           justify-content: space-between;

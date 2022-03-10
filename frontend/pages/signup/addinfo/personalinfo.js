@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import jquery from "jquery";
 import $ from "jquery";
 import { useDispatch } from "react-redux";
-import axios from "axios";
+import { getDuplicationCheck } from "../../../api/members";
 
 const PersonalInfo = () => {
   const dispatch = useDispatch();
@@ -17,6 +17,24 @@ const PersonalInfo = () => {
   const [imagesrc, setImagesrc] = useState("");
   const [fileName, setFileName] = useState("");
   const [extention, setExtention] = useState("");
+
+  /* 
+  닉네임 중복확인
+  Success => nickName = 현재 적혀있는 input
+  fail => nickName = 초기화
+  */
+  const checkDuplication = (e) => {
+    getDuplicationCheck().then((res) => {
+      console.log(res.data.message);
+      if (res.data.code === "5000") {
+        setNickname(e.target.value);
+        alert("사용 가능한 닉네임입니다.");
+      } else {
+        setNickname("");
+        alert("이미 사용중인 닉네임입니다.");
+      }
+    });
+  };
 
   const getBirthDay = () => {
     $(document).ready(function () {
@@ -184,7 +202,7 @@ const PersonalInfo = () => {
               name="nickname"
               onChange={(e) => setNickname(e.target.value)}
             />
-            <button className="button-dup-check" onClick={getDuplicationCheck}>
+            <button className="button-dup-check" onClick={checkDuplication}>
               중복확인
             </button>
           </div>
