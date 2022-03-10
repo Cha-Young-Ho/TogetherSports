@@ -20,20 +20,20 @@ public class ErrorControllerAdvice {
 
         log.info("NoSuch 시작");
         DefaultResponse response = new DefaultResponse(Code.BAD_REQUEST);
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.OK);
 
     }
 
     @ExceptionHandler(value = UsernameNotFoundException.class)
     protected ResponseEntity<DefaultResponse> handleUserNameNotFoundException(){
-        DefaultResponse response = new DefaultResponse(Code.BOARD_NOT_FOUND);
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        DefaultResponse response = new DefaultResponse(Code.USER_NOT_FOUND);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @ExceptionHandler(value = CustomSignatureException.class)
     protected ResponseEntity<DefaultResponse> handleSignatureException(){
         DefaultResponse response = new DefaultResponse(Code.WRONG_TYPE_TOKEN);
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 
