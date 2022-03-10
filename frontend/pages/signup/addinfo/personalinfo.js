@@ -15,8 +15,7 @@ const PersonalInfo = () => {
   const [gender, setGender] = useState("male");
   const [profile, setProfile] = useState("");
   const [imagesrc, setImagesrc] = useState("");
-  const [fileName, setFileName] = useState("");
-  const [extention, setExtention] = useState("");
+  const [fileName, extension] = profile.substr(12).split(".");
 
   const getBirthDay = () => {
     $(document).ready(function () {
@@ -122,21 +121,13 @@ const PersonalInfo = () => {
         userBirthDay: birthDay,
         gender: gender,
         profile_fileName: fileName,
-        profile_extention: extention,
+        profile_extension: extension,
         imagesrc: imagesrc,
       },
     });
   };
 
   useEffect(getBirthDay, []);
-  //console test
-  useEffect(() => {
-    console.log(nickname);
-    console.log(`${birthYear}${birthMonth}${birthDay}`);
-    console.log(gender);
-    console.log(profile.substr(12).split("."));
-    console.log(imagesrc);
-  });
 
   return (
     <>
@@ -184,9 +175,7 @@ const PersonalInfo = () => {
               name="nickname"
               onChange={(e) => setNickname(e.target.value)}
             />
-            <button className="button-dup-check" onClick={getDuplicationCheck}>
-              중복확인
-            </button>
+            <button className="button-dup-check">중복확인</button>
           </div>
           <div className="birth">
             <div className="text-birth">생년월일</div>
@@ -263,9 +252,6 @@ const PersonalInfo = () => {
               onChange={(e) => {
                 setProfile(e.target.value);
                 encodeFileToBase64(e.target.files[0]);
-                const splitFiles = profile.substr(12).split(".");
-                setFileName(splitFiles[0]);
-                setExtention(splitFiles[1]);
               }}
             />
           </div>

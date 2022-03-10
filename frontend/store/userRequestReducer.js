@@ -11,9 +11,8 @@ const initialState = {
   userBirthDay: "",
   gender: "",
   profile_fileName: "",
-  profile_extention: "",
+  profile_extension: "",
   imagesrc: "",
-  admin: "",
   provider: "",
   activeAreas: [],
   interests: [],
@@ -22,6 +21,7 @@ const initialState = {
 const PERSONALINFO = "PERSONALINFO";
 const REQUESTUSERS = "REQUESTUSERS";
 const INTERESTS = "INTERESTS";
+const ACTIVEAREA = "ACTIVEAREA";
 const AUTHDATA = "AUTHDATA";
 
 const userRequestReducer = (state = initialState, action) => {
@@ -47,7 +47,7 @@ const userRequestReducer = (state = initialState, action) => {
         userBirthDay: action.payload.userBirthDay,
         gender: action.payload.gender,
         profile_fileName: action.payload.profile_fileName,
-        profile_extention: action.payload.profile_extention,
+        profile_extension: action.payload.profile_extension,
         imagesrc: action.payload.imagesrc,
       };
     case INTERESTS:
@@ -57,6 +57,12 @@ const userRequestReducer = (state = initialState, action) => {
         interests: Object.entries(action.payload.interests)
           .filter((el) => el[1] === true)
           .map((el) => el[0]),
+      };
+    case ACTIVEAREA:
+      console.log(state);
+      return {
+        ...state,
+        activeAreas: action.payload.activeAreas.map((el) => el),
       };
     case REQUESTUSERS:
       console.log("회원가입 신청");
