@@ -1,9 +1,30 @@
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { deleteLogout } from "../api/members";
 
 const NavigationBar = () => {
-  // const { data: session, status } = useSession();
-  // const loading = status === "loading";
+  let loginData = true;
+  const { data: session, status } = useSession();
+  const loading = status === "loading";
+
+  // 로컬 스토리지에 accessToken 가져오기
+  useEffect(() => {
+    loginData = localStorage.getItem("accessToken");
+  }, []);
+
+  const deleteLogout = () => {
+    deleteLogout().then((res) => {
+      console.log(res.data.message);
+      if (res.data.code === "5000") {
+        localStorage.removeItem("accessToken");
+        console.log("로그아웃 완료");
+      } else {
+        console.log("잘못 된 요청입니다.");
+      }
+    });
+    console.log("로그아웃 시도");
+  };
 
   // 여기에 어떤 화면이든 로컬에 담긴 토큰 확인하고,
   // 로컬에 토큰이 없으면 비 로그인 상태로
@@ -20,11 +41,7 @@ const NavigationBar = () => {
             <div className="logo">
               <Link href="/">
                 <a>
-                  <div>
-                    TOGETHER
-                    <br />
-                    SPORTS
-                  </div>
+                  <img src="/logo-navbar.png" alt="Together Sports"></img>
                 </a>
               </Link>
             </div>
@@ -43,7 +60,7 @@ const NavigationBar = () => {
           <div>
             {!loading ? (
               <div className="sign">
-                {!session ? (
+                {!session || !loginData ? (
                   <>
                     <Link href="/signup/oauth">
                       <div className="tag">회원가입</div>
@@ -59,11 +76,12 @@ const NavigationBar = () => {
                     </div>
                     <button
                       className="btn_signout"
-                      onClick={() =>
+                      onClick={() => {
                         signOut({
                           callbackUrl: "/",
-                        })
-                      }
+                        });
+                        deleteLogout();
+                      }}
                     >
                       로그아웃
                     </button>
@@ -84,6 +102,12 @@ const NavigationBar = () => {
           min-height: 8vh;
           font-family: "NanumBarunGothic";
           border-bottom: 1px solid #e4e8eb;
+
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          background-color: #ffffff;
         }
 
         .container_bg {

@@ -62,7 +62,7 @@ public class MockMvcTest {
 
         Map<String, String> map = new HashMap<>();
 
-        map.put("userEmail", "ZZZZ@gmail.com");
+        map.put("userEmail", "test1111@gamil.com");
 
         mvc.perform(
                         get("/user/check")

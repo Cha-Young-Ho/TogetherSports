@@ -1,8 +1,8 @@
 package com.togethersports.tosproejct.getUserTest;
 
-import com.togethersports.tosproejct.user.Admin;
-import com.togethersports.tosproejct.user.Gender;
-import com.togethersports.tosproejct.user.Provider;
+import com.togethersports.tosproejct.enums.Admin;
+import com.togethersports.tosproejct.enums.Gender;
+import com.togethersports.tosproejct.enums.Provider;
 import com.togethersports.tosproejct.user.User;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -29,7 +29,6 @@ public class CustomUserMockSecurityContextFactory implements WithSecurityContext
                 .userNickname("침착맨")
                 .gender(Gender.MALE)
                 .provider(Provider.KAKAO)
-                .admin(Admin.ROLE_ADMIN)
                 .build();
         UsernamePasswordAuthenticationToken token =
                 new UsernamePasswordAuthenticationToken(authUser, "password", List.of(new SimpleGrantedAuthority(role)));

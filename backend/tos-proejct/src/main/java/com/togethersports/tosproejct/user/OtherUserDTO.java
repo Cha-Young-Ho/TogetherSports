@@ -1,5 +1,6 @@
 package com.togethersports.tosproejct.user;
 
+import com.togethersports.tosproejct.enums.Gender;
 import lombok.*;
 
 import java.util.Optional;
@@ -9,7 +10,7 @@ import java.util.Optional;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class OtherUserDTO {
 
     private String userNickname;
