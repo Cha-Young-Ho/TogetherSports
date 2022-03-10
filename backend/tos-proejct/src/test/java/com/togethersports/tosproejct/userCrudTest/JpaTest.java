@@ -5,6 +5,8 @@ import com.togethersports.tosproejct.enums.Admin;
 import com.togethersports.tosproejct.enums.Gender;
 import com.togethersports.tosproejct.enums.Provider;
 import com.togethersports.tosproejct.user.*;
+import com.togethersports.tosproejct.userProfileImage.UserProfileImage;
+import com.togethersports.tosproejct.userProfileImage.UserProfileImageRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -13,6 +15,10 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.test.annotation.Commit;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /*
     JPA연동 테스트 클래스 파일입니다.
@@ -26,6 +32,9 @@ public class JpaTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserProfileImageRepository userProfileImageRepository;
 
     final String USEREMAIL = "test@gmail.com";
     final String USERNAME = "이병건";
@@ -75,12 +84,50 @@ public class JpaTest {
     }
 
     @Test
+    public void user_조회테스트2(){
+        //given
+
+        //when
+        userRepository.save(user);
+        User testUser = userRepository.getById(1);
+
+        log.info("test User = {}", testUser);
+
+
+        UserProfileImage userProfileImage = new UserProfileImage(1, testUser, "realname", "savename", "png");
+
+        log.info("생성된 이미지 파일 = {}", userProfileImage);
+
+        userProfileImageRepository.save(userProfileImage);
+
+
+        Optional<User> afterUser = userRepository.findByUserEmail("test@gmail.com");
+
+        log.info("after User = {}", afterUser.get());
+
+
+
+        //then
+//        Assertions.assertEquals(testUser.getUserEmail(), USEREMAIL);
+//        Assertions.assertEquals(testUser.getUserName(), USERNAME);
+//        Assertions.assertEquals(testUser.getUserNickname(), USERNICKNAME);
+//        Assertions.assertEquals(testUser.getUserBirthYear(), USER_BIRTH_YEAR);
+//        Assertions.assertEquals(testUser.getUserBirthMonth(), USER_BIRTH_MONTH);
+//        Assertions.assertEquals(testUser.getUserBirthDay(), USER_BIRTH_DAY);
+//        Assertions.assertEquals(testUser.getGender(), GENDER);
+//        Assertions.assertEquals(testUser.getProvider(), PROVIDER);
+
+    }
+
+    @Test
     public void user_조회테스트(){
         //given
 
         //when
         userRepository.save(user);
         User testUser = userRepository.getById(1);
+
+        log.info("test User = {}", testUser);
 
 
         //then

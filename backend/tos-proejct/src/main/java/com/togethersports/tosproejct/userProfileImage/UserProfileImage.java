@@ -21,7 +21,7 @@ public class UserProfileImage {
     @Column(name = "USER_PROFILE_SEQUENCE_ID")
     private int userProfileSequenceId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_SEQUENCE_ID")
     private User user;
 
