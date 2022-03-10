@@ -15,15 +15,14 @@ const PersonalInfo = () => {
   const [gender, setGender] = useState("male");
   const [profile, setProfile] = useState("");
   const [imagesrc, setImagesrc] = useState("");
-  const [fileName, setFileName] = useState("");
-  const [extention, setExtention] = useState("");
+  const [fileName, extension] = profile.substr(12).split(".");
 
   /* 
   닉네임 중복확인
   Success => nickName = 현재 적혀있는 input
   fail => nickName = 초기화
   */
-  const checkDuplication = (e) => {
+  const checkDuplication = () => {
     getDuplicationCheck().then((res) => {
       console.log(res.data.message);
       if (res.data.code === "5000") {
@@ -140,21 +139,13 @@ const PersonalInfo = () => {
         userBirthDay: birthDay,
         gender: gender,
         profile_fileName: fileName,
-        profile_extention: extention,
+        profile_extension: extension,
         imagesrc: imagesrc,
       },
     });
   };
 
   useEffect(getBirthDay, []);
-  //console test
-  useEffect(() => {
-    console.log(nickname);
-    console.log(`${birthYear}${birthMonth}${birthDay}`);
-    console.log(gender);
-    console.log(profile.substr(12).split("."));
-    console.log(imagesrc);
-  });
 
   return (
     <>
@@ -281,9 +272,6 @@ const PersonalInfo = () => {
               onChange={(e) => {
                 setProfile(e.target.value);
                 encodeFileToBase64(e.target.files[0]);
-                const splitFiles = profile.substr(12).split(".");
-                setFileName(splitFiles[0]);
-                setExtention(splitFiles[1]);
               }}
             />
           </div>

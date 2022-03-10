@@ -1,4 +1,4 @@
-package com.togethersports.tosproejct.myInfomationTest;
+package com.togethersports.tosproejct.getUserTest;
 
 import com.togethersports.tosproejct.enums.Admin;
 import com.togethersports.tosproejct.enums.Gender;

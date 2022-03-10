@@ -10,6 +10,7 @@ import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.swing.filechooser.FileSystemView;
@@ -112,7 +113,8 @@ public class UserService {
 
     public Optional<OtherUserDTO> getOtherInformationByUserNickname(String userNickname){
 
-        Optional<User> foundUser = userRepository.findByUserNickname(userNickname);
+        User foundUser = userRepository.findByUserNickname(userNickname)
+                .orElseThrow(() -> new UsernameNotFoundException("가입되지 않은 Nickname 입니다."));
 
         return new OtherUserDTO().parsingUser(foundUser);
 

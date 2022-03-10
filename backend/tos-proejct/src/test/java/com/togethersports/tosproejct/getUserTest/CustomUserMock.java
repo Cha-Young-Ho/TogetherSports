@@ -1,4 +1,4 @@
-package com.togethersports.tosproejct.myInfomationTest;
+package com.togethersports.tosproejct.getUserTest;
 
 import org.springframework.security.test.context.support.WithSecurityContext;
 
