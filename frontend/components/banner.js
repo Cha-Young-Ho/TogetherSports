@@ -21,10 +21,6 @@ const Banner = () => {
       </div>
 
       <style jsx>{`
-        * {
-          font-family: "NanumBarunGothic";
-        }
-
         .main-banner {
           margin-top: 3px;
           width: 100%;
