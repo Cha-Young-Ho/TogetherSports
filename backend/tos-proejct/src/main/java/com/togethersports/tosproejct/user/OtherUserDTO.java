@@ -17,11 +17,11 @@ public class OtherUserDTO {
     private int mannerPoint;
     private Gender gender;
 
-    public Optional<OtherUserDTO> parsingUser(Optional<User> user){
+    public Optional<OtherUserDTO> parsingUser(User user){
 
-        this.userNickname = user.get().getUserNickname();
-        this.gender = user.get().getGender();
-        this.mannerPoint = user.get().getMannerPoint();
+        this.userNickname = user.getUserNickname();
+        this.gender = user.getGender();
+        this.mannerPoint = user.getMannerPoint();
 
         return Optional.of(this);
     }
