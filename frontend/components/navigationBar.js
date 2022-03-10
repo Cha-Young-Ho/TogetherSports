@@ -58,7 +58,7 @@ const NavigationBar = () => {
                     <Link href="/signup/oauth">
                       <div className="tag">회원가입</div>
                     </Link>
-                    <Link href="/">
+                    <Link href="/login">
                       <div className="tag">로그인</div>
                     </Link>
                   </>
