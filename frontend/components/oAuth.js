@@ -1,112 +1,122 @@
+import { signIn } from "next-auth/react";
+
 const OAuth = () => {
   return (
     <>
-      <div className="signup-page">
-        <section className="section-left">
-          <div className="logo">
-            <h1>Together Sports</h1>
-          </div>
+      <div className="signup-container">
+        <div className="bg-container">
           <div className="signup-box">
-            <h1 className="signup-text">회원 가입</h1>
+            <div className="signup-logo"></div>
             <div className="signup-button">
-              <button className="signup-button-facebook">
-                페이스북 회원가입
-              </button>
-              <button className="signup-button-kakao">카카오톡 회원가입</button>
-              <button className="signup-button-google">구글 회원가입</button>
+              <button
+                className="signup-button-naver"
+                onClick={() =>
+                  signIn("naver", {
+                    callbackUrl: "/usercheck",
+                  })
+                }
+              ></button>
+              <button
+                className="signup-button-kakao"
+                onClick={() =>
+                  signIn("kakao", {
+                    callbackUrl: "/usercheck",
+                  })
+                }
+              ></button>
+              <button
+                className="signup-button-google"
+                onClick={() =>
+                  signIn("google", {
+                    callbackUrl: "/usercheck",
+                  })
+                }
+              ></button>
             </div>
           </div>
-        </section>
-        <section className="section-right"></section>
+        </div>
       </div>
+
       <style jsx>{`
-        .signup-page {
-          width: 100vw;
-          height: 100vh;
+        .signup-container {
+          width: 100%;
+          height: 1080px;
+          background-color: black;
+          z-index: 1;
           display: flex;
-          flex-direction: row;
-        }
-
-        .section-left {
-          float: left;
-          width: 50%;
-          display: grid;
           justify-content: center;
-          align-content: center;
+          align-items: center;
+          background-image: url("/signup-bg.png");
+          background-size: cover;
+          background-repeat: no-repeat;
+          background-position: center center;
         }
 
-        .logo {
-          //로고 이미지
-          text-align: center;
+        .bg-container {
+          width: 90%;
+          height: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
 
         .signup-box {
-          margin: 20px;
-          padding: 20px;
-          width: 350px;
+          position: relative;
+          margin-right: 700px;
+          width: 450px;
           height: 500px;
-          border-radius: 20px;
-          -webkit-box-shadow: 0px 0px 20px 0px rgba(117, 110, 117, 0.15);
-          -moz-box-shadow: 0px 0px 20px 0px rgba(117, 110, 117, 0.15);
-          box-shadow: 0px 0px 20px 0px rgba(117, 110, 117, 0.2);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-direction: column;
+          z-index: 2;
+        }
 
+        .signup-logo {
+          width: 130px;
+          height: 150px;
+          margin-bottom: 30px;
+          object-fit: cover;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background-image: url("/signup-logo.png");
+          background-size: cover;
+          background-repeat: no-repeat;
+        }
+
+        .signup-button button {
+          width: 400px;
+          height: 60px;
+          border: none;
+          margin: 20px 0;
+          border-radius: 10px;
           display: flex;
           flex-direction: column;
         }
 
-        .signup-text {
-          text-align: center;
-        }
-
-        .signup-button button {
-          width: 90%;
-          margin: 15px;
-          padding: 15px 30px;
-          border: none;
-          border-radius: 10px;
-        }
-
-        .signup-button-facebook {
-          //로고 이미지
-          color: white;
-          background-color: #4469b0;
+        .signup-button-naver {
+          cursor: pointer;
+          background-image: url("/naver-signup.png");
+          background-size: cover;
+          background-repeat: no-repeat;
         }
 
         .signup-button-kakao {
-          //로고 이미지
-          background-color: #fee934;
+          cursor: pointer;
+          background-image: url("/kakao-signup.png");
+          background-size: cover;
+          background-repeat: no-repeat;
         }
 
         .signup-button-google {
-          //로고 이미지
-          background-color: #ffffff;
           -webkit-box-shadow: 0px 0px 20px 0px rgba(117, 110, 117, 0.15);
           -moz-box-shadow: 0px 0px 20px 0px rgba(117, 110, 117, 0.15);
           box-shadow: 0px 0px 20px 0px rgba(117, 110, 117, 0.25);
-        }
-
-        .section-right {
-          //배너 이미지
-          float: left;
-          width: 50%;
-          background-color: #468f5b;
-        }
-
-        @media (max-width: 900px) {
-          .section-left {
-            float: left;
-            width: 100%;
-            display: grid;
-            justify-content: center;
-            align-content: center;
-          }
-
-          .section-right {
-            //배너 이미지
-            float: left;
-            width: 0%;
-            background-color: #468f5b;
-          }
+          cursor: pointer;
+          background-image: url("/google-signup.png");
+          background-size: cover;
+          background-repeat: no-repeat;
         }
       `}</style>
     </>

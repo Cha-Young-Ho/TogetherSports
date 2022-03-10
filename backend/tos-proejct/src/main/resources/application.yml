@@ -14,10 +14,14 @@ spring:
     url: jdbc:mysql://localhost:3306/together_sports_db?serverTimezone=UTC&characterEncoding=UTF-8
     username: admin1
     password: 1234
+
   http:
     encoding:
       charset:
         utf-8 force: true
+
+  jwt:
+    secret: abcabc
 
   jpa:
     open-in-view: true
@@ -29,3 +33,16 @@ spring:
     show-sql: true
     properties:
       hibernate.format_sql: true
+
+  # Thymeleaf 설정
+  thymeleaf:
+    cache: false #template 수정 시 자동 프로젝트 재시작해주어 Test 수행 시 용이하다. (운영 시 true)
+    prefix: file:src/main/resources/templates/
+
+  # 파일 경로 설정
+  file:
+    upload:
+      location: 'C:\files'
+
+  # multipart 설정
+

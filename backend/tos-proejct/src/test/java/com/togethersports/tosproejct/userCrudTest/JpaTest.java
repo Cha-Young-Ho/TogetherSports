@@ -1,23 +1,24 @@
 package com.togethersports.tosproejct.userCrudTest;
 
 
-import com.togethersports.tosproejct.user.Admin;
-import com.togethersports.tosproejct.user.Gender;
-import com.togethersports.tosproejct.user.User;
-import com.togethersports.tosproejct.user.UserRepository;
+import com.togethersports.tosproejct.enums.Admin;
+import com.togethersports.tosproejct.enums.Gender;
+import com.togethersports.tosproejct.enums.Provider;
+import com.togethersports.tosproejct.user.*;
+import com.togethersports.tosproejct.userProfileImage.UserProfileImage;
+import com.togethersports.tosproejct.userProfileImage.UserProfileImageRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
-import org.springframework.util.Assert;
+import org.springframework.test.annotation.Commit;
 
-import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /*
     JPA연동 테스트 클래스 파일입니다.
@@ -26,25 +27,41 @@ import javax.persistence.EntityNotFoundException;
 @Slf4j
 @DataJpaTest // 해당 어노테이션은 실제 데이터베이스를 사용하지 않고, in memory jpa 공간에서 db 테스트를 지원해주는 어노테이션입니다.
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Commit
 public class JpaTest {
 
     @Autowired
     private UserRepository userRepository;
 
-    final String BIRTH = "001200";
-    final String EMAIL = "aabbcc@gmail.com";
-    final String NICKNAME = "침착맨";
-    final int SEQUENCEID = 1;
-    final Gender GENDER = Gender.남;
-    final Admin ADMIN = Admin.일반회원;
-    User user = User.builder()
-            .userEmail(EMAIL)
-            .userBirth(BIRTH)
-            .userNickname(NICKNAME)
-            .admin(ADMIN)
-            .gender(GENDER)
-            .userSequenceId(SEQUENCEID).build();
+    @Autowired
+    private UserProfileImageRepository userProfileImageRepository;
 
+    final String USEREMAIL = "test@gmail.com";
+    final String USERNAME = "이병건";
+    final String USERNICKNAME = "침착맨";
+    final String USER_BIRTH_YEAR = "1999";
+    final String USER_BIRTH_MONTH = "01";
+    final String USER_BIRTH_DAY = "01";
+    final String USERSTATE = "정상회원";
+    final int MANNERPOINT = 0;
+    final Double LOCATIONX = 1111.11;
+    final Double LOCATIONY = 2222.22;
+    final Gender GENDER = Gender.MALE;
+    final Admin ADMIN = Admin.ROLE_ADMIN;
+    final Provider PROVIDER = Provider.KAKAO;
+
+    final String BLINK = "";
+
+    User user = User.builder()
+            .userEmail(USEREMAIL)
+            .userName(USERNAME)
+            .userNickname(USERNICKNAME)
+            .userBirthYear(USER_BIRTH_YEAR)
+            .userBirthMonth(USER_BIRTH_MONTH)
+            .userBirthDay(USER_BIRTH_DAY)
+            .gender(GENDER)
+            .provider(PROVIDER)
+            .build();
 
 
     @Test
@@ -55,11 +72,50 @@ public class JpaTest {
         final User testUser = userRepository.save(user);
 
         //then
-        Assertions.assertEquals(testUser.getUserBirth(), BIRTH);
-        Assertions.assertEquals(testUser.getUserEmail(), EMAIL);
-        Assertions.assertEquals(testUser.getUserNickname(), NICKNAME);
-        Assertions.assertEquals(testUser.getAdmin(), ADMIN);
+        Assertions.assertEquals(testUser.getUserEmail(), USEREMAIL);
+        Assertions.assertEquals(testUser.getUsername(), USERNAME);
+        Assertions.assertEquals(testUser.getUserNickname(), USERNICKNAME);
+        Assertions.assertEquals(testUser.getUserBirthYear(), USER_BIRTH_YEAR);
+        Assertions.assertEquals(testUser.getUserBirthMonth(), USER_BIRTH_MONTH);
+        Assertions.assertEquals(testUser.getUserBirthDay(), USER_BIRTH_DAY);
         Assertions.assertEquals(testUser.getGender(), GENDER);
+        Assertions.assertEquals(testUser.getProvider(), PROVIDER);
+
+    }
+
+    @Test
+    public void user_조회테스트2(){
+        //given
+
+        //when
+        userRepository.save(user);
+        User testUser = userRepository.getById(1);
+
+        log.info("test User = {}", testUser);
+
+
+        UserProfileImage userProfileImage = new UserProfileImage(1, testUser, "realname", "savename", "png");
+
+        log.info("생성된 이미지 파일 = {}", userProfileImage);
+
+        userProfileImageRepository.save(userProfileImage);
+
+
+        Optional<User> afterUser = userRepository.findByUserEmail("test@gmail.com");
+
+        log.info("after User = {}", afterUser.get());
+
+
+
+        //then
+//        Assertions.assertEquals(testUser.getUserEmail(), USEREMAIL);
+//        Assertions.assertEquals(testUser.getUserName(), USERNAME);
+//        Assertions.assertEquals(testUser.getUserNickname(), USERNICKNAME);
+//        Assertions.assertEquals(testUser.getUserBirthYear(), USER_BIRTH_YEAR);
+//        Assertions.assertEquals(testUser.getUserBirthMonth(), USER_BIRTH_MONTH);
+//        Assertions.assertEquals(testUser.getUserBirthDay(), USER_BIRTH_DAY);
+//        Assertions.assertEquals(testUser.getGender(), GENDER);
+//        Assertions.assertEquals(testUser.getProvider(), PROVIDER);
 
     }
 
@@ -71,14 +127,18 @@ public class JpaTest {
         userRepository.save(user);
         User testUser = userRepository.getById(1);
 
+        log.info("test User = {}", testUser);
+
 
         //then
-        Assertions.assertEquals(testUser.getUserBirth(), BIRTH);
-        Assertions.assertEquals(testUser.getUserEmail(), EMAIL);
-        Assertions.assertEquals(testUser.getUserNickname(), NICKNAME);
-        Assertions.assertEquals(testUser.getUserSequenceId(), SEQUENCEID);
-        Assertions.assertEquals(testUser.getAdmin(), ADMIN);
+        Assertions.assertEquals(testUser.getUserEmail(), USEREMAIL);
+        Assertions.assertEquals(testUser.getUsername(), USERNAME);
+        Assertions.assertEquals(testUser.getUserNickname(), USERNICKNAME);
+        Assertions.assertEquals(testUser.getUserBirthYear(), USER_BIRTH_YEAR);
+        Assertions.assertEquals(testUser.getUserBirthMonth(), USER_BIRTH_MONTH);
+        Assertions.assertEquals(testUser.getUserBirthDay(), USER_BIRTH_DAY);
         Assertions.assertEquals(testUser.getGender(), GENDER);
+        Assertions.assertEquals(testUser.getProvider(), PROVIDER);
 
     }
 
@@ -113,12 +173,12 @@ public class JpaTest {
         userRepository.save(user);
         User testUser = userRepository.getById(1);
 
-        testUser.setUserBirth("19901220");
+        //testUser.setUserBirth("19901220");
 
         User testUser2 = userRepository.getById(1);
         //then
 
-        Assertions.assertEquals(testUser2.getUserBirth(), "19901220");
+        //Assertions.assertEquals(testUser2.getUserBirth(), "19901220");
 
 
     }

@@ -2,6 +2,7 @@
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+  font-family: "NanumBarunGothic";
 }
 
 html {
@@ -16,4 +17,8 @@ a {
 li,
 ul {
   list-style: none;
+}
+
+body {
+  margin-top: 80px;
 }
