@@ -3,7 +3,7 @@ import { createWrapper, HYDRATE } from "next-redux-wrapper";
 import { composeWithDevTools } from "redux-devtools-extension";
 
 //회원가입 초기값
-const initialState = {
+const signupInitialState = {
   userEmail: "",
   userName: "",
   userNickname: "",
@@ -18,13 +18,19 @@ const initialState = {
   interests: [],
 };
 
+// 닉네임 저장 초기값
+const saveNicknameInitialState = {
+  userNickname: "",
+};
+
 const PERSONALINFO = "PERSONALINFO";
 const INTERESTS = "INTERESTS";
 const ACTIVEAREA = "ACTIVEAREA";
 const AUTHDATA = "AUTHDATA";
+const SAVENICKNAME = "SAVENICKNAME";
 
 // 유저 회원가입 정보 reducer
-const userRequestReducer = (state = initialState, action) => {
+const userRequestReducer = (state = signupInitialState, action) => {
   switch (action.type) {
     case HYDRATE:
       // Attention! This will overwrite client state! Real apps should use proper reconciliation.
@@ -76,9 +82,23 @@ const userRequestReducer = (state = initialState, action) => {
 
 const userUpdateReducer = (state, action) => {};
 
+// 닉네임 저장 reducer
+const saveNicknameReducer = (state = saveNicknameInitialState, action) => {
+  switch (action.type) {
+    case SAVENICKNAME:
+      return {
+        ...state,
+        userNickname: action.payload.userNickname,
+      };
+    default:
+      return state;
+  }
+};
+
 // rootReducer로 모든 reducer Combine
 const rootReducer = combineReducers({
   userRequestReducer,
+  saveNicknameReducer,
 });
 
 const makeStore = () => createStore(rootReducer, composeWithDevTools());

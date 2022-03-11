@@ -12,7 +12,11 @@ const Usercheck = () => {
   // 첫 렌더 시 회원 유무를 파악 후 이미 회원일 시, 메인페이지로 이동
   // 회원이 아니라면, 세션에 담긴 각 정보를 저장 후 회원가입으로 이동
   useEffect(() => {
-    getUserInfoCheck().then((res) => {
+    getUserInfoCheck(
+      session.user.email,
+      session.user.name,
+      session.user.provider
+    ).then((res) => {
       console.log(res.data.message);
       if (res.data.code === "5000") {
         router.replace("/");
