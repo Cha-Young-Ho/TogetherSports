@@ -4,15 +4,24 @@ import jquery from "jquery";
 import $ from "jquery";
 import { useDispatch } from "react-redux";
 import { getDuplicationCheck } from "../../../api/members";
+import UserInfoNavBar from "../../../components/userInfoNavBar";
 
 const PersonalInfo = () => {
   const dispatch = useDispatch();
 
+  //닉네임
   const [nickname, setNickname] = useState("");
+  const [isNicknameCheck, setIsNicknameCheck] = useState(false);
+
+  //생년월일
   const [birthYear, setBirthYear] = useState("YYYY");
   const [birthMonth, setBirthMonth] = useState("MM");
   const [birthDay, setBirthDay] = useState("DD");
+
+  //성별
   const [gender, setGender] = useState("male");
+
+  //프로필
   const [profile, setProfile] = useState("");
   const [imagesrc, setImagesrc] = useState("정보 없음");
   const [fileName, setFileName] = useState("정보 없음");
@@ -28,6 +37,7 @@ const PersonalInfo = () => {
       console.log(res.data.message);
       if (res.data.code === "5000") {
         setNickname(e.target.value);
+        setIsNicknameCheck(true);
         alert("사용 가능한 닉네임입니다.");
       } else {
         setNickname("");
@@ -40,11 +50,6 @@ const PersonalInfo = () => {
     $(document).ready(function () {
       const now = new Date();
       const year = now.getFullYear();
-      const mon =
-        now.getMonth() + 1 > 9
-          ? "" + (now.getMonth() + 1)
-          : "0" + (now.getMonth() + 1);
-      const day = now.getDate() > 9 ? "" + now.getDate() : "0" + now.getDate();
 
       $(".dropdown-year").append("<option value=''>년도</option>");
       for (let i = year; i >= 1920; i--) {
@@ -68,10 +73,6 @@ const PersonalInfo = () => {
           '<option value="' + dd + '">' + dd + "</option>"
         );
       }
-
-      // $(".dropdown-year > option[value=" + year + "]").attr("selected", "true");
-      // $(".dropdown-month > option[value=" + mon + "]").attr("selected", "true");
-      // $(".dropdown-day > option[value=" + day + "]").attr("selected", "true");
     });
   };
 
@@ -118,6 +119,12 @@ const PersonalInfo = () => {
       return false;
     }
 
+    //중복체크를 하지 않은 경우
+    if (!isNicknameCheck) {
+      e.preventDefault();
+      alert("닉네임 중복확인을 해주세요!");
+    }
+
     if (
       birthYear === "YYYY" ||
       birthMonth === "MM" ||
@@ -151,42 +158,17 @@ const PersonalInfo = () => {
   return (
     <>
       <div className="bg-container">
-        <h1>회원가입</h1>
-        <div className="title">
-          <div>
-            <div>
-              <img
-                src="/personalinfo-activation.png"
-                alt="인적사항"
-                className="title-circle-personalinfo"
-              ></img>
-            </div>
-            <p>인적사항</p>
-          </div>
-          <div>
-            <div>
-              <img
-                src="/interests-deactivation.png"
-                alt="관심종목"
-                className="title-circle-interest"
-              ></img>
-            </div>
-            <p>관심종목</p>
-          </div>
-          <div>
-            <div>
-              <img
-                src="/activearea-deactivation.png"
-                alt="활동지역"
-                className="title-circle-activearea"
-              ></img>
-            </div>
-            <p>활동지역</p>
-          </div>
-        </div>
+        <UserInfoNavBar
+          personal_atv={"activation"}
+          interest_atv={"deactivation"}
+          activearea={"deactivation"}
+        />
         <div className="content-showbox">
           <div className="nickname">
-            <div className="text-nickname">닉네임</div>
+            <div className="nickname-text-box">
+              <div className="essential-mark">*</div>
+              <div className="text-nickname">닉네임</div>
+            </div>
             <input
               type="text"
               id="input-nickname"
@@ -199,7 +181,10 @@ const PersonalInfo = () => {
             </button>
           </div>
           <div className="birth">
-            <div className="text-birth">생년월일</div>
+            <div className="birth-text-box">
+              <div className="essential-mark">*</div>
+              <div className="text-birth">생년월일</div>
+            </div>
             <div className="dropdown-birth">
               <div>
                 <select
@@ -228,7 +213,10 @@ const PersonalInfo = () => {
             </div>
           </div>
           <div className="gender">
-            <div className="text-gender">성별</div>
+            <div className="gender-text-box">
+              <div className="essential-mark">*</div>
+              <div className="text-gender">성별</div>
+            </div>
             <div className="radio-gender">
               <div className="male">
                 <label className="text-male" htmlFor="radio-male">
@@ -288,7 +276,6 @@ const PersonalInfo = () => {
       </div>
 
       <style jsx>{`
-
         .bg-container {
           margin-top: 10px;
           border-top: 1px solid #e4e8eb;
@@ -345,6 +332,21 @@ const PersonalInfo = () => {
           background-color: #fff;
           display: flex;
           justify-content: space-between;
+        }
+
+        .nickname-text-box,
+        .birth-text-box,
+        .gender-text-box { 
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+        }
+
+        .essential-mark {
+          font-size: 1.5em;
+          font-weight: bold;
+          color: red;
+          margin-right: 3px;
         }
 
         .text-nickname {
