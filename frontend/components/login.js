@@ -12,7 +12,7 @@ const Login = () => {
                 className="login-button-naver"
                 onClick={() =>
                   signIn("naver", {
-                    callbackUrl: "/usercheck",
+                    callbackUrl: "/userlogin",
                   })
                 }
               ></button>
@@ -20,7 +20,7 @@ const Login = () => {
                 className="login-button-kakao"
                 onClick={() =>
                   signIn("kakao", {
-                    callbackUrl: "/usercheck",
+                    callbackUrl: "/userlogin",
                   })
                 }
               ></button>
@@ -28,7 +28,7 @@ const Login = () => {
                 className="login-button-google"
                 onClick={() =>
                   signIn("google", {
-                    callbackUrl: "/usercheck",
+                    callbackUrl: "/userlogin",
                   })
                 }
               ></button>

@@ -6,7 +6,7 @@ import Modal from "./userInfoModal";
 
 const NavigationBar = () => {
   // 로그인 상태 임을 판별하는 변수
-  let loginData = true;
+  const [loginData, setLoginData] = useState(false);
 
   // 유저 세션 정보(auth name, email, provider)
   const { data: session, status } = useSession();
@@ -24,14 +24,15 @@ const NavigationBar = () => {
 
   // 로컬 스토리지에 accessToken 가져오기
   useEffect(() => {
-    loginData = localStorage.getItem("accessToken");
+    setLoginData((loginData = localStorage.getItem("accessToken")));
   }, []);
 
-  const deleteLogout = () => {
+  const ClickLogout = () => {
     deleteLogout().then((res) => {
       console.log(res.data.message);
       if (res.data.code === "5000") {
         localStorage.removeItem("accessToken");
+        setLoginData((localData = false));
         console.log("로그아웃 완료");
       } else {
         console.log("잘못 된 요청입니다.");
@@ -90,7 +91,7 @@ const NavigationBar = () => {
                     <button
                       className="btn_signout"
                       onClick={() => {
-                        deleteLogout();
+                        ClickLogout();
                         signOut({
                           callbackUrl: "/",
                         });
