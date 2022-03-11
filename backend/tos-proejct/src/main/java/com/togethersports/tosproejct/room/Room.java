@@ -3,13 +3,14 @@
 //import com.fasterxml.jackson.annotation.JsonFormat;
 //import com.togethersports.tosproejct.enums.Tag;
 //import com.togethersports.tosproejct.user.User;
-//import etc.Area;
+//
 //import lombok.AllArgsConstructor;
 //import lombok.Builder;
 //import lombok.Getter;
 //import lombok.NoArgsConstructor;
 //
 //import javax.persistence.*;
+//import java.awt.geom.Area;
 //import java.time.LocalDateTime;
 //import java.util.List;
 //
@@ -43,16 +44,16 @@
 //    @Column(name = "VIEW_COUNT")
 //    private int viewCount;
 //
-//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
-//    @Column(name = "APPOINTMENT_DATE")
-//    private LocalDateTime appointmentDate;
+////    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
+////    @Column(name = "APPOINTMENT_DATE")
+////    private LocalDateTime appointmentDate;
 //
-//    @Column(name = "AREA")
-//    private Area area;
+////    @Column(name = "AREA")
+////    private ActiveAreas activeAreas;
 //
-//    private List<RoomImage> roomImageList;
+////    private List<RoomImage> roomImageList;
 //
-//    private List<Tag> tagList;
+////    private List<Tag> tagList;
 //
 //    @ManyToOne
 //    @JoinColumn(name = "")

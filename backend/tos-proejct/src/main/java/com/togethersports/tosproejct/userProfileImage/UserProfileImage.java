@@ -1,5 +1,6 @@
 package com.togethersports.tosproejct.userProfileImage;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.togethersports.tosproejct.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +22,7 @@ public class UserProfileImage {
     @Column(name = "USER_PROFILE_SEQUENCE_ID")
     private int userProfileSequenceId;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_SEQUENCE_ID")
     private User user;

@@ -31,7 +31,7 @@ public class UserController {
 
     // 회원가입 요청
     @PostMapping("/user")
-    public ResponseEntity userSignup(@Valid @RequestBody UserDTO userDTO) {
+    public ResponseEntity userSignup(@RequestBody UserDTO userDTO) {
 
         log.info("/user 요청됨");
         log.info("userDTO ----> {}", userDTO);
@@ -63,9 +63,9 @@ public class UserController {
 
     // 로그인
     @PostMapping("/login")
-    public ResponseEntity<TokenResponse> login(@RequestBody Map<String, String> user, @RequestHeader("User-Agent") String userAgent) {
-        log.info("user email = {}", user.get("userEmail"));
-        User member = userRepository.findByUserEmail(user.get("userEmail"))
+    public ResponseEntity<TokenResponse> login(@RequestBody UserDTO userDTO, @RequestHeader("User-Agent") String userAgent) {
+        log.info("user email = {}", userDTO.getUserEmail());
+        User member = userRepository.findByUserEmail(userDTO.getUserEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("가입되지 않은 E-MAIL 입니다."));
        // return jwtService.login(member);
         Token tokenDto = jwtTokenProvider.createAccessToken(member.getUsername(), member.getRoles());
