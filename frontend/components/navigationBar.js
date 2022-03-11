@@ -2,11 +2,25 @@ import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { deleteLogout } from "../api/members";
+import Modal from "./userInfoModal";
 
 const NavigationBar = () => {
-  let loginData = false;
+  // 로그인 상태 임을 판별하는 변수
+  let loginData = true;
+
+  // 유저 세션 정보(auth name, email, provider)
   const { data: session, status } = useSession();
   const loading = status === "loading";
+
+  // 유저 프로필 클릭 시 뜨는 팝업 창 관리 state
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const openModal = () => {
+    setModalOpen(true);
+  };
+  const closeModal = () => {
+    setModalOpen(false);
+  };
 
   // 로컬 스토리지에 accessToken 가져오기
   useEffect(() => {
@@ -64,9 +78,15 @@ const NavigationBar = () => {
                   </>
                 ) : (
                   <>
-                    <div className="logOn">
-                      {session.user.name} 님 반갑습니다!
-                    </div>
+                    <button className="user-box" onClick={openModal}>
+                      <div className="ProfileImage"></div>
+                      <div className="logOn">
+                        {session.user.name} 님 반갑습니다!
+                      </div>
+                    </button>
+
+                    <Modal open={modalOpen} close={closeModal}></Modal>
+
                     <button
                       className="btn_signout"
                       onClick={() => {
@@ -142,9 +162,24 @@ const NavigationBar = () => {
           transition: 800ms ease all;
         }
 
+        .ProfileImage {
+          width: 40px;
+          height: 40px;
+          border-radius: 50px;
+          background-color: black;
+        }
+
         .logOn {
-          position: relative;
-          top: 20px;
+          margin-left: 20px;
+        }
+
+        .user-box {
+          display: flex;
+          justify-content: space-around;
+          align-items: center;
+          cursor: pointer;
+          border: 0;
+          background-color: #fff;
         }
 
         .btn_signout {

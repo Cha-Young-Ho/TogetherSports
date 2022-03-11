@@ -2,7 +2,7 @@ import React from "react";
 import "../styles/globals.css";
 import NavigationBar from "../components/navigationBar";
 import { SessionProvider } from "next-auth/react";
-import { wrapper } from "../store/userRequestReducer";
+import { wrapper } from "../store/rootReducer";
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   return (
