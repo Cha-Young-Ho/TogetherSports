@@ -2,6 +2,7 @@ import Link from "next/link";
 import { useEffect } from "react";
 import { postUserRequest } from "../../../api/members";
 import { useSelector } from "react-redux";
+import UserInfoNavBar from "../../../components/userInfoNavBar";
 
 const ActiveArea = () => {
   const userInfo = useSelector((state) => state);
@@ -145,39 +146,11 @@ const ActiveArea = () => {
   return (
     <>
       <div className="bg-container">
-        <h1>회원가입</h1>
-        <div className="title">
-          <div>
-            <div>
-              <img
-                src="/personalinfo-deactivation.png"
-                alt="인적사항"
-                className="title-circle-personalinfo"
-              ></img>
-            </div>
-            <p>인적사항</p>
-          </div>
-          <div>
-            <div>
-              <img
-                src="/interests-deactivation.png"
-                alt="관심종목"
-                className="title-circle-interest"
-              ></img>
-            </div>
-            <p>관심종목</p>
-          </div>
-          <div>
-            <div>
-              <img
-                src="/activearea-activation.png"
-                alt="활동지역"
-                className="title-circle-activearea"
-              ></img>
-            </div>
-            <p>활동지역</p>
-          </div>
-        </div>
+        <UserInfoNavBar
+          personal_atv={"deactivation"}
+          interest_atv={"deactivation"}
+          activearea={"activation"}
+        />
         <div className="content-showbox">
           <p>원하는 활동지역을 선택해주세요! (최대 5개)</p>
         </div>
