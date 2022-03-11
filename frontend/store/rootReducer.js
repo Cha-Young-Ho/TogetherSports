@@ -1,7 +1,8 @@
-import { createStore } from "redux";
+import { combineReducers, createStore } from "redux";
 import { createWrapper, HYDRATE } from "next-redux-wrapper";
 import { composeWithDevTools } from "redux-devtools-extension";
 
+//회원가입 초기값
 const initialState = {
   userEmail: "",
   userName: "",
@@ -18,11 +19,11 @@ const initialState = {
 };
 
 const PERSONALINFO = "PERSONALINFO";
-const REQUESTUSERS = "REQUESTUSERS";
 const INTERESTS = "INTERESTS";
 const ACTIVEAREA = "ACTIVEAREA";
 const AUTHDATA = "AUTHDATA";
 
+// 유저 회원가입 정보 reducer
 const userRequestReducer = (state = initialState, action) => {
   switch (action.type) {
     case HYDRATE:
@@ -67,20 +68,19 @@ const userRequestReducer = (state = initialState, action) => {
         ...state,
         activeAreas: action.payload.activeAreas.map((el) => el),
       };
-    case REQUESTUSERS:
-      console.log("회원가입 신청");
-      console.log(action.payload);
-
-      return {
-        ...state,
-      };
     default:
       console.log("start");
       return state;
   }
 };
 
-const makeStore = (context) =>
-  createStore(userRequestReducer, composeWithDevTools());
+const userUpdateReducer = (state, action) => {};
+
+// rootReducer로 모든 reducer Combine
+const rootReducer = combineReducers({
+  userRequestReducer,
+});
+
+const makeStore = () => createStore(rootReducer, composeWithDevTools());
 
 export const wrapper = createWrapper(makeStore, { debug: true });
