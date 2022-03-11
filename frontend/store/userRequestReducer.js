@@ -9,10 +9,9 @@ const initialState = {
   userBirthYear: "",
   userBirthMonday: "",
   userBirthDay: "",
+  mannerPoint: "10",
   gender: "",
-  profile_fileName: "",
-  profile_extension: "",
-  imagesrc: "",
+  userProfileImage: [],
   provider: "",
   activeAreas: [],
   interests: [],
@@ -46,9 +45,13 @@ const userRequestReducer = (state = initialState, action) => {
         userBirthMonday: action.payload.userBirthMonday,
         userBirthDay: action.payload.userBirthDay,
         gender: action.payload.gender,
-        profile_fileName: action.payload.profile_fileName,
-        profile_extension: action.payload.profile_extension,
-        imagesrc: action.payload.imagesrc,
+        userProfileImage: [
+          {
+            userProfileRealName: action.payload.userProfileRealName,
+            userProfileExtension: action.payload.userProfileExtension,
+            imageSource: action.payload.imageSource,
+          },
+        ],
       };
     case INTERESTS:
       console.log(state);

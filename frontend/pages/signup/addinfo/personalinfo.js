@@ -14,8 +14,9 @@ const PersonalInfo = () => {
   const [birthDay, setBirthDay] = useState("DD");
   const [gender, setGender] = useState("male");
   const [profile, setProfile] = useState("");
-  const [imagesrc, setImagesrc] = useState("");
-  const [fileName, extension] = profile.substr(12).split(".");
+  const [imagesrc, setImagesrc] = useState("정보 없음");
+  const [fileName, setFileName] = useState("정보 없음");
+  const [extension, setExtension] = useState("정보 없음");
 
   /* 
   닉네임 중복확인
@@ -138,9 +139,9 @@ const PersonalInfo = () => {
         userBirthMonday: birthMonth,
         userBirthDay: birthDay,
         gender: gender,
-        profile_fileName: fileName,
-        profile_extension: extension,
-        imagesrc: imagesrc,
+        userProfileRealName: fileName,
+        userProfileExtension: extension,
+        imageSource: imagesrc,
       },
     });
   };
@@ -230,7 +231,7 @@ const PersonalInfo = () => {
             <div className="text-gender">성별</div>
             <div className="radio-gender">
               <div className="male">
-                <label className="text-male" for="radio-male">
+                <label className="text-male" htmlFor="radio-male">
                   남
                 </label>
                 <input
@@ -242,7 +243,7 @@ const PersonalInfo = () => {
                 />
               </div>
               <div className="female">
-                <label className="text-male" for="radio-female">
+                <label className="text-male" htmlFor="radio-female">
                   여
                 </label>
                 <input
@@ -262,7 +263,7 @@ const PersonalInfo = () => {
               className="upload-name"
               value={profile.substr(12)}
             />
-            <label for="filename">
+            <label htmlFor="filename">
               <div>파일찾기</div>
             </label>
             <input
@@ -270,7 +271,10 @@ const PersonalInfo = () => {
               id="filename"
               accept=".jpg, .jpeg, .png"
               onChange={(e) => {
-                setProfile(e.target.value);
+                setProfile((profile = e.target.value));
+                const splitData = profile.substr(12).split(".");
+                setFileName(splitData[0]);
+                setExtension(splitData[1]);
                 encodeFileToBase64(e.target.files[0]);
               }}
             />
@@ -284,9 +288,6 @@ const PersonalInfo = () => {
       </div>
 
       <style jsx>{`
-        * {
-          font-family: "NanumBarunGothic";
-        }
 
         .bg-container {
           margin-top: 10px;
@@ -300,7 +301,6 @@ const PersonalInfo = () => {
 
         h1 {
           padding: 35px 0;
-          font-family: "NanumBarunGothic";
           font-weight: bold;
           font-size: 2.5rem;
         }
@@ -325,7 +325,6 @@ const PersonalInfo = () => {
           display: flex;
           justify-content: center;
           font-size: 1.5rem;
-          font-family: "NanumBarunGothic";
           align-items: center;
           margin: 5px 0;
         }
@@ -370,7 +369,6 @@ const PersonalInfo = () => {
           width: 70px;
           background-color: #08555f;
           color: white;
-          font-family: "NanumBarunGothic";
           border: 0;
           outline: 0;
           cursor: pointer;
@@ -522,7 +520,6 @@ const PersonalInfo = () => {
           width: 70px;
           background-color: #08555f;
           color: white;
-          font-family: "NanumBarunGothic";
           font-size: 1.3em;
           border: 0;
           outline: 0;
@@ -551,7 +548,6 @@ const PersonalInfo = () => {
           background-color: #08555f;
           color: white;
           font-size: 1.5rem;
-          font-family: "NanumBarunGothic";
           margin-top: 25px;
           border: 0;
           outline: 0;
