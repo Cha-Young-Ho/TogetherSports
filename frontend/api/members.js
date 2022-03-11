@@ -91,8 +91,36 @@ const getOtherInfo = async (nickname) => {
 // POST
 
 //회원가입 요청
-const postUserRequest = async () => {
-  //http://localhost:8080/test
+const postUserRequest = async (
+  activeAreas,
+  gender,
+  interests,
+  mannerPoint,
+  provider,
+  userBirthDay,
+  userBirthMonday,
+  userBirthYear,
+  userEmail,
+  userName,
+  userNickname,
+  userProfileImage
+) => {
+  // http://localhost:8080/test
+
+  console.log(
+    activeAreas,
+    gender,
+    interests,
+    mannerPoint,
+    provider,
+    userBirthDay,
+    userBirthMonday,
+    userBirthYear,
+    userEmail,
+    userName,
+    userNickname,
+    userProfileImage
+  );
 
   const promise = axios.post("http://localhost:8080/user", {
     headers: {
@@ -100,7 +128,19 @@ const postUserRequest = async () => {
       Accept: "*/*",
     },
     params: {
-      // 굉장히 많음
+      mannerPoint: mannerPoint,
+      userEmail: userEmail,
+      userName: userName,
+      userNickname: userNickname,
+      userBirthYear: userBirthYear,
+      userBirthMonth: userBirthMonday,
+      userBirthDay: userBirthDay,
+      mannerPoint: 10,
+      activeAreas: activeAreas,
+      gender: gender,
+      userProfileImage: userProfileImage,
+      provider: provider,
+      interests: interests, //--> 5개까지
     },
   });
 
