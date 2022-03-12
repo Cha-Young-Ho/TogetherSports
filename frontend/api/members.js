@@ -52,7 +52,7 @@ const getDuplicationCheck = async (nickname) => {
       Accept: "*/*",
     },
     params: {
-      userNickName: nickname,
+      userNickname: nickname,
     },
   });
 

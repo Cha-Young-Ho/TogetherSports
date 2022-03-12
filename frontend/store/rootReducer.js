@@ -37,6 +37,7 @@ const userRequestReducer = (state = signupInitialState, action) => {
       console.log("hydrate");
       return { ...state, ...action.payload };
     case AUTHDATA:
+      console.log(state);
       return {
         ...state,
         userEmail: action.payload.userEmail,
@@ -82,10 +83,11 @@ const userRequestReducer = (state = signupInitialState, action) => {
 
 const userUpdateReducer = (state, action) => {};
 
-// 닉네임 저장 reducer
+// 로그인을 위한 닉네임 저장 reducer
 const saveNicknameReducer = (state = saveNicknameInitialState, action) => {
   switch (action.type) {
     case SAVENICKNAME:
+      console.log(state);
       return {
         ...state,
         userNickname: action.payload.userNickname,

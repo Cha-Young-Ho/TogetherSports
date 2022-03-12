@@ -3,8 +3,9 @@ import { useState, useEffect } from "react";
 import jquery from "jquery";
 import $ from "jquery";
 import { useDispatch } from "react-redux";
-import { getDuplicationCheck } from "../../../api/members";
+//import { getDuplicationCheck } from "../../../api/members";
 import UserInfoNavBar from "../../../components/userInfoNavBar";
+import axios from "axios";
 
 const PersonalInfo = () => {
   const dispatch = useDispatch();
@@ -33,17 +34,36 @@ const PersonalInfo = () => {
   fail => nickName = 초기화
   */
   const checkDuplication = () => {
-    getDuplicationCheck().then((res) => {
-      console.log(res.data.message);
-      if (res.data.code === "5000") {
-        setNickname(e.target.value);
-        setIsNicknameCheck(true);
-        alert("사용 가능한 닉네임입니다.");
-      } else {
-        setNickname("");
-        alert("이미 사용중인 닉네임입니다.");
-      }
-    });
+    axios
+      .get("http://localhost:8080/duplication", {
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          Accept: "*/*",
+        },
+        params: {
+          userNickname: nickname,
+        },
+      })
+      .then((res) => {
+        console.log(res.data.message);
+        if (res.data.code === "5000") {
+          setIsNicknameCheck(true);
+          alert("사용 가능한 닉네임입니다.");
+        } else {
+          setNickname("");
+          alert("이미 사용중인 닉네임입니다.");
+        }
+      });
+    // getDuplicationCheck().then((res) => {
+    //   console.log(res.data.message);
+    //   if (res.data.code === "5000") {
+    //     setIsNicknameCheck(true);
+    //     alert("사용 가능한 닉네임입니다.");
+    //   } else {
+    //     setNickname("");
+    //     alert("이미 사용중인 닉네임입니다.");
+    //   }
+    // });
   };
 
   const getBirthDay = () => {
