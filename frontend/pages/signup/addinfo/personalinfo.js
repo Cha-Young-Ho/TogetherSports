@@ -97,12 +97,12 @@ const PersonalInfo = () => {
   };
 
   const getExtension = (profilename) => {
-    if (profilename.indexOf("png") != -1) {
+    if (profilename.indexOf("png") !== -1) {
       return profilename.indexOf("png");
-    } else if (profilename.indexOf("jpg") != -1) {
+    } else if (profilename.indexOf("jpg") !== -1) {
       return profilename.indexOf("jpg");
     }
-    if (profilename.indexOf("jpeg") != -1) {
+    if (profilename.indexOf("jpeg") !== -1) {
       return profilename.indexOf("jpeg");
     }
   };

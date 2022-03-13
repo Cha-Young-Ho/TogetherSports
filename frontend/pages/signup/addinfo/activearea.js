@@ -9,13 +9,13 @@ const ActiveArea = () => {
   const userInfo = useSelector((state) => state);
 
   let activeAreas = [];
-  const [tag, setTag] = useState("");
-  const [tagList, setTagList] = useState([]);
+  const [clickedArea, setClickedArea] = useState("");
+  const test = [1, 2, 3, 4, 5];
 
   // 서버에 회원가입 요청
   const callUserRequest = () => {
     postUserRequest(
-      activeAreas,
+      activeAreas, // 수정필요
       userInfo.gender,
       userInfo.interests,
       userInfo.mannerPoint,
@@ -111,6 +111,7 @@ const ActiveArea = () => {
             activeAreas.splice(index, 1);
           }
         }
+        console.log(activeAreas);
       });
     });
   };
@@ -131,11 +132,13 @@ const ActiveArea = () => {
               activeAreas = activeAreas.filter((element, index) => {
                 return activeAreas.indexOf(element) === index;
               });
+              setClickedArea(area);
               getMarker(map, mouseEvent.latLng, geocoder); //클릭된 지역 마커표시
             } else {
               alert("최대 설정 가능한 개수를 초과하였습니다!");
             }
           }
+          console.log(activeAreas);
         }
       );
     });
@@ -158,12 +161,16 @@ const ActiveArea = () => {
           <p>원하는 활동지역을 선택해주세요! (최대 5개)</p>
         </div>
         <div id="map"></div>
-        <div className="tag-map">
-          <div className="tag">대구광역시 달서구 진천동</div>
-          <div className="tag">대구광역시 달서구 월성동</div>
-          <div className="tag">대구광역시 달서구 상인동</div>
-          <div className="tag">대구광역시 달서구 송현동</div>
-          <div className="tag">대구광역시 남구 대명동</div>
+        <div className="clickedArea">
+          <div className="text-clickedArea">현재 선택한 지역</div>
+          <div className="input-clickedArea">
+            <input readOnly value={clickedArea} />
+          </div>
+        </div>
+        <div className="tag-wrap">
+          {test.map((num) => (
+            <div className="tag">{num}</div>
+          ))}
         </div>
 
         <Link href="/login">
@@ -234,19 +241,52 @@ const ActiveArea = () => {
           border: solid 1px #e8e8e8;
         }
 
-        .tag-map {
+        .clickedArea {
           width: 580px;
           align-items: left;
           display: flex;
-          flex-direction: column; // row로 수정해야 할 수도
+          flex-direction: row;
+          align-items: center;
         }
 
-        .tag {
-          width: 150px; // 태그 content 길이에 맞게 조절
+        .text-clickedArea {
+          font-size: 1.3em;
+          font-weight: bold;
+          margin-right: 10px;
+        }
+
+        .input-clickedArea {
+          width: 200px;
           height: 24px;
           padding: 5px;
           margin: 5px 0;
-          border: solid 1px #e8e8e8;
+          border: solid 1px darkgray;
+          border-radius: 10px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .input-clickedArea input {
+          border: none;
+          width: 190px;
+          text-align: center;
+        }
+
+        .tag-wrap {
+          width: 580px;
+          align-items: left;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+        }
+
+        .tag {
+          width: 180px;
+          height: 24px;
+          padding: 5px;
+          margin: 5px 0;
+          border: solid 1px darkgray;
           border-radius: 10px;
           display: flex;
           justify-content: center;
