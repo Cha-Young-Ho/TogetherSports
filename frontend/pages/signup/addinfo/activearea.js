@@ -1,13 +1,16 @@
 import Link from "next/link";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { postUserRequest } from "../../../api/members";
 import { useSelector } from "react-redux";
 import UserInfoNavBar from "../../../components/userInfoNavBar";
+import Tag from "../../../components/tag";
 
 const ActiveArea = () => {
   const userInfo = useSelector((state) => state);
 
   let activeAreas = [];
+  const [tag, setTag] = useState("");
+  const [tagList, setTagList] = useState([]);
 
   // 서버에 회원가입 요청
   const callUserRequest = () => {
@@ -155,7 +158,13 @@ const ActiveArea = () => {
           <p>원하는 활동지역을 선택해주세요! (최대 5개)</p>
         </div>
         <div id="map"></div>
-        <div className="tag-map">위치 태그</div>
+        <div className="tag-map">
+          <div className="tag">대구광역시 달서구 진천동</div>
+          <div className="tag">대구광역시 달서구 월성동</div>
+          <div className="tag">대구광역시 달서구 상인동</div>
+          <div className="tag">대구광역시 달서구 송현동</div>
+          <div className="tag">대구광역시 남구 대명동</div>
+        </div>
 
         <Link href="/login">
           <button
@@ -228,6 +237,20 @@ const ActiveArea = () => {
         .tag-map {
           width: 580px;
           align-items: left;
+          display: flex;
+          flex-direction: column; // row로 수정해야 할 수도
+        }
+
+        .tag {
+          width: 150px; // 태그 content 길이에 맞게 조절
+          height: 24px;
+          padding: 5px;
+          margin: 5px 0;
+          border: solid 1px #e8e8e8;
+          border-radius: 10px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
 
         .button-done {

@@ -12,7 +12,7 @@ const signupInitialState = {
   userBirthDay: "",
   mannerPoint: "10",
   gender: "",
-  userProfileImage: [],
+  userProfileImage: {},
   provider: "",
   activeAreas: [],
   interests: [],
@@ -37,7 +37,6 @@ const userRequestReducer = (state = signupInitialState, action) => {
       console.log("hydrate");
       return { ...state, ...action.payload };
     case AUTHDATA:
-      console.log(state);
       return {
         ...state,
         userEmail: action.payload.userEmail,
@@ -53,13 +52,11 @@ const userRequestReducer = (state = signupInitialState, action) => {
         userBirthMonday: action.payload.userBirthMonday,
         userBirthDay: action.payload.userBirthDay,
         gender: action.payload.gender,
-        userProfileImage: [
-          {
-            userProfileRealName: action.payload.userProfileRealName,
-            userProfileExtension: action.payload.userProfileExtension,
-            imageSource: action.payload.imageSource,
-          },
-        ],
+        userProfileImage: {
+          userProfileRealName: action.payload.userProfileRealName,
+          userProfileExtension: action.payload.userProfileExtension,
+          imageSource: action.payload.imageSource,
+        },
       };
     case INTERESTS:
       console.log(state);
@@ -83,11 +80,10 @@ const userRequestReducer = (state = signupInitialState, action) => {
 
 const userUpdateReducer = (state, action) => {};
 
-// 로그인을 위한 닉네임 저장 reducer
+// 닉네임 저장 reducer
 const saveNicknameReducer = (state = saveNicknameInitialState, action) => {
   switch (action.type) {
     case SAVENICKNAME:
-      console.log(state);
       return {
         ...state,
         userNickname: action.payload.userNickname,
