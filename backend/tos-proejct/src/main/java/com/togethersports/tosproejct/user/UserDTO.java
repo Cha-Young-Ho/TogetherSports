@@ -1,26 +1,45 @@
 package com.togethersports.tosproejct.user;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.togethersports.tosproejct.enums.Admin;
+import com.togethersports.tosproejct.enums.Gender;
+import com.togethersports.tosproejct.enums.Provider;
+import com.togethersports.tosproejct.userProfileImage.UserProfileImageDTO;
+import lombok.*;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Data // @Getter + Constructor로 바꿔야함
-@ToString
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserDTO {
 
+    // User
     private int userSequenceId;
+
+    @NotBlank(message = "email 필드 값이 존재하지 않습니다.")
+    @Email
     private String userEmail;
+    @NotBlank(message = "userName 필드 값이 존재하지 않습니다.")
     private String userName;
+    @NotBlank(message = "userNickname 필드 값이 존재하지 않습니다.")
     private String userNickname;
-    private String userBirth;
-    private String userState;
-    private int mannerPoint;
-    private Double locationX;
-    private Double locationY;
+    @NotBlank(message = "userBirthYear 필드 값이 존재하지 않습니다.")
+    private String userBirthYear;
+    @NotBlank(message = "userBirthMonth 필드 값이 존재하지 않습니다.")
+    private String userBirthMonth;
+    @NotBlank(message = "userBirthDay 필드 값이 존재하지 않습니다.")
+    private String userBirthDay;
+
     private Gender gender;
-    private Admin admin;
     private Provider provider;
+    private Admin admin;
+
+    @JsonProperty("userProfileImage")
+    private UserProfileImageDTO userProfileImage;
 }
 
 // 스프링 부트 / 스프링 시큐리티 -> 스프링 시큐리티

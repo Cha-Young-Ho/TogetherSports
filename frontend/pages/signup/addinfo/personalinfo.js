@@ -3,27 +3,57 @@ import { useState, useEffect } from "react";
 import jquery from "jquery";
 import $ from "jquery";
 import { useDispatch } from "react-redux";
+//import { getDuplicationCheck } from "../../../api/members";
+import UserInfoNavBar from "../../../components/userInfoNavBar";
+import axios from "axios";
 
 const PersonalInfo = () => {
   const dispatch = useDispatch();
 
+  //닉네임
   const [nickname, setNickname] = useState("");
+  const [isNicknameCheck, setIsNicknameCheck] = useState(true);
+
+  //생년월일
   const [birthYear, setBirthYear] = useState("YYYY");
   const [birthMonth, setBirthMonth] = useState("MM");
   const [birthDay, setBirthDay] = useState("DD");
+
+  //성별
   const [gender, setGender] = useState("male");
 
-  const getDuplicationCheck = (e) => {};
+  //프로필
+  const [profile, setProfile] = useState("");
+  const [imagesrc, setImagesrc] = useState("정보 없음");
+  const [fileName, setFileName] = useState("정보 없음");
+  const [extension, setExtension] = useState("정보 없음");
+
+  /* 
+  닉네임 중복확인
+  Success => nickName = 현재 적혀있는 input
+  fail => nickName = 초기화
+  */
+  const checkDuplication = () => {
+    if (nickname.length < 2) {
+      alert("닉네임은 최소 2글자 이상 입력해주세요.");
+    } else {
+      getDuplicationCheck(nickname).then((res) => {
+        console.log(res.message);
+        if (res.code === 5000) {
+          setIsNicknameCheck(true);
+          alert("사용 가능한 닉네임입니다.");
+        } else {
+          setNickname("");
+          alert("이미 사용중인 닉네임입니다.");
+        }
+      });
+    }
+  };
 
   const getBirthDay = () => {
     $(document).ready(function () {
       const now = new Date();
       const year = now.getFullYear();
-      const mon =
-        now.getMonth() + 1 > 9
-          ? "" + (now.getMonth() + 1)
-          : "0" + (now.getMonth() + 1);
-      const day = now.getDate() > 9 ? "" + now.getDate() : "0" + now.getDate();
 
       $(".dropdown-year").append("<option value=''>년도</option>");
       for (let i = year; i >= 1920; i--) {
@@ -47,15 +77,34 @@ const PersonalInfo = () => {
           '<option value="' + dd + '">' + dd + "</option>"
         );
       }
-
-      // $(".dropdown-year > option[value=" + year + "]").attr("selected", "true");
-      // $(".dropdown-month > option[value=" + mon + "]").attr("selected", "true");
-      // $(".dropdown-day > option[value=" + day + "]").attr("selected", "true");
     });
   };
 
   const getGender = (genderType) => {
     setGender(genderType);
+  };
+
+  //프로필 이미지 source 인코딩
+  const encodeFileToBase64 = (fileBlob) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(fileBlob);
+    return new Promise((resolve) => {
+      reader.onload = () => {
+        setImagesrc(reader.result);
+        resolve();
+      };
+    });
+  };
+
+  const getExtension = (profilename) => {
+    if (profilename.indexOf("png") !== -1) {
+      return profilename.indexOf("png");
+    } else if (profilename.indexOf("jpg") !== -1) {
+      return profilename.indexOf("jpg");
+    }
+    if (profilename.indexOf("jpeg") !== -1) {
+      return profilename.indexOf("jpeg");
+    }
   };
 
   //예외처리
@@ -85,6 +134,12 @@ const PersonalInfo = () => {
       return false;
     }
 
+    //중복체크를 하지 않은 경우
+    if (!isNicknameCheck) {
+      e.preventDefault();
+      alert("닉네임 중복확인을 해주세요!");
+    }
+
     if (
       birthYear === "YYYY" ||
       birthMonth === "MM" ||
@@ -106,57 +161,29 @@ const PersonalInfo = () => {
         userBirthMonday: birthMonth,
         userBirthDay: birthDay,
         gender: gender,
+        userProfileRealName: fileName,
+        userProfileExtension: extension,
+        imageSource: imagesrc,
       },
     });
   };
 
   useEffect(getBirthDay, []);
-  //test
-  useEffect(() => {
-    console.log(nickname);
-    console.log(`${birthYear}${birthMonth}${birthDay}`);
-    console.log(gender);
-  });
 
   return (
     <>
       <div className="bg-container">
-        <h1>회원가입</h1>
-        <div className="title">
-          <div>
-            <div>
-              <img
-                src="/personalinfo-activation.png"
-                alt="인적사항"
-                className="title-circle-personalinfo"
-              ></img>
-            </div>
-            <p>인적사항</p>
-          </div>
-          <div>
-            <div>
-              <img
-                src="/interests-deactivation.png"
-                alt="관심종목"
-                className="title-circle-interest"
-              ></img>
-            </div>
-            <p>관심종목</p>
-          </div>
-          <div>
-            <div>
-              <img
-                src="/activearea-deactivation.png"
-                alt="활동지역"
-                className="title-circle-activearea"
-              ></img>
-            </div>
-            <p>활동지역</p>
-          </div>
-        </div>
+        <UserInfoNavBar
+          personal_atv={"activation"}
+          interest_atv={"deactivation"}
+          activearea={"deactivation"}
+        />
         <div className="content-showbox">
           <div className="nickname">
-            <div className="text-nickname">닉네임</div>
+            <div className="nickname-text-box">
+              <div className="essential-mark">*</div>
+              <div className="text-nickname">닉네임</div>
+            </div>
             <input
               type="text"
               id="input-nickname"
@@ -164,10 +191,15 @@ const PersonalInfo = () => {
               name="nickname"
               onChange={(e) => setNickname(e.target.value)}
             />
-            <button className="button-dup-check">중복확인</button>
+            <button className="button-dup-check" onClick={checkDuplication}>
+              중복확인
+            </button>
           </div>
           <div className="birth">
-            <div className="text-birth">생년월일</div>
+            <div className="birth-text-box">
+              <div className="essential-mark">*</div>
+              <div className="text-birth">생년월일</div>
+            </div>
             <div className="dropdown-birth">
               <div>
                 <select
@@ -196,23 +228,25 @@ const PersonalInfo = () => {
             </div>
           </div>
           <div className="gender">
-            <div className="text-gender">성별</div>
+            <div className="gender-text-box">
+              <div className="essential-mark">*</div>
+              <div className="text-gender">성별</div>
+            </div>
             <div className="radio-gender">
               <div className="male">
-                <label className="text-male" for="radio-male">
+                <label className="text-male" htmlFor="radio-male">
                   남
                 </label>
                 <input
                   type="radio"
                   name="gender"
                   id="radio-male"
-                  checked="checked"
                   checked={gender === "male"}
                   onChange={() => getGender("male")}
                 />
               </div>
               <div className="female">
-                <label className="text-male" for="radio-female">
+                <label className="text-male" htmlFor="radio-female">
                   여
                 </label>
                 <input
@@ -224,6 +258,31 @@ const PersonalInfo = () => {
                 />
               </div>
             </div>
+          </div>
+          <div className="profile">
+            <div className="text-profile">프로필</div>
+            <input
+              readOnly
+              className="upload-name"
+              value={profile.substr(12)}
+            />
+            <label htmlFor="filename">
+              <div>파일찾기</div>
+            </label>
+            <input
+              type="file"
+              id="filename"
+              accept=".jpg, .jpeg, .png"
+              onChange={(e) => {
+                setProfile((profile = e.target.value));
+                const index = getExtension(profile.substr(12)); // 확장자 index 받아오기
+                const splitData1 = profile.substr(12).substring(0, index - 1);
+                const splitData2 = profile.substr(12).substring(index);
+                setFileName(splitData1);
+                setExtension(splitData2);
+                encodeFileToBase64(e.target.files[0]);
+              }}
+            />
           </div>
         </div>
         <Link href="/signup/addinfo/interest">
@@ -246,7 +305,6 @@ const PersonalInfo = () => {
 
         h1 {
           padding: 35px 0;
-          font-family: "NanumBarunGothic";
           font-weight: bold;
           font-size: 2.5rem;
         }
@@ -271,7 +329,6 @@ const PersonalInfo = () => {
           display: flex;
           justify-content: center;
           font-size: 1.5rem;
-          font-family: "NanumBarunGothic";
           align-items: center;
           margin: 5px 0;
         }
@@ -292,6 +349,21 @@ const PersonalInfo = () => {
           background-color: #fff;
           display: flex;
           justify-content: space-between;
+        }
+
+        .nickname-text-box,
+        .birth-text-box,
+        .gender-text-box { 
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+        }
+
+        .essential-mark {
+          font-size: 1.5em;
+          font-weight: bold;
+          color: red;
+          margin-right: 3px;
         }
 
         .text-nickname {
@@ -316,7 +388,6 @@ const PersonalInfo = () => {
           width: 70px;
           background-color: #08555f;
           color: white;
-          font-family: "NanumBarunGothic";
           border: 0;
           outline: 0;
           cursor: pointer;
@@ -434,6 +505,59 @@ const PersonalInfo = () => {
           background: #08555f;
         }
 
+        .profile {
+          width: 583px;
+          height: 40px;
+          margin: 44.5px 5.5px 27px;
+          padding: 5px 10px 5px 14px;
+          border-radius: 10px;
+          border: solid 1px #e8e8e8;
+          background-color: #fff;
+          display: flex;
+          justify-content: space-between;
+        }
+
+        .text-profile {
+          width: 45px;
+          height: 30px;
+          font-weight: bold;
+          font-size: 1.5em;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .upload-name {
+          width: 430px;
+          height: 30px;
+          border-style: none;
+          font-size: 1.5em;
+          padding: 5px;
+        }
+
+        .profile label {
+          width: 70px;
+          background-color: #08555f;
+          color: white;
+          font-size: 1.3em;
+          border: 0;
+          outline: 0;
+          cursor: pointer;
+          border-radius: 5px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .profile input[type="file"] {
+          position: absolute;
+          width: 0;
+          height: 0;
+          padding: 0;
+          border: 0;
+          overflow: hidden;
+        }
+
         .button-next {
           display: flex;
           align-items: center;
@@ -443,7 +567,6 @@ const PersonalInfo = () => {
           background-color: #08555f;
           color: white;
           font-size: 1.5rem;
-          font-family: "NanumBarunGothic";
           margin-top: 25px;
           border: 0;
           outline: 0;

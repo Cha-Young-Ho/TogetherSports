@@ -1,9 +1,15 @@
 package com.togethersports.tosproejct.user;
 
+import com.togethersports.tosproejct.code.Code;
+import com.togethersports.tosproejct.exception.CustomSignatureException;
 import com.togethersports.tosproejct.jwt.JwtTokenProvider;
-import io.jsonwebtoken.Claims;
+import com.togethersports.tosproejct.response.DefaultResponse;
+import com.togethersports.tosproejct.response.MyInfoResponse;
+import io.jsonwebtoken.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -12,24 +18,31 @@ import java.util.Optional;
 @RestController
 public class MyInfoController {
 
-    @Autowired
-    JwtTokenProvider jwtTokenProvider;
 
     @Autowired
     private UserService userService;
 
     @GetMapping("/user")
-    public Optional<User> getMyInformation(@RequestHeader(value="Authorization") String accessToken){
+    public ResponseEntity<MyInfoResponse> getMyInformation(@RequestHeader(value="Authorization") String accessToken) {
         log.info("받아온 토큰 = {}", accessToken);
-        Claims claims = jwtTokenProvider.getClaims(accessToken);
-        return userService.getMyInfo(claims.get("sub").toString());
+        try {
+            MyInfoResponse myInfoResponse = new MyInfoResponse(Code.GOOD_REQUEST, userService.getMyInfo(accessToken));
+
+            return new ResponseEntity<>(myInfoResponse, HttpStatus.OK);
+        }
+        catch (SignatureException e){
+            throw new CustomSignatureException();
+        }
     }
 
 
     @PutMapping("/user")
-    public Optional<User> modifyMyInformation(){
+    public ResponseEntity<DefaultResponse> modifyMyInformation(@RequestHeader(value="Authorization") String accessToken, @RequestBody UserDTO userDTO){
+        
+       Optional<User> user =  userService.updateUser(accessToken, userDTO);
 
-
-        return null;
+       DefaultResponse defaultResponse = new DefaultResponse(Code.GOOD_REQUEST);
+        return new ResponseEntity<>(defaultResponse, HttpStatus.OK);
     }
+
 }

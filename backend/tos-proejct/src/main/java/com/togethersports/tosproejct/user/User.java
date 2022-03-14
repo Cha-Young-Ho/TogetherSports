@@ -1,9 +1,12 @@
 package com.togethersports.tosproejct.user;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.togethersports.tosproejct.enums.Gender;
+import com.togethersports.tosproejct.enums.Provider;
+import com.togethersports.tosproejct.userProfileImage.UserProfileImage;
+import etc.ActiveAreas;
+import etc.Interests;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -37,32 +40,35 @@ public class User implements UserDetails {
     @Column(name = "USER_NICKNAME", length = 15)
     private String userNickname;
 
-    @Column(name = "USER_BIRTH", length = 6)
-    private String userBirth;
+    @Column(name = "USER_BIRTH_YEAR", length = 4)
+    private String userBirthYear;
 
-    @Column(name = "USER_STATE", length = 5)
-    private String userState;
+    @Column(name = "USER_BIRTH_MONTH", length = 2)
+    private String userBirthMonth;
 
-    @Column(name = "MANNER_POINT")
-    private int mannerPoint;
+    @Column(name = "USER_BIRTH_DAY", length = 2)
+    private String userBirthDay;
 
-    @Column(name = "LOCATION_X")
-    private Double locationX;
-
-    @Column(name = "LOCATION_Y")
-    private Double locationY;
-
-    @Column(name = "GENDER", length = 1)
+    @Column(name = "GENDER")
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @Column(name = "ADMIN")
-    @Enumerated(EnumType.STRING)
-    private Admin admin;
+    @Column(name = "MANNER_POINT", columnDefinition = "integer default 0")
+    private int mannerPoint;
 
-    @Column(name = "PROVIDER", length = 20, unique = true)
+    @Column(name = "PROVIDER", length = 20)
     @Enumerated(EnumType.STRING)
     private Provider provider;
+
+    @OneToMany(mappedBy = "user")
+    private List<ActiveAreas> activeAreasList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<Interests> interestsList = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private List<UserProfileImage> userProfileImageList = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
@@ -78,6 +84,10 @@ public class User implements UserDetails {
     @Override
     public String getPassword() {
         return null;
+    }
+
+    public String getUserName() {
+        return userName;
     }
 
     @Override
@@ -103,5 +113,16 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public void update(UserDTO userDTO){
+
+        this.userEmail = userDTO.getUserEmail();
+        this.userBirthYear = userDTO.getUserBirthYear();
+        this.userBirthMonth = userDTO.getUserBirthMonth();
+        this.userBirthDay = userDTO.getUserBirthDay();
+        this.userName = userDTO.getUserName();
+        this.userNickname = userDTO.getUserNickname();
+
     }
 }
