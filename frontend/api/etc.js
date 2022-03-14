@@ -14,8 +14,9 @@ const getPopulariyRooms = async () => {
       Accept: "*/*",
     },
   });
+  const dataPromise = promise.then((res) => res.data);
 
-  return promise;
+  return dataPromise;
 };
 
 // POST
@@ -31,8 +32,9 @@ const postRefreshToken = async (refreshToken) => {
       refreshToken: refreshToken,
     },
   });
+  const dataPromise = promise.then((res) => res.data);
 
-  return promise;
+  return dataPromise;
 };
 
 // PUT

@@ -14,21 +14,21 @@ const ActiveArea = () => {
   // 서버에 회원가입 요청
   const callUserRequest = () => {
     postUserRequest(
-      activeAreas, // 수정필요
-      userInfo.gender,
-      userInfo.interests,
-      userInfo.mannerPoint,
-      userInfo.provider,
-      userInfo.userBirthDay,
-      userInfo.userBirthMonday,
-      userInfo.userBirthYear,
-      userInfo.userEmail,
-      userInfo.userName,
-      userInfo.userNickname,
-      userInfo.userProfileImage
+      activeAreas,
+      userInfo.userRequestReducer.gender,
+      userInfo.userRequestReducer.interests,
+      userInfo.userRequestReducer.mannerPoint,
+      userInfo.userRequestReducer.provider,
+      userInfo.userRequestReducer.userBirthDay,
+      userInfo.userRequestReducer.userBirthMonday,
+      userInfo.userRequestReducer.userBirthYear,
+      userInfo.userRequestReducer.userEmail,
+      userInfo.userRequestReducer.userName,
+      userInfo.userRequestReducer.userNickname,
+      userInfo.userRequestReducer.userProfileImage
     ).then((res) => {
-      console.log(res.data.message);
-      if (res.data.code === "5000") {
+      console.log(res.message);
+      if (res.code === 5000) {
         alert("회원가입이 성공했습니다.");
       } else {
         alert("알 수 없는 이유로 요청이 실패했습니다.");

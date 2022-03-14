@@ -21,8 +21,9 @@ const getUserInfoCheck = async (email, name, provi) => {
       provider: provi,
     },
   });
+  const dataPromise = promise.then((res) => res.data);
 
-  return promise;
+  return dataPromise;
 };
 
 // 로그인
@@ -40,8 +41,9 @@ const getUserLogin = async (email, name, provi) => {
       provider: provi,
     },
   });
+  const dataPromise = promise.then((res) => res.data);
 
-  return promise;
+  return dataPromise;
 };
 
 // 닉네임 중복확인
@@ -55,8 +57,9 @@ const getDuplicationCheck = async (nickname) => {
       userNickname: nickname,
     },
   });
+  const dataPromise = promise.then((res) => res.data);
 
-  return promise;
+  return dataPromise;
 };
 
 // 내 정보 조회
@@ -68,8 +71,9 @@ const getMyInfo = async () => {
       Authorization: localStorage.getItem("accessToken"),
     },
   });
+  const dataPromise = promise.then((res) => res.data);
 
-  return promise;
+  return dataPromise;
 };
 
 // 다른 회원 정보 조회
@@ -84,8 +88,9 @@ const getOtherInfo = async (nickname) => {
       userNickName: nickname,
     },
   });
+  const dataPromise = promise.then((res) => res.data);
 
-  return promise;
+  return dataPromise;
 };
 
 // POST
@@ -105,29 +110,12 @@ const postUserRequest = async (
   userNickname,
   userProfileImage
 ) => {
-  // http://localhost:8080/test
-
-  console.log(
-    activeAreas,
-    gender,
-    interests,
-    mannerPoint,
-    provider,
-    userBirthDay,
-    userBirthMonday,
-    userBirthYear,
-    userEmail,
-    userName,
-    userNickname,
-    userProfileImage
-  );
-
   const promise = axios.post("http://localhost:8080/user", {
     headers: {
       "Content-type": "application/json; charset=UTF-8",
       Accept: "*/*",
     },
-    params: {
+    data: {
       mannerPoint: mannerPoint,
       userEmail: userEmail,
       userName: userName,
@@ -143,8 +131,9 @@ const postUserRequest = async (
       interests: interests, //--> 5개까지
     },
   });
+  const dataPromise = promise.then((res) => res.data);
 
-  return promise;
+  return dataPromise;
 };
 
 // PUT
@@ -163,8 +152,9 @@ const putUpdateUserInfo = async () => {
       // 굉장히 많음
     },
   });
+  const dataPromise = promise.then((res) => res.data);
 
-  return promise;
+  return dataPromise;
 };
 
 // DELETE
@@ -180,8 +170,9 @@ const deleteLogout = async () => {
       Authorization: localStorage.getItem("accessToken"),
     },
   });
+  const dataPromise = promise.then((res) => res.data);
 
-  return promise;
+  return dataPromise;
 };
 
 export {

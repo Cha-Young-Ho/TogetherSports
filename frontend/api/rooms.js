@@ -18,8 +18,9 @@ const getRoomInfo = async (roomSequenceId) => {
       roomSequenceId: roomSequenceId,
     },
   });
+  const dataPromise = promise.then((res) => res.data);
 
-  return promise;
+  return dataPromise;
 };
 
 // 방 목록 페이지 조회
@@ -48,8 +49,9 @@ const getRoomList = async (
       appointmentDate: appointmentDate,
     },
   });
+  const dataPromise = promise.then((res) => res.data);
 
-  return promise;
+  return dataPromise;
 };
 
 // POST
@@ -82,8 +84,9 @@ const postCreateRoom = async (
       roomImages: img,
     },
   });
+  const dataPromise = promise.then((res) => res.data);
 
-  return promise;
+  return dataPromise;
 };
 
 // PUT
@@ -114,8 +117,9 @@ const postUpdateRoom = async (
       roomImages: roomImages,
     },
   });
+  const dataPromise = promise.then((res) => res.data);
 
-  return promise;
+  return dataPromise;
 };
 
 // DELETE
@@ -129,8 +133,9 @@ const deleteRoom = async () => {
       Authorization: localStorage.getItem("accessToken"),
     },
   });
+  const dataPromise = promise.then((res) => res.data);
 
-  return promise;
+  return dataPromise;
 };
 
 export { getRoomInfo, getRoomList, postUpdateRoom, postCreateRoom, deleteRoom };

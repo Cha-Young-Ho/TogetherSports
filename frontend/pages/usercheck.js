@@ -14,17 +14,13 @@ const Usercheck = () => {
   // 회원이 아니라면, 세션에 담긴 각 정보를 저장 후 회원가입으로 이동
   useEffect(() => {
     if (session) {
-      console.log(session);
       getUserInfoCheck(
         session.user.email,
         session.user.name,
         session.user.provider
       ).then((res) => {
-        console.log(res.data.message);
-        if (res.data.code === "5000") {
-          router.replace("/");
-          alert("이미 가입된 계정입니다. 로그인을 이용하세요.");
-        } else {
+        console.log(res.message);
+        if (res.code === 5000) {
           dispatch({
             type: "AUTHDATA",
             payload: {
@@ -34,6 +30,9 @@ const Usercheck = () => {
             },
           });
           router.replace("/signup/addinfo/personalinfo");
+        } else {
+          router.replace("/");
+          alert("이미 가입된 계정입니다. 로그인을 이용하세요.");
         }
       });
     }
