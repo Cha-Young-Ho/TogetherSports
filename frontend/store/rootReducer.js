@@ -17,16 +17,33 @@ const signupInitialState = {
   interests: [],
 };
 
+// 내 정보 초기값
+const myInfoInitialState = {
+  userEmail: "",
+  userName: "",
+  userNickname: "",
+  userBirthYear: "",
+  userBirthMonday: "",
+  userBirthDay: "",
+  gender: "",
+  userProfileImage: {},
+  activeAreas: [],
+  interests: [],
+  mannerPoint: "",
+};
+
 // 닉네임 저장 초기값
 const saveNicknameInitialState = {
   userNickname: "",
 };
 
+// 오타 방지용
 const PERSONALINFO = "PERSONALINFO";
 const INTERESTS = "INTERESTS";
 const ACTIVEAREA = "ACTIVEAREA";
 const AUTHDATA = "AUTHDATA";
 const SAVENICKNAME = "SAVENICKNAME";
+const SAVEMYINFO = "SAVEMYINFO";
 
 // 유저 회원가입 정보 reducer
 const userRequestReducer = (state = signupInitialState, action) => {
@@ -77,6 +94,33 @@ const userRequestReducer = (state = signupInitialState, action) => {
   }
 };
 
+// 내 프로필 조회-> 내 정보 저장 reducer
+const myInfoReducer = (state = myInfoInitialState, action) => {
+  switch (action.type) {
+    case SAVEMYINFO:
+      return {
+        ...state,
+        userEmail: action.payload.userEmail,
+        userName: action.payload.userName,
+        userNickname: action.payload.userNickname,
+        userBirthYear: action.payload.userBirthYear,
+        userBirthMonday: action.payload.userBirthMonday,
+        userBirthDay: action.payload.userBirthDay,
+        gender: action.payload.gender,
+        userProfileImage: {
+          userProfileRealName: action.payload.userProfileRealName,
+          userProfileExtension: action.payload.userProfileExtension,
+          imageSource: action.payload.imageSource,
+        },
+        activeAreas: action.payload.activeAreas.map((el) => el),
+        interests: action.payload.interests.map((el) => el),
+        mannerPoint: action.payload.mannerPoint,
+      };
+    default:
+      return state;
+  }
+};
+
 const userUpdateReducer = (state, action) => {};
 
 // 닉네임 저장 reducer
@@ -96,6 +140,7 @@ const saveNicknameReducer = (state = saveNicknameInitialState, action) => {
 const rootReducer = combineReducers({
   userRequestReducer,
   saveNicknameReducer,
+  myInfoReducer,
 });
 
 const makeStore = () => createStore(rootReducer, composeWithDevTools());

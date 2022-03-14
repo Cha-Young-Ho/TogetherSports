@@ -1,4 +1,50 @@
+import { useDispatch } from "react-redux";
+import { getMyInfo } from "../api/members";
+import { FailResponse } from "../api/failResponse";
+import { useState } from "react";
+
 const UserInfoModal = ({ open, close }) => {
+  const dispatch = useDispatch();
+  const [imageSrc, setImageSrc] = useState();
+  const [nickname, setNickname] = useState();
+  const [mannerPoint, setMannerPoint] = useState();
+  const [interest, setInterest] = useState([]);
+
+  // 내 회원 정보 요청
+  getMyInfo().then((res) => {
+    if (res.code === 5000) {
+      // 현재 정보 값 내부에 저장
+      setImageSrc(res.imageSource);
+      setNickname(res.userNickname);
+      setMannerPoint(res.mannerPoint);
+      setInterest(res.interest);
+
+      // redux에 저장
+      dispatch({
+        type: "SAVEMYINFO",
+        payload: {
+          userEmail: res.userEmail,
+          userName: res.userName,
+          userNickname: res.userNickname,
+          userBirthYear: res.userBirthYear,
+          userBirthMonday: res.userBirthMonday,
+          userBirthDay: res.userBirthDay,
+          gender: res.gender,
+          userProfileImage: {
+            userProfileRealName: res.userProfileRealName,
+            userProfileExtension: res.userProfileExtension,
+            imageSource: res.imageSource,
+          },
+          activeAreas: res.activeAreas.map((el) => el),
+          interests: res.interests.map((el) => el),
+          mannerPoint: res.mannerPoint,
+        },
+      });
+    } else {
+      FailResponse(res.code);
+    }
+  });
+
   return (
     <>
       <div className={open ? "openModal modal" : "modal"}>
@@ -12,9 +58,17 @@ const UserInfoModal = ({ open, close }) => {
             </header>
             <div className="profile-body">
               <div className="pf-image"></div>
-              <div className="pf-nickName">임시 닉네임</div>
-              <div className="pf-mannerPoint">10점</div>
-              <div className="pf-interest">임시 종목들</div>
+              <div className="pf-nickName">{nickname}</div>
+              <div className="pf-mannerPoint">{mannerPoint}</div>
+              <div className="pf-interest">
+                {interest.map((exercise, index) => {
+                  return (
+                    <div key={index} className="pf-exercise">
+                      {exercise}
+                    </div>
+                  );
+                })}
+              </div>
               <button className="next-button">회원 정보 수정하기</button>
             </div>
           </section>
