@@ -28,7 +28,7 @@ const postRefreshToken = async (refreshToken) => {
       "Content-type": "application/json; charset=UTF-8",
       Accept: "*/*",
     },
-    params: {
+    data: {
       refreshToken: refreshToken,
     },
   });

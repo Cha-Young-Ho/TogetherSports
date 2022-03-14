@@ -3,6 +3,10 @@ import { useState, useEffect } from "react";
 import { postUserRequest } from "../../../api/members";
 import { useSelector } from "react-redux";
 import UserInfoNavBar from "../../../components/userInfoNavBar";
+<<<<<<< HEAD
+=======
+import { FailResponse } from "../../../api/failResponse";
+>>>>>>> bf950531f37c6b53d7e6138ec4b1b0dcb093668f
 
 const ActiveArea = () => {
   const userInfo = useSelector((state) => state);
@@ -16,7 +20,6 @@ const ActiveArea = () => {
       activeAreas,
       userInfo.userRequestReducer.gender,
       userInfo.userRequestReducer.interests,
-      userInfo.userRequestReducer.mannerPoint,
       userInfo.userRequestReducer.provider,
       userInfo.userRequestReducer.userBirthDay,
       userInfo.userRequestReducer.userBirthMonday,
@@ -30,7 +33,7 @@ const ActiveArea = () => {
       if (res.code === 5000) {
         alert("회원가입이 성공했습니다.");
       } else {
-        alert("알 수 없는 이유로 요청이 실패했습니다.");
+        FailResponse(res.code);
       }
     });
   };
