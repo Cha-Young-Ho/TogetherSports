@@ -99,7 +99,12 @@ const ActiveArea = () => {
       searchAddrFromCoords(geocoder, position, function (result, status) {
         if (status === kakao.maps.services.Status.OK) {
           const area = result[0].address_name;
-          //@@@@@@@@@@@@@@마커 삭제하면 태그도 삭제하기@@@@@@@@@@@
+
+          setTagAreas((prev) =>
+            prev.filter((el) => {
+              return el !== area;
+            })
+          );
 
           //배열에서 클릭된 마커의 지역 인덱스 찾기
           const index = activeAreas.findIndex(function (element) {
@@ -110,7 +115,7 @@ const ActiveArea = () => {
             activeAreas.splice(index, 1);
           }
         }
-        //console.log(activeAreas);
+        console.log(activeAreas);
       });
     });
   };
@@ -131,13 +136,15 @@ const ActiveArea = () => {
               activeAreas = activeAreas.filter((element, index) => {
                 return activeAreas.indexOf(element) === index;
               });
+
               setTagAreas((prev) => [...prev, area]);
+
               getMarker(map, mouseEvent.latLng, geocoder); //클릭된 지역 마커표시
             } else {
               alert("최대 설정 가능한 개수를 초과하였습니다!");
             }
           }
-          //console.log(activeAreas);
+          console.log(activeAreas);
         }
       );
     });
