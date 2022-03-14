@@ -54,7 +54,7 @@ const getDuplicationCheck = async (nickname) => {
       Accept: "*/*",
     },
     params: {
-      userNickName: nickname,
+      userNickname: nickname,
     },
   });
   const dataPromise = promise.then((res) => res.data);

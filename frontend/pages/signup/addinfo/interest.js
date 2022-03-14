@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import UserInfoNavBar from "../../../components/userInfoNavBar";
 
@@ -34,13 +34,22 @@ const Interest = () => {
   };
 
   const BtnClickedNext = () => {
+    // dispatch({
+    //   type: "INTERESTS",
+    //   payload: {
+    //     interests: interests,
+    //   },
+    // });
+  };
+
+  useEffect(() => {
     dispatch({
       type: "INTERESTS",
       payload: {
         interests: interests,
       },
     });
-  };
+  });
 
   return (
     <>

@@ -3,8 +3,9 @@ import { useState, useEffect } from "react";
 import jquery from "jquery";
 import $ from "jquery";
 import { useDispatch } from "react-redux";
-import { getDuplicationCheck } from "../../../api/members";
+//import { getDuplicationCheck } from "../../../api/members";
 import UserInfoNavBar from "../../../components/userInfoNavBar";
+import axios from "axios";
 
 const PersonalInfo = () => {
   const dispatch = useDispatch();
@@ -33,17 +34,20 @@ const PersonalInfo = () => {
   fail => nickName = 초기화
   */
   const checkDuplication = () => {
-    getDuplicationCheck(nickname).then((res) => {
-      console.log(res.message);
-      if (res.code === 5000) {
-        setNickname(e.target.value);
-        setIsNicknameCheck(true);
-        alert("사용 가능한 닉네임입니다.");
-      } else {
-        setNickname("");
-        alert("이미 사용중인 닉네임입니다.");
-      }
-    });
+    if (nickname.length < 2) {
+      alert("닉네임은 최소 2글자 이상 입력해주세요.");
+    } else {
+      getDuplicationCheck(nickname).then((res) => {
+        console.log(res.message);
+        if (res.code === 5000) {
+          setIsNicknameCheck(true);
+          alert("사용 가능한 닉네임입니다.");
+        } else {
+          setNickname("");
+          alert("이미 사용중인 닉네임입니다.");
+        }
+      });
+    }
   };
 
   const getBirthDay = () => {
@@ -90,6 +94,17 @@ const PersonalInfo = () => {
         resolve();
       };
     });
+  };
+
+  const getExtension = (profilename) => {
+    if (profilename.indexOf("png") !== -1) {
+      return profilename.indexOf("png");
+    } else if (profilename.indexOf("jpg") !== -1) {
+      return profilename.indexOf("jpg");
+    }
+    if (profilename.indexOf("jpeg") !== -1) {
+      return profilename.indexOf("jpeg");
+    }
   };
 
   //예외처리
@@ -260,9 +275,11 @@ const PersonalInfo = () => {
               accept=".jpg, .jpeg, .png"
               onChange={(e) => {
                 setProfile((profile = e.target.value));
-                const splitData = profile.substr(12).split(".");
-                setFileName(splitData[0]);
-                setExtension(splitData[1]);
+                const index = getExtension(profile.substr(12)); // 확장자 index 받아오기
+                const splitData1 = profile.substr(12).substring(0, index - 1);
+                const splitData2 = profile.substr(12).substring(index);
+                setFileName(splitData1);
+                setExtension(splitData2);
                 encodeFileToBase64(e.target.files[0]);
               }}
             />

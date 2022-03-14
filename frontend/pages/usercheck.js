@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { getUserInfoCheck } from "../api/members";
+import axios from "axios";
 
 const Usercheck = () => {
   const router = useRouter();

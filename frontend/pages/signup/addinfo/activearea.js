@@ -1,13 +1,15 @@
 import Link from "next/link";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { postUserRequest } from "../../../api/members";
 import { useSelector } from "react-redux";
 import UserInfoNavBar from "../../../components/userInfoNavBar";
+import Tag from "../../../components/tag";
 
 const ActiveArea = () => {
   const userInfo = useSelector((state) => state);
 
   let activeAreas = [];
+  const [tagAreas, setTagAreas] = useState([]);
 
   // 서버에 회원가입 요청
   const callUserRequest = () => {
@@ -97,6 +99,11 @@ const ActiveArea = () => {
       searchAddrFromCoords(geocoder, position, function (result, status) {
         if (status === kakao.maps.services.Status.OK) {
           const area = result[0].address_name;
+          setTagAreas(
+            tagAreas.filter((i) => {
+              return i !== area;
+            })
+          );
 
           //배열에서 클릭된 마커의 지역 인덱스 찾기
           const index = activeAreas.findIndex(function (element) {
@@ -107,6 +114,7 @@ const ActiveArea = () => {
             activeAreas.splice(index, 1);
           }
         }
+        //console.log(activeAreas);
       });
     });
   };
@@ -123,6 +131,8 @@ const ActiveArea = () => {
             //배열에 담긴 지역이 5개 이하라면
             if (activeAreas.length < 5) {
               activeAreas.push(area);
+
+              setTagAreas((prev) => [...prev, area]);
               //중복 지역 담기지 않게 하기
               activeAreas = activeAreas.filter((element, index) => {
                 return activeAreas.indexOf(element) === index;
@@ -132,6 +142,7 @@ const ActiveArea = () => {
               alert("최대 설정 가능한 개수를 초과하였습니다!");
             }
           }
+          //console.log(activeAreas);
         }
       );
     });
@@ -154,7 +165,15 @@ const ActiveArea = () => {
           <p>원하는 활동지역을 선택해주세요! (최대 5개)</p>
         </div>
         <div id="map"></div>
-        <div className="tag-map">위치 태그</div>
+        <div className="tag-wrap">
+          {tagAreas.map((area, index) => {
+            return (
+              <div key={index} className="tag">
+                {area}
+              </div>
+            );
+          })}
+        </div>
 
         <Link href="/login">
           <button
@@ -224,9 +243,38 @@ const ActiveArea = () => {
           border: solid 1px #e8e8e8;
         }
 
-        .tag-map {
+        .tag-wrap {
           width: 580px;
           align-items: left;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .tag {
+          width: 180px;
+          height: 24px;
+          padding: 5px;
+          margin: 5px;
+          border: none;
+          border-radius: 10px;
+          background-color: #e0e0e0;
+          color: #747474;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .button-tag-delete {
+          border: none;
+          cursor: pointer;
+          background-color: #e0e0e0;
+          color: #747474;
+          font-weight: bold;
+          margin-left: 5px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
 
         .button-done {
