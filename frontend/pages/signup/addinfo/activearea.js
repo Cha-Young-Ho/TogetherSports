@@ -115,7 +115,6 @@ const ActiveArea = () => {
             activeAreas.splice(index, 1);
           }
         }
-        console.log(activeAreas);
       });
     });
   };
@@ -144,7 +143,6 @@ const ActiveArea = () => {
               alert("최대 설정 가능한 개수를 초과하였습니다!");
             }
           }
-          console.log(activeAreas);
         }
       );
     });
