@@ -10,9 +10,7 @@ import lombok.ToString;
 public class TokenResponse extends DefaultResponse{
 
     private String accessToken;
-
     private String refreshToken;
-
 
     public TokenResponse(Code code, Token token){
         super(code);

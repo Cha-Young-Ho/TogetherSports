@@ -14,6 +14,7 @@ public enum Code {
     BAD_REQUEST(1000, "잘못된 요청입니다."),
     //유저 1100~ 1199
     USER_NOT_FOUND(1100, "유저를 찾을 수 없습니다."),
+    DUPLICATION(1101, "중복된 닉네임입니다."),
 
     //방 1200 ~ 1299
     BOARD_NOT_FOUND(1200, "해당 방을 찾을 수 없습니다."),
