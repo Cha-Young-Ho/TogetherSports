@@ -115,7 +115,7 @@ const postUserRequest = async (
       "Content-type": "application/json; charset=UTF-8",
       Accept: "*/*",
     },
-    params: {
+    data: {
       mannerPoint: mannerPoint,
       userEmail: userEmail,
       userName: userName,
