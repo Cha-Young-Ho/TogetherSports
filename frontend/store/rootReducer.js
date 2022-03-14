@@ -10,7 +10,6 @@ const signupInitialState = {
   userBirthYear: "",
   userBirthMonday: "",
   userBirthDay: "",
-  mannerPoint: "10",
   gender: "",
   userProfileImage: {},
   provider: "",

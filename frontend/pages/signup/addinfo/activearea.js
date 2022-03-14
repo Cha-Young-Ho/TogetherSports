@@ -17,7 +17,6 @@ const ActiveArea = () => {
       activeAreas,
       userInfo.userRequestReducer.gender,
       userInfo.userRequestReducer.interests,
-      userInfo.userRequestReducer.mannerPoint,
       userInfo.userRequestReducer.provider,
       userInfo.userRequestReducer.userBirthDay,
       userInfo.userRequestReducer.userBirthMonday,
