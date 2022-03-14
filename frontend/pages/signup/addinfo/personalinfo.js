@@ -11,7 +11,7 @@ const PersonalInfo = () => {
 
   //닉네임
   const [nickname, setNickname] = useState("");
-  const [isNicknameCheck, setIsNicknameCheck] = useState(false);
+  const [isNicknameCheck, setIsNicknameCheck] = useState(true);
 
   //생년월일
   const [birthYear, setBirthYear] = useState("YYYY");
@@ -33,9 +33,9 @@ const PersonalInfo = () => {
   fail => nickName = 초기화
   */
   const checkDuplication = () => {
-    getDuplicationCheck().then((res) => {
-      console.log(res.data.message);
-      if (res.data.code === "5000") {
+    getDuplicationCheck(nickname).then((res) => {
+      console.log(res.message);
+      if (res.code === 5000) {
         setNickname(e.target.value);
         setIsNicknameCheck(true);
         alert("사용 가능한 닉네임입니다.");

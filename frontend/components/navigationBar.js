@@ -29,10 +29,11 @@ const NavigationBar = () => {
 
   const ClickLogout = () => {
     deleteLogout().then((res) => {
-      console.log(res.data.message);
-      if (res.data.code === "5000") {
+      console.log(res.message);
+      if (res.code === 5000) {
         localStorage.removeItem("accessToken");
-        setLoginData((localData = false));
+        localStorage.removeItem("refreshToken");
+        setLoginData((loginData = false));
         console.log("로그아웃 완료");
       } else {
         console.log("잘못 된 요청입니다.");
