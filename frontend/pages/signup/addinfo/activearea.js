@@ -3,10 +3,7 @@ import { useState, useEffect } from "react";
 import { postUserRequest } from "../../../api/members";
 import { useSelector } from "react-redux";
 import UserInfoNavBar from "../../../components/userInfoNavBar";
-<<<<<<< HEAD
-=======
 import { FailResponse } from "../../../api/failResponse";
->>>>>>> bf950531f37c6b53d7e6138ec4b1b0dcb093668f
 
 const ActiveArea = () => {
   const userInfo = useSelector((state) => state);
