@@ -40,6 +40,11 @@ public class ErrorControllerAdvice {
         DefaultResponse response = new DefaultResponse(Code.WRONG_TYPE_TOKEN);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+    @ExceptionHandler(value = CustomDefaultException.class)
+    protected ResponseEntity<DefaultResponse> handleCustomDefaultException(){
+        DefaultResponse response = new DefaultResponse(Code.WRONG_DATA);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex){

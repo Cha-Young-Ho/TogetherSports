@@ -3,9 +3,9 @@ package com.togethersports.tosproejct.user;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.togethersports.tosproejct.enums.Gender;
 import com.togethersports.tosproejct.enums.Provider;
+import com.togethersports.tosproejct.etc.ActiveAreas;
 import com.togethersports.tosproejct.userProfileImage.UserProfileImage;
-import etc.ActiveAreas;
-import etc.Interests;
+import com.togethersports.tosproejct.etc.Interests;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -60,11 +60,12 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Provider provider;
 
-    @OneToMany(mappedBy = "user")
-    private List<ActiveAreas> activeAreasList = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     private List<Interests> interestsList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<ActiveAreas> activeAreas = new ArrayList<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "user")
