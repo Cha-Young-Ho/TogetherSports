@@ -17,8 +17,6 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class UserDTO {
 
-    // User
-    private int userSequenceId;
 
     @NotBlank(message = "email 필드 값이 존재하지 않습니다.")
     @Email

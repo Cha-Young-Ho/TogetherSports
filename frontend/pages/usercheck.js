@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { getUserInfoCheck } from "../api/members";
-import axios from "axios";
+import { FailResponse } from "../api/failResponse";
 
 const Usercheck = () => {
   const router = useRouter();
@@ -31,8 +31,7 @@ const Usercheck = () => {
           });
           router.replace("/signup/addinfo/personalinfo");
         } else {
-          router.replace("/");
-          alert("이미 가입된 계정입니다. 로그인을 이용하세요.");
+          FailResponse(res.code);
         }
       });
     }

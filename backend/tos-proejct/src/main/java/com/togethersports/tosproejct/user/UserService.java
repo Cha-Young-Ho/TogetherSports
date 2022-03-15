@@ -1,5 +1,7 @@
 package com.togethersports.tosproejct.user;
 
+import com.togethersports.tosproejct.code.Code;
+import com.togethersports.tosproejct.exception.CustomDefaultException;
 import com.togethersports.tosproejct.file.FileHandler;
 import com.togethersports.tosproejct.jwt.JwtTokenProvider;
 import com.togethersports.tosproejct.userProfileImage.UserProfileImage;
@@ -48,11 +50,10 @@ public class UserService {
     /**
      *  회원가입 서비스
      */
-    public String userSignup(UserDTO userDTO) {
+    public void userSignup(UserDTO userDTO) {
 
         try {
             User user = User.builder()
-                    .userSequenceId(userDTO.getUserSequenceId())
                     .userEmail(userDTO.getUserEmail())
                     .userName(userDTO.getUserName())
                     .userBirthYear(userDTO.getUserBirthYear())
@@ -73,10 +74,10 @@ public class UserService {
             }
         } catch(Exception e) {
             e.printStackTrace();
-            return "FAIL";
+            throw new CustomDefaultException();
         }
 
-        return "SUCCESS";
+
     }
 
 
@@ -118,6 +119,28 @@ public class UserService {
 
         return new OtherUserDTO().parsingUser(foundUser);
 
+    }
+
+    public boolean sinUpCheck(String userEmail){
+
+        //해당 유저 이메일이 존재하면 false 반환
+        if(userRepository.existsByUserEmail(userEmail)){
+            return false;
+        }
+
+        //존재하지 않으면 true 반환
+        return true;
+    }
+
+    public boolean duplicationCheck(String userNickname){
+
+        //닉네임이 이미 존재하면 false 반환
+        if(userRepository.existsByUserNickname(userNickname)){
+            return false;
+        }
+
+        //해당 닉네임으로 가입이 가능하면 true 반환
+        return true;
     }
 
 }

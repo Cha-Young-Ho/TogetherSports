@@ -34,22 +34,13 @@ const Interest = () => {
   };
 
   const BtnClickedNext = () => {
-    // dispatch({
-    //   type: "INTERESTS",
-    //   payload: {
-    //     interests: interests,
-    //   },
-    // });
-  };
-
-  useEffect(() => {
     dispatch({
       type: "INTERESTS",
       payload: {
         interests: interests,
       },
     });
-  });
+  };
 
   return (
     <>
