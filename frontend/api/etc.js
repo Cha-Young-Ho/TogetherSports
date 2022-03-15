@@ -23,15 +23,16 @@ const getPopulariyRooms = async () => {
 
 // 액세스 토큰 발급
 const postRefreshToken = async (refreshToken) => {
-  const promise = axios.post("http://localhost:8080/refresh", {
-    headers: {
-      "Content-type": "application/json; charset=UTF-8",
-      Accept: "*/*",
-    },
-    data: {
+  const promise = axios.post(
+    "http://localhost:8080/refresh",
+    {
       refreshToken: refreshToken,
     },
-  });
+    {
+      "Content-type": "application/json; charset=UTF-8",
+      Accept: "*/*",
+    }
+  );
   const dataPromise = promise.then((res) => res.data);
 
   return dataPromise;
