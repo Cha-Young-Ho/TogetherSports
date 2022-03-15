@@ -26,12 +26,24 @@ public class UserProfileImageService {
     //회원 프로필 이미지 DB 저장 (연관관계로 부모 user 객체가 필요하여 파라미터를 DTO와 따로 받음)
     public void userProfileImageSave(User user, UserDTO userDTO) {
 
+        UserProfileImageDTO userProfileImageDTO = userDTO.getUserProfileImage();
+
         UserProfileImage userProfileImage = UserProfileImage
                 .builder()
                 .user(user)
-                .userProfileRealName(userDTO.getUserProfileImage().getUserProfileRealName())
-                .userProfileSaveName(userDTO.getUserProfileImage().getUserProfileSaveName())
-                .userProfileExtension( userDTO.getUserProfileImage().getUserProfileExtension())
+                .userProfileRealName(userProfileImageDTO.getUserProfileRealName())
+                .userProfileSaveName(userProfileImageDTO.getUserProfileSaveName())
+                .userProfileExtension(userProfileImageDTO.getUserProfileExtension())
+                .userProfileImageFilePath(userProfileImageDTO.getUserProfileFilePath())
+                .build();
+
+        userProfileImageRepository.save(userProfileImage);
+    }
+
+    public void userProfileImageDefaultSave(User user, UserDTO userDTO){
+        UserProfileImage userProfileImage = UserProfileImage
+                .builder()
+                .user(user)
                 .build();
 
         userProfileImageRepository.save(userProfileImage);
