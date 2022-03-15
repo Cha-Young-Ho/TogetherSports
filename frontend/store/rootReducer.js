@@ -40,7 +40,6 @@ const saveNicknameInitialState = {
 // 오타 방지용
 const PERSONALINFO = "PERSONALINFO";
 const INTERESTS = "INTERESTS";
-const ACTIVEAREA = "ACTIVEAREA";
 const AUTHDATA = "AUTHDATA";
 const SAVENICKNAME = "SAVENICKNAME";
 const SAVEMYINFO = "SAVEMYINFO";
@@ -82,12 +81,6 @@ const userRequestReducer = (state = signupInitialState, action) => {
           .filter((el) => el[1] === true)
           .map((el) => el[0]),
       };
-    case ACTIVEAREA:
-      console.log(state);
-      return {
-        ...state,
-        activeAreas: action.payload.activeAreas.map((el) => el),
-      };
     default:
       console.log("start");
       return state;
@@ -120,8 +113,6 @@ const myInfoReducer = (state = myInfoInitialState, action) => {
       return state;
   }
 };
-
-const userUpdateReducer = (state, action) => {};
 
 // 닉네임 저장 reducer
 const saveNicknameReducer = (state = saveNicknameInitialState, action) => {

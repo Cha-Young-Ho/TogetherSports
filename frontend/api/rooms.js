@@ -67,13 +67,9 @@ const postCreateRoom = async (
   date,
   img
 ) => {
-  const promise = axios.post("http://localhost:8080/room", {
-    headers: {
-      "Content-type": "application/json; charset=UTF-8",
-      Accept: "*/*",
-      Authorization: localStorage.getItem("accessToken"),
-    },
-    params: {
+  const promise = axios.post(
+    "http://localhost:8080/room",
+    {
       roomTitle: title,
       roomContent: content,
       area: area,
@@ -83,7 +79,12 @@ const postCreateRoom = async (
       appointmentDate: date,
       roomImages: img,
     },
-  });
+    {
+      "Content-type": "application/json; charset=UTF-8",
+      Accept: "*/*",
+      Authorization: localStorage.getItem("accessToken"),
+    }
+  );
   const dataPromise = promise.then((res) => res.data);
 
   return dataPromise;
@@ -96,27 +97,26 @@ const postUpdateRoom = async (
   roomTitle,
   roomContent,
   area,
-  exercise,
   tag,
   appointmentDate,
   roomImages
 ) => {
-  const promise = axios.put("http://localhost:8080/room", {
-    headers: {
-      "Content-type": "application/json; charset=UTF-8",
-      Accept: "*/*",
-      Authorization: localStorage.getItem("accessToken"),
-    },
-    params: {
+  const promise = axios.put(
+    "http://localhost:8080/room",
+    {
       roomTitle: roomTitle,
       roomContent: roomContent,
       area: area,
-      exercise: exercise,
       tag: tag,
       appointmentDate: appointmentDate,
       roomImages: roomImages,
     },
-  });
+    {
+      "Content-type": "application/json; charset=UTF-8",
+      Accept: "*/*",
+      Authorization: localStorage.getItem("accessToken"),
+    }
+  );
   const dataPromise = promise.then((res) => res.data);
 
   return dataPromise;
