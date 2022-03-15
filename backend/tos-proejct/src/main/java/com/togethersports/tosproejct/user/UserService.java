@@ -60,18 +60,22 @@ public class UserService {
                     .userBirthMonth(userDTO.getUserBirthMonth())
                     .userBirthDay(userDTO.getUserBirthDay())
                     .userNickname(userDTO.getUserNickname())
-                    .roles(Arrays.asList(new SimpleGrantedAuthority(userDTO.getAdmin().toString()).toString()))
+                    .roles(Arrays.asList(new SimpleGrantedAuthority("ADMIN").toString()))
                     .gender(userDTO.getGender())
                     .provider(userDTO.getProvider())
                     .build();
 
             userRepository.save(user); // 회원 TB 데이터 등록
 
-            if (userDTO.getUserProfileImage() != null) {
-
+            if (!(userDTO.getUserProfileImage().getImageSource().equals("정보 없음"))) {
                 fileHandler.userProfileImageUpload(userDTO); // 프로필 이미지 저장
                 userProfileImageService.userProfileImageSave(user, userDTO); // 회원프로필이미지 TB 데이터 등록
+
+                return;
             }
+
+                userProfileImageService.userProfileImageDefaultSave(user, userDTO);
+
         } catch(Exception e) {
             e.printStackTrace();
             throw new CustomDefaultException();
@@ -122,6 +126,8 @@ public class UserService {
     }
 
     public boolean sinUpCheck(String userEmail){
+
+        log.info("유저 존재 체크 = {}", userRepository.existsByUserEmail(userEmail));
 
         //해당 유저 이메일이 존재하면 false 반환
         if(userRepository.existsByUserEmail(userEmail)){

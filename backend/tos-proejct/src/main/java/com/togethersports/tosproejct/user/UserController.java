@@ -1,14 +1,11 @@
 package com.togethersports.tosproejct.user;
 
-import com.togethersports.tosproejct.file.FileHandler;
 import com.togethersports.tosproejct.code.Code;
 import com.togethersports.tosproejct.jwt.JwtService;
 import com.togethersports.tosproejct.jwt.JwtTokenProvider;
 import com.togethersports.tosproejct.jwt.Token;
 import com.togethersports.tosproejct.response.DefaultResponse;
 import com.togethersports.tosproejct.response.TokenResponse;
-import com.togethersports.tosproejct.response.UserResponse;
-import com.togethersports.tosproejct.userProfileImage.UserProfileImageService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -16,8 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import java.util.*;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -47,7 +43,7 @@ public class UserController {
     }
 
     // 로그인
-    @PostMapping("/login")
+    @GetMapping("/login")
     public ResponseEntity<TokenResponse> login(@RequestBody Map<String, String> user, @RequestHeader("User-Agent") String userAgent) {
 
         User member = userRepository.findByUserEmail(user.get("userEmail"))
@@ -66,12 +62,13 @@ public class UserController {
 
 
         if(userService.sinUpCheck(userEmail)){
+
             DefaultResponse userResponse = new DefaultResponse(Code.GOOD_REQUEST);
             return new ResponseEntity<>(userResponse, HttpStatus.OK);
         }
 
 
-        DefaultResponse userResponse = new DefaultResponse(Code.GOOD_REQUEST);
+        DefaultResponse userResponse = new DefaultResponse(Code.SIGNED_UP_USER);
 
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
