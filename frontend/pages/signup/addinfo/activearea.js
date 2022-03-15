@@ -5,10 +5,10 @@ import { useSelector } from "react-redux";
 import UserInfoNavBar from "../../../components/userInfoNavBar";
 import { FailResponse } from "../../../api/failResponse";
 
+let activeAreas = [];
 const ActiveArea = () => {
   const userInfo = useSelector((state) => state);
 
-  let activeAreas = [];
   const [tagAreas, setTagAreas] = useState([]);
 
   // 서버에 회원가입 요청
@@ -99,6 +99,8 @@ const ActiveArea = () => {
       searchAddrFromCoords(geocoder, position, function (result, status) {
         if (status === kakao.maps.services.Status.OK) {
           const area = result[0].address_name;
+
+          // @@@ 마커를 지울 때 , 같은 지역 마커도 한 번에 지우기 @@@
 
           setTagAreas((prev) =>
             prev.filter((el) => {
