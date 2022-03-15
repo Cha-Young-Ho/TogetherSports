@@ -1,13 +1,11 @@
 package com.togethersports.tosproejct.user;
 
-import com.togethersports.tosproejct.file.FileHandler;
 import com.togethersports.tosproejct.code.Code;
 import com.togethersports.tosproejct.jwt.JwtService;
 import com.togethersports.tosproejct.jwt.JwtTokenProvider;
 import com.togethersports.tosproejct.jwt.Token;
+import com.togethersports.tosproejct.response.DefaultResponse;
 import com.togethersports.tosproejct.response.TokenResponse;
-import com.togethersports.tosproejct.response.UserResponse;
-import com.togethersports.tosproejct.userProfileImage.UserProfileImageService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,8 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import java.util.*;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -31,45 +28,29 @@ public class UserController {
 
     // 회원가입 요청
     @PostMapping("/user")
-    public ResponseEntity userSignup(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<DefaultResponse> userSignup(@RequestBody UserDTO userDTO) {
 
         log.info("/user 요청됨");
         log.info("userDTO ----> {}", userDTO);
 
-        UserResponse userResponse = null;
+        userService.userSignup(userDTO);
 
-        try {
-            String result = userService.userSignup(userDTO);
+        DefaultResponse response = new DefaultResponse(Code.GOOD_REQUEST);
 
-            if (result.equals("SUCCESS")) {
-                userResponse = new UserResponse(
-                        Code.GOOD_REQUEST,
-                        result
-                );
-            }
-            
-            if (result.equals("FAIL")) {
-               userResponse = new UserResponse(
-                        Code.BAD_REQUEST,
-                        result
-                );
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
 
-        return new ResponseEntity<>(userResponse, HttpStatus.OK);
+
     }
 
     // 로그인
-    @PostMapping("/login")
-    public ResponseEntity<TokenResponse> login(@RequestBody UserDTO userDTO, @RequestHeader("User-Agent") String userAgent) {
-        log.info("user email = {}", userDTO.getUserEmail());
-        User member = userRepository.findByUserEmail(userDTO.getUserEmail())
+    @GetMapping("/login")
+    public ResponseEntity<TokenResponse> login(@RequestBody Map<String, String> user, @RequestHeader("User-Agent") String userAgent) {
+
+        User member = userRepository.findByUserEmail(user.get("userEmail"))
                 .orElseThrow(() -> new UsernameNotFoundException("가입되지 않은 E-MAIL 입니다."));
-       // return jwtService.login(member);
+
         Token tokenDto = jwtTokenProvider.createAccessToken(member.getUsername(), member.getRoles());
-        log.info("getroleeeee = {}", member.getRoles());
+
         jwtService.login(tokenDto, userAgent);
         TokenResponse tokenResponse = new TokenResponse(Code.GOOD_REQUEST, tokenDto);
         return new ResponseEntity<>(tokenResponse, HttpStatus.OK);
@@ -77,20 +58,33 @@ public class UserController {
 
     // 회원 유무 확인 (이메일로 회원 조회)
     @GetMapping("/user/check")
-    public ResponseEntity userCheck(@RequestBody UserDTO userDTO) {
+    public ResponseEntity userCheck(String userEmail, String userName, String provider) {
 
-        UserResponse userResponse = new UserResponse(Code.GOOD_REQUEST, userService.findByUserEmail(userDTO.getUserEmail()));
+
+        if(userService.sinUpCheck(userEmail)){
+
+            DefaultResponse userResponse = new DefaultResponse(Code.GOOD_REQUEST);
+            return new ResponseEntity<>(userResponse, HttpStatus.OK);
+        }
+
+
+        DefaultResponse userResponse = new DefaultResponse(Code.SIGNED_UP_USER);
 
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
 
     // 닉네임 중복 확인 (닉네임으로 회원 조회)
     @GetMapping("/duplication")
-    public ResponseEntity findByUserNickname(@RequestBody UserDTO userDTO) {
+    public ResponseEntity findByUserNickname(String userNickname) {
 
-        UserResponse userResponse = new UserResponse(Code.GOOD_REQUEST, userService.findByUserNickname(userDTO.getUserNickname()));
+        if(userService.duplicationCheck(userNickname)){
+            DefaultResponse response = new DefaultResponse(Code.GOOD_REQUEST);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
 
-        return new ResponseEntity<>(userResponse, HttpStatus.OK);
+
+        DefaultResponse response = new DefaultResponse(Code.DUPLICATED_NICKNAME);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }

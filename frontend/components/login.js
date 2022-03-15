@@ -1,34 +1,34 @@
 import { signIn } from "next-auth/react";
 
-const OAuth = () => {
+const Login = () => {
   return (
     <>
-      <div className="signup-container">
+      <div className="login-container">
         <div className="bg-container">
-          <div className="signup-box">
-            <div className="signup-logo"></div>
-            <div className="signup-button">
+          <div className="login-box">
+            <div className="login-logo"></div>
+            <div className="login-button">
               <button
-                className="signup-button-naver"
+                className="login-button-naver"
                 onClick={() =>
                   signIn("naver", {
-                    callbackUrl: "/usercheck",
+                    callbackUrl: "/userlogin",
                   })
                 }
               ></button>
               <button
-                className="signup-button-kakao"
+                className="login-button-kakao"
                 onClick={() =>
                   signIn("kakao", {
-                    callbackUrl: "/usercheck",
+                    callbackUrl: "/userlogin",
                   })
                 }
               ></button>
               <button
-                className="signup-button-google"
+                className="login-button-google"
                 onClick={() =>
                   signIn("google", {
-                    callbackUrl: "/usercheck",
+                    callbackUrl: "/userlogin",
                   })
                 }
               ></button>
@@ -38,7 +38,7 @@ const OAuth = () => {
       </div>
 
       <style jsx>{`
-        .signup-container {
+        .login-container {
           width: 100%;
           height: 1080px;
           background-color: black;
@@ -60,7 +60,7 @@ const OAuth = () => {
           align-items: center;
         }
 
-        .signup-box {
+        .login-box {
           position: relative;
           margin-right: 700px;
           width: 450px;
@@ -72,7 +72,7 @@ const OAuth = () => {
           z-index: 2;
         }
 
-        .signup-logo {
+        .login-logo {
           width: 130px;
           height: 150px;
           margin-bottom: 30px;
@@ -85,7 +85,7 @@ const OAuth = () => {
           background-repeat: no-repeat;
         }
 
-        .signup-button button {
+        .login-button button {
           width: 400px;
           height: 60px;
           border: none;
@@ -95,26 +95,26 @@ const OAuth = () => {
           flex-direction: column;
         }
 
-        .signup-button-naver {
+        .login-button-naver {
           cursor: pointer;
-          background-image: url("/naver-signup.png");
+          background-image: url("/naver-login.png");
           background-size: cover;
           background-repeat: no-repeat;
         }
 
-        .signup-button-kakao {
+        .login-button-kakao {
           cursor: pointer;
-          background-image: url("/kakao-signup.png");
+          background-image: url("/kakao-login.png");
           background-size: cover;
           background-repeat: no-repeat;
         }
 
-        .signup-button-google {
+        .login-button-google {
           -webkit-box-shadow: 0px 0px 20px 0px rgba(117, 110, 117, 0.15);
           -moz-box-shadow: 0px 0px 20px 0px rgba(117, 110, 117, 0.15);
           box-shadow: 0px 0px 20px 0px rgba(117, 110, 117, 0.25);
           cursor: pointer;
-          background-image: url("/google-signup.png");
+          background-image: url("/google-login.png");
           background-size: cover;
           background-repeat: no-repeat;
         }
@@ -123,4 +123,4 @@ const OAuth = () => {
   );
 };
 
-export default OAuth;
+export default Login;

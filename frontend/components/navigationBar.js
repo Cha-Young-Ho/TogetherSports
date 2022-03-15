@@ -2,36 +2,46 @@ import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { deleteLogout } from "../api/members";
+import { FailResponse } from "../api/failResponse";
+import Modal from "./userInfoModal";
 
 const NavigationBar = () => {
-  let loginData = true;
+  // 로그인 상태 임을 판별하는 변수
+  const [loginData, setLoginData] = useState(false);
+
+  // 유저 세션 정보(auth name, email, provider)
   const { data: session, status } = useSession();
   const loading = status === "loading";
 
+  // 유저 프로필 클릭 시 뜨는 팝업 창 관리 state
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const openModal = () => {
+    setModalOpen(true);
+  };
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+
   // 로컬 스토리지에 accessToken 가져오기
   useEffect(() => {
-    loginData = localStorage.getItem("accessToken");
+    setLoginData((loginData = localStorage.getItem("accessToken")));
   }, []);
 
-  const deleteLogout = () => {
+  const ClickLogout = () => {
     deleteLogout().then((res) => {
-      console.log(res.data.message);
-      if (res.data.code === "5000") {
+      console.log(res.message);
+      if (res.code === 5000) {
         localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        setLoginData((loginData = false));
         console.log("로그아웃 완료");
       } else {
-        console.log("잘못 된 요청입니다.");
+        FailResponse(res.code);
       }
     });
     console.log("로그아웃 시도");
   };
-
-  // 여기에 어떤 화면이든 로컬에 담긴 토큰 확인하고,
-  // 로컬에 토큰이 없으면 비 로그인 상태로
-  // 로컬에 토큰이 있으면, 서버에 토큰 전달하고,
-  // 서버가 토큰이 올바른 정보가 아니라고 하면 정보주고
-  // 만약 여기서 토큰이 틀린 값이면 refresh 토큰도 보내기
-  // 만약 refresh 토큰도 틀리다면 새로 로그인하게 유도
 
   return (
     <>
@@ -65,22 +75,28 @@ const NavigationBar = () => {
                     <Link href="/signup/oauth">
                       <div className="tag">회원가입</div>
                     </Link>
-                    <Link href="/">
+                    <Link href="/login">
                       <div className="tag">로그인</div>
                     </Link>
                   </>
                 ) : (
                   <>
-                    <div className="logOn">
-                      {session.user.name} 님 반갑습니다!
-                    </div>
+                    <button className="user-box" onClick={openModal}>
+                      <div className="ProfileImage"></div>
+                      <div className="logOn">
+                        {session.user.name} 님 반갑습니다!
+                      </div>
+                    </button>
+
+                    <Modal open={modalOpen} close={closeModal}></Modal>
+
                     <button
                       className="btn_signout"
                       onClick={() => {
+                        ClickLogout();
                         signOut({
                           callbackUrl: "/",
                         });
-                        deleteLogout();
                       }}
                     >
                       로그아웃
@@ -100,9 +116,8 @@ const NavigationBar = () => {
           align-items: center;
           height: 80px;
           min-height: 8vh;
-          font-family: "NanumBarunGothic";
           border-bottom: 1px solid #e4e8eb;
-
+          z-index: 9999;
           position: fixed;
           top: 0;
           left: 0;
@@ -125,11 +140,11 @@ const NavigationBar = () => {
           width: 138px;
           display: flex;
           font-size: 2rem;
-          font-weight: bold;
         }
 
         .category {
           width: 420px;
+          height: 62px;
           display: flex;
           justify-content: space-around;
           font-size: 1.5rem;
@@ -137,6 +152,7 @@ const NavigationBar = () => {
 
         .sign {
           width: 300px;
+          height: 62px;
           display: flex;
           position: relative;
           justify-content: space-between;
@@ -149,9 +165,24 @@ const NavigationBar = () => {
           transition: 800ms ease all;
         }
 
+        .ProfileImage {
+          width: 40px;
+          height: 40px;
+          border-radius: 50px;
+          background-color: black;
+        }
+
         .logOn {
-          position: relative;
-          top: 20px;
+          margin-left: 20px;
+        }
+
+        .user-box {
+          display: flex;
+          justify-content: space-around;
+          align-items: center;
+          cursor: pointer;
+          border: 0;
+          background-color: #fff;
         }
 
         .btn_signout {

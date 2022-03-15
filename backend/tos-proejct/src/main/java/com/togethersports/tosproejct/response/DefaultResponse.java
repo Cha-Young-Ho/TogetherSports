@@ -8,14 +8,14 @@ import lombok.ToString;
 @Getter
 public class DefaultResponse {
     // HttpStatus
-    private int status;
+    private int code;
 
     // Http Default Message
     private String message;
 
 
     public DefaultResponse(Code code){
-        this.status = code.getCode();
+        this.code = code.getCode();
         this.message = code.getMessage();
     }
 

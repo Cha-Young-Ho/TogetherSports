@@ -1,5 +1,4 @@
 const UserInfoNavBar = ({ personal_atv, interest_atv, activearea }) => {
-  console.log(personal_atv);
   return (
     <>
       <h1>회원가입</h1>
@@ -38,14 +37,11 @@ const UserInfoNavBar = ({ personal_atv, interest_atv, activearea }) => {
 
       <style jsx>{`
         * {
-          font-family: "NanumBarunGothic";
           font-weight: bold;
         }
 
         h1 {
           padding: 35px 0;
-          font-family: "NanumBarunGothic";
-          font-weight: bold;
           font-size: 2.5rem;
         }
 
@@ -53,7 +49,6 @@ const UserInfoNavBar = ({ personal_atv, interest_atv, activearea }) => {
           display: flex;
           justify-content: center;
           font-size: 1.5rem;
-          font-family: "NanumBarunGothic";
           align-items: center;
           margin: 5px 0;
         }

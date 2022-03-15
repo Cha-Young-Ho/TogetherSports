@@ -10,6 +10,7 @@ import lombok.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data // @Getter + Constructor로 바꿔야함
 @Builder
@@ -17,8 +18,6 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class UserDTO {
 
-    // User
-    private int userSequenceId;
 
     @NotBlank(message = "email 필드 값이 존재하지 않습니다.")
     @Email
@@ -36,10 +35,13 @@ public class UserDTO {
 
     private Gender gender;
     private Provider provider;
-    private Admin admin;
+
+    private List<String> activeAreas;
+    private List<String> interests;
 
     @JsonProperty("userProfileImage")
     private UserProfileImageDTO userProfileImage;
+
 }
 
 // 스프링 부트 / 스프링 시큐리티 -> 스프링 시큐리티

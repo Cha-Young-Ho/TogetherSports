@@ -21,8 +21,9 @@ const getUserInfoCheck = async (email, name, provi) => {
       provider: provi,
     },
   });
+  const dataPromise = promise.then((res) => res.data);
 
-  return promise;
+  return dataPromise;
 };
 
 // 로그인
@@ -40,8 +41,9 @@ const getUserLogin = async (email, name, provi) => {
       provider: provi,
     },
   });
+  const dataPromise = promise.then((res) => res.data);
 
-  return promise;
+  return dataPromise;
 };
 
 // 닉네임 중복확인
@@ -52,11 +54,12 @@ const getDuplicationCheck = async (nickname) => {
       Accept: "*/*",
     },
     params: {
-      userNickName: nickname,
+      userNickname: nickname,
     },
   });
+  const dataPromise = promise.then((res) => res.data);
 
-  return promise;
+  return dataPromise;
 };
 
 // 내 정보 조회
@@ -68,8 +71,9 @@ const getMyInfo = async () => {
       Authorization: localStorage.getItem("accessToken"),
     },
   });
+  const dataPromise = promise.then((res) => res.data);
 
-  return promise;
+  return dataPromise;
 };
 
 // 다른 회원 정보 조회
@@ -84,27 +88,50 @@ const getOtherInfo = async (nickname) => {
       userNickName: nickname,
     },
   });
+  const dataPromise = promise.then((res) => res.data);
 
-  return promise;
+  return dataPromise;
 };
 
 // POST
 
 //회원가입 요청
-const postUserRequest = async () => {
-  //http://localhost:8080/test
-
-  const promise = axios.post("http://localhost:8080/user", {
-    headers: {
+const postUserRequest = async (
+  activeAreas,
+  gender,
+  interests,
+  provider,
+  userBirthDay,
+  userBirthMonday,
+  userBirthYear,
+  userEmail,
+  userName,
+  userNickname,
+  userProfileImage
+) => {
+  const promise = axios.post(
+    "http://localhost:8080/user",
+    {
+      userEmail: userEmail,
+      userName: userName,
+      userNickname: userNickname,
+      userBirthYear: userBirthYear,
+      userBirthMonth: userBirthMonday,
+      userBirthDay: userBirthDay,
+      activeAreas: activeAreas,
+      gender: gender,
+      userProfileImage: userProfileImage,
+      provider: provider,
+      interests: interests, //--> 5개까지
+    },
+    {
       "Content-type": "application/json; charset=UTF-8",
       Accept: "*/*",
-    },
-    params: {
-      // 굉장히 많음
-    },
-  });
+    }
+  );
+  const dataPromise = promise.then((res) => res.data);
 
-  return promise;
+  return dataPromise;
 };
 
 // PUT
@@ -113,18 +140,20 @@ const postUserRequest = async () => {
 const putUpdateUserInfo = async () => {
   //http://localhost:8080/test
 
-  const promise = axios.put("http://localhost:8080/user", {
-    headers: {
+  const promise = axios.put(
+    "http://localhost:8080/user",
+    {
+      // 굉장히 많음
+    },
+    {
       "Content-type": "application/json; charset=UTF-8",
       Accept: "*/*",
       Authorization: localStorage.getItem("accessToken"),
-    },
-    params: {
-      // 굉장히 많음
-    },
-  });
+    }
+  );
+  const dataPromise = promise.then((res) => res.data);
 
-  return promise;
+  return dataPromise;
 };
 
 // DELETE
@@ -140,8 +169,9 @@ const deleteLogout = async () => {
       Authorization: localStorage.getItem("accessToken"),
     },
   });
+  const dataPromise = promise.then((res) => res.data);
 
-  return promise;
+  return dataPromise;
 };
 
 export {
