@@ -57,7 +57,7 @@ const UserInfoModal = ({ open, close }) => {
               </button>
             </header>
             <div className="profile-body">
-              <div className="pf-image"></div>
+              <img src={imageSrc} className="pf-image"></img>
               <div className="pf-nickName">{nickname}</div>
               <div className="pf-mannerPoint">{mannerPoint}</div>
               <div className="pf-interest">
