@@ -23,10 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLIntegrityConstraintViolationException;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -87,6 +84,12 @@ public class UserService {
 
     public Optional<User> getMyInfo(String accessToken){
 
+        Optional<User> getUser = getUserByEmailFromAccessToken(accessToken);
+        //List<UserProfileImage> userProfileImageList = getUser.get().getUserProfileImageList();
+        //log.info("user profile = {}", userProfileImageList.get(0));
+
+
+
         return getUserByEmailFromAccessToken(accessToken);
     }
 
@@ -111,6 +114,7 @@ public class UserService {
     // 엑세스 토큰으로부터 식별자값을 얻어 DB에 해당 유저 정보값을 받아와서 persistence context에 담음
     public Optional<User> getUserByEmailFromAccessToken(String accessToken){
         Claims claims = jwtTokenProvider.getClaims(accessToken);
+
 
         return userRepository.findByUserEmail(claims.get("sub").toString());
 
