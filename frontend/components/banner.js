@@ -1,12 +1,33 @@
+import PopUpModal from "./popupModal";
+import { useState } from "react";
+
 const Banner = () => {
+  /* popup modal 테스트 중임니다 */
+  const [modalOpen, setModalOpen] = useState(false);
+  const openModal = () => {
+    setModalOpen(true);
+  };
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+  /* popup modal 테스트 중임니다 */
   return (
     <>
       <div className="main-banner">
         <div className="half-container">
           <div className="title-in-banner">
             <div className="title">동네 운동장에서 족구 한판 뛰실 분?</div>
-            <button className="btn-goToRoom">방 찾아보기</button>
+            <button className="btn-goToRoom" onClick={openModal}>
+              방 찾아보기
+            </button>
           </div>
+          <PopUpModal
+            open={modalOpen}
+            close={closeModal}
+            content={"test중입니다."}
+            leftButton={"완료"}
+            rightButton={"취소"}
+          />
           <div className="search-container">
             <div className="bar-in-search">
               <div className="searchBar">
