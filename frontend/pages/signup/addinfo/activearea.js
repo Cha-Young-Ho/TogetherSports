@@ -202,28 +202,6 @@ const ActiveArea = () => {
           justify-content: center;
         }
 
-        h1 {
-          padding: 35px 0;
-          font-weight: bold;
-          font-size: 2.5rem;
-        }
-
-        .title {
-          width: 500px;
-          display: flex;
-          justify-content: space-around;
-          margin-bottom: 20px;
-        }
-
-        .title-circle-personalinfo,
-        .title-circle-interest,
-        .title-circle-activearea {
-          border-radius: 50px;
-          width: 90px;
-          height: 90px;
-          margin: 10px;
-        }
-
         p {
           display: flex;
           justify-content: center;
