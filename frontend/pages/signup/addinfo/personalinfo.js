@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import jquery from "jquery";
 import $ from "jquery";
 import { useDispatch } from "react-redux";
-//import { getDuplicationCheck } from "../../../api/members";
+import { getDuplicationCheck } from "../../../api/members";
 import UserInfoNavBar from "../../../components/userInfoNavBar";
 import axios from "axios";
 
