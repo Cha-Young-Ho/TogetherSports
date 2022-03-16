@@ -10,6 +10,7 @@ import lombok.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data // @Getter + Constructor로 바꿔야함
 @Builder
@@ -34,10 +35,13 @@ public class UserDTO {
 
     private Gender gender;
     private Provider provider;
-    private Admin admin;
+
+    private List<String> activeAreas;
+    private List<String> interests;
 
     @JsonProperty("userProfileImage")
     private UserProfileImageDTO userProfileImage;
+
 }
 
 // 스프링 부트 / 스프링 시큐리티 -> 스프링 시큐리티
