@@ -27,9 +27,7 @@ public class LoginTest {
     private MockMvc mockMvc;
 
     UserDTO userDTO = UserDTO.builder()
-            .userSequenceId(1)
             .gender(Gender.MALE)
-            .admin(Admin.ROLE_USER)
             .provider(Provider.KAKAO)
             .userBirthYear("1999")
             .userBirthMonth("01")
