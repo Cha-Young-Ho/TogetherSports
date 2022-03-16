@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -21,6 +22,7 @@ import java.util.List;
 @Table(name = "T_ROOM")
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamicInsert
 public class Room {
 
     @Id
@@ -37,13 +39,13 @@ public class Room {
     @Column(name = "LIMIT_PEOPLE_COUNT")
     private int limitPeopleCount;
 
-    @Column(name = "PARTICIPANT_COUNT")
+    @Column(name = "PARTICIPANT_COUNT", columnDefinition = "integer default 1")
     private int participantCount;
 
     @Column(name = "EXERCISE")
     private String exercise;
 
-    @Column(name = "VIEW_COUNT")
+    @Column(name = "VIEW_COUNT", columnDefinition = "integer default 1")
     private int viewCount;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
@@ -58,7 +60,7 @@ public class Room {
     private RoomArea roomArea;
 
     @OneToMany(mappedBy = "room")
-    private List<RoomImage> roomImageList;
+    private List<RoomImage> roomImages;
 
 
     @OneToMany(mappedBy = "room")

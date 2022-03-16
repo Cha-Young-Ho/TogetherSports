@@ -18,9 +18,9 @@ public class RoomArea {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "AREA_SEQUENCE_ID")
-    private String areaSequenceId;
+    private Long areaSequenceId;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "ROOM_SEQUENCE_ID")
     private Room room;
 
@@ -29,4 +29,8 @@ public class RoomArea {
 
     @Column(name = "AREA_DETAIL")
     private String areaDetail;
+
+    public void updateRoom(Room room){
+        this.room = room;
+    }
 }
