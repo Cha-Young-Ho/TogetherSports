@@ -1,32 +1,35 @@
-import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import jquery from "jquery";
 import $ from "jquery";
-import { useDispatch } from "react-redux";
-import { getDuplicationCheck } from "../../../api/members";
-import UserInfoNavBar from "../../../components/userInfoNavBar";
-import axios from "axios";
+import { getDuplicationCheck } from "../api/members";
+import { useSelector } from "react-redux";
 
-const PersonalInfo = () => {
-  const dispatch = useDispatch();
-
+const UserModification = () => {
+  //회원정보 초기값
+  const userInfo = useSelector((state) => state.myInfoReducer);
   //닉네임
-  const [nickname, setNickname] = useState("");
+  const [nickname, setNickname] = useState(userInfo.userNickname);
   const [isNicknameCheck, setIsNicknameCheck] = useState(true);
 
   //생년월일
-  const [birthYear, setBirthYear] = useState("YYYY");
-  const [birthMonth, setBirthMonth] = useState("MM");
-  const [birthDay, setBirthDay] = useState("DD");
+  const [birthYear, setBirthYear] = useState(userInfo.userBirthYear);
+  const [birthMonth, setBirthMonth] = useState(userInfo.userBirthMonth);
+  const [birthDay, setBirthDay] = useState(userInfo.userBirthDay);
 
   //성별
-  const [gender, setGender] = useState("male");
+  const [gender, setGender] = useState(userInfo.gender);
 
   //프로필
   const [profile, setProfile] = useState("");
-  const [imagesrc, setImagesrc] = useState("정보 없음");
-  const [fileName, setFileName] = useState("정보 없음");
-  const [extension, setExtension] = useState("정보 없음");
+  const [imagesrc, setImagesrc] = useState(
+    userInfo.userProfileImage.imageSource
+  );
+  const [fileName, setFileName] = useState(
+    userInfo.userProfileImage.userProfileRealName
+  );
+  const [extension, setExtension] = useState(
+    userInfo.userProfileImage.userProfileExtension
+  );
 
   /* 
   닉네임 중복확인
@@ -152,197 +155,243 @@ const PersonalInfo = () => {
       alert("생년월일을 확인해주세요.");
       return false;
     }
-
-    dispatch({
-      type: "PERSONALINFO",
-      payload: {
-        userNickname: nickname,
-        userBirthYear: birthYear,
-        userBirthMonday: birthMonth,
-        userBirthDay: birthDay,
-        gender: gender,
-        userProfileRealName: fileName,
-        userProfileExtension: extension,
-        imageSource: imagesrc,
-      },
-    });
   };
 
-  useEffect(getBirthDay, []);
+  //관심종목
+  const [interests, setInterests] = useState({});
+
+  //종목 유형
+  const interestArray = [
+    "축구",
+    "야구",
+    "농구",
+    "당구",
+    "탁구",
+    "헬스",
+    "자전거",
+    "골프",
+    "등산",
+    "런닝",
+    "배드민턴",
+    "기타종목",
+  ];
+
+  const already = ["축구", "야구", "농구"];
+
+  //초기 종목 세팅
+  useEffect(() => {
+    for (const exercise of already) {
+      setInterests((prev) => ({
+        ...prev,
+        [exercise]: true,
+      }));
+    }
+
+    getBirthDay();
+  }, []);
+
+  //종목 선택시
+  const changeInterests = (e) => {
+    if (e.target.classList[2] === "clicked") {
+      e.target.classList.remove("clicked");
+    } else {
+      e.target.classList.add("clicked");
+    }
+
+    setInterests((prev) => ({
+      ...prev,
+      [e.target.innerText]: !interests[e.target.innerText],
+    }));
+  };
 
   return (
     <>
-      <div className="bg-container">
-        <UserInfoNavBar
-          personal_atv={"activation"}
-          interest_atv={"deactivation"}
-          activearea={"deactivation"}
-        />
-        <div className="content-showbox">
-          <div className="nickname">
-            <div className="nickname-text-box">
-              <div className="essential-mark">*</div>
-              <div className="text-nickname">닉네임</div>
-            </div>
-            <input
-              type="text"
-              id="input-nickname"
-              value={nickname}
-              name="nickname"
-              onChange={(e) => setNickname(e.target.value)}
-            />
-            <button className="button-dup-check" onClick={checkDuplication}>
-              중복확인
-            </button>
-          </div>
-          <div className="birth">
-            <div className="birth-text-box">
-              <div className="essential-mark">*</div>
-              <div className="text-birth">생년월일</div>
-            </div>
-            <div className="dropdown-birth">
-              <div>
-                <select
-                  className="dropdown-year"
-                  title="년도"
-                  value={birthYear}
-                  onChange={(e) => setBirthYear(e.target.value)}
-                ></select>
+      <div className="container-bg">
+        <div className="personalInfo-wrapper">
+          <div className="title">인적사항</div>
+          <div className="widthBar"></div>
+          <div className="content-showbox">
+            <div className="nickname">
+              <div className="nickname-text-box">
+                <div className="essential-mark">*</div>
+                <div className="text-nickname">닉네임</div>
               </div>
-              <div>
-                <select
-                  className="dropdown-month"
-                  title="월"
-                  value={birthMonth}
-                  onChange={(e) => setBirthMonth(e.target.value)}
-                ></select>
-              </div>
-              <div>
-                <select
-                  className="dropdown-day"
-                  title="일"
-                  value={birthDay}
-                  onChange={(e) => setBirthDay(e.target.value)}
-                ></select>
-              </div>
+              <input
+                type="text"
+                id="input-nickname"
+                value={nickname}
+                name="nickname"
+                onChange={(e) => setNickname(e.target.value)}
+              />
+              <button className="button-dup-check" onClick={checkDuplication}>
+                중복확인
+              </button>
             </div>
-          </div>
-          <div className="gender">
-            <div className="gender-text-box">
-              <div className="essential-mark">*</div>
-              <div className="text-gender">성별</div>
-            </div>
-            <div className="radio-gender">
-              <div className="male">
-                <label className="text-male" htmlFor="radio-male">
-                  남
-                </label>
-                <input
-                  type="radio"
-                  name="gender"
-                  id="radio-male"
-                  checked={gender === "male"}
-                  onChange={() => getGender("male")}
-                />
+            <div className="birth">
+              <div className="birth-text-box">
+                <div className="essential-mark">*</div>
+                <div className="text-birth">생년월일</div>
               </div>
-              <div className="female">
-                <label className="text-male" htmlFor="radio-female">
-                  여
-                </label>
-                <input
-                  type="radio"
-                  name="gender"
-                  id="radio-female"
-                  checked={gender === "female"}
-                  onChange={() => getGender("female")}
-                />
+              <div className="dropdown-birth">
+                <div>
+                  <select
+                    className="dropdown-year"
+                    title="년도"
+                    value={birthYear}
+                    onChange={(e) => setBirthYear(e.target.value)}
+                  ></select>
+                </div>
+                <div>
+                  <select
+                    className="dropdown-month"
+                    title="월"
+                    value={birthMonth}
+                    onChange={(e) => setBirthMonth(e.target.value)}
+                  ></select>
+                </div>
+                <div>
+                  <select
+                    className="dropdown-day"
+                    title="일"
+                    value={birthDay}
+                    onChange={(e) => setBirthDay(e.target.value)}
+                  ></select>
+                </div>
               </div>
             </div>
-          </div>
-          <div className="profile">
-            <div className="text-profile">프로필</div>
-            <input
-              readOnly
-              className="upload-name"
-              value={profile.substr(12)}
-            />
-            <label htmlFor="filename">
-              <div>파일찾기</div>
-            </label>
-            <input
-              type="file"
-              id="filename"
-              accept=".jpg, .jpeg, .png"
-              onChange={(e) => {
-                setProfile((profile = e.target.value));
-                const index = getExtension(profile.substr(12)); // 확장자 index 받아오기
-                const splitData1 = profile.substr(12).substring(0, index - 1);
-                const splitData2 = profile.substr(12).substring(index);
-                setFileName(splitData1);
-                setExtension(splitData2);
-                encodeFileToBase64(e.target.files[0]);
-              }}
-            />
+            <div className="gender">
+              <div className="gender-text-box">
+                <div className="essential-mark">*</div>
+                <div className="text-gender">성별</div>
+              </div>
+              <div className="radio-gender">
+                <div className="male">
+                  <label className="text-male" htmlFor="radio-male">
+                    남
+                  </label>
+                  <input
+                    type="radio"
+                    name="gender"
+                    id="radio-male"
+                    checked={gender === "male"}
+                    onChange={() => getGender("male")}
+                  />
+                </div>
+                <div className="female">
+                  <label className="text-male" htmlFor="radio-female">
+                    여
+                  </label>
+                  <input
+                    type="radio"
+                    name="gender"
+                    id="radio-female"
+                    checked={gender === "female"}
+                    onChange={() => getGender("female")}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="profile">
+              <div className="text-profile">프로필</div>
+              <input
+                readOnly
+                className="upload-name"
+                value={profile.substr(12)}
+              />
+              <label htmlFor="filename">
+                <div>파일찾기</div>
+              </label>
+              <input
+                type="file"
+                id="filename"
+                accept=".jpg, .jpeg, .png"
+                onChange={(e) => {
+                  setProfile((profile = e.target.value));
+                  const index = getExtension(profile.substr(12)); // 확장자 index 받아오기
+                  const splitData1 = profile.substr(12).substring(0, index - 1);
+                  const splitData2 = profile.substr(12).substring(index);
+                  setFileName(splitData1);
+                  setExtension(splitData2);
+                  encodeFileToBase64(e.target.files[0]);
+                }}
+              />
+            </div>
           </div>
         </div>
-        <Link href="/signup/addinfo/interest">
-          <button className="button-next" onClick={getNext}>
-            다음
-          </button>
-        </Link>
+        <div className="interest-wrapper">
+          <div className="title">관심종목</div>
+          <div className="widthBar"></div>
+          <div className="grid-interest">
+            {interestArray.map((exercise, index) => {
+              return (
+                <div
+                  key={index}
+                  onClick={changeInterests}
+                  className={`grid-items ${
+                    already.indexOf(exercise) === -1 ? `` : `clicked`
+                  }`}
+                >
+                  {exercise}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        <div className="activearea-wrapper">
+          <div className="title">활동지역</div>
+          <div className="widthBar"></div>
+        </div>
       </div>
-
       <style jsx>{`
-        .bg-container {
-          margin-top: 10px;
-          border-top: 1px solid #e4e8eb;
-          width: 100%;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-        }
-
-        h1 {
-          padding: 35px 0;
-          font-weight: bold;
-          font-size: 2.5rem;
+        .container-bg {
+          width: 70%;
+          min-width: 1000px;
+          margin: 0 auto;
+          height: 1200px;
         }
 
         .title {
-          width: 500px;
-          display: flex;
-          justify-content: space-around;
-          margin-bottom: 20px;
+          font-size: 2.5rem;
+          padding-top: 30px;
+          font-weight: bold;
         }
 
-        .title-circle-personalinfo,
-        .title-circle-interest,
-        .title-circle-activearea {
-          border-radius: 50px;
-          width: 90px;
-          height: 90px;
-          margin: 10px;
+        .widthBar {
+          margin-top: 4.5px;
+          width: 100%;
+          border: 0.3px solid lightgrey;
         }
 
-        p {
+        .personalInfo-wrapper {
           display: flex;
-          justify-content: center;
-          font-size: 1.5rem;
-          align-items: center;
-          margin: 5px 0;
+          flex-direction: column;
+          margin-top: 90px;
+          width: 100%;
+          height: 350px;
+        }
+
+        .interest-wrapper {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          height: 400px;
+        }
+
+        .activearea-wrapper {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          height: 500px;
         }
 
         .content-showbox {
           width: 600px;
-          border-top: 1px solid #e4e8eb;
-          border-bottom: 1px solid #e4e8eb;
         }
 
         .nickname {
           width: 583px;
           height: 40px;
-          margin: 44.5px 5.5px 27px;
+          margin: 30px 5.5px 27px;
           padding: 5px 10px 5px 14px;
           border-radius: 10px;
           border: solid 1px #e8e8e8;
@@ -397,7 +446,7 @@ const PersonalInfo = () => {
         .birth {
           width: 583px;
           height: 40px;
-          margin: 44.5px 5.5px 27px;
+          margin: 15px 5.5px 27px;
           padding: 5px 10px 5px 14px;
           display: flex;
           justify-content: space-between;
@@ -445,7 +494,7 @@ const PersonalInfo = () => {
         .gender {
           width: 583px;
           height: 40px;
-          margin: 44.5px 5.5px 27px;
+          margin: 15px 5.5px 15px;
           padding: 5px 10px 5px 14px;
           display: flex;
           justify-content: space-between;
@@ -508,7 +557,7 @@ const PersonalInfo = () => {
         .profile {
           width: 583px;
           height: 40px;
-          margin: 44.5px 5.5px 27px;
+          margin: 0 5.5px 27px;
           padding: 5px 10px 5px 14px;
           border-radius: 10px;
           border: solid 1px #e8e8e8;
@@ -558,25 +607,38 @@ const PersonalInfo = () => {
           overflow: hidden;
         }
 
-        .button-next {
+        // 관심 종목 Grid
+        .grid-interest {
+          display: grid;
+          margin-top: 20px;
+          grid-auto-rows: minmax(140px, auto);
+          grid-template-columns: repeat(6, minmax(120px, auto));
+          gap: 10px;
+        }
+
+        // 관심 종목 items
+        .grid-items {
           display: flex;
           align-items: center;
           justify-content: center;
-          width: 120px;
-          height: 40px;
-          background-color: #08555f;
+          background-color: gray;
           color: white;
-          font-size: 1.5rem;
-          margin-top: 25px;
-          border: 0;
-          outline: 0;
-          cursor: pointer;
           border-radius: 10px;
-          margin-bottom: 30px;
+          font-size: 1.5rem;
+        }
+
+        .grid-items:hover {
+          transition-duration: 0.5s;
+          transform: scale(1.2);
+          background-color: #468f5b;
+        }
+
+        .clicked {
+          background-color: #468f5b;
         }
       `}</style>
     </>
   );
 };
 
-export default PersonalInfo;
+export default UserModification;

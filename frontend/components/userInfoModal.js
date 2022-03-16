@@ -69,7 +69,9 @@ const UserInfoModal = ({ open, close }) => {
                   );
                 })}
               </div>
-              <button className="next-button">회원 정보 수정하기</button>
+              <Link href="/modification">
+                <button className="next-button">회원 정보 수정하기</button>
+              </Link>
             </div>
           </section>
         ) : null}
@@ -93,7 +95,7 @@ const UserInfoModal = ({ open, close }) => {
         }
 
         section {
-          width: 400px;
+          //width: 400px;
           height: 540px;
           width: 90%;
           max-width: 450px;
@@ -113,6 +115,7 @@ const UserInfoModal = ({ open, close }) => {
           padding: 16px 16px 16px 16px;
           background-color: #f1f1f1;
           font-weight: bold;
+          text-align: center;
         }
 
         .exit-button {
