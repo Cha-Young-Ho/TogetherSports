@@ -1,11 +1,9 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import jquery from "jquery";
 import $ from "jquery";
 import { useDispatch } from "react-redux";
 import { getDuplicationCheck } from "../../../api/members";
 import UserInfoNavBar from "../../../components/userInfoNavBar";
-import axios from "axios";
 
 const PersonalInfo = () => {
   const dispatch = useDispatch();
@@ -90,7 +88,9 @@ const PersonalInfo = () => {
     reader.readAsDataURL(fileBlob);
     return new Promise((resolve) => {
       reader.onload = () => {
-        setImagesrc(reader.result);
+        const src = reader.result;
+        const sliceIndex = src.indexOf(",");
+        setImagesrc(src.substr(sliceIndex + 1));
         resolve();
       };
     });
@@ -169,6 +169,9 @@ const PersonalInfo = () => {
   };
 
   useEffect(getBirthDay, []);
+  useEffect(() => {
+    console.log(imagesrc);
+  });
 
   return (
     <>
