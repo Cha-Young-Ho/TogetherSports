@@ -1,15 +1,45 @@
-const PopUpModal = ({ open, close, content, leftButton, rightButton }) => {
+/* popUpModal 컴포넌트 사용법 !! */
+
+// open = modal을 열 함수
+// close = modal을 닫을 함수
+// content = 팝업 내용
+// result = 팝업 왼쪽 버튼을 눌렀을 때 실행될 함수
+// leftButton = 팝업 왼쪽 버튼으로, 긍정적인 답변들 위치 (ex. 예, 수락)
+// rightButton = 팝업 오른쪽 버튼으로, 부정적인 답변들 위치 (ex. 아니오, 거절)
+
+/* 상위 컴포넌트에서 쓰게 될 state 변수와 open, close 함수 */
+
+// const [modalOpen, setModalOpen] = useState(false);
+// const openModal = () => {
+//   setModalOpen(true);
+// };
+// const closeModal = () => {
+//   setModalOpen(false);
+// };
+
+const PopUpModal = ({
+  open,
+  close,
+  result,
+  content,
+  leftButton,
+  rightButton,
+}) => {
   return (
     <>
       <div className={open ? "openModal modal" : "modal"}>
         {open ? (
           <section>
             <div className="popup-body">
-              {/* <img className="logo-image"></img> */}
+              <img className="logo-image" src="logo-popup.png"></img>
               <div className="content">{content}</div>
               <div className="buttons">
-                <button className="left-button">{leftButton}</button>
-                <button className="right-button">{rightButton}</button>
+                <button className="left-button" onClick={result}>
+                  {leftButton}
+                </button>
+                <button className="right-button" onClick={close}>
+                  {rightButton}
+                </button>
               </div>
             </div>
           </section>
@@ -39,6 +69,8 @@ const PopUpModal = ({ open, close, content, leftButton, rightButton }) => {
           /* 팝업이 열릴때 스르륵 열리는 효과 */
           animation: modal-show 0.3s;
           overflow: hidden;
+          display: table;
+          text-align: center;
         }
 
         .modal.openModal {
@@ -49,10 +81,49 @@ const PopUpModal = ({ open, close, content, leftButton, rightButton }) => {
         }
 
         .popup-body {
-          display: flex;
+          width: 100%;
+          height: 100%;
+          display: table-cell;
+          vertical-align: middle;
           flex-direction: column;
           justify-content: center;
-          align-center: center;
+          align-items: center;
+        }
+
+        .logo-image,
+        .buttons {
+          margin: 20px;
+        }
+
+        .logo-image {
+          max-width: 21px;
+          max-height: 47px;
+        }
+
+        .content {
+          font-size: 20px;
+          margin: 0 20px 20px 20px;
+        }
+
+        .left-button,
+        .right-button {
+          margin: 0 10px;
+          width: 175px;
+          height: 50px;
+          border: none;
+          border-radius: 25px;
+          color: white;
+          font-size: 15px;
+          font-weight: 200px;
+          cursor: pointer;
+        }
+
+        .left-button {
+          background-color: #00555f;
+        }
+
+        .right-button {
+          background-color: #d8d8d8;
         }
 
         @keyframes modal-show {
