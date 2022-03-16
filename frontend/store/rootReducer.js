@@ -27,7 +27,7 @@ const myInfoInitialState = {
   userBirthDay: "26",
   gender: "male",
   userProfileImage: {},
-  activeAreas: [],
+  activeAreas: ["대구광역시 달서구 송현동", "대구광역시 남구 대명동"],
   interests: [],
   mannerPoint: "",
 };
