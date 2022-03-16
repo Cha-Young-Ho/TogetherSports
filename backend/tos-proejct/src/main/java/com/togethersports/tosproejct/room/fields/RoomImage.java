@@ -37,4 +37,10 @@ public class RoomImage {
 
     @Column(name = "ROOM_IMAGE_EXTENSION", columnDefinition = "varchar(255) default 'png'")
     private String roomImageExtension;
+
+
+    public void updateRoom(Room room){
+        this.room = room;
+    }
+
 }

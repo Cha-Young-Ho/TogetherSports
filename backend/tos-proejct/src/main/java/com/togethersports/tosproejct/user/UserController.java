@@ -44,9 +44,9 @@ public class UserController {
 
     // 로그인
     @GetMapping("/login")
-    public ResponseEntity<TokenResponse> login(@RequestBody Map<String, String> user, @RequestHeader("User-Agent") String userAgent) {
-
-        User member = userRepository.findByUserEmail(user.get("userEmail"))
+    public ResponseEntity<TokenResponse> login(String userEmail, @RequestHeader("User-Agent") String userAgent) {
+        log.info("받은 userEmail = {}", userEmail);
+        User member = userRepository.findByUserEmail(userEmail)
                 .orElseThrow(() -> new UsernameNotFoundException("가입되지 않은 E-MAIL 입니다."));
 
         Token tokenDto = jwtTokenProvider.createAccessToken(member.getUsername(), member.getRoles());

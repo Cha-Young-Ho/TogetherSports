@@ -1,5 +1,6 @@
 package com.togethersports.tosproejct.room.roomDTO;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.togethersports.tosproejct.room.fields.RoomArea;
 import com.togethersports.tosproejct.room.fields.RoomImage;
 import com.togethersports.tosproejct.room.fields.RoomTag;
@@ -23,8 +24,10 @@ public class RoomCreateDTO {
     private RoomArea roomArea;
     private int limitPeopleCount;
     private List<String> tag;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime startAppointmentDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime endAppointmentDate;
-    private List<RoomImage> roomImages;
+    private List<RoomImageDTO> roomImages;
 
 }
