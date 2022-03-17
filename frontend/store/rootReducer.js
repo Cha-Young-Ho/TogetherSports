@@ -37,12 +37,27 @@ const saveNicknameInitialState = {
   userNickname: "",
 };
 
+// 방 생성 초기값
+const makeRoomInitialState = {
+  roomTitle: "",
+  roomContent: "",
+  roomArea: {},
+  limitPeopleCount: "",
+  exercise: "",
+  tag: [],
+  startAppointmentDate: "",
+  endAppointmentDate: "",
+  roomImages: [],
+};
+
 // 오타 방지용
 const PERSONALINFO = "PERSONALINFO";
 const INTERESTS = "INTERESTS";
 const AUTHDATA = "AUTHDATA";
 const SAVENICKNAME = "SAVENICKNAME";
 const SAVEMYINFO = "SAVEMYINFO";
+const ROOMSETTING = "ROOMSETTING";
+const ROOMSCHEDULE = "ROOMSCHEDULE";
 
 // 유저 회원가입 정보 reducer
 const userRequestReducer = (state = signupInitialState, action) => {
@@ -127,11 +142,37 @@ const saveNicknameReducer = (state = saveNicknameInitialState, action) => {
   }
 };
 
+const makeRoomReducer = (state = makeRoomInitialState, action) => {
+  switch (action.type) {
+    case ROOMSETTING:
+      return {
+        ...state,
+        roomTitle: action.payload.roomTitle,
+        exercise: action.payload.exercise,
+        limitPeopleCount: action.payload.limitPeopleCount,
+        roomArea: {
+          area: action.payload.roomArea.area,
+          areaDetail: action.payload.roomArea.areaDetail,
+        },
+      };
+    case ROOMSCHEDULE:
+      return {
+        ...state,
+        startAppointmentDate: action.payload.startAppointmentDate,
+        endAppointmentDate: action.payload.endAppointmentDate,
+        roomImages: action.payload.roomImages, // 수정 필요
+      };
+    default:
+      return state;
+  }
+};
+
 // rootReducer로 모든 reducer Combine
 const rootReducer = combineReducers({
   userRequestReducer,
   saveNicknameReducer,
   myInfoReducer,
+  makeRoomReducer,
 });
 
 const makeStore = () => createStore(rootReducer, composeWithDevTools());
