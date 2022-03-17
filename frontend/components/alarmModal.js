@@ -1,4 +1,4 @@
-/* popUpModal 컴포넌트 사용법 !! */
+/* AlarmModal 컴포넌트 사용법 !! */
 
 // open = modal을 열 함수
 // close = modal을 닫을 함수
@@ -17,7 +17,7 @@
 //   setModalOpen(false);
 // };
 
-const PopUpModal = ({
+const AlarmModal = ({
   open,
   close,
   result,
@@ -30,8 +30,8 @@ const PopUpModal = ({
       <div className={open ? "openModal modal" : "modal"}>
         {open ? (
           <section>
-            <div className="popup-body">
-              <img className="logo-image" src="logo-popup.png"></img>
+            <div className="modal-body">
+              <img className="logo-image" src="logo-alarm-modal.png"></img>
               <div className="content">{content}</div>
               <div className="buttons">
                 <button className="left-button" onClick={result}>
@@ -80,7 +80,7 @@ const PopUpModal = ({
           animation: modal-bg-show 0.3s;
         }
 
-        .popup-body {
+        .modal-body {
           width: 100%;
           height: 100%;
           display: table-cell;
@@ -150,4 +150,4 @@ const PopUpModal = ({
   );
 };
 
-export default PopUpModal;
+export default AlarmModal;
