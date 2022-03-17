@@ -16,20 +16,19 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "T_INTEREST_EXERCISE")
+@Table
 public class Interests {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "INTEREST_EXERCISE_SEQUENCE_ID")
     private int interestExerciseSequenceId;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "USER_SEQUENCE_ID")
+    @JoinColumn(name = "userSequenceId")
     private User user;
 
-    @Column(name = "EXERCISE")
+    @Column
     private String exercise;
 }
 
