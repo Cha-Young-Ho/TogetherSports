@@ -22,7 +22,7 @@ public class UserProfileImage {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userEmail")
+    @JoinColumn(name = "userSequenceId")
     private User user;
 
     @Column(columnDefinition = "varchar(255) default 'Together_Sports_Image'")
@@ -34,7 +34,7 @@ public class UserProfileImage {
     @Column(columnDefinition = "varchar(255) default 'png'")
     private String userProfileExtension;
 
-    @Column(columnDefinition = "varchar(255) default '/Users/younghocha/files/profile/img/TogetherSports_Default_Image.png'")
+    @Column(columnDefinition = "varchar(255) default '/Users/younghocha/files/room/img/TogetherSports_Default_Image.png'")
     private String userProfileImageFilePath;
 
 
