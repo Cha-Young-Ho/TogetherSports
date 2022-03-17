@@ -169,9 +169,6 @@ const PersonalInfo = () => {
   };
 
   useEffect(getBirthDay, []);
-  useEffect(() => {
-    console.log(imagesrc);
-  });
 
   return (
     <>

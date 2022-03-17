@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import RoomInfoNavBar from "../../../components/roomInfoNavBar";
 
 const RoomSetting = () => {
+  const dispatch = useDispatch();
   //방 제목
   const [roomTitle, setRoomTitle] = useState("");
 
@@ -146,6 +148,17 @@ const RoomSetting = () => {
       e.preventDefault();
       alert("종목을 선택해주세요!");
     }
+
+    dispatch({
+      type: "ROOMSETTING",
+      payload: {
+        roomTitle: roomTitle,
+        exercise: exercise,
+        limitPeopleCount: limitPeopleCount,
+        area: roomArea.area,
+        areaDetail: roomArea.areaDetail,
+      },
+    });
   };
 
   return (
