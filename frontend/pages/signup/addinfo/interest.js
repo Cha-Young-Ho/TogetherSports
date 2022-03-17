@@ -25,6 +25,14 @@ const Interest = () => {
     if (e.target.classList[2] === "clicked") {
       e.target.classList.remove("clicked");
     } else {
+      if (
+        Object.entries(interests).filter((exer) => {
+          if (exer[1]) return true;
+        }).length >= 5
+      ) {
+        alert("최대 5개 까지만 선택할 수 있습니다.");
+        return;
+      }
       e.target.classList.add("clicked");
     }
 
@@ -34,7 +42,13 @@ const Interest = () => {
     }));
   };
 
-  const BtnClickedNext = () => {
+  const BtnClickedNext = (e) => {
+    if (!Object.keys(interests).length) {
+      e.preventDefault();
+      alert("최소 1개의 종목을 선택하여야 합니다.");
+      return false;
+    }
+
     dispatch({
       type: "INTERESTS",
       payload: {
