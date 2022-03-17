@@ -2,6 +2,7 @@ import { useDispatch } from "react-redux";
 import { getMyInfo } from "../api/members";
 import { FailResponse } from "../api/failResponse";
 import { useState } from "react";
+import Link from "next/link";
 
 const UserInfoModal = ({ open, close }) => {
   const dispatch = useDispatch();
@@ -69,8 +70,10 @@ const UserInfoModal = ({ open, close }) => {
                   );
                 })}
               </div>
-              <Link href="/modification">
-                <button className="next-button">회원 정보 수정하기</button>
+              <Link href="/usermodification">
+                <button className="next-button" onClick={close}>
+                  회원 정보 수정하기
+                </button>
               </Link>
             </div>
           </section>

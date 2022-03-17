@@ -1,8 +1,9 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import jquery from "jquery";
 import $ from "jquery";
-import { getDuplicationCheck } from "../api/members";
+import { getDuplicationCheck, putUpdateUserInfo } from "../api/members";
 import { useSelector } from "react-redux";
+import { FailResponse } from "../api/failResponse";
 
 const UserModification = () => {
   //회원정보 초기값
@@ -180,11 +181,9 @@ const UserModification = () => {
     "기타종목",
   ];
 
-  const already = ["축구", "야구", "농구"];
-
   //초기 종목 세팅
   useEffect(() => {
-    for (const exercise of already) {
+    for (const exercise of userInfo.interests) {
       setInterests((prev) => ({
         ...prev,
         [exercise]: true,
@@ -328,6 +327,34 @@ const UserModification = () => {
     geocoder.coord2RegionCode(coords.getLng(), coords.getLat(), callback);
   };
 
+  //수정 버튼
+  const clickUpdateUserInfo = () => {
+    putUpdateUserInfo(
+      userInfo.userEmail,
+      userInfo.userName,
+      nickname,
+      birthYear,
+      birthMonth,
+      birthDay,
+      activeAreas,
+      gender,
+      {
+        userProfileRealName: fileName,
+        userProfileExtension: extension,
+        imageSource: imagesrc,
+      },
+      userInfo.provider,
+      interests
+    ).then((res) => {
+      if (res.code === 5000) {
+        alert("성공적으로 수정 되었습니다.");
+        window.history.back();
+      } else {
+        FailResponse(res.code);
+      }
+    });
+  };
+
   return (
     <>
       <div className="container-bg">
@@ -452,7 +479,7 @@ const UserModification = () => {
                   key={index}
                   onClick={changeInterests}
                   className={`grid-items ${
-                    already.indexOf(exercise) === -1 ? `` : `clicked`
+                    userInfo.interests.indexOf(exercise) === -1 ? `` : `clicked`
                   }`}
                 >
                   {exercise}
@@ -481,8 +508,12 @@ const UserModification = () => {
           <div className="widthBar"></div>
         </div>
         <div className="final-container">
-          <button className="button-done">수정</button>
-          <button className="button-done">나가기</button>
+          <button className="button-done" onClick={clickUpdateUserInfo}>
+            수정
+          </button>
+          <button className="button-done" onClick={() => window.history.back()}>
+            나가기
+          </button>
         </div>
       </div>
       <style jsx>{`
