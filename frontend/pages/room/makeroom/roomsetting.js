@@ -22,6 +22,14 @@ const RoomSetting = () => {
     getMap();
   }, []);
 
+  useEffect(() => {
+    console.log(roomTitle);
+    console.log(exercise);
+    console.log(limitPeopleCount);
+    console.log(roomArea.area);
+    console.log(roomArea.areaDetail);
+  });
+
   const getMap = () => {
     const mapScript = document.createElement("script");
     mapScript.async = true;
@@ -120,14 +128,24 @@ const RoomSetting = () => {
   }
 
   //예외 처리 및 다음 페이지 이동
-  const getNext = () => {
-    /* 예외 처리 목록들 */
-    // 1.방 제목 글자 수 제한 >> 30~40자
-    // 2. 인원 수 음수 값
-    // 3. 인원 수 지수 표기법으로 인한 영문자 e, E 처리
-    // 4. 인원 수 한글 입력되는 문제
-    // 정보) number가 아닌 알파벳 혹은 문자가 들어간 경우 target.value가 null이 아닌 빈 값이 됨
-    // 5. 종목 datalist에 없는거 입력하면 안되게 하기
+  const getNext = (e) => {
+    // 빈칸 제어
+    if (
+      roomTitle === "" ||
+      exercise === "" ||
+      limitPeopleCount === "" ||
+      roomArea.area === "정보 없음" ||
+      roomArea.areaDetail === "정보 없음"
+    ) {
+      e.preventDefault();
+      alert("빈칸을 모두 설정해주세요!");
+    }
+
+    // 종목 선택 안 한 경우
+    if (exercise === "선택") {
+      e.preventDefault();
+      alert("종목을 선택해주세요!");
+    }
   };
 
   return (
@@ -145,37 +163,42 @@ const RoomSetting = () => {
             <input
               value={roomTitle}
               onChange={(e) => setRoomTitle(e.target.value)}
+              type="text"
+              maxLength="30"
             />
           </div>
 
           <div className="content-exercise-limitpeoplecount">
             <div className="exercise">
               <p>종목</p>
-              <input
-                list="exercise"
+              <select
                 value={exercise}
                 onChange={(e) => setExercise(e.target.value)}
-              />
-              <datalist id="exercise">
-                <option value="축구" />
-                <option value="야구" />
-                <option value="농구" />
-                <option value="당구" />
-                <option value="탁구" />
-                <option value="헬스" />
-                <option value="자전거" />
-                <option value="골프" />
-                <option value="등산" />
-                <option value="런닝" />
-                <option value="배드민턴" />
-                <option value="기타" />
-              </datalist>
+              >
+                <option>선택</option>
+                <option>축구</option>
+                <option>야구</option>
+                <option>농구</option>
+                <option>당구</option>
+                <option>탁구</option>
+                <option>헬스</option>
+                <option>자전거</option>
+                <option>골프</option>
+                <option>등산</option>
+                <option>런닝</option>
+                <option>배드민턴</option>
+                <option>기타</option>
+              </select>
             </div>
             <div className="limitpeoplecount">
               <p>인원</p>
               <input
                 type="number"
+                min="1"
                 value={limitPeopleCount}
+                onKeyUp={(e) =>
+                  (e.target.value = e.target.value.replace(/[^0-9]/g, ""))
+                }
                 onChange={(e) => setLimitPeopleCount(e.target.value)}
               />
             </div>
@@ -268,7 +291,15 @@ const RoomSetting = () => {
           margin: 0 10px;
         }
 
-        .exercise input,
+        .exercise select {
+          width: 105px;
+          height: 30px;
+          padding: 0 10px;
+          border-radius: 10px;
+          border: solid 1px #e8e8e8;
+          font-size: 1.5em;
+        }
+
         .limitpeoplecount input {
           width: 105px;
           height: 30px;
