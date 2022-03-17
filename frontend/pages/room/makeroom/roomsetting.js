@@ -1,11 +1,34 @@
 import Link from "next/link";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import RoomInfoNavBar from "../../../components/roomInfoNavBar";
 
 const RoomSetting = () => {
+  //방 제목
+  const [roomTitle, setRoomTitle] = useState("");
+
+  //종목
+  const [exercise, setExercise] = useState("");
+
+  //인원
+  const [limitPeopleCount, setLimitPeopleCount] = useState("");
+
+  //지역
+  const [roomArea, setRoomArea] = useState({
+    area: "정보 없음", //시구동
+    areaDetail: "정보 없음", //상세 주소
+  });
+
   useEffect(() => {
     getMap();
   }, []);
+
+  useEffect(() => {
+    console.log(roomTitle);
+    console.log(exercise);
+    console.log(limitPeopleCount);
+    console.log(roomArea.area);
+    console.log(roomArea.areaDetail);
+  });
 
   const getMap = () => {
     const mapScript = document.createElement("script");
@@ -52,7 +75,7 @@ const RoomSetting = () => {
     }
   };
 
-  const getMarker = (map, position, geocoder) => {
+  const getMarker = (map, position) => {
     const marker = new kakao.maps.Marker({
       map: map,
       position: new kakao.maps.LatLng(position),
@@ -61,69 +84,63 @@ const RoomSetting = () => {
     //마커를 클릭한 위치에 표시
     marker.setPosition(position);
     marker.setMap(map);
-
-    kakao.maps.event.addListener(marker, "click", function () {
-      marker.setMap(null); //지도에서 마커제거
-      searchAddrFromCoords(geocoder, position, function (result, status) {
-        if (status === kakao.maps.services.Status.OK) {
-          const area = result[0].address_name;
-
-          setTagAreas((prev) =>
-            prev.filter((el) => {
-              return el !== area;
-            })
-          );
-
-          //배열에서 클릭된 마커의 지역 인덱스 찾기
-          const index = activeAreas.findIndex(function (element) {
-            return element === area;
-          });
-
-          if (index !== -1) {
-            activeAreas.splice(index, 1);
-          }
-        }
-      });
-    });
   };
 
   const getArea = (map, geocoder) => {
     kakao.maps.event.addListener(map, "click", function (mouseEvent) {
+      // 시구동 정보 얻기
       searchAddrFromCoords(
         geocoder,
         mouseEvent.latLng,
         function (result, status) {
           if (status === kakao.maps.services.Status.OK) {
-            const area = result[0].address_name;
+            const addr = result[0].address_name;
 
-            //배열에 담긴 지역이 5개 이하라면
-            if (activeAreas.length < 5) {
-              activeAreas.push(area);
-              //중복 지역 담기지 않게 하기
-              activeAreas = activeAreas.filter((element, index) => {
-                return activeAreas.indexOf(element) === index;
-              });
+            // 시구동 정보 설정
+            setRoomArea((prev) => ({
+              ...prev,
+              area: addr,
+            }));
 
-              setTagAreas((prev) => [...prev, area]);
+            //클릭된 지역 마커표시
+            getMarker(map, mouseEvent.latLng);
+          }
+        }
+      );
 
-              getMarker(map, mouseEvent.latLng, geocoder); //클릭된 지역 마커표시
-            } else {
-              alert("최대 설정 가능한 개수를 초과하였습니다!");
-            }
+      // 상세 주소 정보 얻기
+      searchDetailAddrFromCoords(
+        geocoder,
+        mouseEvent.latLng,
+        function (result, status) {
+          if (status === kakao.maps.services.Status.OK) {
+            const detailAddr = result[0].address.address_name;
+
+            // 상세 주소 정보 설정
+            setRoomArea((prev) => ({
+              ...prev,
+              areaDetail: detailAddr,
+            }));
           }
         }
       );
     });
   };
 
+  // 시구동 정보
   const searchAddrFromCoords = (geocoder, coords, callback) => {
     geocoder.coord2RegionCode(coords.getLng(), coords.getLat(), callback);
   };
 
+  // 상세 지번 주소
+  function searchDetailAddrFromCoords(geocoder, coords, callback) {
+    geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
+  }
+
   //예외 처리 및 다음 페이지 이동
   const getNext = () => {
     /* 예외 처리 목록들 */
-    // 1.방 제목 글자 수 제한 >> ?
+    // 1.방 제목 글자 수 제한 >> 30~40자
     // 2. 인원 수 음수 값
     // 3. 인원 수 지수 표기법으로 인한 영문자 e, E 처리
     // 4. 인원 수 한글 입력되는 문제
@@ -143,13 +160,20 @@ const RoomSetting = () => {
         <div className="contents">
           <div className="content-title">
             <p>방 제목</p>
-            <input />
+            <input
+              value={roomTitle}
+              onChange={(e) => setRoomTitle(e.target.value)}
+            />
           </div>
 
           <div className="content-exercise-limitpeoplecount">
             <div className="exercise">
               <p>종목</p>
-              <input list="exercise" />
+              <input
+                list="exercise"
+                value={exercise}
+                onChange={(e) => setExercise(e.target.value)}
+              />
               <datalist id="exercise">
                 <option value="축구" />
                 <option value="야구" />
@@ -167,7 +191,11 @@ const RoomSetting = () => {
             </div>
             <div className="limitpeoplecount">
               <p>인원</p>
-              <input type="number" />
+              <input
+                type="number"
+                value={limitPeopleCount}
+                onChange={(e) => setLimitPeopleCount(e.target.value)}
+              />
             </div>
           </div>
 
