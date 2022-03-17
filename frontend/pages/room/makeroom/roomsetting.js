@@ -22,14 +22,6 @@ const RoomSetting = () => {
     getMap();
   }, []);
 
-  useEffect(() => {
-    console.log(roomTitle);
-    console.log(exercise);
-    console.log(limitPeopleCount);
-    console.log(roomArea.area);
-    console.log(roomArea.areaDetail);
-  });
-
   const getMap = () => {
     const mapScript = document.createElement("script");
     mapScript.async = true;
@@ -75,18 +67,7 @@ const RoomSetting = () => {
     }
   };
 
-  const getMarker = (map, position) => {
-    const marker = new kakao.maps.Marker({
-      map: map,
-      position: new kakao.maps.LatLng(position),
-    });
-
-    //마커를 클릭한 위치에 표시
-    marker.setPosition(position);
-    marker.setMap(map);
-  };
-
-  const getArea = (map, geocoder) => {
+  const getArea = (map, geocoder, marker) => {
     kakao.maps.event.addListener(map, "click", function (mouseEvent) {
       // 시구동 정보 얻기
       searchAddrFromCoords(
@@ -103,7 +84,8 @@ const RoomSetting = () => {
             }));
 
             //클릭된 지역 마커표시
-            getMarker(map, mouseEvent.latLng);
+            marker.setPosition(mouseEvent.latLng);
+            marker.setMap(map);
           }
         }
       );
@@ -206,7 +188,10 @@ const RoomSetting = () => {
             </div>
             <div className="selected-area">
               <p>지역</p>
-              <input readOnly />
+              <input
+                readOnly
+                value={`${roomArea.area} / ${roomArea.areaDetail}`}
+              />
             </div>
           </div>
         </div>
