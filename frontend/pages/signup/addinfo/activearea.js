@@ -5,10 +5,10 @@ import { useSelector } from "react-redux";
 import UserInfoNavBar from "../../../components/userInfoNavBar";
 import { FailResponse } from "../../../api/failResponse";
 
+let activeAreas = [];
 const ActiveArea = () => {
   const userInfo = useSelector((state) => state.userRequestReducer);
 
-  let activeAreas = [];
   const [tagAreas, setTagAreas] = useState([]);
 
   // 서버에 회원가입 요청
