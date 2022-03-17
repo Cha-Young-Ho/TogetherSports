@@ -13,6 +13,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Builder
+@DynamicInsert
 @Entity
 @Table
 public class RoomImage {
@@ -25,16 +26,17 @@ public class RoomImage {
     @JoinColumn(name = "roomSequenceId")
     private Room room;
 
-    @Column
+    @Column(columnDefinition = "varchar(255) default '/Users/younghocha/files/profile/img/TogetherSports_Default_Image.png'")
     private String roomImagePath;
 
-    @Column
+    @Column(columnDefinition = "varchar(255) default 'Together_Sports_Image'")
     private String roomImageRealName;
 
-    @Column
+
+    @Column(columnDefinition = "varchar(255) default 'Default_Image'")
     private String roomImageSaveName;
 
-    @Column
+    @Column(columnDefinition = "varchar(255) default 'png'")
     private String roomImageExtension;
 
 
