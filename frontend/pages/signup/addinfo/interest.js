@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import UserInfoNavBar from "../../../components/userInfoNavBar";
 
@@ -10,13 +10,14 @@ const Interest = () => {
     "축구",
     "야구",
     "농구",
-    "풋살",
-    "배구",
-    "배드민턴",
-    "테니스",
+    "당구",
+    "탁구",
+    "헬스",
+    "자전거",
     "골프",
-    "수영",
-    "핸드볼",
+    "등산",
+    "런닝",
+    "배드민턴",
     "기타종목",
   ];
 

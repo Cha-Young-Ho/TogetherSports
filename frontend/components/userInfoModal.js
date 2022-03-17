@@ -2,6 +2,7 @@ import { useDispatch } from "react-redux";
 import { getMyInfo } from "../api/members";
 import { FailResponse } from "../api/failResponse";
 import { useState } from "react";
+import Link from "next/link";
 
 const UserInfoModal = ({ open, close }) => {
   const dispatch = useDispatch();
@@ -69,7 +70,11 @@ const UserInfoModal = ({ open, close }) => {
                   );
                 })}
               </div>
-              <button className="next-button">회원 정보 수정하기</button>
+              <Link href="/usermodification">
+                <button className="next-button" onClick={close}>
+                  회원 정보 수정하기
+                </button>
+              </Link>
             </div>
           </section>
         ) : null}
@@ -93,7 +98,7 @@ const UserInfoModal = ({ open, close }) => {
         }
 
         section {
-          width: 400px;
+          //width: 400px;
           height: 540px;
           width: 90%;
           max-width: 450px;
@@ -113,6 +118,7 @@ const UserInfoModal = ({ open, close }) => {
           padding: 16px 16px 16px 16px;
           background-color: #f1f1f1;
           font-weight: bold;
+          text-align: center;
         }
 
         .exit-button {
