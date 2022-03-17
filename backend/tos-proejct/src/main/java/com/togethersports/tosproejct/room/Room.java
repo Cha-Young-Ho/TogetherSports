@@ -19,41 +19,40 @@ import java.util.List;
 @Getter
 @Builder
 @Entity
-@Table(name = "T_ROOM")
 @NoArgsConstructor
 @AllArgsConstructor
 @DynamicInsert
+@Table
 public class Room {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "ROOM_SEQUENCE_ID")
     private Long roomSequenceId;
 
-    @Column(name = "ROOM_TITLE")
+    @Column
     private String roomTitle;
 
-    @Column(name = "ROOM_CONTENT")
+    @Column
     private String roomContent;
 
-    @Column(name = "LIMIT_PEOPLE_COUNT")
+    @Column
     private int limitPeopleCount;
 
-    @Column(name = "PARTICIPANT_COUNT", columnDefinition = "integer default 1")
+    @Column(columnDefinition = "integer default 1")
     private int participantCount;
 
-    @Column(name = "EXERCISE")
+    @Column
     private String exercise;
 
-    @Column(name = "VIEW_COUNT", columnDefinition = "integer default 1")
+    @Column(columnDefinition = "integer default 1")
     private int viewCount;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
-    @Column(name = "START_APPOINTMENT_DATE")
+    @Column
     private LocalDateTime startAppointmentDate;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
-    @Column(name = "END_APPOINTMENT_DATE")
+    @Column
     private LocalDateTime endAppointmentDate;
 
     @OneToOne(mappedBy = "room")
@@ -67,7 +66,7 @@ public class Room {
     private List<RoomTag> roomTagList;
 
     @ManyToOne
-    @JoinColumn(name = "USER_SEQUENCE_ID")
+    @JoinColumn(name = "userSequenceId")
     private User host;
 
 

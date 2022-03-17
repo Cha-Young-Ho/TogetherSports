@@ -13,21 +13,20 @@ import javax.persistence.*;
 @RequiredArgsConstructor
 @Builder
 @Entity
-@Table(name = "T_ROOM_AREA")
+@Table
 public class RoomArea {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "AREA_SEQUENCE_ID")
     private Long areaSequenceId;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "ROOM_SEQUENCE_ID")
+    @JoinColumn(name = "roomSequenceId")
     private Room room;
 
-    @Column(name = "AREA")
+    @Column
     private String area;
 
-    @Column(name = "AREA_DETAIL")
+    @Column
     private String areaDetail;
 
     public void updateRoom(Room room){
