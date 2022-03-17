@@ -9,22 +9,22 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 
-@Table(name = "T_AREA")
+
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table
 public class ActiveAreas {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "AREA_SEQUENCE_ID")
-    private String areaSequenceId;
+    private Long areaSequenceId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "USER_SEQUENCE_ID")
+    @JoinColumn(name = "userSequenceId")
     private User user;
 
-    @Column(name = "AREA")
+    @Column
     private String area;
 }
