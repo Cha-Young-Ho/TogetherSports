@@ -115,53 +115,6 @@ const UserModification = () => {
     }
   };
 
-  //예외처리
-  const getNext = (e) => {
-    const checkNickname = $("#input-nickname").val();
-
-    //닉네임 입력 안했을 경우
-    if (checkNickname === "" || checkNickname === null) {
-      e.preventDefault();
-      alert("닉네임을 입력해주세요.");
-      return false;
-    }
-
-    //닉네임에 공백이 있을 경우
-    const blank_pattern = /[\s]/g;
-    if (blank_pattern.test(checkNickname) === true) {
-      e.preventDefault();
-      alert("닉네임을 공백없이 입력해주세요.");
-      return false;
-    }
-
-    //특수문자 사용했을 경우
-    const special_pattern = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
-    if (special_pattern.test(checkNickname) === true) {
-      e.preventDefault();
-      alert("닉네임에 특수문자는 사용할 수 없습니다.");
-      return false;
-    }
-
-    //중복체크를 하지 않은 경우
-    if (!isNicknameCheck) {
-      e.preventDefault();
-      alert("닉네임 중복확인을 해주세요!");
-    }
-
-    if (
-      birthYear === "YYYY" ||
-      birthMonth === "MM" ||
-      birthDay === "DD" ||
-      birthYear === "" ||
-      birthMonth === "" ||
-      birthDay === ""
-    ) {
-      e.preventDefault();
-      alert("생년월일을 확인해주세요.");
-      return false;
-    }
-  };
-
   //관심종목
   const [interests, setInterests] = useState({});
 
@@ -204,6 +157,14 @@ const UserModification = () => {
     if (e.target.classList[2] === "clicked") {
       e.target.classList.remove("clicked");
     } else {
+      if (
+        Object.entries(interests).filter((exer) => {
+          if (exer[1]) return true;
+        }).length >= 5
+      ) {
+        alert("최대 5개 까지만 선택할 수 있습니다.");
+        return;
+      }
       e.target.classList.add("clicked");
     }
 
@@ -327,8 +288,58 @@ const UserModification = () => {
     geocoder.coord2RegionCode(coords.getLng(), coords.getLat(), callback);
   };
 
-  //수정 버튼
-  const clickUpdateUserInfo = () => {
+  //예외처리 및 수정버튼
+  const clickUpdateUserInfo = (e) => {
+    const checkNickname = $("#input-nickname").val();
+
+    //닉네임 입력 안했을 경우
+    if (checkNickname === "" || checkNickname === null) {
+      e.preventDefault();
+      alert("닉네임을 입력해주세요.");
+      return false;
+    }
+
+    //닉네임에 공백이 있을 경우
+    const blank_pattern = /[\s]/g;
+    if (blank_pattern.test(checkNickname) === true) {
+      e.preventDefault();
+      alert("닉네임을 공백없이 입력해주세요.");
+      return false;
+    }
+
+    //특수문자 사용했을 경우
+    const special_pattern = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
+    if (special_pattern.test(checkNickname) === true) {
+      e.preventDefault();
+      alert("닉네임에 특수문자는 사용할 수 없습니다.");
+      return false;
+    }
+
+    //중복체크를 하지 않은 경우
+    if (!isNicknameCheck) {
+      e.preventDefault();
+      alert("닉네임 중복확인을 해주세요!");
+    }
+
+    if (
+      birthYear === "YYYY" ||
+      birthMonth === "MM" ||
+      birthDay === "DD" ||
+      birthYear === "" ||
+      birthMonth === "" ||
+      birthDay === ""
+    ) {
+      e.preventDefault();
+      alert("생년월일을 확인해주세요.");
+      return false;
+    }
+
+    if (!Object.keys(interests).length) {
+      e.preventDefault();
+      alert("최소 1개의 종목을 선택하여야 합니다.");
+      return false;
+    }
+
     putUpdateUserInfo(
       userInfo.userEmail,
       userInfo.userName,
