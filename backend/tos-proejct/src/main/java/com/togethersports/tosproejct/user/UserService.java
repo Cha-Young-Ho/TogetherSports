@@ -3,6 +3,7 @@ package com.togethersports.tosproejct.user;
 import com.togethersports.tosproejct.code.Code;
 import com.togethersports.tosproejct.exception.CustomDefaultException;
 import com.togethersports.tosproejct.file.FileHandler;
+import com.togethersports.tosproejct.jwt.JwtService;
 import com.togethersports.tosproejct.jwt.JwtTokenProvider;
 import com.togethersports.tosproejct.userProfileImage.UserProfileImage;
 import com.togethersports.tosproejct.userProfileImage.UserProfileImageDTO;
@@ -23,10 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLIntegrityConstraintViolationException;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -38,7 +36,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserProfileImageService userProfileImageService;
     private final FileHandler fileHandler;
-
+    private final JwtService jwtService;
     public Optional<User> findByUserEmail(String userEmail) {
         return userRepository.findByUserEmail(userEmail);
     }
@@ -60,18 +58,22 @@ public class UserService {
                     .userBirthMonth(userDTO.getUserBirthMonth())
                     .userBirthDay(userDTO.getUserBirthDay())
                     .userNickname(userDTO.getUserNickname())
-                    .roles(Arrays.asList(new SimpleGrantedAuthority(userDTO.getAdmin().toString()).toString()))
+                    .roles(Arrays.asList(new SimpleGrantedAuthority("ADMIN").toString()))
                     .gender(userDTO.getGender())
                     .provider(userDTO.getProvider())
                     .build();
 
             userRepository.save(user); // 회원 TB 데이터 등록
 
-            if (userDTO.getUserProfileImage() != null) {
-
+            if (!(userDTO.getUserProfileImage().getImageSource().equals("정보 없음"))) {
                 fileHandler.userProfileImageUpload(userDTO); // 프로필 이미지 저장
                 userProfileImageService.userProfileImageSave(user, userDTO); // 회원프로필이미지 TB 데이터 등록
+
+                return;
             }
+
+                userProfileImageService.userProfileImageDefaultSave(user, userDTO);
+
         } catch(Exception e) {
             e.printStackTrace();
             throw new CustomDefaultException();
@@ -82,6 +84,12 @@ public class UserService {
 
 
     public Optional<User> getMyInfo(String accessToken){
+
+        Optional<User> getUser = getUserByEmailFromAccessToken(accessToken);
+        //List<UserProfileImage> userProfileImageList = getUser.get().getUserProfileImageList();
+        //log.info("user profile = {}", userProfileImageList.get(0));
+
+
 
         return getUserByEmailFromAccessToken(accessToken);
     }
@@ -108,6 +116,7 @@ public class UserService {
     public Optional<User> getUserByEmailFromAccessToken(String accessToken){
         Claims claims = jwtTokenProvider.getClaims(accessToken);
 
+
         return userRepository.findByUserEmail(claims.get("sub").toString());
 
     }
@@ -122,6 +131,8 @@ public class UserService {
     }
 
     public boolean sinUpCheck(String userEmail){
+
+        log.info("유저 존재 체크 = {}", userRepository.existsByUserEmail(userEmail));
 
         //해당 유저 이메일이 존재하면 false 반환
         if(userRepository.existsByUserEmail(userEmail)){
@@ -142,6 +153,7 @@ public class UserService {
         //해당 닉네임으로 가입이 가능하면 true 반환
         return true;
     }
+
 
 }
 

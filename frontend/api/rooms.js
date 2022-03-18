@@ -58,32 +58,35 @@ const getRoomList = async (
 
 // 방 생성
 const postCreateRoom = async (
-  title,
-  content,
-  area,
-  limit,
+  roomTitle,
+  roomContent,
+  roomArea,
+  limitPeopleCount,
   exercise,
   tag,
-  date,
-  img
+  startAppointmentDate,
+  endAppointmentDate,
+  roomImages
 ) => {
-  const promise = axios.post("http://localhost:8080/room", {
-    headers: {
+  const promise = axios.post(
+    "http://localhost:8080/room",
+    {
+      roomTitle: roomTitle,
+      roomContent: roomContent,
+      roomArea: roomArea,
+      limitPeopleCount: limitPeopleCount,
+      exercise: exercise,
+      tag: tag,
+      startAppointmentDate: startAppointmentDate,
+      endAppointmentDate: endAppointmentDate,
+      roomImages: roomImages,
+    },
+    {
       "Content-type": "application/json; charset=UTF-8",
       Accept: "*/*",
       Authorization: localStorage.getItem("accessToken"),
-    },
-    params: {
-      roomTitle: title,
-      roomContent: content,
-      area: area,
-      limitPeopleCount: limit,
-      exercise: exercise,
-      tag: tag,
-      appointmentDate: date,
-      roomImages: img,
-    },
-  });
+    }
+  );
   const dataPromise = promise.then((res) => res.data);
 
   return dataPromise;
@@ -96,27 +99,26 @@ const postUpdateRoom = async (
   roomTitle,
   roomContent,
   area,
-  exercise,
   tag,
   appointmentDate,
   roomImages
 ) => {
-  const promise = axios.put("http://localhost:8080/room", {
-    headers: {
-      "Content-type": "application/json; charset=UTF-8",
-      Accept: "*/*",
-      Authorization: localStorage.getItem("accessToken"),
-    },
-    params: {
+  const promise = axios.put(
+    "http://localhost:8080/room",
+    {
       roomTitle: roomTitle,
       roomContent: roomContent,
       area: area,
-      exercise: exercise,
       tag: tag,
       appointmentDate: appointmentDate,
       roomImages: roomImages,
     },
-  });
+    {
+      "Content-type": "application/json; charset=UTF-8",
+      Accept: "*/*",
+      Authorization: localStorage.getItem("accessToken"),
+    }
+  );
   const dataPromise = promise.then((res) => res.data);
 
   return dataPromise;

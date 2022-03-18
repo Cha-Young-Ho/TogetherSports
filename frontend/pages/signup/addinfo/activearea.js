@@ -7,7 +7,7 @@ import { FailResponse } from "../../../api/failResponse";
 
 let activeAreas = [];
 const ActiveArea = () => {
-  const userInfo = useSelector((state) => state);
+  const userInfo = useSelector((state) => state.userRequestReducer);
 
   const [tagAreas, setTagAreas] = useState([]);
 
@@ -15,16 +15,16 @@ const ActiveArea = () => {
   const callUserRequest = () => {
     postUserRequest(
       activeAreas,
-      userInfo.userRequestReducer.gender,
-      userInfo.userRequestReducer.interests,
-      userInfo.userRequestReducer.provider,
-      userInfo.userRequestReducer.userBirthDay,
-      userInfo.userRequestReducer.userBirthMonday,
-      userInfo.userRequestReducer.userBirthYear,
-      userInfo.userRequestReducer.userEmail,
-      userInfo.userRequestReducer.userName,
-      userInfo.userRequestReducer.userNickname,
-      userInfo.userRequestReducer.userProfileImage
+      userInfo.gender,
+      userInfo.interests,
+      userInfo.provider,
+      userInfo.userBirthDay,
+      userInfo.userBirthMonday,
+      userInfo.userBirthYear,
+      userInfo.userEmail,
+      userInfo.userName,
+      userInfo.userNickname,
+      userInfo.userProfileImage
     ).then((res) => {
       console.log(res.message);
       if (res.code === 5000) {
@@ -202,28 +202,6 @@ const ActiveArea = () => {
           flex-direction: column;
           align-items: center;
           justify-content: center;
-        }
-
-        h1 {
-          padding: 35px 0;
-          font-weight: bold;
-          font-size: 2.5rem;
-        }
-
-        .title {
-          width: 500px;
-          display: flex;
-          justify-content: space-around;
-          margin-bottom: 20px;
-        }
-
-        .title-circle-personalinfo,
-        .title-circle-interest,
-        .title-circle-activearea {
-          border-radius: 50px;
-          width: 90px;
-          height: 90px;
-          margin: 10px;
         }
 
         p {
