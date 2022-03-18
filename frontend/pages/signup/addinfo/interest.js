@@ -43,7 +43,11 @@ const Interest = () => {
   };
 
   const BtnClickedNext = (e) => {
-    if (!Object.keys(interests).length) {
+    if (
+      Object.entries(interests).filter((exer) => {
+        if (exer[1]) return true;
+      }).length === 0
+    ) {
       e.preventDefault();
       alert("최소 1개의 종목을 선택하여야 합니다.");
       return false;
