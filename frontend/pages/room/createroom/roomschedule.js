@@ -1,33 +1,12 @@
 import RoomInfoNavBar from "../../../components/roomInfoNavBar";
 import { useState } from "react";
-import styled from "styled-components";
-import ko from "date-fns/locale/ko";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+// import ko from "date-fns/locale/ko";
+// import DatePicker from "react-datepicker";
+// import "react-datepicker/dist/react-datepicker.css";
+
+import Calendar from "../../../components/calendar/calendar";
 
 const RoomSchedule = () => {
-  const [startDate, setStartDate] = useState(new Date());
-
-  console.log(startDate);
-
-  // const Wrapper = styled(DatePicker)`
-  //   border-radius: 20px;
-  //   border: 1px solid tomato;
-  // `;
-
-  const Wrapper = styled(DatePicker)`
-    .react-datepicker {
-      font-family: "Helvetica Neue", helvetica, arial, sans-serif;
-      font-size: 1.5rem;
-      background-color: #fff;
-      color: #000;
-      border: 20px solid #aeaeae !important;
-      border-radius: 0.3rem;
-      display: inline-block;
-      position: relative;
-    }
-  `;
-
   return (
     <>
       <div className="bg-container">
@@ -39,14 +18,9 @@ const RoomSchedule = () => {
         <div className="content-showbox">
           <p>달력에서 날짜를 체크해주세요!</p>
         </div>
-        <Wrapper
-          locale={ko}
-          selected={startDate}
-          inline
-          onChange={(date) => setStartDate(date)}
-          minDate={new Date()}
-          withPortal
-        />
+        <div className="calendar">
+          <Calendar />
+        </div>
       </div>
       <style jsx>{`
         .bg-container {
@@ -71,6 +45,12 @@ const RoomSchedule = () => {
           align-items: center;
           margin: 20px 0;
           font-weight: bold;
+        }
+
+        .calendar {
+          width: 400px;
+          border-radius: 12px;
+          box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
         }
       `}</style>
     </>
