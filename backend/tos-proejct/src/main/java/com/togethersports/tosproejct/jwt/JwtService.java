@@ -65,6 +65,14 @@ public class JwtService {
 
 
     }
+    @Transactional
+    public void logout(String accessToken, String userAgent){
+
+
+        String userEmail = jwtTokenProvider.getClaims(accessToken).get("sub").toString();
+
+        refreshTokenRepository.deleteByKeyEmailAndUserAgent(userEmail, userAgent);
+    }
 
 
 }
