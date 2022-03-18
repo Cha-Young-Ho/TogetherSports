@@ -38,7 +38,7 @@ const saveNicknameInitialState = {
 };
 
 // 방 생성 초기값
-const makeRoomInitialState = {
+const createRoomInitialState = {
   roomTitle: "",
   roomContent: "",
   roomArea: {},
@@ -142,7 +142,7 @@ const saveNicknameReducer = (state = saveNicknameInitialState, action) => {
   }
 };
 
-const makeRoomReducer = (state = makeRoomInitialState, action) => {
+const createRoomReducer = (state = createRoomInitialState, action) => {
   switch (action.type) {
     case ROOMSETTING:
       return {
@@ -172,7 +172,7 @@ const rootReducer = combineReducers({
   userRequestReducer,
   saveNicknameReducer,
   myInfoReducer,
-  makeRoomReducer,
+  createRoomReducer,
 });
 
 const makeStore = () => createStore(rootReducer, composeWithDevTools());

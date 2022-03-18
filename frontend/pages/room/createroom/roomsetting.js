@@ -232,7 +232,7 @@ const RoomSetting = () => {
           </div>
         </div>
 
-        <Link href="/room/makeroom/roomschedule">
+        <Link href="/room/createroom/roomschedule">
           <button className="button-next" onClick={getNext}>
             다음
           </button>
