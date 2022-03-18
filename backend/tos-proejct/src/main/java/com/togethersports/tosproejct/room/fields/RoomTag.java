@@ -12,20 +12,19 @@ import javax.persistence.*;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Builder
-@Table(name = "T_ROOM_TAG")
+@Table
 @Entity
 public class RoomTag {
 
     @Id
-    @Column(name = "TAG_SEQUENCE_ID")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long tagSequenceID;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "ROOM_SEQUENCE_ID")
+    @JoinColumn(name = "roomSequenceId")
     private Room room;
 
-    @Column(name = "TAG")
+    @Column
     private String tag;
 
 

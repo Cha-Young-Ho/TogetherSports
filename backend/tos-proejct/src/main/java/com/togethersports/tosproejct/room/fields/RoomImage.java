@@ -13,9 +13,9 @@ import javax.persistence.*;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Builder
-@Entity
-@Table(name = "T_ROOM_IMAGE")
 @DynamicInsert
+@Entity
+@Table
 public class RoomImage {
 
     @Id
@@ -23,19 +23,20 @@ public class RoomImage {
     private Long roomImageSequenceId;
 
     @ManyToOne
-    @JoinColumn(name = "ROOM_SEQUENCE_ID")
+    @JoinColumn(name = "roomSequenceId")
     private Room room;
 
-    @Column(name = "ROOM_IMAGE_PATH", columnDefinition = "varchar(255) default '/Users/younghocha/files/profile/img/TogetherSports_Default_Image.png''")
+    @Column(columnDefinition = "varchar(255) default '/Users/younghocha/files/profile/img/TogetherSports_Default_Image.png'")
     private String roomImagePath;
 
-    @Column(name = "ROOM_IMAGE_REAL_NAME", columnDefinition = "varchar(255) default 'Together_Sports_Image'")
+    @Column(columnDefinition = "varchar(255) default 'Together_Sports_Image'")
     private String roomImageRealName;
 
-    @Column(name = "ROOM_IMAGE_SAVE_NAME", columnDefinition = "varchar(255) default 'Default_Image'")
+
+    @Column(columnDefinition = "varchar(255) default 'Default_Image'")
     private String roomImageSaveName;
 
-    @Column(name = "ROOM_IMAGE_EXTENSION", columnDefinition = "varchar(255) default 'png'")
+    @Column(columnDefinition = "varchar(255) default 'png'")
     private String roomImageExtension;
 
 

@@ -2,7 +2,11 @@ package com.togethersports.tosproejct.room.module;
 
 import com.togethersports.tosproejct.room.fields.RoomImage;
 import com.togethersports.tosproejct.room.roomDTO.RoomImageDTO;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.springframework.util.Base64Utils;
 
 import java.io.IOException;
@@ -16,13 +20,17 @@ import java.util.Base64;
 import java.util.List;
 
 @Slf4j
+@AllArgsConstructor
+@NoArgsConstructor
+@Component
 public class RoomFileHandler {
     private String uploadFolder = System.getProperty("user.home") + "/files/room/img/";
 
     public List<RoomImage> manageDefaultImage(){
+        log.info("여기22 실행");
         List<RoomImage> defaultRoomImageList = new ArrayList<>();
 
-        defaultRoomImageList.add(new RoomImage());
+        defaultRoomImageList.add(RoomImage.builder().roomImageExtension("png").build());
         return defaultRoomImageList;
     }
 

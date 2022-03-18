@@ -16,6 +16,7 @@ import com.togethersports.tosproejct.user.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,13 +28,20 @@ import java.util.List;
 @Service
 public class RoomCRUDService {
 
-
+    @Autowired
     private RoomRepository roomRepository;
+    @Autowired
     private RoomAreaRepository roomAreaRepository;
+    @Autowired
     private JwtTokenProvider jwtTokenProvider;
+    @Autowired
     private UserRepository userRepository;
+    @Autowired
     private RoomImageRepository roomImageRepository;
+    @Autowired
     private RoomTagRepository roomTagRepository;
+
+    @Autowired
     private RoomFileHandler roomFileHandler;
 
     //방 생성 메소드
@@ -88,9 +96,12 @@ public class RoomCRUDService {
 
         //사용자가 방의 사진을 업로드 하지않은 경우
         if (roomImageList.size() == 1 && roomImageList.get(0).getRoomImageRealName().equals("정보 없음")) {
-
+            log.info("여기 실행111");
             return roomFileHandler.manageDefaultImage();
         }
+
+        log.info("if 체크 size = {}", roomImageList.size() == 1);
+        log.info("if 체크 equals = {}", roomImageList.get(0).getRoomImageRealName().equals("정보 없음"));
 
         //사용자가 방의 사진을 1~@개 업로드 한 경우
         return roomFileHandler.manageImages(roomImageList);

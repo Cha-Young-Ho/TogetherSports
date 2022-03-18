@@ -58,26 +58,28 @@ const getRoomList = async (
 
 // 방 생성
 const postCreateRoom = async (
-  title,
-  content,
-  area,
-  limit,
+  roomTitle,
+  roomContent,
+  roomArea,
+  limitPeopleCount,
   exercise,
   tag,
-  date,
-  img
+  startAppointmentDate,
+  endAppointmentDate,
+  roomImages
 ) => {
   const promise = axios.post(
     "http://localhost:8080/room",
     {
-      roomTitle: title,
-      roomContent: content,
-      area: area,
-      limitPeopleCount: limit,
+      roomTitle: roomTitle,
+      roomContent: roomContent,
+      roomArea: roomArea,
+      limitPeopleCount: limitPeopleCount,
       exercise: exercise,
       tag: tag,
-      appointmentDate: date,
-      roomImages: img,
+      startAppointmentDate: startAppointmentDate,
+      endAppointmentDate: endAppointmentDate,
+      roomImages: roomImages,
     },
     {
       "Content-type": "application/json; charset=UTF-8",

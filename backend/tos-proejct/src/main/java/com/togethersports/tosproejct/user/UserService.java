@@ -3,6 +3,7 @@ package com.togethersports.tosproejct.user;
 import com.togethersports.tosproejct.code.Code;
 import com.togethersports.tosproejct.exception.CustomDefaultException;
 import com.togethersports.tosproejct.file.FileHandler;
+import com.togethersports.tosproejct.jwt.JwtService;
 import com.togethersports.tosproejct.jwt.JwtTokenProvider;
 import com.togethersports.tosproejct.userProfileImage.UserProfileImage;
 import com.togethersports.tosproejct.userProfileImage.UserProfileImageDTO;
@@ -35,7 +36,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserProfileImageService userProfileImageService;
     private final FileHandler fileHandler;
-
+    private final JwtService jwtService;
     public Optional<User> findByUserEmail(String userEmail) {
         return userRepository.findByUserEmail(userEmail);
     }
@@ -152,6 +153,7 @@ public class UserService {
         //해당 닉네임으로 가입이 가능하면 true 반환
         return true;
     }
+
 
 }
 
