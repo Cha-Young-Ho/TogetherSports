@@ -1,7 +1,7 @@
 import { useDispatch } from "react-redux";
 import { getMyInfo } from "../api/members";
 import { FailResponse } from "../api/failResponse";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
 const UserInfoModal = ({ open, close }) => {
@@ -11,40 +11,44 @@ const UserInfoModal = ({ open, close }) => {
   const [mannerPoint, setMannerPoint] = useState();
   const [interest, setInterest] = useState([]);
 
-  // 내 회원 정보 요청
-  getMyInfo().then((res) => {
-    if (res.code === 5000) {
-      // 현재 정보 값 내부에 저장
-      setImageSrc(res.imageSource);
-      setNickname(res.userNickname);
-      setMannerPoint(res.mannerPoint);
-      setInterest(res.interest);
+  useEffect(() => {
+    if (open) {
+      // 내 회원 정보 요청
+      getMyInfo().then((res) => {
+        if (res.code === 5000) {
+          // 현재 정보 값 내부에 저장
+          setImageSrc(res.imageSource);
+          setNickname(res.userNickname);
+          setMannerPoint(res.mannerPoint);
+          setInterest(res.interest);
 
-      // redux에 저장
-      dispatch({
-        type: "SAVEMYINFO",
-        payload: {
-          userEmail: res.userEmail,
-          userName: res.userName,
-          userNickname: res.userNickname,
-          userBirthYear: res.userBirthYear,
-          userBirthMonday: res.userBirthMonday,
-          userBirthDay: res.userBirthDay,
-          gender: res.gender,
-          userProfileImage: {
-            userProfileRealName: res.userProfileRealName,
-            userProfileExtension: res.userProfileExtension,
-            imageSource: res.imageSource,
-          },
-          activeAreas: res.activeAreas.map((el) => el),
-          interests: res.interests.map((el) => el),
-          mannerPoint: res.mannerPoint,
-        },
+          // redux에 저장
+          dispatch({
+            type: "SAVEMYINFO",
+            payload: {
+              userEmail: res.userEmail,
+              userName: res.userName,
+              userNickname: res.userNickname,
+              userBirthYear: res.userBirthYear,
+              userBirthMonday: res.userBirthMonday,
+              userBirthDay: res.userBirthDay,
+              gender: res.gender,
+              userProfileImage: {
+                userProfileRealName: res.userProfileRealName,
+                userProfileExtension: res.userProfileExtension,
+                imageSource: res.imageSource,
+              },
+              activeAreas: res.activeAreas.map((el) => el),
+              interests: res.interests.map((el) => el),
+              mannerPoint: res.mannerPoint,
+            },
+          });
+        } else {
+          FailResponse(res.code);
+        }
       });
-    } else {
-      FailResponse(res.code);
     }
-  });
+  }, [open]);
 
   return (
     <>
