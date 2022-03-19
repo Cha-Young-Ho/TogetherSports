@@ -187,7 +187,9 @@ const deleteLogout = async () => {
     headers: {
       "Content-type": "application/json; charset=UTF-8",
       Accept: "*/*",
-      Authorization: localStorage.getItem("accessToken"),
+    },
+    params: {
+      refreshToken: localStorage.getItem("refreshToken"),
     },
   });
   const dataPromise = promise.then((res) => res.data);
