@@ -1,5 +1,5 @@
 import moment from "moment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import WeekWrapper from "./weekWrapper";
 import HeaderWrapper from "./headerWrapper";
 
@@ -8,6 +8,10 @@ const Calendar = () => {
 
   // 선택된 날
   const [curSelectedDate, setCurSelectedDate] = useState();
+
+  useEffect(() => {
+    console.log(curSelectedDate);
+  }, [curSelectedDate]);
 
   //이번 년도, 이번 달
   const [curYear, setCurYear] = useState(moment().year());
@@ -74,6 +78,59 @@ const Calendar = () => {
     setCurMonth(curMonth + 1);
   };
 
+  // 일자 선택
+  const clickSelectDate = (e) => {
+    if (e.target.classList[2] === "left") {
+      if (curMonth === 0) {
+        setCurYear(curYear - 1);
+        setCurMonth((curMonth = 11));
+        setCurSelectedDate(
+          (curSelectedDate = `${curYear - 1}-${String(curMonth + 1).padStart(
+            2,
+            0
+          )}-${e.target.innerText}`)
+        );
+        return;
+      }
+      setCurMonth(curMonth - 1);
+      setCurSelectedDate(
+        (curSelectedDate = `${curYear}-${String(curMonth).padStart(2, 0)}-${
+          e.target.innerText
+        }`)
+      );
+    } else if (e.target.classList[2] === "right") {
+      if (curMonth === 11) {
+        setCurYear(curYear + 1);
+        setCurMonth((curMonth = 0));
+        setCurSelectedDate(
+          (curSelectedDate = `${curYear + 1}-${String(curMonth + 1).padStart(
+            2,
+            0
+          )}-${e.target.innerText}`)
+        );
+        return;
+      }
+
+      setCurMonth(curMonth + 1);
+      setCurSelectedDate(
+        (curSelectedDate = `${curYear}-${String(curMonth + 2).padStart(2, 0)}-${
+          e.target.innerText
+        }`)
+      );
+    } else {
+      if (e.target.classList[3] === "clicked") {
+        e.target.classList.remove("clicked");
+      } else {
+        e.target.classList.add("clicked");
+      }
+      setCurSelectedDate(
+        (curSelectedDate = `${curYear}-${String(curMonth + 1).padStart(2, 0)}-${
+          e.target.innerText
+        }`)
+      );
+    }
+  };
+
   return (
     <>
       <div className="calendar-container">
@@ -92,34 +149,52 @@ const Calendar = () => {
             {preCalendarDays.map((date, index) => (
               <button
                 key={`dates-${date}-${index}`}
-                className="special-days-in-grid"
+                className={`special-days-in-grid left`}
+                onClick={clickSelectDate}
               >
                 {date}
               </button>
             ))}
             {curCalendarDays.map((date, index) => {
-              return nowDate !== date ? (
-                <button
-                  key={`dates-${date}-${index}`}
-                  className={`days-in-grid ${curYear}-${curMonth + 1}-${
-                    index + 1
-                  }`}
-                >
-                  {date.substring(8)}
-                </button>
-              ) : (
-                <button
-                  key={`dates-${date}-${index}`}
-                  className={`days-in-grid selected`}
-                >
-                  {date.substring(8)}
-                </button>
-              );
+              if (nowDate === date) {
+                return (
+                  <button
+                    key={`dates-${date}-${index}`}
+                    className={`days-in-grid selected`}
+                    onClick={clickSelectDate}
+                  >
+                    {date.substring(8)}
+                  </button>
+                );
+              } else if (curSelectedDate === date) {
+                return (
+                  <button
+                    key={`dates-${date}-${index}`}
+                    className={`days-in-grid clicked`}
+                    onClick={clickSelectDate}
+                  >
+                    {date.substring(8)}
+                  </button>
+                );
+              } else {
+                return (
+                  <button
+                    key={`dates-${date}-${index}`}
+                    className={`days-in-grid ${curYear}-${curMonth + 1}-${
+                      index + 1
+                    }`}
+                    onClick={clickSelectDate}
+                  >
+                    {date.substring(8)}
+                  </button>
+                );
+              }
             })}
             {nextCalendarDays.map((date, index) => (
               <button
                 key={`dates-${date}-${index}`}
-                className="special-days-in-grid"
+                className={`special-days-in-grid right`}
+                onClick={clickSelectDate}
               >
                 {date}
               </button>
@@ -228,6 +303,11 @@ const Calendar = () => {
           background-color: tomato;
           border-radius: 100px;
           color: white;
+        }
+
+        .clicked {
+          background-color: #468f5b;
+          border-radius: 100px;
         }
       `}</style>
     </>
