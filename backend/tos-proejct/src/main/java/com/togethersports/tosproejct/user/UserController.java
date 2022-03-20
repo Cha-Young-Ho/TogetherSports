@@ -5,16 +5,12 @@ import com.togethersports.tosproejct.jwt.JwtService;
 import com.togethersports.tosproejct.jwt.JwtTokenProvider;
 import com.togethersports.tosproejct.jwt.Token;
 import com.togethersports.tosproejct.response.DefaultResponse;
-import com.togethersports.tosproejct.response.TokenResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -45,7 +41,7 @@ public class UserController {
 
     // 로그인
     @GetMapping("/login")
-    public ResponseEntity<TokenResponse> login(@RequestParam String userEmail, @RequestHeader("User-Agent") String userAgent) {
+    public ResponseEntity<DefaultResponse> login(@RequestParam String userEmail, @RequestHeader("User-Agent") String userAgent) {
         log.info("받은 userEmail = {}", userEmail);
         User member = userRepository.findByUserEmail(userEmail)
                 .orElseThrow(() -> new UsernameNotFoundException("가입되지 않은 E-MAIL 입니다."));
@@ -53,8 +49,9 @@ public class UserController {
         Token tokenDto = jwtTokenProvider.createAccessToken(member.getUsername(), member.getRoles());
 
         jwtService.login(tokenDto, userAgent);
-        TokenResponse tokenResponse = new TokenResponse(Code.GOOD_REQUEST, tokenDto);
-        return new ResponseEntity<>(tokenResponse, HttpStatus.OK);
+        DefaultResponse<Token> tokenResponse = new DefaultResponse<>(Code.GOOD_REQUEST);
+        tokenResponse.setT(tokenDto);
+        return new ResponseEntity(tokenResponse, HttpStatus.OK);
     }
 
     // 회원 유무 확인 (이메일로 회원 조회)
