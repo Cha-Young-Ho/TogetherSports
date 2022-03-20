@@ -2,6 +2,7 @@ import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { deleteLogout } from "../api/members";
+import { FailResponse } from "../api/failResponse";
 import Modal from "./userInfoModal";
 
 const NavigationBar = () => {
@@ -36,7 +37,7 @@ const NavigationBar = () => {
         setLoginData((loginData = false));
         console.log("로그아웃 완료");
       } else {
-        console.log("잘못 된 요청입니다.");
+        FailResponse(res.code);
       }
     });
     console.log("로그아웃 시도");

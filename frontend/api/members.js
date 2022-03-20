@@ -100,7 +100,6 @@ const postUserRequest = async (
   activeAreas,
   gender,
   interests,
-  mannerPoint,
   provider,
   userBirthDay,
   userBirthMonday,
@@ -110,13 +109,50 @@ const postUserRequest = async (
   userNickname,
   userProfileImage
 ) => {
-  const promise = axios.post("http://localhost:8080/user", {
-    headers: {
+  const promise = axios.post(
+    "http://localhost:8080/user",
+    {
+      userEmail: userEmail,
+      userName: userName,
+      userNickname: userNickname,
+      userBirthYear: userBirthYear,
+      userBirthMonth: userBirthMonday,
+      userBirthDay: userBirthDay,
+      activeAreas: activeAreas,
+      gender: gender,
+      userProfileImage: userProfileImage,
+      provider: provider,
+      interests: interests, //--> 5개까지
+    },
+    {
       "Content-type": "application/json; charset=UTF-8",
       Accept: "*/*",
-    },
-    data: {
-      mannerPoint: mannerPoint,
+    }
+  );
+  const dataPromise = promise.then((res) => res.data);
+
+  return dataPromise;
+};
+
+// PUT
+
+// 회원 정보 수정
+const putUpdateUserInfo = async (
+  userEmail,
+  userName,
+  userNickname,
+  userBirthYear,
+  userBirthMonday,
+  userBirthDay,
+  activeAreas,
+  gender,
+  userProfileImage,
+  provider,
+  interests
+) => {
+  const promise = axios.put(
+    "http://localhost:8080/user",
+    {
       userEmail: userEmail,
       userName: userName,
       userNickname: userNickname,
@@ -130,28 +166,12 @@ const postUserRequest = async (
       provider: provider,
       interests: interests, //--> 5개까지
     },
-  });
-  const dataPromise = promise.then((res) => res.data);
-
-  return dataPromise;
-};
-
-// PUT
-
-// 회원 정보 수정
-const putUpdateUserInfo = async () => {
-  //http://localhost:8080/test
-
-  const promise = axios.put("http://localhost:8080/user", {
-    headers: {
+    {
       "Content-type": "application/json; charset=UTF-8",
       Accept: "*/*",
       Authorization: localStorage.getItem("accessToken"),
-    },
-    params: {
-      // 굉장히 많음
-    },
-  });
+    }
+  );
   const dataPromise = promise.then((res) => res.data);
 
   return dataPromise;
@@ -167,7 +187,9 @@ const deleteLogout = async () => {
     headers: {
       "Content-type": "application/json; charset=UTF-8",
       Accept: "*/*",
-      Authorization: localStorage.getItem("accessToken"),
+    },
+    params: {
+      refreshToken: localStorage.getItem("refreshToken"),
     },
   });
   const dataPromise = promise.then((res) => res.data);

@@ -1,7 +1,12 @@
 package com.togethersports.tosproejct.jwt;
 
+import com.togethersports.tosproejct.code.Code;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.simple.parser.ParseException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
@@ -13,7 +18,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.text.ParseException;
 
 // 스프링 시큐리티에서 UsernamePasswordAuthenticationFilter가 존재한다.
 // /login 요청해서 username, password 전송하면 (post)
@@ -70,7 +74,23 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
                 // SecurityContext 에 Authentication 객체를 저장합니다.
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-        } catch (org.json.simple.parser.ParseException e) {
+        } catch (ExpiredJwtException e){
+            //만료 에러
+            request.setAttribute("exception", Code.EXPIRED_TOKEN.getCode());
+            chain.doFilter(request, response);
+
+        } catch (MalformedJwtException e){
+
+            //변조 에러
+            request.setAttribute("exception", Code.WRONG_TYPE_TOKEN.getCode());
+            chain.doFilter(request, response);
+
+
+        } catch (SignatureException e){
+            //형식, 길이 에러
+            request.setAttribute("exception", Code.WRONG_TYPE_TOKEN.getCode());
+            chain.doFilter(request, response);
+        } catch (ParseException e) {
             e.printStackTrace();
         }
         chain.doFilter(request, response);

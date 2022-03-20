@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import React from "react";
 import { useSession } from "next-auth/react";
+import { FailResponse } from "../api/failResponse";
 
 const UserLogin = () => {
   const router = useRouter();
@@ -27,8 +28,7 @@ const UserLogin = () => {
             router.replace("/");
             console.log("로그인 성공");
           } else {
-            alert("가입된 계정이 없습니다. 회원가입을 해주세요.");
-            router.replace("/signup/oauth");
+            FailResponse(res.code);
           }
         })
         .catch((error) => {

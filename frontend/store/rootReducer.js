@@ -10,7 +10,6 @@ const signupInitialState = {
   userBirthYear: "",
   userBirthMonday: "",
   userBirthDay: "",
-  mannerPoint: "10",
   gender: "",
   userProfileImage: {},
   provider: "",
@@ -18,16 +17,47 @@ const signupInitialState = {
   interests: [],
 };
 
+// 내 정보 초기값
+const myInfoInitialState = {
+  userEmail: "",
+  userName: "",
+  userNickname: "임시데이터",
+  userBirthYear: "1996",
+  userBirthMonday: "10",
+  userBirthDay: "26",
+  gender: "male",
+  userProfileImage: {},
+  activeAreas: ["대구광역시 달서구 송현동", "대구광역시 남구 대명동"],
+  interests: [],
+  mannerPoint: "",
+};
+
 // 닉네임 저장 초기값
 const saveNicknameInitialState = {
   userNickname: "",
 };
 
+// 방 생성 초기값
+const createRoomInitialState = {
+  roomTitle: "",
+  roomContent: "",
+  roomArea: {},
+  limitPeopleCount: "",
+  exercise: "",
+  tag: [],
+  startAppointmentDate: "",
+  endAppointmentDate: "",
+  roomImages: [],
+};
+
+// 오타 방지용
 const PERSONALINFO = "PERSONALINFO";
 const INTERESTS = "INTERESTS";
-const ACTIVEAREA = "ACTIVEAREA";
 const AUTHDATA = "AUTHDATA";
 const SAVENICKNAME = "SAVENICKNAME";
+const SAVEMYINFO = "SAVEMYINFO";
+const ROOMSETTING = "ROOMSETTING";
+const ROOMSCHEDULE = "ROOMSCHEDULE";
 
 // 유저 회원가입 정보 reducer
 const userRequestReducer = (state = signupInitialState, action) => {
@@ -66,19 +96,38 @@ const userRequestReducer = (state = signupInitialState, action) => {
           .filter((el) => el[1] === true)
           .map((el) => el[0]),
       };
-    case ACTIVEAREA:
-      console.log(state);
-      return {
-        ...state,
-        activeAreas: action.payload.activeAreas.map((el) => el),
-      };
     default:
       console.log("start");
       return state;
   }
 };
 
-const userUpdateReducer = (state, action) => {};
+// 내 프로필 조회-> 내 정보 저장 reducer
+const myInfoReducer = (state = myInfoInitialState, action) => {
+  switch (action.type) {
+    case SAVEMYINFO:
+      return {
+        ...state,
+        userEmail: action.payload.userEmail,
+        userName: action.payload.userName,
+        userNickname: action.payload.userNickname,
+        userBirthYear: action.payload.userBirthYear,
+        userBirthMonday: action.payload.userBirthMonday,
+        userBirthDay: action.payload.userBirthDay,
+        gender: action.payload.gender,
+        userProfileImage: {
+          userProfileRealName: action.payload.userProfileRealName,
+          userProfileExtension: action.payload.userProfileExtension,
+          imageSource: action.payload.imageSource,
+        },
+        activeAreas: action.payload.activeAreas.map((el) => el),
+        interests: action.payload.interests.map((el) => el),
+        mannerPoint: action.payload.mannerPoint,
+      };
+    default:
+      return state;
+  }
+};
 
 // 닉네임 저장 reducer
 const saveNicknameReducer = (state = saveNicknameInitialState, action) => {
@@ -93,10 +142,37 @@ const saveNicknameReducer = (state = saveNicknameInitialState, action) => {
   }
 };
 
+const createRoomReducer = (state = createRoomInitialState, action) => {
+  switch (action.type) {
+    case ROOMSETTING:
+      return {
+        ...state,
+        roomTitle: action.payload.roomTitle,
+        exercise: action.payload.exercise,
+        limitPeopleCount: action.payload.limitPeopleCount,
+        roomArea: {
+          area: action.payload.roomArea.area,
+          areaDetail: action.payload.roomArea.areaDetail,
+        },
+      };
+    case ROOMSCHEDULE:
+      return {
+        ...state,
+        startAppointmentDate: action.payload.startAppointmentDate,
+        endAppointmentDate: action.payload.endAppointmentDate,
+        roomImages: action.payload.roomImages, // 수정 필요
+      };
+    default:
+      return state;
+  }
+};
+
 // rootReducer로 모든 reducer Combine
 const rootReducer = combineReducers({
   userRequestReducer,
   saveNicknameReducer,
+  myInfoReducer,
+  createRoomReducer,
 });
 
 const makeStore = () => createStore(rootReducer, composeWithDevTools());

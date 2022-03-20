@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import UserInfoNavBar from "../../../components/userInfoNavBar";
 
@@ -10,13 +10,14 @@ const Interest = () => {
     "축구",
     "야구",
     "농구",
-    "풋살",
-    "배구",
-    "배드민턴",
-    "테니스",
+    "당구",
+    "탁구",
+    "헬스",
+    "자전거",
     "골프",
-    "수영",
-    "핸드볼",
+    "등산",
+    "런닝",
+    "배드민턴",
     "기타종목",
   ];
 
@@ -24,6 +25,14 @@ const Interest = () => {
     if (e.target.classList[2] === "clicked") {
       e.target.classList.remove("clicked");
     } else {
+      if (
+        Object.entries(interests).filter((exer) => {
+          if (exer[1]) return true;
+        }).length >= 5
+      ) {
+        alert("최대 5개 까지만 선택할 수 있습니다.");
+        return;
+      }
       e.target.classList.add("clicked");
     }
 
@@ -33,23 +42,24 @@ const Interest = () => {
     }));
   };
 
-  const BtnClickedNext = () => {
-    // dispatch({
-    //   type: "INTERESTS",
-    //   payload: {
-    //     interests: interests,
-    //   },
-    // });
-  };
+  const BtnClickedNext = (e) => {
+    if (
+      Object.entries(interests).filter((exer) => {
+        if (exer[1]) return true;
+      }).length === 0
+    ) {
+      e.preventDefault();
+      alert("최소 1개의 종목을 선택하여야 합니다.");
+      return false;
+    }
 
-  useEffect(() => {
     dispatch({
       type: "INTERESTS",
       payload: {
         interests: interests,
       },
     });
-  });
+  };
 
   return (
     <>

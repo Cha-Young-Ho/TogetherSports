@@ -3,35 +3,34 @@ import { useState, useEffect } from "react";
 import { postUserRequest } from "../../../api/members";
 import { useSelector } from "react-redux";
 import UserInfoNavBar from "../../../components/userInfoNavBar";
-import Tag from "../../../components/tag";
+import { FailResponse } from "../../../api/failResponse";
 
+let activeAreas = [];
 const ActiveArea = () => {
-  const userInfo = useSelector((state) => state);
+  const userInfo = useSelector((state) => state.userRequestReducer);
 
-  let activeAreas = [];
   const [tagAreas, setTagAreas] = useState([]);
 
   // 서버에 회원가입 요청
   const callUserRequest = () => {
     postUserRequest(
       activeAreas,
-      userInfo.userRequestReducer.gender,
-      userInfo.userRequestReducer.interests,
-      userInfo.userRequestReducer.mannerPoint,
-      userInfo.userRequestReducer.provider,
-      userInfo.userRequestReducer.userBirthDay,
-      userInfo.userRequestReducer.userBirthMonday,
-      userInfo.userRequestReducer.userBirthYear,
-      userInfo.userRequestReducer.userEmail,
-      userInfo.userRequestReducer.userName,
-      userInfo.userRequestReducer.userNickname,
-      userInfo.userRequestReducer.userProfileImage
+      userInfo.gender,
+      userInfo.interests,
+      userInfo.provider,
+      userInfo.userBirthDay,
+      userInfo.userBirthMonday,
+      userInfo.userBirthYear,
+      userInfo.userEmail,
+      userInfo.userName,
+      userInfo.userNickname,
+      userInfo.userProfileImage
     ).then((res) => {
       console.log(res.message);
       if (res.code === 5000) {
         alert("회원가입이 성공했습니다.");
       } else {
-        alert("알 수 없는 이유로 요청이 실패했습니다.");
+        FailResponse(res.code);
       }
     });
   };
@@ -100,9 +99,10 @@ const ActiveArea = () => {
       searchAddrFromCoords(geocoder, position, function (result, status) {
         if (status === kakao.maps.services.Status.OK) {
           const area = result[0].address_name;
-          setTagAreas(
-            tagAreas.filter((i) => {
-              return i !== area;
+
+          setTagAreas((prev) =>
+            prev.filter((el) => {
+              return el !== area;
             })
           );
 
@@ -115,7 +115,6 @@ const ActiveArea = () => {
             activeAreas.splice(index, 1);
           }
         }
-        //console.log(activeAreas);
       });
     });
   };
@@ -132,18 +131,18 @@ const ActiveArea = () => {
             //배열에 담긴 지역이 5개 이하라면
             if (activeAreas.length < 5) {
               activeAreas.push(area);
-
-              setTagAreas((prev) => [...prev, area]);
               //중복 지역 담기지 않게 하기
               activeAreas = activeAreas.filter((element, index) => {
                 return activeAreas.indexOf(element) === index;
               });
+
+              setTagAreas((prev) => [...prev, area]);
+
               getMarker(map, mouseEvent.latLng, geocoder); //클릭된 지역 마커표시
             } else {
               alert("최대 설정 가능한 개수를 초과하였습니다!");
             }
           }
-          //console.log(activeAreas);
         }
       );
     });
@@ -167,13 +166,17 @@ const ActiveArea = () => {
         </div>
         <div id="map"></div>
         <div className="tag-wrap">
-          {tagAreas.map((area, index) => {
-            return (
-              <div key={index} className="tag">
-                {area}
-              </div>
-            );
-          })}
+          {tagAreas
+            .filter((element, idx) => {
+              return tagAreas.indexOf(element) === idx;
+            })
+            .map((area, index) => {
+              return (
+                <div key={index} className="tag">
+                  {area}
+                </div>
+              );
+            })}
         </div>
 
         <Link href="/login">
@@ -199,28 +202,6 @@ const ActiveArea = () => {
           justify-content: center;
         }
 
-        h1 {
-          padding: 35px 0;
-          font-weight: bold;
-          font-size: 2.5rem;
-        }
-
-        .title {
-          width: 500px;
-          display: flex;
-          justify-content: space-around;
-          margin-bottom: 20px;
-        }
-
-        .title-circle-personalinfo,
-        .title-circle-interest,
-        .title-circle-activearea {
-          border-radius: 50px;
-          width: 90px;
-          height: 90px;
-          margin: 10px;
-        }
-
         p {
           display: flex;
           justify-content: center;
@@ -236,7 +217,7 @@ const ActiveArea = () => {
         }
 
         #map {
-          width: 600px;
+          width: 800px;
           height: 500px;
           margin: 30px 72.5px 20px 72.5px;
           padding: 11px 13px 12px 10px;
@@ -245,10 +226,10 @@ const ActiveArea = () => {
         }
 
         .tag-wrap {
-          width: 580px;
+          width: 800px;
           align-items: left;
           display: flex;
-          flex-direction: column;
+          flex-direction: row;
           align-items: center;
         }
 

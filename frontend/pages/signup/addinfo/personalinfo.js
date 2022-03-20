@@ -1,11 +1,9 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import jquery from "jquery";
 import $ from "jquery";
 import { useDispatch } from "react-redux";
-//import { getDuplicationCheck } from "../../../api/members";
+import { getDuplicationCheck } from "../../../api/members";
 import UserInfoNavBar from "../../../components/userInfoNavBar";
-import axios from "axios";
 
 const PersonalInfo = () => {
   const dispatch = useDispatch();
@@ -90,7 +88,9 @@ const PersonalInfo = () => {
     reader.readAsDataURL(fileBlob);
     return new Promise((resolve) => {
       reader.onload = () => {
-        setImagesrc(reader.result);
+        const src = reader.result;
+        const sliceIndex = src.indexOf(",");
+        setImagesrc(src.substr(sliceIndex + 1));
         resolve();
       };
     });
@@ -301,36 +301,6 @@ const PersonalInfo = () => {
           flex-direction: column;
           align-items: center;
           justify-content: center;
-        }
-
-        h1 {
-          padding: 35px 0;
-          font-weight: bold;
-          font-size: 2.5rem;
-        }
-
-        .title {
-          width: 500px;
-          display: flex;
-          justify-content: space-around;
-          margin-bottom: 20px;
-        }
-
-        .title-circle-personalinfo,
-        .title-circle-interest,
-        .title-circle-activearea {
-          border-radius: 50px;
-          width: 90px;
-          height: 90px;
-          margin: 10px;
-        }
-
-        p {
-          display: flex;
-          justify-content: center;
-          font-size: 1.5rem;
-          align-items: center;
-          margin: 5px 0;
         }
 
         .content-showbox {

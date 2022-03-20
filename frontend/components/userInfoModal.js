@@ -1,4 +1,55 @@
+import { useDispatch } from "react-redux";
+import { getMyInfo } from "../api/members";
+import { FailResponse } from "../api/failResponse";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+
 const UserInfoModal = ({ open, close }) => {
+  const dispatch = useDispatch();
+  const [imageSrc, setImageSrc] = useState();
+  const [nickname, setNickname] = useState();
+  const [mannerPoint, setMannerPoint] = useState();
+  const [interest, setInterest] = useState([]);
+
+  useEffect(() => {
+    if (open) {
+      // 내 회원 정보 요청
+      getMyInfo().then((res) => {
+        if (res.code === 5000) {
+          // 현재 정보 값 내부에 저장
+          setImageSrc(res.imageSource);
+          setNickname(res.userNickname);
+          setMannerPoint(res.mannerPoint);
+          setInterest(res.interest);
+
+          // redux에 저장
+          dispatch({
+            type: "SAVEMYINFO",
+            payload: {
+              userEmail: res.userEmail,
+              userName: res.userName,
+              userNickname: res.userNickname,
+              userBirthYear: res.userBirthYear,
+              userBirthMonday: res.userBirthMonday,
+              userBirthDay: res.userBirthDay,
+              gender: res.gender,
+              userProfileImage: {
+                userProfileRealName: res.userProfileRealName,
+                userProfileExtension: res.userProfileExtension,
+                imageSource: res.imageSource,
+              },
+              activeAreas: res.activeAreas.map((el) => el),
+              interests: res.interests.map((el) => el),
+              mannerPoint: res.mannerPoint,
+            },
+          });
+        } else {
+          FailResponse(res.code);
+        }
+      });
+    }
+  }, [open]);
+
   return (
     <>
       <div className={open ? "openModal modal" : "modal"}>
@@ -11,11 +62,23 @@ const UserInfoModal = ({ open, close }) => {
               </button>
             </header>
             <div className="profile-body">
-              <div className="pf-image"></div>
-              <div className="pf-nickName">임시 닉네임</div>
-              <div className="pf-mannerPoint">10점</div>
-              <div className="pf-interest">임시 종목들</div>
-              <button className="next-button">회원 정보 수정하기</button>
+              <img src={imageSrc} className="pf-image"></img>
+              <div className="pf-nickName">{nickname}</div>
+              <div className="pf-mannerPoint">{mannerPoint}</div>
+              <div className="pf-interest">
+                {interest.map((exercise, index) => {
+                  return (
+                    <div key={index} className="pf-exercise">
+                      {exercise}
+                    </div>
+                  );
+                })}
+              </div>
+              <Link href="/usermodification">
+                <button className="next-button" onClick={close}>
+                  회원 정보 수정하기
+                </button>
+              </Link>
             </div>
           </section>
         ) : null}
@@ -39,7 +102,7 @@ const UserInfoModal = ({ open, close }) => {
         }
 
         section {
-          width: 400px;
+          //width: 400px;
           height: 540px;
           width: 90%;
           max-width: 450px;
@@ -59,6 +122,7 @@ const UserInfoModal = ({ open, close }) => {
           padding: 16px 16px 16px 16px;
           background-color: #f1f1f1;
           font-weight: bold;
+          text-align: center;
         }
 
         .exit-button {

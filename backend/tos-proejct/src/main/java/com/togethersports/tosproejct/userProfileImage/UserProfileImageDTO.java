@@ -9,10 +9,17 @@ import lombok.*;
 @Data
 public class UserProfileImageDTO {
 
-    private int userProfileSequenceId;
-    private int userSequenceId;
     private String imageSource;
     private String userProfileRealName;
     private String userProfileSaveName;
     private String userProfileExtension;
+    private String userProfileFilePath;
+
+    public void updateSaveName(String userProfileSaveName){
+        this.userProfileSaveName = userProfileSaveName;
+    }
+
+    public void updateUserProfileFilePath(String userProfileFilePath){
+        this.userProfileFilePath = userProfileFilePath;
+    }
 }
