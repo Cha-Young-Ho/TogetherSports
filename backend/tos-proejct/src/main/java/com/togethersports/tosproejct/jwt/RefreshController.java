@@ -34,8 +34,8 @@ public class RefreshController {
         }
 
         log.info("RefreshController - Refresh Token 이 유효.");
-        DefaultResponse<String> refreshApiResponseMessage = new DefaultResponse<>(Code.GOOD_REQUEST);
-        refreshApiResponseMessage.setT(map.get("accessToken"));
+        DefaultResponse<String> refreshApiResponseMessage = new DefaultResponse<>(Code.GOOD_REQUEST, map.get("accessToken"));
+
         return new ResponseEntity(refreshApiResponseMessage, HttpStatus.OK);
 
     }

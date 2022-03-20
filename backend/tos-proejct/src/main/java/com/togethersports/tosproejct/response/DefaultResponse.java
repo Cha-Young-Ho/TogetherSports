@@ -20,8 +20,11 @@ public class DefaultResponse<T> {
         this.message = code.getMessage();
     }
 
-    public void setT(T additionalMessage){
+    public DefaultResponse(Code code, T additionalMessage){
+        this.code = code.getCode();
+        this.message = code.getMessage();
         this.additionalMessage = additionalMessage;
     }
+
 
 }

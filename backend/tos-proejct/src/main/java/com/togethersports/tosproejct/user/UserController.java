@@ -49,8 +49,8 @@ public class UserController {
         Token tokenDto = jwtTokenProvider.createAccessToken(member.getUsername(), member.getRoles());
 
         jwtService.login(tokenDto, userAgent);
-        DefaultResponse<Token> tokenResponse = new DefaultResponse<>(Code.GOOD_REQUEST);
-        tokenResponse.setT(tokenDto);
+        DefaultResponse<Token> tokenResponse = new DefaultResponse<>(Code.GOOD_REQUEST, tokenDto);
+
         return new ResponseEntity(tokenResponse, HttpStatus.OK);
     }
 

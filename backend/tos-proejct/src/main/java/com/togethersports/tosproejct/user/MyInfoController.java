@@ -24,8 +24,8 @@ public class MyInfoController {
     public ResponseEntity<DefaultResponse> getMyInformation(@RequestHeader(value="Authorization") String accessToken) {
         log.info("받아온 토큰 = {}", accessToken);
         try {
-            DefaultResponse<User> myInfoResponse = new DefaultResponse(Code.GOOD_REQUEST);
-            myInfoResponse.setT(userService.getMyInfo(accessToken).get());
+            DefaultResponse<User> myInfoResponse = new DefaultResponse(Code.GOOD_REQUEST, userService.getMyInfo(accessToken).get());
+
             return new ResponseEntity(myInfoResponse, HttpStatus.OK);
         }
         catch (SignatureException e){

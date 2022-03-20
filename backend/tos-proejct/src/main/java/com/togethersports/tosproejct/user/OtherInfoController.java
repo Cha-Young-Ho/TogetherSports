@@ -20,9 +20,9 @@ public class OtherInfoController {
 
 
         DefaultResponse<OtherUserDTO> otherInfoResponse =
-                new DefaultResponse<>(Code.GOOD_REQUEST);
+                new DefaultResponse<>(Code.GOOD_REQUEST,userService.getOtherInformationByUserNickname(userNickname).get());
 
-        otherInfoResponse.setT(userService.getOtherInformationByUserNickname(userNickname).get());
+
 
         return new ResponseEntity<>(otherInfoResponse, HttpStatus.OK);
 
