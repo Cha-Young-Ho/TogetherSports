@@ -130,17 +130,26 @@ const ActiveArea = () => {
           if (status === kakao.maps.services.Status.OK) {
             const area = result[0].address_name;
 
+            const checkDuplication = (element) => {
+              if (element === area) return true;
+            };
+
             //배열에 담긴 지역이 5개 이하라면
             if (activeAreas.length < 5) {
+              if (activeAreas.some(checkDuplication) === false) {
+                getMarker(map, mouseEvent.latLng, geocoder); //클릭된 지역 마커표시
+              } else {
+                alert("해당 지역은 이미 선택되었습니다.");
+              }
+
               activeAreas.push(area);
+
               //중복 지역 담기지 않게 하기
               activeAreas = activeAreas.filter((element, index) => {
                 return activeAreas.indexOf(element) === index;
               });
 
               setTagAreas((prev) => [...prev, area]);
-
-              getMarker(map, mouseEvent.latLng, geocoder); //클릭된 지역 마커표시
             } else {
               alert("최대 설정 가능한 개수를 초과하였습니다!");
             }
