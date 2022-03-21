@@ -1,4 +1,4 @@
-package com.togethersports.tosproejct.jwt;
+package com.togethersports.tosproejct.security.jwt;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

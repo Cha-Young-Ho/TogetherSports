@@ -1,4 +1,4 @@
-package com.togethersports.tosproejct.jwt;
+package com.togethersports.tosproejct.security.jwt;
 
 import lombok.Data;
 import lombok.ToString;

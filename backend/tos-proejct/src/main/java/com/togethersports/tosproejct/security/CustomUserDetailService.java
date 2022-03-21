@@ -1,5 +1,6 @@
-package com.togethersports.tosproejct.user;
+package com.togethersports.tosproejct.security;
 
+import com.togethersports.tosproejct.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

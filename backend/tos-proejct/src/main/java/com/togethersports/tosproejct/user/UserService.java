@@ -1,13 +1,11 @@
 package com.togethersports.tosproejct.user;
 
-import com.togethersports.tosproejct.code.Code;
 import com.togethersports.tosproejct.exception.CustomDefaultException;
 import com.togethersports.tosproejct.file.FileHandler;
-import com.togethersports.tosproejct.jwt.JwtService;
-import com.togethersports.tosproejct.jwt.JwtTokenProvider;
-import com.togethersports.tosproejct.userProfileImage.UserProfileImage;
-import com.togethersports.tosproejct.userProfileImage.UserProfileImageDTO;
-import com.togethersports.tosproejct.userProfileImage.UserProfileImageRepository;
+import com.togethersports.tosproejct.security.jwt.JwtService;
+import com.togethersports.tosproejct.security.jwt.JwtTokenProvider;
+import com.togethersports.tosproejct.user.dto.OtherUserDTO;
+import com.togethersports.tosproejct.user.dto.UserDTO;
 import com.togethersports.tosproejct.userProfileImage.UserProfileImageService;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
@@ -16,14 +14,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import javax.swing.filechooser.FileSystemView;
-import javax.transaction.Transactional;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.*;
 
 @Slf4j
@@ -155,5 +145,13 @@ public class UserService {
     }
 
 
+    /**
+     *
+     * @param id
+     * @return
+     */
+    public User findById(int id) {
+        return userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+    }
 }
 

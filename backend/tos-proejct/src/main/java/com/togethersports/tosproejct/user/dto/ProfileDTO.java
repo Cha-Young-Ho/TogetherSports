@@ -1,4 +1,4 @@
-package com.togethersports.tosproejct.user;
+package com.togethersports.tosproejct.user.dto;
 
 import lombok.Builder;
 import lombok.Data;

@@ -5,6 +5,7 @@ import com.togethersports.tosproejct.enums.Gender;
 import com.togethersports.tosproejct.enums.Provider;
 import com.togethersports.tosproejct.etc.ActiveAreas;
 import com.togethersports.tosproejct.etc.Interests;
+import com.togethersports.tosproejct.user.dto.UserDTO;
 import com.togethersports.tosproejct.userProfileImage.UserProfileImage;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -18,8 +18,8 @@ import javax.persistence.*;
 public class ActiveAreas {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long areaSequenceId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userSequenceId")

@@ -1,9 +1,8 @@
-package com.togethersports.tosproejct.room.controller;
+package com.togethersports.tosproejct.room;
 
 import com.togethersports.tosproejct.code.Code;
 import com.togethersports.tosproejct.response.DefaultResponse;
-import com.togethersports.tosproejct.room.roomDTO.RoomCreateDTO;
-import com.togethersports.tosproejct.room.service.RoomCRUDService;
+import com.togethersports.tosproejct.room.dto.RoomCreateDTO;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -14,9 +13,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @AllArgsConstructor
 @RequestMapping
-public class RoomCRUDController {
+public class RoomController {
 
-    private RoomCRUDService roomCRUDService;
+    private RoomService roomCRUDService;
 
     @PostMapping("/room")
     public ResponseEntity<DefaultResponse> createRoom(@RequestBody RoomCreateDTO roomCreateDTO, @RequestHeader("Authorization") String accessToken){

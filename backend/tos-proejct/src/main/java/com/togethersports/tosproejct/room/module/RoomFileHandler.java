@@ -1,9 +1,8 @@
 package com.togethersports.tosproejct.room.module;
 
 import com.togethersports.tosproejct.room.fields.RoomImage;
-import com.togethersports.tosproejct.room.roomDTO.RoomImageDTO;
+import com.togethersports.tosproejct.room.dto.RoomImageDTO;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

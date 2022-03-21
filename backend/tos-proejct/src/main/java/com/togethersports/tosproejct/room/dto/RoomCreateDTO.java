@@ -1,9 +1,7 @@
-package com.togethersports.tosproejct.room.roomDTO;
+package com.togethersports.tosproejct.room.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.togethersports.tosproejct.room.fields.RoomArea;
-import com.togethersports.tosproejct.room.fields.RoomImage;
-import com.togethersports.tosproejct.room.fields.RoomTag;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

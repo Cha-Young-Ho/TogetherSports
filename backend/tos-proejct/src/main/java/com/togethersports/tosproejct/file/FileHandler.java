@@ -1,17 +1,12 @@
 package com.togethersports.tosproejct.file;
 
-import com.togethersports.tosproejct.exception.Base64DecodeException;
-import com.togethersports.tosproejct.user.UserDTO;
-import com.togethersports.tosproejct.userProfileImage.UserProfileImage;
+import com.togethersports.tosproejct.user.dto.UserDTO;
 import com.togethersports.tosproejct.userProfileImage.UserProfileImageRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.util.Base64Util;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Base64Utils;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,9 +14,6 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor

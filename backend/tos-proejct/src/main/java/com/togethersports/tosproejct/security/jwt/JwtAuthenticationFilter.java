@@ -1,4 +1,4 @@
-package com.togethersports.tosproejct.jwt;
+package com.togethersports.tosproejct.security.jwt;
 
 import com.togethersports.tosproejct.code.Code;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -17,7 +17,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 // 스프링 시큐리티에서 UsernamePasswordAuthenticationFilter가 존재한다.
 // /login 요청해서 username, password 전송하면 (post)
