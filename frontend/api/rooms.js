@@ -8,16 +8,19 @@ import axios from "axios";
 
 // 방 설명 페이지 조회
 const getRoomInfo = async (roomSequenceId) => {
-  const promise = axios.get("http://localhost:8080/room/detail", {
-    headers: {
-      "Content-type": "application/json; charset=UTF-8",
-      Accept: "*/*",
-      Authorization: localStorage.getItem("accessToken"),
-    },
-    params: {
-      roomSequenceId: roomSequenceId,
-    },
-  });
+  const promise = axios.get(
+    `http://localhost:8080/api/room/${roomSequenceId}`,
+    {
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        Accept: "*/*",
+        Authorization: localStorage.getItem("accessToken"),
+      },
+      params: {
+        roomSequenceId: roomSequenceId,
+      },
+    }
+  );
   const dataPromise = promise.then((res) => res.data);
 
   return dataPromise;
@@ -33,7 +36,7 @@ const getRoomList = async (
   tag,
   appointmentDate
 ) => {
-  const promise = axios.get("http://localhost:8080/rooms", {
+  const promise = axios.get("http://localhost:8080/api/room", {
     headers: {
       "Content-type": "application/json; charset=UTF-8",
       Accept: "*/*",
@@ -69,7 +72,7 @@ const postCreateRoom = async (
   roomImages
 ) => {
   const promise = axios.post(
-    "http://localhost:8080/room",
+    "http://localhost:8080/api/room",
     {
       roomTitle: roomTitle,
       roomContent: roomContent,
@@ -104,7 +107,7 @@ const postUpdateRoom = async (
   roomImages
 ) => {
   const promise = axios.put(
-    "http://localhost:8080/room",
+    "http://localhost:8080/api/room",
     {
       roomTitle: roomTitle,
       roomContent: roomContent,
@@ -127,14 +130,20 @@ const postUpdateRoom = async (
 // DELETE
 
 // 방 삭제
-const deleteRoom = async () => {
-  const promise = axios.delete("http://localhost:8080/room", {
-    headers: {
-      "Content-type": "application/json; charset=UTF-8",
-      Accept: "*/*",
-      Authorization: localStorage.getItem("accessToken"),
-    },
-  });
+const deleteRoom = async (roomSequenceId) => {
+  const promise = axios.delete(
+    `http://localhost:8080/api/room/${roomSequenceId}`,
+    {
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        Accept: "*/*",
+        Authorization: localStorage.getItem("accessToken"),
+      },
+      // params: {
+      //   roomSequenceId: roomSequenceId,
+      // },
+    }
+  );
   const dataPromise = promise.then((res) => res.data);
 
   return dataPromise;

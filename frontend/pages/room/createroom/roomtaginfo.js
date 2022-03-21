@@ -34,11 +34,11 @@ const RoomTagInfo = () => {
         roomInfo.endAppointmentDate,
         roomInfo.roomImages
       ).then((res) => {
-        console.log(res.message);
-        if (res.code === 5000) {
+        console.log(res.status.message);
+        if (res.status.code === 5000) {
           alert("방을 성공적으로 생성하였습니다.");
         } else {
-          FailResponse(res.code);
+          FailResponse(res.status.code);
         }
       });
     }

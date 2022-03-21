@@ -26,11 +26,11 @@ const ActiveArea = () => {
       userInfo.userNickname,
       userInfo.userProfileImage
     ).then((res) => {
-      console.log(res.message);
-      if (res.code === 5000) {
+      console.log(res.status.message);
+      if (res.status.code === 5000) {
         alert("회원가입이 성공했습니다.");
       } else {
-        FailResponse(res.code);
+        FailResponse(res.status.code);
       }
     });
   };

@@ -19,8 +19,8 @@ const Usercheck = () => {
         session.user.name,
         session.user.provider
       ).then((res) => {
-        console.log(res.message);
-        if (res.code === 5000) {
+        console.log(res.status.message);
+        if (res.status.code === 5000) {
           dispatch({
             type: "AUTHDATA",
             payload: {
@@ -31,7 +31,7 @@ const Usercheck = () => {
           });
           router.replace("/signup/addinfo/personalinfo");
         } else {
-          FailResponse(res.code);
+          FailResponse(res.status.code);
         }
       });
     }

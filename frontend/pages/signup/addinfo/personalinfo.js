@@ -36,8 +36,8 @@ const PersonalInfo = () => {
       alert("닉네임은 최소 2글자 이상 입력해주세요.");
     } else {
       getDuplicationCheck(nickname).then((res) => {
-        console.log(res.message);
-        if (res.code === 5000) {
+        console.log(res.status.message);
+        if (res.status.code === 5000) {
           setIsNicknameCheck(true);
           alert("사용 가능한 닉네임입니다.");
         } else {

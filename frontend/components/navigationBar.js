@@ -30,14 +30,14 @@ const NavigationBar = () => {
 
   const ClickLogout = () => {
     deleteLogout().then((res) => {
-      console.log(res.message);
-      if (res.code === 5000) {
+      console.log(res.status.message);
+      if (res.status.code === 5000) {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         setLoginData((loginData = false));
         console.log("로그아웃 완료");
       } else {
-        FailResponse(res.code);
+        FailResponse(res.status.code);
       }
     });
     console.log("로그아웃 시도");
