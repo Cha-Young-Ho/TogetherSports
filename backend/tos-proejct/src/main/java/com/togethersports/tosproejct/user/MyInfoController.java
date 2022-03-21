@@ -2,9 +2,7 @@ package com.togethersports.tosproejct.user;
 
 import com.togethersports.tosproejct.code.Code;
 import com.togethersports.tosproejct.exception.CustomSignatureException;
-import com.togethersports.tosproejct.jwt.JwtTokenProvider;
 import com.togethersports.tosproejct.response.DefaultResponse;
-import com.togethersports.tosproejct.response.MyInfoResponse;
 import io.jsonwebtoken.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +21,12 @@ public class MyInfoController {
     private UserService userService;
 
     @GetMapping("/user")
-    public ResponseEntity<MyInfoResponse> getMyInformation(@RequestHeader(value="Authorization") String accessToken) {
+    public ResponseEntity<DefaultResponse> getMyInformation(@RequestHeader(value="Authorization") String accessToken) {
         log.info("받아온 토큰 = {}", accessToken);
         try {
-            MyInfoResponse myInfoResponse = new MyInfoResponse(Code.GOOD_REQUEST, userService.getMyInfo(accessToken));
+            DefaultResponse<User> myInfoResponse = new DefaultResponse(Code.GOOD_REQUEST, userService.getMyInfo(accessToken).get());
 
-            return new ResponseEntity<>(myInfoResponse, HttpStatus.OK);
+            return new ResponseEntity(myInfoResponse, HttpStatus.OK);
         }
         catch (SignatureException e){
             throw new CustomSignatureException();
