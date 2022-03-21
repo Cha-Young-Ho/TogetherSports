@@ -1,21 +1,27 @@
 package com.togethersports.tosproejct.user;
 
 import com.togethersports.tosproejct.code.Code;
-import com.togethersports.tosproejct.jwt.JwtService;
-import com.togethersports.tosproejct.jwt.JwtTokenProvider;
-import com.togethersports.tosproejct.jwt.Token;
+import com.togethersports.tosproejct.exception.CustomSignatureException;
+import com.togethersports.tosproejct.security.jwt.JwtService;
+import com.togethersports.tosproejct.security.jwt.JwtTokenProvider;
+import com.togethersports.tosproejct.security.jwt.Token;
 import com.togethersports.tosproejct.response.DefaultResponse;
+import com.togethersports.tosproejct.user.dto.UserDTO;
+import com.togethersports.tosproejct.user.dto.UserOfMyInfo;
+import io.jsonwebtoken.SignatureException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @Slf4j
 @RestController
 @AllArgsConstructor
-@RequestMapping
 public class UserController {
 
     private final UserService userService;
@@ -35,31 +41,56 @@ public class UserController {
         DefaultResponse response = new DefaultResponse(Code.GOOD_REQUEST);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
-
-
     }
 
-    // 로그인
-    @GetMapping("/login")
-    public ResponseEntity<DefaultResponse> login(@RequestParam String userEmail, @RequestHeader("User-Agent") String userAgent) {
-        log.info("받은 userEmail = {}", userEmail);
-        User member = userRepository.findByUserEmail(userEmail)
-                .orElseThrow(() -> new UsernameNotFoundException("가입되지 않은 E-MAIL 입니다."));
+    // 내 정보 조회
+    @GetMapping("/user")
+    public ResponseEntity<DefaultResponse> getMyInformation(@AuthenticationPrincipal User user) {
+        // 받아온 user 객체 -> DTO 객체로 변환
+        // UserOfMyInfo myInfo = UserOfMyInfo.from(user);
+        // 응답
+        // return ResponseEntity.ok(myInfo);
 
-        Token tokenDto = jwtTokenProvider.createAccessToken(member.getUsername(), member.getRoles());
+//        log.info("받아온 토큰 = {}", accessToken);
+//        try {
+//            DefaultResponse<User> myInfoResponse = new DefaultResponse(Code.GOOD_REQUEST, userService.getMyInfo(accessToken).get());
+//
+//            return new ResponseEntity(myInfoResponse, HttpStatus.OK);
+//        }
+//        catch (SignatureException e){
+//            throw new CustomSignatureException();
+//        }
+        return null;
+    }
 
-        jwtService.login(tokenDto, userAgent);
-        DefaultResponse<Token> tokenResponse = new DefaultResponse<>(Code.GOOD_REQUEST, tokenDto);
+    @GetMapping("/user/{id}")
+    public ResponseEntity<DefaultResponse> getOtherInformation(@PathVariable Integer id){
+        User findUser = userService.findById(id);
+        UserOfMyInfo userOfMyInfo = UserOfMyInfo.from(findUser);
+//        DefaultResponse<OtherUserDTO> otherInfoResponse =
+//                new DefaultResponse<>(Code.GOOD_REQUEST,userService.getOtherInformationByUserNickname(userNickname).get());
 
-        return new ResponseEntity(tokenResponse, HttpStatus.OK);
+//        return new ResponseEntity<>(otherInfoResponse, HttpStatus.OK);
+        return null;
+    }
+
+    // 회원 정보 수정
+    @PutMapping("/user")
+    public ResponseEntity<DefaultResponse> modifyMyInformation(@AuthenticationPrincipal User user,
+                                                               @RequestHeader(value = "Authorization") String accessToken,
+                                                               @RequestBody UserDTO userDTO) {
+
+        Optional<User> user = userService.updateUser(accessToken, userDTO);
+
+        DefaultResponse defaultResponse = new DefaultResponse(Code.GOOD_REQUEST);
+        return new ResponseEntity<>(defaultResponse, HttpStatus.OK);
     }
 
     // 회원 유무 확인 (이메일로 회원 조회)
     @GetMapping("/user/check")
-    public ResponseEntity userCheck(String userEmail, String userName, String provider) {
+    public ResponseEntity checkDuplicationEmail(String userEmail) {
 
-
-        if(userService.sinUpCheck(userEmail)){
+        if (userService.sinUpCheck(userEmail)) {
 
             DefaultResponse userResponse = new DefaultResponse(Code.GOOD_REQUEST);
             return new ResponseEntity<>(userResponse, HttpStatus.OK);
@@ -73,9 +104,9 @@ public class UserController {
 
     // 닉네임 중복 확인 (닉네임으로 회원 조회)
     @GetMapping("/duplication")
-    public ResponseEntity findByUserNickname(String userNickname) {
+    public ResponseEntity checkDuplicationNickname(String userNickname) {
 
-        if(userService.duplicationCheck(userNickname)){
+        if (userService.duplicationCheck(userNickname)) {
             DefaultResponse response = new DefaultResponse(Code.GOOD_REQUEST);
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
@@ -85,23 +116,22 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/logout")
-    public ResponseEntity logout(@RequestHeader("Authorization") String accessToken, @RequestHeader("User-Agent") String userAgent){
-        log.info("logout 작동");
-        if(accessToken == null){
-            DefaultResponse response = new DefaultResponse(Code.UNKNOWN_ERROR);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }
-
-        jwtService.logout(accessToken, userAgent);
-
-        DefaultResponse response = new DefaultResponse(Code.GOOD_REQUEST);
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
-
-
-
-    }
+//    @PostMapping("/logout")
+//    public ResponseEntity logout(@RequestHeader("Authorization") String accessToken, @RequestHeader("User-Agent") String userAgent) {
+//        log.info("logout 작동");
+//        if (accessToken == null) {
+//            DefaultResponse response = new DefaultResponse(Code.UNKNOWN_ERROR);
+//            return new ResponseEntity<>(response, HttpStatus.OK);
+//        }
+//
+//        jwtService.logout(accessToken, userAgent);
+//
+//        DefaultResponse response = new DefaultResponse(Code.GOOD_REQUEST);
+//
+//        return new ResponseEntity<>(response, HttpStatus.OK);
+//
+//
+//    }
 
 }
 

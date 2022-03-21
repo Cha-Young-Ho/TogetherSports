@@ -1,4 +1,4 @@
-package com.togethersports.tosproejct.room.roomDTO;
+package com.togethersports.tosproejct.room.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

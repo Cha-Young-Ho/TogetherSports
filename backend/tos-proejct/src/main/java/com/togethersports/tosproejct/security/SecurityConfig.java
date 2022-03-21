@@ -1,10 +1,10 @@
-package com.togethersports.tosproejct.config;
+package com.togethersports.tosproejct.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.togethersports.tosproejct.exception.CustomAuthenticationEntryPoint;
-import com.togethersports.tosproejct.jwt.JwtAuthenticationFilter;
-import com.togethersports.tosproejct.jwt.JwtExceptionFilter;
-import com.togethersports.tosproejct.jwt.JwtTokenProvider;
+import com.togethersports.tosproejct.security.jwt.JwtAuthenticationFilter;
+import com.togethersports.tosproejct.security.jwt.JwtExceptionFilter;
+import com.togethersports.tosproejct.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;

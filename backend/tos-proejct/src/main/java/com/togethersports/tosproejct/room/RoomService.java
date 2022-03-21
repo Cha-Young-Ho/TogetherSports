@@ -1,7 +1,6 @@
-package com.togethersports.tosproejct.room.service;
+package com.togethersports.tosproejct.room;
 
-import com.togethersports.tosproejct.jwt.JwtTokenProvider;
-import com.togethersports.tosproejct.room.Room;
+import com.togethersports.tosproejct.security.jwt.JwtTokenProvider;
 import com.togethersports.tosproejct.room.fields.RoomImage;
 import com.togethersports.tosproejct.room.fields.RoomTag;
 import com.togethersports.tosproejct.room.module.RoomFileHandler;
@@ -9,8 +8,8 @@ import com.togethersports.tosproejct.room.repository.RoomAreaRepository;
 import com.togethersports.tosproejct.room.repository.RoomImageRepository;
 import com.togethersports.tosproejct.room.repository.RoomRepository;
 import com.togethersports.tosproejct.room.repository.RoomTagRepository;
-import com.togethersports.tosproejct.room.roomDTO.RoomCreateDTO;
-import com.togethersports.tosproejct.room.roomDTO.RoomImageDTO;
+import com.togethersports.tosproejct.room.dto.RoomCreateDTO;
+import com.togethersports.tosproejct.room.dto.RoomImageDTO;
 import com.togethersports.tosproejct.user.User;
 import com.togethersports.tosproejct.user.UserRepository;
 import lombok.AllArgsConstructor;
@@ -26,7 +25,7 @@ import java.util.List;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Service
-public class RoomCRUDService {
+public class RoomService {
 
     @Autowired
     private RoomRepository roomRepository;

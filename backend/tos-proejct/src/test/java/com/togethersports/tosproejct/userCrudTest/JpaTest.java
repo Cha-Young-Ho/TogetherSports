@@ -1,7 +1,7 @@
 package com.togethersports.tosproejct.userCrudTest;
 
 
-import com.togethersports.tosproejct.enums.Admin;
+import com.togethersports.tosproejct.security.Admin;
 import com.togethersports.tosproejct.enums.Gender;
 import com.togethersports.tosproejct.enums.Provider;
 import com.togethersports.tosproejct.user.*;
@@ -16,8 +16,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.test.annotation.Commit;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 /*

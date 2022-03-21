@@ -1,4 +1,4 @@
-package com.togethersports.tosproejct.jwt;
+package com.togethersports.tosproejct.security.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.togethersports.tosproejct.code.Code;

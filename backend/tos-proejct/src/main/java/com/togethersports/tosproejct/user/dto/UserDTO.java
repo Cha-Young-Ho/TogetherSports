@@ -1,7 +1,6 @@
-package com.togethersports.tosproejct.user;
+package com.togethersports.tosproejct.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.togethersports.tosproejct.enums.Admin;
 import com.togethersports.tosproejct.enums.Gender;
 import com.togethersports.tosproejct.enums.Provider;
 import com.togethersports.tosproejct.userProfileImage.UserProfileImageDTO;
@@ -9,7 +8,6 @@ import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data // @Getter + Constructor로 바꿔야함
