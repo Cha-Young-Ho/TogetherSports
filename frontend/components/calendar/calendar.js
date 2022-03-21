@@ -1,12 +1,14 @@
 import moment from "moment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import WeekWrapper from "./weekWrapper";
 
-const Calendar = () => {
-  //const nowDate = moment().format().substring(0, 10);
-
+const Calendar = (props) => {
   // 선택된 날
-  const [curSelectedDate, setCurSelectedDate] = useState();
+  const [curSelectedDate, setCurSelectedDate] = useState("");
+
+  useEffect(() => {
+    props.setDateFunction(curSelectedDate);
+  }, [curSelectedDate]);
 
   //이번 년도, 이번 달
   const [curYear, setCurYear] = useState(moment().year());
