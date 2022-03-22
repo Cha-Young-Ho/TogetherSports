@@ -14,6 +14,10 @@ const RoomFilter = () => {
           </div>
           <div className="last-categories">
             <p>인원</p>
+            <div>
+              <button>초기화</button>
+              <button>적용</button>
+            </div>
           </div>
         </div>
       </div>
