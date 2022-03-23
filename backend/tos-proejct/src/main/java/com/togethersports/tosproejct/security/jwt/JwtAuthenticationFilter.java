@@ -6,7 +6,6 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.json.simple.parser.ParseException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
@@ -89,8 +88,6 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
             //형식, 길이 에러
             request.setAttribute("exception", Code.WRONG_TYPE_TOKEN.getCode());
             chain.doFilter(request, response);
-        } catch (ParseException e) {
-            e.printStackTrace();
         }
         chain.doFilter(request, response);
     }
