@@ -16,6 +16,7 @@ const UserModification = () => {
   const [birthYear, setBirthYear] = useState(userInfo.userBirthYear);
   const [birthMonth, setBirthMonth] = useState(userInfo.userBirthMonth);
   const [birthDay, setBirthDay] = useState(userInfo.userBirthDay);
+  const userBirth = `${birthYear}-${birthMonth}-${birthDay}`;
 
   //성별
   const [gender, setGender] = useState(userInfo.gender);
@@ -344,9 +345,7 @@ const UserModification = () => {
       userInfo.userEmail,
       userInfo.userName,
       nickname,
-      birthYear,
-      birthMonth,
-      birthDay,
+      userBirth,
       activeAreas,
       gender,
       {

@@ -29,9 +29,7 @@ const UserInfoModal = ({ open, close }) => {
               userEmail: res.userEmail,
               userName: res.userName,
               userNickname: res.userNickname,
-              userBirthYear: res.userBirthYear,
-              userBirthMonday: res.userBirthMonday,
-              userBirthDay: res.userBirthDay,
+              userBirth: res.userBirth,
               gender: res.gender,
               userProfileImage: {
                 userProfileRealName: res.userProfileRealName,

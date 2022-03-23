@@ -16,6 +16,7 @@ const PersonalInfo = () => {
   const [birthYear, setBirthYear] = useState("YYYY");
   const [birthMonth, setBirthMonth] = useState("MM");
   const [birthDay, setBirthDay] = useState("DD");
+  const userBirth = `${birthYear}-${birthMonth}-${birthDay}`;
 
   //성별
   const [gender, setGender] = useState("male");
@@ -157,9 +158,7 @@ const PersonalInfo = () => {
       type: "PERSONALINFO",
       payload: {
         userNickname: nickname,
-        userBirthYear: birthYear,
-        userBirthMonday: birthMonth,
-        userBirthDay: birthDay,
+        userBirth: userBirth,
         gender: gender,
         userProfileRealName: fileName,
         userProfileExtension: extension,
@@ -169,6 +168,11 @@ const PersonalInfo = () => {
   };
 
   useEffect(getBirthDay, []);
+
+  // test
+  useEffect(() => {
+    console.log(userBirth);
+  });
 
   return (
     <>
