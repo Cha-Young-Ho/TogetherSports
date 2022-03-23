@@ -7,9 +7,7 @@ const signupInitialState = {
   userEmail: "",
   userName: "",
   userNickname: "",
-  userBirthYear: "",
-  userBirthMonday: "",
-  userBirthDay: "",
+  userBirth: "",
   gender: "",
   userProfileImage: {},
   provider: "",
@@ -78,9 +76,7 @@ const userRequestReducer = (state = signupInitialState, action) => {
       return {
         ...state,
         userNickname: action.payload.userNickname,
-        userBirthYear: action.payload.userBirthYear,
-        userBirthMonday: action.payload.userBirthMonday,
-        userBirthDay: action.payload.userBirthDay,
+        userBirth: action.payload.userBirth,
         gender: action.payload.gender,
         userProfileImage: {
           userProfileRealName: action.payload.userProfileRealName,
@@ -111,9 +107,7 @@ const myInfoReducer = (state = myInfoInitialState, action) => {
         userEmail: action.payload.userEmail,
         userName: action.payload.userName,
         userNickname: action.payload.userNickname,
-        userBirthYear: action.payload.userBirthYear,
-        userBirthMonday: action.payload.userBirthMonday,
-        userBirthDay: action.payload.userBirthDay,
+        userBirth: action.payload.userBirth,
         gender: action.payload.gender,
         userProfileImage: {
           userProfileRealName: action.payload.userProfileRealName,
