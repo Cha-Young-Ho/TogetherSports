@@ -1,19 +1,20 @@
 import SearchBar from "../../components/rooms.js/searchBar";
-import RoomFilter from "../../components/rooms.js/roomFilter";
+import RoomFilter from "../../components/rooms.js/filter";
 import SelectExercise from "../../components/rooms.js/selectExercise";
+import FilteredRooms from "../../components/rooms.js/filteredRooms";
 
-const RoomList = () => {
+const Roomlist = () => {
   return (
     <>
       <div className="root-wrapper">
         <SearchBar />
         <RoomFilter />
         <SelectExercise />
+        <FilteredRooms />
       </div>
       <style jsx>{`
         .root-wrapper {
           width: 100%;
-          height: 1500px;
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -23,4 +24,4 @@ const RoomList = () => {
   );
 };
 
-export default RoomList;
+export default Roomlist;

@@ -1,4 +1,4 @@
-const RoomFilter = () => {
+const Filter = () => {
   return (
     <>
       <div className="filter-wrapper">
@@ -13,10 +13,13 @@ const RoomFilter = () => {
             <p>시기</p>
           </div>
           <div className="last-categories">
-            <p>인원</p>
             <div>
-              <button>초기화</button>
-              <button>적용</button>
+              <p>인원</p>
+              <div className=""></div>
+            </div>
+            <div>
+              <button className="button-reset">초기화</button>
+              <button className="button-application">적용</button>
             </div>
           </div>
         </div>
@@ -61,9 +64,30 @@ const RoomFilter = () => {
           margin: 0 20px;
           font-weight: bold;
         }
+
+        .button-reset {
+          width: 120px;
+          height: 30px;
+          border-radius: 15px;
+          background-color: #7f7f7f;
+          border: none;
+          margin-right: 10px;
+          color: white;
+          cursor: pointer;
+        }
+
+        .button-application {
+          width: 120px;
+          height: 30px;
+          border-radius: 15px;
+          background-color: #6db152;
+          border: none;
+          color: white;
+          cursor: pointer;
+        }
       `}</style>
     </>
   );
 };
 
-export default RoomFilter;
+export default Filter;
