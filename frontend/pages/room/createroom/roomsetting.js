@@ -2,6 +2,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import RoomInfoNavBar from "../../../components/roomInfoNavBar";
+import { BrowserRouter } from "react-router-dom";
 
 const RoomSetting = () => {
   const dispatch = useDispatch();
@@ -19,6 +20,11 @@ const RoomSetting = () => {
     area: "정보 없음", //시구동
     areaDetail: "정보 없음", //상세 주소
   });
+
+  const testPage = () => {
+    window.location.href =
+      "https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=96223095074-gf26tnpoii6102hdraiqqmiff5ftpqlv.apps.googleusercontent.com&scope=profile%20email&state=yW3rRf8qfPXN_8vYXCxMuuXWQgRCHMJ7w5HPmkHWOC0%3D&redirect_uri=http://localhost:8080/login/oauth2/code/google";
+  };
 
   useEffect(() => {
     getMap();
@@ -215,6 +221,7 @@ const RoomSetting = () => {
                 onChange={(e) => setLimitPeopleCount(e.target.value)}
               />
             </div>
+            <button onClick={testPage}>test</button>
           </div>
 
           <div className="content-map">
