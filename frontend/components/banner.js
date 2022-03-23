@@ -109,8 +109,6 @@ const Banner = () => {
 
         .dropdown-in-searchBar {
           margin-left: 25px;
-          width: 66px;
-          height: 27px;
           font-size: 2rem;
           font-weight: bold;
           color: #00555f;
