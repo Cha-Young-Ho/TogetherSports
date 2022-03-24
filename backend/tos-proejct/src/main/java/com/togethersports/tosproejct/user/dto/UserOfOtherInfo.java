@@ -11,19 +11,10 @@ import java.util.Optional;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-//@RequiredArgsConstructor
-public class OtherUserDTO {
+public class UserOfOtherInfo {
 
     private String userNickname;
     private int mannerPoint;
     private Gender gender;
 
-    public Optional<OtherUserDTO> parsingUser(User user){
-
-        this.userNickname = user.getUserNickname();
-        this.gender = user.getGender();
-        this.mannerPoint = user.getMannerPoint();
-
-        return Optional.of(this);
-    }
 }
