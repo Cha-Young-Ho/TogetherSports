@@ -8,6 +8,7 @@ import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data // @Getter + Constructor로 바꿔야함
@@ -25,11 +26,7 @@ public class UserDTO {
     @NotBlank(message = "userNickname 필드 값이 존재하지 않습니다.")
     private String userNickname;
     @NotBlank(message = "userBirthYear 필드 값이 존재하지 않습니다.")
-    private String userBirthYear;
-    @NotBlank(message = "userBirthMonth 필드 값이 존재하지 않습니다.")
-    private String userBirthMonth;
-    @NotBlank(message = "userBirthDay 필드 값이 존재하지 않습니다.")
-    private String userBirthDay;
+    private LocalDateTime userBirth;
 
     private Gender gender;
     private Provider provider;

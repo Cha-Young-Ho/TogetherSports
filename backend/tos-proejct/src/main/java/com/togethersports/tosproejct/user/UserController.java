@@ -51,26 +51,23 @@ public class UserController {
         // 응답
         // return ResponseEntity.ok(myInfo);
 
-//        log.info("받아온 토큰 = {}", accessToken);
-//        try {
-//            DefaultResponse<User> myInfoResponse = new DefaultResponse(Code.GOOD_REQUEST, userService.getMyInfo(accessToken).get());
-//
-//            return new ResponseEntity(myInfoResponse, HttpStatus.OK);
-//        }
-//        catch (SignatureException e){
-//            throw new CustomSignatureException();
-//        }
+        //이 부분은 oauth2 끝나는대로 수정 해야함
+        try {
+            DefaultResponse<User> myInfoResponse = new DefaultResponse(Code.GOOD_REQUEST, userService.getMyInfo(accessToken).get());
+
+            return new ResponseEntity(myInfoResponse, HttpStatus.OK);
+        }
+        catch (SignatureException e){
+            throw new CustomSignatureException();
+        }
         return null;
     }
 
     @GetMapping("/user/{id}")
     public ResponseEntity<DefaultResponse> getOtherInformation(@PathVariable Integer id){
         User findUser = userService.findById(id);
-        UserOfMyInfo userOfMyInfo = UserOfMyInfo.from(findUser);
-//        DefaultResponse<OtherUserDTO> otherInfoResponse =
-//                new DefaultResponse<>(Code.GOOD_REQUEST,userService.getOtherInformationByUserNickname(userNickname).get());
 
-//        return new ResponseEntity<>(otherInfoResponse, HttpStatus.OK);
+
         return null;
     }
 
@@ -80,7 +77,7 @@ public class UserController {
                                                                @RequestHeader(value = "Authorization") String accessToken,
                                                                @RequestBody UserDTO userDTO) {
 
-        Optional<User> user = userService.updateUser(accessToken, userDTO);
+        userService.updateUser(accessToken, userDTO);
 
         DefaultResponse defaultResponse = new DefaultResponse(Code.GOOD_REQUEST);
         return new ResponseEntity<>(defaultResponse, HttpStatus.OK);
