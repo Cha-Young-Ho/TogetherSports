@@ -19,13 +19,11 @@ const signupInitialState = {
 const myInfoInitialState = {
   userEmail: "",
   userName: "",
-  userNickname: "임시데이터",
-  userBirthYear: "1996",
-  userBirthMonday: "10",
-  userBirthDay: "26",
-  gender: "male",
+  userNickname: "",
+  userBirth: "",
+  gender: "",
   userProfileImage: {},
-  activeAreas: ["대구광역시 달서구 송현동", "대구광역시 남구 대명동"],
+  activeAreas: [],
   interests: [],
   mannerPoint: "",
 };

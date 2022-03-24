@@ -100,8 +100,6 @@ const ActiveArea = () => {
         if (status === kakao.maps.services.Status.OK) {
           const area = result[0].address_name;
 
-          // @@@ 마커를 지울 때 , 같은 지역 마커도 한 번에 지우기 @@@
-
           setTagAreas((prev) =>
             prev.filter((el) => {
               return el !== area;
