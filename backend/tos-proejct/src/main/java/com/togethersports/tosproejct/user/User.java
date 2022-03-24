@@ -1,5 +1,6 @@
 package com.togethersports.tosproejct.user;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.togethersports.tosproejct.enums.Gender;
 import com.togethersports.tosproejct.enums.Provider;
@@ -16,6 +17,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -43,14 +45,9 @@ public class User implements UserDetails {
     @Column(length = 15)
     private String userNickname;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     @Column(length = 4)
-    private String userBirthYear;
-
-    @Column(length = 2)
-    private String userBirthMonth;
-
-    @Column(length = 2)
-    private String userBirthDay;
+    private LocalDateTime userBirth;
 
     @Column
     @Enumerated(EnumType.STRING)
@@ -137,11 +134,13 @@ public class User implements UserDetails {
     public void update(UserDTO userDTO){
 
         this.userEmail = userDTO.getUserEmail();
-        this.userBirthYear = userDTO.getUserBirthYear();
-        this.userBirthMonth = userDTO.getUserBirthMonth();
-        this.userBirthDay = userDTO.getUserBirthDay();
+        this.userBirth = userDTO.getUserBirth();
         this.userName = userDTO.getUserName();
         this.userNickname = userDTO.getUserNickname();
+
+        //이미지, 활동지역, 관심종목 추가해야함
+
+
 
     }
 }
