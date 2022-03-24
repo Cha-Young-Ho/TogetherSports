@@ -59,7 +59,7 @@ const NavigationBar = () => {
               <Link href="/">
                 <div className="tag">소개</div>
               </Link>
-              <Link href="/">
+              <Link href="/room/roomlist">
                 <div className="tag">방 목록</div>
               </Link>
               <Link href="/">
