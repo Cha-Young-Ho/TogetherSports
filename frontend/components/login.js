@@ -1,6 +1,23 @@
-import { signIn } from "next-auth/react";
+// import { signIn } from "next-auth/react";
 
 const Login = () => {
+  // 네이버 로그인
+  const naverLogin = () => {
+    window.location.href = "http://localhost:8080/oauth2/authorization/naver";
+  };
+
+  // 카카오 로그인
+  const kakaoLogin = () => {
+    window.location.href = "http://localhost:8080/oauth2/authorization/kakao";
+  };
+
+  // 구글 로그인
+  const googleLogin = () => {
+    window.location.href = "http://localhost:8080/oauth2/authorization/google";
+  };
+
+  /* 최초 회원가입 여부 isFirst 처리 필요 */
+
   return (
     <>
       <div className="login-container">
@@ -10,27 +27,15 @@ const Login = () => {
             <div className="login-button">
               <button
                 className="login-button-naver"
-                onClick={() =>
-                  signIn("naver", {
-                    callbackUrl: "/userlogin",
-                  })
-                }
+                onClick={naverLogin}
               ></button>
               <button
                 className="login-button-kakao"
-                onClick={() =>
-                  signIn("kakao", {
-                    callbackUrl: "/userlogin",
-                  })
-                }
+                onClick={kakaoLogin}
               ></button>
               <button
                 className="login-button-google"
-                onClick={() =>
-                  signIn("google", {
-                    callbackUrl: "/userlogin",
-                  })
-                }
+                onClick={googleLogin}
               ></button>
             </div>
           </div>
