@@ -19,6 +19,20 @@ const getPopulariyRooms = async () => {
   return dataPromise;
 };
 
+// 네비게이션 바 요청
+const getNavBar = async () => {
+  const promise = axios.get("http://localhost:8080/api/nav", {
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+      Accept: "*/*",
+      Authorization: `${localStorage.getItem("accessToken")}`,
+    },
+  });
+  const dataPromise = promise.then((res) => res.data);
+
+  return dataPromise;
+};
+
 // POST
 
 // 액세스 토큰 발급
@@ -42,4 +56,4 @@ const postRefreshToken = async (refreshToken) => {
 
 // DELETE
 
-export { getPopulariyRooms, postRefreshToken };
+export { getPopulariyRooms, getNavBar, postRefreshToken };
