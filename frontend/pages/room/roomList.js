@@ -1,7 +1,7 @@
-import SearchBar from "../../components/rooms.js/searchBar";
-import RoomFilter from "../../components/rooms.js/filter";
-import SelectExercise from "../../components/rooms.js/selectExercise";
-import FilteredRooms from "../../components/rooms.js/filteredRooms";
+import SearchBar from "../../components/rooms/searchBar";
+import RoomFilter from "../../components/rooms/filter";
+import SelectExercise from "../../components/rooms/selectExercise";
+import FilteredRooms from "../../components/rooms/filteredRooms";
 
 const Roomlist = () => {
   return (
