@@ -38,6 +38,12 @@ const UserModification = () => {
   let activeAreas = [];
   const [tagAreas, setTagAreas] = useState([]);
 
+  useEffect(() => {
+    console.log(birthYear);
+    console.log(birthMonth);
+    console.log(birthDay);
+  });
+
   /* 
   닉네임 중복확인
   Success => nickName = 현재 적혀있는 input
@@ -87,6 +93,20 @@ const UserModification = () => {
           '<option value="' + dd + '">' + dd + "</option>"
         );
       }
+
+      // 생년월일 초기값 세팅
+      $(".dropdown-year > option[value=" + birthYear + "]").attr(
+        "selected",
+        "true"
+      );
+      $(".dropdown-month > option[value=" + birthMonth + "]").attr(
+        "selected",
+        "true"
+      );
+      $(".dropdown-day > option[value=" + birthDay + "]").attr(
+        "selected",
+        "true"
+      );
     });
   };
 
