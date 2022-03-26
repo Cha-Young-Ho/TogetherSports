@@ -20,31 +20,41 @@ const Login = () => {
 
   return (
     <>
-      <div className="login-container">
-        <div className="bg-container">
-          <div className="login-box">
-            <div className="login-logo"></div>
-            <div className="login-button">
-              <button
-                className="login-button-naver"
-                onClick={naverLogin}
-              ></button>
-              <button
-                className="login-button-kakao"
-                onClick={kakaoLogin}
-              ></button>
-              <button
-                className="login-button-google"
-                onClick={googleLogin}
-              ></button>
+      <div className="login-wrapper">
+        <div className="login-container">
+          <div className="bg-container">
+            <div className="login-box">
+              <div className="login-logo"></div>
+              <div className="login-button">
+                <button
+                  className="login-button-naver"
+                  onClick={naverLogin}
+                ></button>
+                <button
+                  className="login-button-kakao"
+                  onClick={kakaoLogin}
+                ></button>
+                <button
+                  className="login-button-google"
+                  onClick={googleLogin}
+                ></button>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       <style jsx>{`
+        .login-wrapper {
+          width: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
         .login-container {
           width: 100%;
+          max-width: 1920px;
           height: 1080px;
           background-color: black;
           z-index: 1;

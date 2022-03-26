@@ -88,9 +88,6 @@ const NavigationBar = () => {
             <div className="sign">
               {!loginData ? (
                 <>
-                  <Link href="/signup/oauth">
-                    <div className="tag">회원가입</div>
-                  </Link>
                   <Link href="/login">
                     <div className="tag">로그인</div>
                   </Link>
@@ -166,11 +163,10 @@ const NavigationBar = () => {
         }
 
         .sign {
-          width: 300px;
           height: 62px;
           display: flex;
           position: relative;
-          justify-content: space-between;
+          justify-content: center;
           font-size: 1.5rem;
         }
 
@@ -185,6 +181,7 @@ const NavigationBar = () => {
           height: 40px;
           border-radius: 50px;
           background-color: black;
+          object-fit: cover;
         }
 
         .logOn {

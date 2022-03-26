@@ -1,29 +1,39 @@
 const Banner = () => {
   return (
     <>
-      <div className="main-banner">
-        <div className="half-container">
-          <div className="title-in-banner">
-            <div className="title">동네 운동장에서 족구 한판 뛰실 분?</div>
-            <button className="btn-goToRoom">방 찾아보기</button>
-          </div>
-          <div className="search-container">
-            <div className="bar-in-search">
-              <div className="searchBar">
-                <div className="dropdown-in-searchBar">방 이름</div>
-                <div className="split"></div>
-                <input className="input-searchRoom"></input>
+      <div className="banner-wrapper">
+        <div className="main-banner">
+          <div className="half-container">
+            <div className="title-in-banner">
+              <div className="title">동네 운동장에서 족구 한판 뛰실 분?</div>
+              <button className="btn-goToRoom">방 찾아보기</button>
+            </div>
+            <div className="search-container">
+              <div className="bar-in-search">
+                <div className="searchBar">
+                  <div className="dropdown-in-searchBar">방 이름</div>
+                  <div className="split"></div>
+                  <input className="input-searchRoom"></input>
+                </div>
+                <button className="btn-nextToRoom">다음</button>
               </div>
-              <button className="btn-nextToRoom">다음</button>
             </div>
           </div>
         </div>
       </div>
 
       <style jsx>{`
+        .banner-wrapper {
+          width: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
         .main-banner {
           margin-top: 3px;
           width: 100%;
+          max-width: 1920px;
           height: 930px;
           z-index: 2;
           background-image: url("banner_01.png");
@@ -38,6 +48,7 @@ const Banner = () => {
           position: relative;
           top: 530px;
           width: 100%;
+          max-width: 1920px;
           height: 400px;
           z-index: 5;
         }

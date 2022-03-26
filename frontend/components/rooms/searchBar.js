@@ -12,6 +12,7 @@ const SearchBar = () => {
         .search-wrapper {
           width: 100%;
           min-width: 1190px;
+          max-width: 1920px;
           height: 100px;
           margin: 10px;
           background-color: rgb(43, 122, 95, 0.8);

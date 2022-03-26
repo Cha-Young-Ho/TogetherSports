@@ -33,6 +33,7 @@ const SelectExercise = () => {
       <style jsx>{`
         .exercise-wrapper {
           width: 100%;
+          max-width: 1920px;
           height: 90px;
           margin-bottom: 10px;
           box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.16);

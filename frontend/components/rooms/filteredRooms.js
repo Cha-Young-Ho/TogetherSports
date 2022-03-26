@@ -13,6 +13,7 @@ const FilteredRooms = () => {
       <style jsx>{`
         .rooms-wrapper {
           width: 100%;
+          max-width: 1920px;
           margin-bottom: 30px;
           box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.16);
           display: flex;
