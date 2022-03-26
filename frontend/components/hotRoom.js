@@ -62,42 +62,52 @@ const HotRoom = () => {
 
   return (
     <>
-      <div className="root-bg">
-        <div className="title">실시간 Hot한 방🔥</div>
-        <div className="slider-container">
-          <div className="slider-wrapper">
-            <div className="slider-view" ref={slideRef}>
-              {tempData.map((room, index) => {
-                return (
-                  <div key={index} className="slider">
-                    <div className="room-container">
-                      <div className="room-info">
-                        <div className="room-title-ppl">
-                          <p className="data-title">{`${room.title}`}</p>
-                          <p className="p2">{`${room.ppl}`}</p>
+      <div className="room-wrapper">
+        <div className="root-bg">
+          <div className="title">실시간 Hot한 방🔥</div>
+          <div className="slider-container">
+            <div className="slider-wrapper">
+              <div className="slider-view" ref={slideRef}>
+                {tempData.map((room, index) => {
+                  return (
+                    <div key={index} className="slider">
+                      <div className="room-container">
+                        <div className="room-info">
+                          <div className="room-title-ppl">
+                            <p className="data-title">{`${room.title}`}</p>
+                            <p className="p2">{`${room.ppl}`}</p>
+                          </div>
+                          <p className="p2">{`${room.text}`}</p>
                         </div>
-                        <p className="p2">{`${room.text}`}</p>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
+            <button className="before" onClick={beforeSlide}>
+              {`<`}
+            </button>
+            <button className="next" onClick={nextSlide}>
+              {`>`}
+            </button>
           </div>
-          <button className="next" onClick={nextSlide}>
-            {`>`}
-          </button>
-          <button className="before" onClick={beforeSlide}>
-            {`<`}
-          </button>
         </div>
       </div>
 
       <style jsx>{`
+        .room-wrapper {
+          width: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
         .root-bg {
           z-index: 1;
           margin: 20px 0;
           width: 100%;
+          max-width: 1920px;
           height: 560px;
           display: flex;
           flex-direction: column;
@@ -167,8 +177,8 @@ const HotRoom = () => {
         }
 
         .next {
-          position: absolute;
-          right: 200px;
+          position: relative;
+          right: 10%;
           z-index: 1;
           width: 50px;
           height: 50px;
@@ -179,8 +189,8 @@ const HotRoom = () => {
         }
 
         .before {
-          position: absolute;
-          left: 200px;
+          position: relative;
+          right: 85%;
           z-index: 1;
           width: 50px;
           height: 50px;
