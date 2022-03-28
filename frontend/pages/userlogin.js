@@ -15,20 +15,20 @@ const UserLogin = () => {
     if (session) {
       getUserLogin(session.user.email, session.user.name, session.user.provider)
         .then((res) => {
-          console.log(res.message);
-          if (res.code === 5000) {
-            localStorage.setItem("accessToken", res.accessToken);
-            localStorage.setItem("refreshToken", res.refreshToken);
+          console.log(res.status.message);
+          if (res.status.code === 5000) {
+            localStorage.setItem("accessToken", res.content.accessToken);
+            localStorage.setItem("refreshToken", res.content.refreshToken);
             dispatch({
               type: "SAVENICKNAME",
               payload: {
-                userNickname: res.userNickname,
+                userNickname: res.content.userNickname,
               },
             });
             router.replace("/");
             console.log("로그인 성공");
           } else {
-            FailResponse(res.code);
+            FailResponse(res.status.code);
           }
         })
         .catch((error) => {

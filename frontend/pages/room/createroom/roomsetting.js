@@ -2,6 +2,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import RoomInfoNavBar from "../../../components/roomInfoNavBar";
+import { BrowserRouter } from "react-router-dom";
 
 const RoomSetting = () => {
   const dispatch = useDispatch();
@@ -16,8 +17,8 @@ const RoomSetting = () => {
 
   //지역
   const [roomArea, setRoomArea] = useState({
-    area: "정보 없음", //시구동
-    areaDetail: "정보 없음", //상세 주소
+    area: "", //시구동
+    areaDetail: "", //상세 주소
   });
 
   useEffect(() => {
@@ -223,11 +224,14 @@ const RoomSetting = () => {
               <div className="map"></div>
             </div>
             <div className="selected-area">
-              <p>지역</p>
-              <input
-                readOnly
-                value={`${roomArea.area} / ${roomArea.areaDetail}`}
-              />
+              <div className="area">
+                <p>지역</p>
+                <input readOnly value={roomArea.area} />
+              </div>
+              <div className="detail-area">
+                <p>주소</p>
+                <input readOnly value={roomArea.areaDetail} />
+              </div>
             </div>
           </div>
         </div>
@@ -359,20 +363,26 @@ const RoomSetting = () => {
           width: 100%;
           height: 40px;
           margin: 30px 0;
-          padding: 5px 10px 5px 14px;
-          border-radius: 10px;
-          border: solid 1px #e8e8e8;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+        }
+
+        .area,
+        .detail-area {
+          width: 50%;
           display: flex;
           flex-direction: row;
           align-items: center;
         }
 
         .selected-area input {
-          width: 520px;
+          width: 240px;
           height: 30px;
-          padding: 5px;
-          border-style: none;
-          font-size: 1.5em;
+          padding: 10px;
+          font-size: 1.3em;
+          border-radius: 10px;
+          border: solid 1px #e8e8e8;
         }
 
         .button-next {

@@ -10,7 +10,7 @@ import axios from "axios";
 const getUserInfoCheck = async (email, name, provi) => {
   //http://localhost:8080/test
 
-  const promise = axios.get("http://localhost:8080/user/check", {
+  const promise = axios.get("http://localhost:8080/api/user/check", {
     headers: {
       "Content-type": "application/json; charset=UTF-8",
       Accept: "*/*",
@@ -30,7 +30,7 @@ const getUserInfoCheck = async (email, name, provi) => {
 const getUserLogin = async (email, name, provi) => {
   //http://localhost:8080/test
 
-  const promise = axios.get("http://localhost:8080/login", {
+  const promise = axios.get("http://localhost:8080/api/login", {
     headers: {
       "Content-type": "application/json; charset=UTF-8",
       Accept: "*/*",
@@ -48,7 +48,7 @@ const getUserLogin = async (email, name, provi) => {
 
 // 닉네임 중복확인
 const getDuplicationCheck = async (nickname) => {
-  const promise = axios.get("http://localhost:8080/duplication", {
+  const promise = axios.get("http://localhost:8080/api/duplication", {
     headers: {
       "Content-type": "application/json; charset=UTF-8",
       Accept: "*/*",
@@ -64,7 +64,7 @@ const getDuplicationCheck = async (nickname) => {
 
 // 내 정보 조회
 const getMyInfo = async () => {
-  const promise = axios.get("http://localhost:8080/user", {
+  const promise = axios.get("http://localhost:8080/api/user", {
     headers: {
       "Content-type": "application/json; charset=UTF-8",
       Accept: "*/*",
@@ -78,7 +78,7 @@ const getMyInfo = async () => {
 
 // 다른 회원 정보 조회
 const getOtherInfo = async (nickname) => {
-  const promise = axios.get("http://localhost:8080/other", {
+  const promise = axios.get("http://localhost:8080/api/other", {
     headers: {
       "Content-type": "application/json; charset=UTF-8",
       Accept: "*/*",
@@ -101,23 +101,19 @@ const postUserRequest = async (
   gender,
   interests,
   provider,
-  userBirthDay,
-  userBirthMonday,
-  userBirthYear,
+  userBirth,
   userEmail,
   userName,
   userNickname,
   userProfileImage
 ) => {
   const promise = axios.post(
-    "http://localhost:8080/user",
+    "http://localhost:8080/api/user",
     {
       userEmail: userEmail,
       userName: userName,
       userNickname: userNickname,
-      userBirthYear: userBirthYear,
-      userBirthMonth: userBirthMonday,
-      userBirthDay: userBirthDay,
+      userBirth: userBirth,
       activeAreas: activeAreas,
       gender: gender,
       userProfileImage: userProfileImage,
@@ -141,9 +137,7 @@ const putUpdateUserInfo = async (
   userEmail,
   userName,
   userNickname,
-  userBirthYear,
-  userBirthMonday,
-  userBirthDay,
+  userBirth,
   activeAreas,
   gender,
   userProfileImage,
@@ -151,14 +145,12 @@ const putUpdateUserInfo = async (
   interests
 ) => {
   const promise = axios.put(
-    "http://localhost:8080/user",
+    "http://localhost:8080/api/user",
     {
       userEmail: userEmail,
       userName: userName,
       userNickname: userNickname,
-      userBirthYear: userBirthYear,
-      userBirthMonth: userBirthMonday,
-      userBirthDay: userBirthDay,
+      userBirth: userBirth,
       mannerPoint: 10,
       activeAreas: activeAreas,
       gender: gender,
@@ -183,7 +175,7 @@ const putUpdateUserInfo = async (
 const deleteLogout = async () => {
   //http://localhost:8080/test
 
-  const promise = axios.delete("http://localhost:8080/logout", {
+  const promise = axios.delete("http://localhost:8080/api/logout", {
     headers: {
       "Content-type": "application/json; charset=UTF-8",
       Accept: "*/*",

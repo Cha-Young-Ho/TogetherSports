@@ -1,16 +1,13 @@
 import moment from "moment";
 import { useEffect, useState } from "react";
 import WeekWrapper from "./weekWrapper";
-import HeaderWrapper from "./headerWrapper";
 
-const Calendar = () => {
-  const nowDate = moment().format().substring(0, 10);
-
+const Calendar = (props) => {
   // 선택된 날
-  const [curSelectedDate, setCurSelectedDate] = useState();
+  const [curSelectedDate, setCurSelectedDate] = useState("");
 
   useEffect(() => {
-    console.log(curSelectedDate);
+    props.setDateFunction(curSelectedDate);
   }, [curSelectedDate]);
 
   //이번 년도, 이번 달
@@ -156,17 +153,7 @@ const Calendar = () => {
               </button>
             ))}
             {curCalendarDays.map((date, index) => {
-              if (nowDate === date) {
-                return (
-                  <button
-                    key={`dates-${date}-${index}`}
-                    className={`days-in-grid selected`}
-                    onClick={clickSelectDate}
-                  >
-                    {date.substring(8)}
-                  </button>
-                );
-              } else if (curSelectedDate === date) {
+              if (curSelectedDate === date) {
                 return (
                   <button
                     key={`dates-${date}-${index}`}
@@ -272,17 +259,6 @@ const Calendar = () => {
           margin: 3px 12px;
         }
 
-        .selected {
-          cursor: pointer;
-          outline: none;
-          border: none;
-          background-color: lightgrey;
-          border-radius: 100px;
-          color: black;
-          font-weight: bold;
-          margin: 3px 12px;
-        }
-
         .days-in-grid:hover {
           background-color: #2b7a5f;
           border-radius: 100px;
@@ -308,6 +284,7 @@ const Calendar = () => {
         .clicked {
           background-color: #468f5b;
           border-radius: 100px;
+          color: white;
         }
       `}</style>
     </>

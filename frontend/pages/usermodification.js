@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import jquery from "jquery";
 import $ from "jquery";
 import { getDuplicationCheck, putUpdateUserInfo } from "../api/members";
 import { useSelector } from "react-redux";
@@ -8,14 +7,17 @@ import { FailResponse } from "../api/failResponse";
 const UserModification = () => {
   //회원정보 초기값
   const userInfo = useSelector((state) => state.myInfoReducer);
+
   //닉네임
   const [nickname, setNickname] = useState(userInfo.userNickname);
   const [isNicknameCheck, setIsNicknameCheck] = useState(true);
 
   //생년월일
-  const [birthYear, setBirthYear] = useState(userInfo.userBirthYear);
-  const [birthMonth, setBirthMonth] = useState(userInfo.userBirthMonth);
-  const [birthDay, setBirthDay] = useState(userInfo.userBirthDay);
+  const setBirth = userInfo.userBirth.split("-");
+  const [birthYear, setBirthYear] = useState(setBirth[0]);
+  const [birthMonth, setBirthMonth] = useState(setBirth[1]);
+  const [birthDay, setBirthDay] = useState(setBirth[2]);
+  const userBirth = `${birthYear}-${birthMonth}-${birthDay}`;
 
   //성별
   const [gender, setGender] = useState(userInfo.gender);
@@ -36,6 +38,12 @@ const UserModification = () => {
   let activeAreas = [];
   const [tagAreas, setTagAreas] = useState([]);
 
+  useEffect(() => {
+    console.log(birthYear);
+    console.log(birthMonth);
+    console.log(birthDay);
+  });
+
   /* 
   닉네임 중복확인
   Success => nickName = 현재 적혀있는 input
@@ -46,8 +54,8 @@ const UserModification = () => {
       alert("닉네임은 최소 2글자 이상 입력해주세요.");
     } else {
       getDuplicationCheck(nickname).then((res) => {
-        console.log(res.message);
-        if (res.code === 5000) {
+        console.log(res.status.message);
+        if (res.status.code === 5000) {
           setIsNicknameCheck(true);
           alert("사용 가능한 닉네임입니다.");
         } else {
@@ -85,6 +93,20 @@ const UserModification = () => {
           '<option value="' + dd + '">' + dd + "</option>"
         );
       }
+
+      // 생년월일 초기값 세팅
+      $(".dropdown-year > option[value=" + birthYear + "]").attr(
+        "selected",
+        "true"
+      );
+      $(".dropdown-month > option[value=" + birthMonth + "]").attr(
+        "selected",
+        "true"
+      );
+      $(".dropdown-day > option[value=" + birthDay + "]").attr(
+        "selected",
+        "true"
+      );
     });
   };
 
@@ -134,8 +156,9 @@ const UserModification = () => {
     "기타종목",
   ];
 
-  //초기 종목 세팅
+  // 초기값 세팅
   useEffect(() => {
+    // 관심 종목 세팅
     for (const exercise of userInfo.interests) {
       setInterests((prev) => ({
         ...prev,
@@ -143,6 +166,7 @@ const UserModification = () => {
       }));
     }
 
+    // 활동 지역 세팅
     userInfo.activeAreas.map((area) => {
       activeAreas.push(area);
       setTagAreas((prev) => [...prev, area]);
@@ -263,17 +287,26 @@ const UserModification = () => {
           if (status === kakao.maps.services.Status.OK) {
             const area = result[0].address_name;
 
+            const checkDuplication = (element) => {
+              if (element === area) return true;
+            };
+
             //배열에 담긴 지역이 5개 이하라면
             if (activeAreas.length < 5) {
+              if (activeAreas.some(checkDuplication) === false) {
+                getMarker(map, mouseEvent.latLng, geocoder); //클릭된 지역 마커표시
+              } else {
+                alert("해당 지역은 이미 선택되었습니다.");
+              }
+
               activeAreas.push(area);
+
               //중복 지역 담기지 않게 하기
               activeAreas = activeAreas.filter((element, index) => {
                 return activeAreas.indexOf(element) === index;
               });
 
               setTagAreas((prev) => [...prev, area]);
-
-              getMarker(map, mouseEvent.latLng, geocoder); //클릭된 지역 마커표시
             } else {
               alert("최대 설정 가능한 개수를 초과하였습니다!");
             }
@@ -344,9 +377,7 @@ const UserModification = () => {
       userInfo.userEmail,
       userInfo.userName,
       nickname,
-      birthYear,
-      birthMonth,
-      birthDay,
+      userBirth,
       activeAreas,
       gender,
       {
@@ -357,11 +388,11 @@ const UserModification = () => {
       userInfo.provider,
       interests
     ).then((res) => {
-      if (res.code === 5000) {
+      if (res.status.code === 5000) {
         alert("성공적으로 수정 되었습니다.");
         window.history.back();
       } else {
-        FailResponse(res.code);
+        FailResponse(res.status.code);
       }
     });
   };

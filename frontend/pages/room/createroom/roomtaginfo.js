@@ -11,8 +11,7 @@ const RoomTagInfo = () => {
   const roomInfo = useSelector((state) => state.createRoomReducer);
 
   /* 수정 필요 */
-  // 1. 태그 UI 완성본에 맞게 수정
-  // 2. 완료 버튼 클릭 시, 새로 만들어진 방으로 이동
+  // 1. 완료 버튼 클릭 시, 새로 만들어진 방으로 이동
 
   // 예외 처리 및 서버에 방 생성 요청
   const callCreateRoomRequest = (e) => {
@@ -34,11 +33,11 @@ const RoomTagInfo = () => {
         roomInfo.endAppointmentDate,
         roomInfo.roomImages
       ).then((res) => {
-        console.log(res.message);
-        if (res.code === 5000) {
+        console.log(res.status.message);
+        if (res.status.code === 5000) {
           alert("방을 성공적으로 생성하였습니다.");
         } else {
-          FailResponse(res.code);
+          FailResponse(res.status.code);
         }
       });
     }
@@ -53,8 +52,13 @@ const RoomTagInfo = () => {
         })
       );
     } else {
-      e.target.classList.add("tag-clicked");
-      setTag((prev) => [...prev, e.target.innerText]);
+      if (tag.length > 9) {
+        e.preventDefault();
+        alert("태그는 최대 10개 선택 가능합니다!");
+      } else {
+        e.target.classList.add("tag-clicked");
+        setTag((prev) => [...prev, e.target.innerText]);
+      }
     }
   };
 
@@ -84,9 +88,12 @@ const RoomTagInfo = () => {
           </div>
 
           <div className="content-tag">
-            <p>태그 추가</p>
+            <p>빠른 태그 추가 (최대 10개)</p>
             <div className="tags">
-              <div className="tags-age1">
+              <div className="tags-age">
+                <div className="tag" onClick={onClickTag}>
+                  10대
+                </div>
                 <div className="tag" onClick={onClickTag}>
                   20대
                 </div>
@@ -94,13 +101,8 @@ const RoomTagInfo = () => {
                   30대
                 </div>
                 <div className="tag" onClick={onClickTag}>
-                  10대
-                </div>
-                <div className="tag" onClick={onClickTag}>
                   40대
                 </div>
-              </div>
-              <div className="tags-age2">
                 <div className="tag" onClick={onClickTag}>
                   50대
                 </div>
@@ -108,13 +110,13 @@ const RoomTagInfo = () => {
                   60대
                 </div>
                 <div className="tag" onClick={onClickTag}>
-                  70대 이상
+                  70대
                 </div>
-                <div className="tag" onClick={onClickTag}>
+                <div className="tag-nomatter" onClick={onClickTag}>
                   연령 무관
                 </div>
               </div>
-              <div className="tags-level">
+              <div className="tags-level-gender">
                 <div className="tag" onClick={onClickTag}>
                   입문만
                 </div>
@@ -127,18 +129,16 @@ const RoomTagInfo = () => {
                 <div className="tag" onClick={onClickTag}>
                   고수만
                 </div>
-                <div className="tag" onClick={onClickTag}>
+                <div className="tag-nomatter" onClick={onClickTag}>
                   실력 무관
                 </div>
-              </div>
-              <div className="tags-gender">
                 <div className="tag" onClick={onClickTag}>
                   남자만
                 </div>
                 <div className="tag" onClick={onClickTag}>
                   여자만
                 </div>
-                <div className="tag" onClick={onClickTag}>
+                <div className="tag-nomatter" onClick={onClickTag}>
                   성별 무관
                 </div>
               </div>
@@ -190,12 +190,13 @@ const RoomTagInfo = () => {
         .content-info textarea {
           margin-top: 20px;
           padding: 10px;
-          width: 450px;
-          height: 130px;
+          width: 550px;
+          height: 200px;
           border: none;
           border-radius: 10px;
           background-color: #f4f4f4;
           resize: none;
+          font-size: 1.4em;
         }
 
         .content-tag {
@@ -219,15 +220,29 @@ const RoomTagInfo = () => {
           align-items: center;
         }
 
-        .tags-age1,
-        .tags-age2,
-        .tags-level,
-        .tags-gender {
+        .tags-age,
+        .tags-level-gender {
           display: flex;
           flex-direction: row;
+          width: 100%;
         }
 
         .tag {
+          width: 60px;
+          height: 30px;
+          border: solid 1px #f4f4f4;
+          border-radius: 6px;
+          background-color: #efefef;
+          margin: 10px 5px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: 1.2em;
+          font-weight: bold;
+          cursor: pointer;
+        }
+
+        .tag-nomatter {
           width: 70px;
           height: 30px;
           border: solid 1px #f4f4f4;
@@ -242,7 +257,8 @@ const RoomTagInfo = () => {
           cursor: pointer;
         }
 
-        .tag:hover {
+        .tag:hover,
+        .tag-nomatter:hover {
           transition-duration: 0.5s;
           transform: scale(1.2);
           background-color: #468f5b;
