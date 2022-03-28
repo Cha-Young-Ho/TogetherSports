@@ -4,13 +4,10 @@ import { composeWithDevTools } from "redux-devtools-extension";
 
 //회원가입 초기값
 const signupInitialState = {
-  userEmail: "",
-  userName: "",
   userNickname: "",
   userBirth: "",
   gender: "",
   userProfileImage: {},
-  provider: "",
   activeAreas: [],
   interests: [],
 };
@@ -49,7 +46,7 @@ const createRoomInitialState = {
 // 오타 방지용
 const PERSONALINFO = "PERSONALINFO";
 const INTERESTS = "INTERESTS";
-const AUTHDATA = "AUTHDATA";
+// const AUTHDATA = "AUTHDATA";
 const SAVENICKNAME = "SAVENICKNAME";
 const SAVEMYINFO = "SAVEMYINFO";
 const ROOMSETTING = "ROOMSETTING";
@@ -62,13 +59,13 @@ const userRequestReducer = (state = signupInitialState, action) => {
       // Attention! This will overwrite client state! Real apps should use proper reconciliation.
       console.log("hydrate");
       return { ...state, ...action.payload };
-    case AUTHDATA:
-      return {
-        ...state,
-        userEmail: action.payload.userEmail,
-        userName: action.payload.userName,
-        provider: action.payload.provider,
-      };
+    // case AUTHDATA:
+    //   return {
+    //     ...state,
+    //     userEmail: action.payload.userEmail,
+    //     userName: action.payload.userName,
+    //     provider: action.payload.provider,
+    //   };
     case PERSONALINFO:
       console.log(state);
       return {
