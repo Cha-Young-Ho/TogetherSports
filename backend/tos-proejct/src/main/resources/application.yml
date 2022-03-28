@@ -13,7 +13,14 @@ spring:
   profiles:
     include: oauth2, jwt
 
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
+
 # aws properties
+
 ---
 spring:
   profiles:
