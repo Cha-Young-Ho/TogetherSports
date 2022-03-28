@@ -29,20 +29,20 @@ const NavigationBar = () => {
   };
 
   // 서버로 로그인 요청
-  useEffect(() => {
-    getNavBar().then((res) => {
-      if (res.status.code === 5000) {
-        console.log(res.status.message);
-        setLoginData((loginData = true));
-        setUserNickname((userNickname = res.content.userNickname));
-        setImageSource(
-          (imageSource = res.content.userProfileImage.imageSource)
-        );
-      } else {
-        FailResponse(res.status.code);
-      }
-    });
-  }, []);
+  // useEffect(() => {
+  //   getNavBar().then((res) => {
+  //     if (res.status.code === 5000) {
+  //       console.log(res.status.message);
+  //       setLoginData((loginData = true));
+  //       setUserNickname((userNickname = res.content.userNickname));
+  //       setImageSource(
+  //         (imageSource = res.content.userProfileImage.imageSource)
+  //       );
+  //     } else {
+  //       FailResponse(res.status.code);
+  //     }
+  //   });
+  // }, []);
 
   // 로그아웃 버튼 클릭
   const ClickLogout = () => {
