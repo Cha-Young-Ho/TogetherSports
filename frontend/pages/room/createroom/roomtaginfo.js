@@ -7,6 +7,7 @@ import RoomInfoNavBar from "../../../components/roomInfoNavBar";
 
 const RoomTagInfo = () => {
   const [roomContent, setRoomContent] = useState("");
+  const [roomImages, setRoomImages] = useState([]);
   const [tag, setTag] = useState([]);
   const roomInfo = useSelector((state) => state.createRoomReducer);
 
@@ -31,7 +32,7 @@ const RoomTagInfo = () => {
         tag,
         roomInfo.startAppointmentDate,
         roomInfo.endAppointmentDate,
-        roomInfo.roomImages
+        roomImages
       ).then((res) => {
         console.log(res.status.message);
         if (res.status.code === 5000) {
@@ -43,6 +44,7 @@ const RoomTagInfo = () => {
     }
   };
 
+  // 태그 선택 함수
   const onClickTag = (e) => {
     if (e.target.classList[2] === "tag-clicked") {
       e.target.classList.remove("tag-clicked");
@@ -85,6 +87,40 @@ const RoomTagInfo = () => {
               value={roomContent}
               onChange={(e) => setRoomContent(e.target.value)}
             ></textarea>
+          </div>
+
+          <div className="content-images">
+            <div className="images">
+              <p>사진추가</p>
+              <input readOnly className="image-name" />
+              <label htmlFor="image">
+                <div>파일찾기</div>
+              </label>
+              <input type="file" id="image" accept=".jpg, .jpeg, .png" />
+            </div>
+
+            <div className="previews">
+              <div className="preview">
+                <div>이미지1</div>
+                <button>X</button>
+              </div>
+              <div className="preview">
+                <div>이미지2</div>
+                <button>X</button>
+              </div>
+              <div className="preview">
+                <div>이미지3</div>
+                <button>X</button>
+              </div>
+              <div className="preview">
+                <div>이미지4</div>
+                <button>X</button>
+              </div>
+              <div className="preview">
+                <div>이미지5</div>
+                <button>X</button>
+              </div>
+            </div>
           </div>
 
           <div className="content-tag">
@@ -197,6 +233,94 @@ const RoomTagInfo = () => {
           background-color: #f4f4f4;
           resize: none;
           font-size: 1.4em;
+        }
+
+        .content-images {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          margin: 50px 0;
+        }
+
+        .images {
+          width: 550px;
+          height: 40px;
+          padding: 5px 10px 5px 14px;
+          margin-bottom: 20px;
+          border: solid 1px #e8e8e8;
+          border-radius: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        .images p {
+          font-size: 1.5em;
+          font-weight: bold;
+        }
+
+        .image-name {
+          width: 380px;
+          height: 30px;
+          border-style: none;
+          font-size: 1.3em;
+          padding: 5px;
+        }
+
+        .content-images label {
+          width: 70px;
+          height: 28px;
+          background-color: #08555f;
+          color: white;
+          font-size: 1.3em;
+          border: 0;
+          outline: 0;
+          cursor: pointer;
+          border-radius: 5px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .content-images input[type="file"] {
+          position: absolute;
+          width: 0;
+          height: 0;
+          padding: 0;
+          border: 0;
+          overflow: hidden;
+        }
+
+        .previews {
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .preview div {
+          width: 90px;
+          height: 90px;
+          margin: 0 10px;
+          border: none;
+          border-radius: 10px;
+          background-color: #d8d8d8;
+        }
+
+        .preview button {
+          position: relative;
+          left: 85px;
+          bottom: 93px;
+          width: 20px;
+          height: 20px;
+          border: none;
+          border-radius: 50%;
+          opacity: 0.8;
+          background-color: #f2f2f2;
+          font-weight: bold;
+          font-size: 1.2em;
+          color: white;
+          cursor: pointer;
         }
 
         .content-tag {
