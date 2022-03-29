@@ -14,19 +14,16 @@ const RoomTagInfo = () => {
   // 방 이미지
   const [image, setImage] = useState("");
   const [imagesrc, setImagesrc] = useState("");
-  const roomImages = []; // 서버에 이미지가 담긴 객체배열
   const [roomImage, setRoomImage] = useState([]);
-
-  //const [imageName, setImageName] = useState("");
-  //const [imageExtension, setImageExtension] = useState("");
+  const [imagePreview, setImagePreview] = useState([]);
 
   // 방 태그
   const [tag, setTag] = useState([]);
 
   /* 수정 필요 */
   // 1. 완료 버튼 클릭 시, 새로 만들어진 방으로 이동
-  // 2. 이미지 불러와서 객체배열 형태로 저장 O -> source 앞에 base64 빼는작업 필요
-  // 3. 선택된 이미지 프리뷰 뜨게 하기 및 다른 파일을 선택하면 또 다른 프리뷰 생성
+  // 2. 이미지 불러와서 객체배열 형태로 저장 O
+  // 3. 선택된 이미지 프리뷰 뜨게 하기 및 다른 파일을 선택하면 또 다른 프리뷰 생성 O
   // 4. X 버튼 누르면 프리뷰 삭제하고 객체배열에서도 데이터 빼기
   // 5. 프리뷰 이미지를 선택하면 테두리가 초록색으로 변하고 대표사진으로 됨(대표사진에 대한 API 수정 필요) + 다른걸 누르면 그걸로 대체(중복X)
 
@@ -69,7 +66,9 @@ const RoomTagInfo = () => {
 
       reader.onload = () => {
         baseURL = reader.result;
-        setImagesrc((imagesrc = baseURL));
+        const sliceIndex = baseURL.indexOf(",");
+        setImagesrc((imagesrc = baseURL.substr(sliceIndex + 1)));
+        setImagePreview((prev) => [...prev, (imagePreview = baseURL)]);
         resolve(baseURL);
       };
     });
@@ -129,7 +128,8 @@ const RoomTagInfo = () => {
   // test
   useEffect(() => {
     //console.log(roomContent);
-    console.log(roomImage);
+    //console.log(roomImage);
+    //console.log(imagePreview);
     //console.log(tag);
   });
 
@@ -169,26 +169,16 @@ const RoomTagInfo = () => {
             </div>
 
             <div className="previews">
-              <div className="preview">
-                <div></div>
-                <button>X</button>
-              </div>
-              <div className="preview">
-                <div></div>
-                <button>X</button>
-              </div>
-              <div className="preview">
-                <div></div>
-                <button>X</button>
-              </div>
-              <div className="preview">
-                <div></div>
-                <button>X</button>
-              </div>
-              <div className="preview">
-                <div></div>
-                <button>X</button>
-              </div>
+              {imagePreview.map((preview, index) => {
+                return (
+                  <div className="preview" key={index}>
+                    <div>
+                      <img src={preview} alt="preview" />
+                    </div>
+                    <button>X</button>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
@@ -367,6 +357,11 @@ const RoomTagInfo = () => {
           align-items: center;
         }
 
+        .preview {
+          display: table;
+          text-align: center;
+        }
+
         .preview div {
           width: 90px;
           height: 90px;
@@ -374,12 +369,20 @@ const RoomTagInfo = () => {
           border: none;
           border-radius: 10px;
           background-color: #d8d8d8;
+          overflow: hidden;
+          display: table-cell;
+          vertical-align: middle;
+        }
+
+        .preview img {
+          max-width: 90px;
+          max-height: 90px;
         }
 
         .preview button {
           position: relative;
-          left: 85px;
-          bottom: 93px;
+          bottom: 10px;
+          right: 10px;
           width: 20px;
           height: 20px;
           border: none;
