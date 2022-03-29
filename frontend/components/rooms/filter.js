@@ -1,5 +1,6 @@
 import { useState } from "react";
 import CalendarModal from "../modals/calendarModal";
+import SelectExercise from "./selectExercise";
 
 const Filter = () => {
   // 유저 프로필 클릭 시 뜨는 팝업 창 관리 state
@@ -12,12 +13,21 @@ const Filter = () => {
     setModalOpen(false);
   };
 
+  // 시간 (태그로 된 선택)
   const clickTimezone = (e) => {
     if (e.target.classList[2] === "clicked") {
       e.target.classList.remove("clicked");
     } else {
       e.target.classList.add("clicked");
     }
+  };
+
+  // 시기
+  const [curFilteringDate, setCurFilteringDate] = useState("");
+
+  // calendarModal의 시기 받아오기 위한 함수
+  const setFilterDate = (date) => {
+    setCurFilteringDate((curFilteringDate = date));
   };
 
   return (
@@ -62,22 +72,32 @@ const Filter = () => {
           </div>
           <div className="categories">
             <p>시기</p>
-            <button onClick={openModal}>&times;</button>
+            <button className="modalCalendar" onClick={openModal}></button>
+            <div className="date-showBox">
+              {curFilteringDate.substring(0, 4)}
+            </div>
+            <p>년</p>
+            <div className="date-showBox">
+              {curFilteringDate.substring(6, 7)}
+            </div>
+            <p>월</p>
+            <div className="date-showBox">{curFilteringDate.substring(8)}</div>
+            <p>일</p>
             <CalendarModal
-              setDateFunction={false}
+              setFilterDate={setFilterDate}
               open={modalOpen}
               close={closeModal}
             ></CalendarModal>
           </div>
           <div className="last-categories">
-            <div>
-              <p>인원</p>
-              <div className=""></div>
-            </div>
-            <div>
-              <button className="button-reset">초기화</button>
-              <button className="button-application">적용</button>
-            </div>
+            <p>입장가능인원</p>
+            <input type="number"></input>
+            <p> 명 이상</p>
+          </div>
+          <SelectExercise />
+          <div className="buttons-wrapper">
+            <button className="button-reset">초기화</button>
+            <button className="button-application">적용</button>
           </div>
         </div>
       </div>
@@ -85,7 +105,7 @@ const Filter = () => {
         .filter-wrapper {
           width: 100%;
           max-width: 1920px;
-          height: 200px;
+          height: 350px;
           margin-bottom: 10px;
           box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.16);
           display: flex;
@@ -148,6 +168,28 @@ const Filter = () => {
           margin: 4px;
         }
 
+        .modalCalendar {
+          width: 30px;
+          height: 25px;
+          margin-right: 20px;
+          background-image: url("/calendar-modal-img.png");
+          background-size: cover;
+          border: none;
+          background-color: white;
+          cursor: pointer;
+        }
+
+        .date-showBox {
+          width: 80px;
+          height: 30px;
+          background-color: #f4f4f4;
+          border-radius: 15px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: 1.3rem;
+        }
+
         .selectButton {
           width: 60px;
           height: 20px;
@@ -178,16 +220,23 @@ const Filter = () => {
         .last-categories {
           float: left;
           display: flex;
-          justify-content: space-between;
           align-items: center;
           width: 100%;
           height: 50px;
+          border-bottom: 0.5px solid #bebebe;
         }
 
         p {
           font-size: 1.5rem;
           margin: 0 20px;
           font-weight: bold;
+        }
+
+        .buttons-wrapper {
+          margin-top: 20px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
 
         .button-reset {

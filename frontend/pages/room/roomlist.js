@@ -9,7 +9,6 @@ const Roomlist = () => {
       <div className="root-wrapper">
         <SearchBar />
         <RoomFilter />
-        <SelectExercise />
         <FilteredRooms />
       </div>
       <style jsx>{`
