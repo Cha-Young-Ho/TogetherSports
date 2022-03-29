@@ -12,10 +12,7 @@ public class RefreshTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     public void saveRefreshToken(Account loggedInUser, String refreshToken) {
-        // refresh token Entity
-        RefreshToken refreshTokenEntity = new RefreshToken();
-
-        refreshTokenRepository.save(refreshTokenEntity.createRefreshToken
+        refreshTokenRepository.save(RefreshToken.createRefreshToken
                 (loggedInUser.getEmail(),
                         loggedInUser.getId(),
                         refreshToken,
