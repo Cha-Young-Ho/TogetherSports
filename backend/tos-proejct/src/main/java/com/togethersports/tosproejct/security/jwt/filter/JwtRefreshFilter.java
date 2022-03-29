@@ -10,6 +10,7 @@ import com.togethersports.tosproejct.security.jwt.handler.JwtRefreshTokenExcepti
 import com.togethersports.tosproejct.security.jwt.token.RefreshToken;
 import com.togethersports.tosproejct.security.jwt.util.JwtDecoder;
 import com.togethersports.tosproejct.security.jwt.util.JwtTokenFactory;
+import com.togethersports.tosproejct.security.util.ClientIpUtils;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.MissingClaimException;
@@ -64,9 +65,11 @@ public class JwtRefreshFilter extends OncePerRequestFilter {
             ServletInputStream inputStream = request.getInputStream();
             Map<String, String> map = objectMapper.readValue(StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8), Map.class);
             String refreshToken = map.get("refresh");
+            String clientIp = ClientIpUtils.getClientIP(request);
+            String userAgent = request.getHeader("User-Agent");
 
             try {
-                TokenOfLogin tokenOfLogin = checkRefreshToken(refreshToken);
+                TokenOfLogin tokenOfLogin = checkRefreshToken(refreshToken, clientIp, userAgent);
 
                 parsingResponse(tokenOfLogin, response);
             } catch (SignatureException | MalformedJwtException | MissingClaimException ex) {
@@ -91,7 +94,7 @@ public class JwtRefreshFilter extends OncePerRequestFilter {
         return new JwtDecoder(this.jwtProperties);
     }
 
-    public TokenOfLogin checkRefreshToken(String refreshToken){
+    public TokenOfLogin checkRefreshToken(String refreshToken, String clientIp, String userAgent){
         //true일 경우 새로운 refreshToken 생성 필요
         if(getJwtDecoder().verifyRefreshToken(refreshToken)){
             // 기존의 refresh Token 조회
@@ -107,11 +110,14 @@ public class JwtRefreshFilter extends OncePerRequestFilter {
                             savedRefreshToken.getAccountEmail(),
                             savedRefreshToken.getAccountId(),
                             newRefreshToken,
-                            savedRefreshToken.getRole()
+                            savedRefreshToken.getRole(),
+                            savedRefreshToken.getClientIp(),
+                            userAgent,
+                            savedRefreshToken.getProvider()
                     );
 
             // 기존의 refresh Token 삭제
-            refreshTokenService.removeRefreshToken(savedRefreshToken.getId());
+            refreshTokenService.removeRefreshToken(savedRefreshToken.getId(), savedRefreshToken.getClientIp(), savedRefreshToken.getUserAgent(), savedRefreshToken.getProvider());
 
             // 새로운 refresh Token 저장
             refreshTokenService.renewalRefreshToken(newRefreshTokenEntity);
