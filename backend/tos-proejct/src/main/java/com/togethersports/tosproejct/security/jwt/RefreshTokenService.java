@@ -5,6 +5,8 @@ import com.togethersports.tosproejct.security.jwt.token.RefreshToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Service
 public class RefreshTokenService {
@@ -12,14 +14,29 @@ public class RefreshTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     public void saveRefreshToken(Account loggedInUser, String refreshToken) {
-        refreshTokenRepository.save(RefreshToken.createRefreshToken
+
+        refreshTokenRepository.save(createRefreshToken(loggedInUser, refreshToken));
+    }
+
+    public void renewalRefreshToken(RefreshToken refreshToken){
+
+        refreshTokenRepository.save(refreshToken);
+    }
+
+    public RefreshToken createRefreshToken(Account loggedInUser, String refreshToken){
+
+        return RefreshToken.createRefreshToken
                 (loggedInUser.getEmail(),
                         loggedInUser.getId(),
                         refreshToken,
-                        loggedInUser.getRole()));
+                        loggedInUser.getRole());
     }
 
-    public void renewalRefreshToken(String refreshToken){
+    public RefreshToken getRefreshToken(String refreshToken){
+        return refreshTokenRepository.findByRefreshToken(refreshToken);
+    }
 
+    public void removeRefreshToken(Long id){
+        refreshTokenRepository.deleteById(id);
     }
 }
