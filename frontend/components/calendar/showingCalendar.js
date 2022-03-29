@@ -2,12 +2,11 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import WeekWrapper from "./weekWrapper";
 
-const Calendar = (props) => {
+const ShowingCalendar = (props) => {
   // 선택된 날
   const [curSelectedDate, setCurSelectedDate] = useState("");
 
   useEffect(() => {
-    if (Object.keys(props).length === 0) return;
     props.setDateFunction(curSelectedDate);
   }, [curSelectedDate]);
 
@@ -240,7 +239,6 @@ const Calendar = (props) => {
 
         .calendar-body {
           width: 100%;
-          background-color: white;
         }
 
         .days-grid {
@@ -293,4 +291,4 @@ const Calendar = (props) => {
   );
 };
 
-export default Calendar;
+export default ShowingCalendar;
