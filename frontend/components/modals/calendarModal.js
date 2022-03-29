@@ -1,14 +1,38 @@
+import { useEffect, useState } from "react";
 import Calendar from "../calendar/calendar";
 
-const CalendarModal = ({ open, close }) => {
+const CalendarModal = ({ open, close, setFilterDate }) => {
+  const [curSelectedDate, setCurSelectedDate] = useState("");
+
+  // calendar의 현재 선택된 날 받아오기 위한 함수
+  const setSelectedDate = (date) => {
+    setCurSelectedDate((curSelectedDate = date));
+  };
+
+  const clickSelect = (e) => {
+    if (curSelectedDate === "") {
+      alert("날짜를 선택하셔야 합니다.");
+      e.preventDefault();
+      return;
+    }
+
+    setFilterDate(curSelectedDate);
+    close();
+  };
+
   return (
     <>
       <div className={open ? "openModal modal" : "modal"}>
         <div className="calendarModal">
-          {open ? <Calendar /> : null}
-          <button className="exit-button" onClick={close}>
-            &times;
-          </button>
+          {open ? <Calendar modalDateFunction={setSelectedDate} /> : null}
+          <div className="button-wrapper">
+            <button className="select-button" onClick={clickSelect}>
+              선택
+            </button>
+            <button className="exit-button" onClick={close}>
+              취소
+            </button>
+          </div>
         </div>
       </div>
       <style jsx>{`
@@ -42,8 +66,29 @@ const CalendarModal = ({ open, close }) => {
           align-items: center;
         }
 
+        .button-wrapper {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .select-button {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 200px;
+          height: 50px;
+          border: none;
+          cursor: pointer;
+          background-color: #08555f;
+          color: white;
+        }
+
         .exit-button {
-          width: 400px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 200px;
           height: 50px;
           border: none;
           cursor: pointer;

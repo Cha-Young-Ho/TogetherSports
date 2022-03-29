@@ -7,8 +7,16 @@ const Calendar = (props) => {
   const [curSelectedDate, setCurSelectedDate] = useState("");
 
   useEffect(() => {
-    if (Object.keys(props).length === 0) return;
-    props.setDateFunction(curSelectedDate);
+    if (props.setDateFunction) {
+      console.log(props.setDateFunction);
+      props.setDateFunction(curSelectedDate);
+      return;
+    }
+
+    if (props.modalDateFunction) {
+      props.modalDateFunction(curSelectedDate);
+      return;
+    }
   }, [curSelectedDate]);
 
   //이번 년도, 이번 달
