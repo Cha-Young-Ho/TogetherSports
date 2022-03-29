@@ -24,7 +24,6 @@ import java.util.Objects;
  * </p>
  * @author seunjeon
  */
-@Slf4j
 public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
@@ -44,7 +43,6 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
-        log.info("jwt auth 필터 작동");
         if(request.getRequestURI().equals("/api/refresh")){
             return null;
         }
