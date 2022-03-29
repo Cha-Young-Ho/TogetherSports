@@ -1,6 +1,8 @@
 package com.togethersports.tosproejct.security;
 
+import com.togethersports.tosproejct.security.jwt.RefreshTokenService;
 import com.togethersports.tosproejct.security.jwt.filter.JwtAuthenticationFilter;
+import com.togethersports.tosproejct.security.jwt.filter.JwtRefreshFilter;
 import com.togethersports.tosproejct.security.jwt.handler.JwtAuthenticationFailureHandler;
 import com.togethersports.tosproejct.security.jwt.provider.JwtAuthenticationProvider;
 import com.togethersports.tosproejct.security.oauth2.handler.OAuth2LoginAuthenticationSuccessHandler;
@@ -40,9 +42,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private OAuth2LoginAuthenticationSuccessHandler oAuth2LoginAuthenticationSuccessHandler;
 
-    // jwt Beans
+
+
+    /**
+     *  jwt Beans
+     */
+
+    //Jwt Util
     @Autowired
     private JwtAuthenticationProvider jwtAuthenticationProvider;
+
+    @Autowired
+    private RefreshTokenService refreshTokenService;
+
+    //Jwt Refresh Filter
+
+    public Filter jwtRefreshFilter() throws Exception{
+        JwtRefreshFilter jwtRefreshFilter = new JwtRefreshFilter(refreshTokenService);
+
+        return jwtRefreshFilter;
+    }
 
     @Autowired
     private JwtAuthenticationFailureHandler jwtAuthenticationFailureHandler;
@@ -72,12 +91,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .successHandler(oAuth2LoginAuthenticationSuccessHandler)
                 .userInfoEndpoint()
                 .userService(customOAuth2UserService);
-
+        /**
+         * JWT
+         */
         // JWT Authentication filter chain configuration
         http.addFilterBefore(jwtAuthenticationFilter(), OAuth2AuthorizationRequestRedirectFilter.class);
+        http.addFilterBefore(jwtRefreshFilter(), JwtAuthenticationFilter.class);
 
         // URL security
         http.authorizeRequests()
                 .antMatchers("/api/a").access("hasRole('ROLE_ADMIN')");
+
+
     }
 }
