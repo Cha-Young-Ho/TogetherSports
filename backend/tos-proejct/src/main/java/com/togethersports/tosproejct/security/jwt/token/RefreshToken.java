@@ -45,7 +45,7 @@ public class RefreshToken {
         this.role = role;
     }
 
-    public RefreshToken createRefreshToken(String accountEmail, Long accountId, String refreshToken, Role role){
+    public static RefreshToken createRefreshToken(String accountEmail, Long accountId, String refreshToken, Role role){
 
         return RefreshToken.builder()
                 .accountEmail(accountEmail)
