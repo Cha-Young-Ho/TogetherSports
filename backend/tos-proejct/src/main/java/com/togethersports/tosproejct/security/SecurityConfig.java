@@ -1,5 +1,6 @@
 package com.togethersports.tosproejct.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.togethersports.tosproejct.security.jwt.RefreshTokenService;
 import com.togethersports.tosproejct.security.jwt.filter.JwtAuthenticationFilter;
 import com.togethersports.tosproejct.security.jwt.filter.JwtRefreshFilter;
@@ -9,9 +10,7 @@ import com.togethersports.tosproejct.security.jwt.util.JwtTokenFactory;
 import com.togethersports.tosproejct.security.oauth2.handler.OAuth2LoginAuthenticationSuccessHandler;
 import com.togethersports.tosproejct.security.oauth2.service.CustomOAuth2UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -35,6 +34,9 @@ import javax.servlet.Filter;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     // OAuth2 Beans
     @Autowired
@@ -105,9 +107,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // URL security
         http.authorizeRequests()
-                .antMatchers("/api/a").access("hasRole('ROLE_ADMIN')")
-                .antMatchers("/**").permitAll();
-
+                .antMatchers("/api/a").access("hasRole('ROLE_ADMIN')");
 
 
     }

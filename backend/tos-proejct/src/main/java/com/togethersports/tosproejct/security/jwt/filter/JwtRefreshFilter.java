@@ -6,8 +6,7 @@ import com.togethersports.tosproejct.common.dto.Response;
 import com.togethersports.tosproejct.security.jwt.JwtProperties;
 import com.togethersports.tosproejct.security.jwt.RefreshTokenService;
 import com.togethersports.tosproejct.security.jwt.dto.TokenOfLogin;
-import com.togethersports.tosproejct.security.jwt.exception.JwtExpiredTokenException;
-import com.togethersports.tosproejct.security.jwt.exception.JwtModulatedTokenException;
+import com.togethersports.tosproejct.security.jwt.handler.JwtRefreshTokenExceptionHandler;
 import com.togethersports.tosproejct.security.jwt.token.RefreshToken;
 import com.togethersports.tosproejct.security.jwt.util.JwtDecoder;
 import com.togethersports.tosproejct.security.jwt.util.JwtTokenFactory;
@@ -16,7 +15,6 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.MissingClaimException;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -36,8 +34,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Objects;
 
-
-@Slf4j
+/**
+ * <h1>JwtRefreshFilter</h1>
+ * <p>
+ *     Access Token 갱신 담당 필터
+ * </p>
+ * @author younghoCha
+ */
 @RequiredArgsConstructor
 @Component
 public class JwtRefreshFilter extends OncePerRequestFilter {
@@ -53,8 +56,6 @@ public class JwtRefreshFilter extends OncePerRequestFilter {
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
@@ -64,24 +65,23 @@ public class JwtRefreshFilter extends OncePerRequestFilter {
             Map<String, String> map = objectMapper.readValue(StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8), Map.class);
             String refreshToken = map.get("refresh");
 
-            log.info("refresh = {}", refreshToken);
-
-
             try {
                 TokenOfLogin tokenOfLogin = checkRefreshToken(refreshToken);
 
                 parsingResponse(tokenOfLogin, response);
             } catch (SignatureException | MalformedJwtException | MissingClaimException ex) {
-                throw new JwtModulatedTokenException("변조된 JWT 토큰입니다.");
+                JwtRefreshTokenExceptionHandler jwtRefreshTokenExceptionHandler
+                        = new JwtRefreshTokenExceptionHandler();
+
+                jwtRefreshTokenExceptionHandler.createModulatedResponse(response);
             } catch (ExpiredJwtException ex) {
-                throw new JwtExpiredTokenException("만료된 JWT 토큰입니다.");
+                JwtRefreshTokenExceptionHandler jwtRefreshTokenExceptionHandler
+                        = new JwtRefreshTokenExceptionHandler();
+
+                jwtRefreshTokenExceptionHandler.createExpiredResponse(response);
             }
 
-
-
-
         }
-
 
         filterChain.doFilter(request, response);
 
@@ -110,7 +110,6 @@ public class JwtRefreshFilter extends OncePerRequestFilter {
                             savedRefreshToken.getRole()
                     );
 
-
             // 기존의 refresh Token 삭제
             refreshTokenService.removeRefreshToken(savedRefreshToken.getId());
 
@@ -137,7 +136,6 @@ public class JwtRefreshFilter extends OncePerRequestFilter {
 
         // token 객체 생성 (access, refresh)
         // token 객체 리턴
-
         return TokenOfLogin.builder()
                 .accessToken(newAccessToken)
                 .refreshToken(refreshToken)
@@ -154,15 +152,6 @@ public class JwtRefreshFilter extends OncePerRequestFilter {
             writer.write(objectMapper.writeValueAsString(responseValue));
         }
 
-        log.info("parsing 중~");
-
     }
-
-
-
-
-
-
-
 
 }
