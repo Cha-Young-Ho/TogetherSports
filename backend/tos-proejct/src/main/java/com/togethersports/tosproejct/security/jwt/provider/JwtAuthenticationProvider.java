@@ -35,7 +35,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 
         String token = (String) authentication.getPrincipal();
         try {
-            Account verifiedAccount = jwtDecoder.verify(token, TokenType.ACCESS_TOKEN);
+            Account verifiedAccount = jwtDecoder.verifyAccessToken(token, TokenType.ACCESS_TOKEN);
             return new JwtPostAuthenticationToken(verifiedAccount);
         } catch (SignatureException | MalformedJwtException | MissingClaimException ex) {
             throw new JwtModulatedTokenException("변조된 JWT 토큰입니다.");

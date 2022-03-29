@@ -5,6 +5,7 @@ import com.togethersports.tosproejct.security.jwt.filter.JwtAuthenticationFilter
 import com.togethersports.tosproejct.security.jwt.filter.JwtRefreshFilter;
 import com.togethersports.tosproejct.security.jwt.handler.JwtAuthenticationFailureHandler;
 import com.togethersports.tosproejct.security.jwt.provider.JwtAuthenticationProvider;
+import com.togethersports.tosproejct.security.jwt.util.JwtTokenFactory;
 import com.togethersports.tosproejct.security.oauth2.handler.OAuth2LoginAuthenticationSuccessHandler;
 import com.togethersports.tosproejct.security.oauth2.service.CustomOAuth2UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,10 +56,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private RefreshTokenService refreshTokenService;
 
+    @Autowired
+    private JwtTokenFactory jwtTokenFactory;
+
     //Jwt Refresh Filter
 
     public Filter jwtRefreshFilter() throws Exception{
-        JwtRefreshFilter jwtRefreshFilter = new JwtRefreshFilter(refreshTokenService);
+        JwtRefreshFilter jwtRefreshFilter = new JwtRefreshFilter(refreshTokenService, jwtTokenFactory);
+
 
         return jwtRefreshFilter;
     }
@@ -100,7 +105,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // URL security
         http.authorizeRequests()
-                .antMatchers("/api/a").access("hasRole('ROLE_ADMIN')");
+                .antMatchers("/api/a").access("hasRole('ROLE_ADMIN')")
+                .antMatchers("/**").permitAll();
+
 
 
     }
