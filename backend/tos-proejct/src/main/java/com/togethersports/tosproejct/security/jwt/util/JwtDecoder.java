@@ -36,11 +36,16 @@ public class JwtDecoder {
      * @throws MalformedJwtException 토큰이 유효한 형식이 아닌 경우 발생
      */
     public Account verify(String token, TokenType tokenType) throws ExpiredJwtException, SignatureException, MissingClaimException, MalformedJwtException {
+        String key = properties.getAccessTokenSigningKey();
+
+        if(tokenType == TokenType.REFRESH_TOKEN){
+            key = properties.getRefreshTokenSigningKey();
+        }
         Jws<Claims> jwt = Jwts.parserBuilder()
-//                .setSigningKey(Keys.hmacShaKeyFor(properties.getSigningKey().getBytes()))
-                .setSigningKey(Keys.hmacShaKeyFor("kGO2WGNVgLVHVhz5M1Y8nQuT7mH69JHlGqSk5X9Qi7M=".getBytes()))
-//                .requireIssuer(properties.getIssuer())
-                .requireIssuer("together-sports")
+                .setSigningKey(Keys.hmacShaKeyFor(key.getBytes()))
+//                .setSigningKey(Keys.hmacShaKeyFor("kGO2WGNVgLVHVhz5M1Y8nQuT7mH69JHlGqSk5X9Qi7M=".getBytes()))
+                .requireIssuer(properties.getIssuer())
+//                .requireIssuer("together-sports")
                 .build()
                 .parseClaimsJws(token);
 
@@ -48,13 +53,14 @@ public class JwtDecoder {
             Claims jwtBody = jwt.getBody();
             Long id = Long.valueOf(jwtBody.getSubject());
             String email = (String) jwtBody.get("email");
-            String nickname = (String) jwtBody.get("nickname");
+            String nickname = (String) jwtBody.get("user");
             Role role = Role.valueOf((String) jwtBody.get("role"));
 
             return Account.convertAccount(id, email, nickname, role);
-        } else {
-            return null;
         }
+
+        //refresh 경우
+        return null;
 
     }
 

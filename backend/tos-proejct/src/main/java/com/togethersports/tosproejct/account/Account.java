@@ -16,7 +16,7 @@ import javax.persistence.*;
  * <p>신규 계정을 생성하려면 {@link #createAccount(Long, String, String, OAuth2Provider)} 참조</p>
  * <p>기존 계정 정보를 계정 엔티티로 변환하려면 {@link #convertAccount(Long, String, String, Role)} 참조</p>
  * @author seunjeon
- * @author yunghocha
+ * @author younghocha
  */
 @Getter
 @Entity
@@ -45,6 +45,7 @@ public class Account {
 
     @Column(name = "ACCOUNT_IS_FIRST") // 가입 이후 추가정보 입력 여부
     private boolean isFirst;
+
 
     // 계정 엔티티를 생성자 및 빌더로 직접 접근해서 생성하는 것은 불가능 반드시 특정 메소드 사용하도록 강제
     @Builder(access = AccessLevel.PRIVATE)
