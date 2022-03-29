@@ -24,7 +24,7 @@ package com.togethersports.tosproejct.security.oauth2.model;
 public enum OAuth2Provider {
     KAKAO("kakao", "id"),
     NAVER("naver", "response"),
-    GOOGLE("google", "");
+    GOOGLE("google", "sub");
 
     private String providerName;
     private String attributeKey;
