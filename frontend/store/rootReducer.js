@@ -91,7 +91,6 @@ const userRequestReducer = (state = signupInitialState, action) => {
           .map((el) => el[0]),
       };
     default:
-      console.log("start");
       return state;
   }
 };

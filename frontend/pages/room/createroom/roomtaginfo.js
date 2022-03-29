@@ -6,13 +6,29 @@ import { FailResponse } from "../../../api/failResponse";
 import RoomInfoNavBar from "../../../components/roomInfoNavBar";
 
 const RoomTagInfo = () => {
-  const [roomContent, setRoomContent] = useState("");
-  const [roomImages, setRoomImages] = useState([]);
-  const [tag, setTag] = useState([]);
   const roomInfo = useSelector((state) => state.createRoomReducer);
+
+  // 방 설명
+  const [roomContent, setRoomContent] = useState("");
+
+  // 방 이미지
+  const [image, setImage] = useState("");
+  const [imagesrc, setImagesrc] = useState("");
+  const roomImages = []; // 서버에 이미지가 담긴 객체배열
+  const [roomImage, setRoomImage] = useState([]);
+
+  //const [imageName, setImageName] = useState("");
+  //const [imageExtension, setImageExtension] = useState("");
+
+  // 방 태그
+  const [tag, setTag] = useState([]);
 
   /* 수정 필요 */
   // 1. 완료 버튼 클릭 시, 새로 만들어진 방으로 이동
+  // 2. 이미지 불러와서 객체배열 형태로 저장 O -> source 앞에 base64 빼는작업 필요
+  // 3. 선택된 이미지 프리뷰 뜨게 하기 및 다른 파일을 선택하면 또 다른 프리뷰 생성
+  // 4. X 버튼 누르면 프리뷰 삭제하고 객체배열에서도 데이터 빼기
+  // 5. 프리뷰 이미지를 선택하면 테두리가 초록색으로 변하고 대표사진으로 됨(대표사진에 대한 API 수정 필요) + 다른걸 누르면 그걸로 대체(중복X)
 
   // 예외 처리 및 서버에 방 생성 요청
   const callCreateRoomRequest = (e) => {
@@ -44,6 +60,52 @@ const RoomTagInfo = () => {
     }
   };
 
+  // 이미지 source 인코딩
+  const encodeFileToBase64 = async (file) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      const baseURL = "";
+      reader.readAsDataURL(file); // 파일을 base64 text로 전환
+
+      reader.onload = () => {
+        baseURL = reader.result;
+        setImagesrc((imagesrc = baseURL));
+        resolve(baseURL);
+      };
+    });
+  };
+
+  // 이미지 확장자 index 반환 함수
+  const getExtension = (profilename) => {
+    if (profilename.indexOf("png") !== -1) {
+      return profilename.indexOf("png");
+    } else if (profilename.indexOf("jpg") !== -1) {
+      return profilename.indexOf("jpg");
+    }
+    if (profilename.indexOf("jpeg") !== -1) {
+      return profilename.indexOf("jpeg");
+    }
+  };
+
+  const onChangeImage = (e) => {
+    const file = e.target.files[0];
+    const index = getExtension(file.name);
+    const imageFileRealName = file.name.substring(0, index - 1);
+    const imageFileExtension = file.type.split("/")[1];
+
+    setImage(file.name);
+    encodeFileToBase64(file).then(() => {
+      setRoomImage([
+        ...roomImage,
+        {
+          roomImageRealName: imageFileRealName,
+          roomImageExtension: imageFileExtension,
+          imageSource: imagesrc,
+        },
+      ]);
+    });
+  };
+
   // 태그 선택 함수
   const onClickTag = (e) => {
     if (e.target.classList[2] === "tag-clicked") {
@@ -64,9 +126,11 @@ const RoomTagInfo = () => {
     }
   };
 
+  // test
   useEffect(() => {
-    console.log(roomContent);
-    console.log(tag);
+    //console.log(roomContent);
+    console.log(roomImage);
+    //console.log(tag);
   });
 
   return (
@@ -92,32 +156,37 @@ const RoomTagInfo = () => {
           <div className="content-images">
             <div className="images">
               <p>사진추가</p>
-              <input readOnly className="image-name" />
-              <label htmlFor="image">
+              <input readOnly className="image-name" value={image} />
+              <label htmlFor="filename">
                 <div>파일찾기</div>
               </label>
-              <input type="file" id="image" accept=".jpg, .jpeg, .png" />
+              <input
+                type="file"
+                id="filename"
+                accept=".jpg, .jpeg, .png"
+                onChange={onChangeImage}
+              />
             </div>
 
             <div className="previews">
               <div className="preview">
-                <div>이미지1</div>
+                <div></div>
                 <button>X</button>
               </div>
               <div className="preview">
-                <div>이미지2</div>
+                <div></div>
                 <button>X</button>
               </div>
               <div className="preview">
-                <div>이미지3</div>
+                <div></div>
                 <button>X</button>
               </div>
               <div className="preview">
-                <div>이미지4</div>
+                <div></div>
                 <button>X</button>
               </div>
               <div className="preview">
-                <div>이미지5</div>
+                <div></div>
                 <button>X</button>
               </div>
             </div>
@@ -263,7 +332,7 @@ const RoomTagInfo = () => {
           width: 380px;
           height: 30px;
           border-style: none;
-          font-size: 1.3em;
+          font-size: 1.4em;
           padding: 5px;
         }
 

@@ -97,6 +97,7 @@ const PersonalInfo = () => {
     });
   };
 
+  // 프로필 이미지 확장자 index 반환 함수
   const getExtension = (profilename) => {
     if (profilename.indexOf("png") !== -1) {
       return profilename.indexOf("png");
@@ -169,11 +170,6 @@ const PersonalInfo = () => {
 
   useEffect(getBirthDay, []);
 
-  // test
-  useEffect(() => {
-    console.log(userBirth);
-  });
-
   return (
     <>
       <div className="bg-container">
@@ -182,6 +178,7 @@ const PersonalInfo = () => {
           interest_atv={"deactivation"}
           activearea={"deactivation"}
         />
+
         <div className="content-showbox">
           <div className="nickname">
             <div className="nickname-text-box">
@@ -199,6 +196,7 @@ const PersonalInfo = () => {
               중복확인
             </button>
           </div>
+
           <div className="birth">
             <div className="birth-text-box">
               <div className="essential-mark">*</div>
@@ -231,6 +229,7 @@ const PersonalInfo = () => {
               </div>
             </div>
           </div>
+
           <div className="gender">
             <div className="gender-text-box">
               <div className="essential-mark">*</div>
@@ -263,6 +262,7 @@ const PersonalInfo = () => {
               </div>
             </div>
           </div>
+
           <div className="profile">
             <div className="text-profile">프로필</div>
             <input
@@ -279,7 +279,7 @@ const PersonalInfo = () => {
               accept=".jpg, .jpeg, .png"
               onChange={(e) => {
                 setProfile((profile = e.target.value));
-                const index = getExtension(profile.substr(12)); // 확장자 index 받아오기
+                const index = getExtension(profile.substr(12));
                 const splitData1 = profile.substr(12).substring(0, index - 1);
                 const splitData2 = profile.substr(12).substring(index);
                 setFileName(splitData1);
@@ -289,6 +289,7 @@ const PersonalInfo = () => {
             />
           </div>
         </div>
+
         <Link href="/signup/addinfo/interest">
           <button className="button-next" onClick={getNext}>
             다음
@@ -505,7 +506,7 @@ const PersonalInfo = () => {
           width: 430px;
           height: 30px;
           border-style: none;
-          font-size: 1.5em;
+          font-size: 1.4em;
           padding: 5px;
         }
 
