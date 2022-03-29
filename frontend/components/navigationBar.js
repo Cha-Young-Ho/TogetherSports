@@ -3,7 +3,7 @@ import { signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { deleteLogout } from "../api/members";
 import { FailResponse } from "../api/failResponse";
-import Modal from "./userInfoModal";
+import Modal from "./modals/userInfoModal";
 import { getNavBar } from "../api/etc";
 
 const NavigationBar = () => {

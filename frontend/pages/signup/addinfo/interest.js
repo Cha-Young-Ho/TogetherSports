@@ -115,7 +115,6 @@ const Interest = () => {
 
         .grid-interest {
           display: grid;
-
           margin-top: 20px;
           grid-auto-rows: minmax(140px, auto);
           grid-template-columns: repeat(4, minmax(140px, auto));

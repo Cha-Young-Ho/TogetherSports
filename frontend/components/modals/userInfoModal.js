@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
-import { getMyInfo } from "../api/members";
-import { FailResponse } from "../api/failResponse";
+import { getMyInfo } from "../../api/members";
+import { FailResponse } from "../../api/failResponse";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
