@@ -22,10 +22,8 @@ const RoomTagInfo = () => {
 
   /* 수정 필요 */
   // 1. 완료 버튼 클릭 시, 새로 만들어진 방으로 이동
-  // 2. 이미지 불러와서 객체배열 형태로 저장 O
-  // 3. 선택된 이미지 프리뷰 뜨게 하기 및 다른 파일을 선택하면 또 다른 프리뷰 생성 O
-  // 4. X 버튼 누르면 프리뷰 삭제하고 객체배열에서도 데이터 빼기
-  // 5. 프리뷰 이미지를 선택하면 테두리가 초록색으로 변하고 대표사진으로 됨(대표사진에 대한 API 수정 필요) + 다른걸 누르면 그걸로 대체(중복X)
+  // 2. X 버튼 누르면 프리뷰 삭제하고 객체배열에서도 데이터 빼기
+  // 3. 프리뷰 이미지를 선택하면 테두리가 초록색으로 변하고 대표사진으로 됨(대표사진에 대한 API 수정 필요) + 다른걸 누르면 그걸로 대체(중복X)
 
   // 예외 처리 및 서버에 방 생성 요청
   const callCreateRoomRequest = (e) => {
@@ -86,23 +84,39 @@ const RoomTagInfo = () => {
     }
   };
 
+  // 이미지가 선택 함수
   const onChangeImage = (e) => {
     const file = e.target.files[0];
     const index = getExtension(file.name);
     const imageFileRealName = file.name.substring(0, index - 1);
     const imageFileExtension = file.type.split("/")[1];
 
-    setImage(file.name);
-    encodeFileToBase64(file).then(() => {
-      setRoomImage([
-        ...roomImage,
-        {
-          roomImageRealName: imageFileRealName,
-          roomImageExtension: imageFileExtension,
-          imageSource: imagesrc,
-        },
-      ]);
-    });
+    if (roomImage.length < 5) {
+      setImage(file.name);
+      encodeFileToBase64(file).then(() => {
+        setRoomImage([
+          ...roomImage,
+          {
+            roomImageRealName: imageFileRealName,
+            roomImageExtension: imageFileExtension,
+            imageSource: imagesrc,
+          },
+        ]);
+      });
+    } else {
+      e.preventDefault();
+      alert("이미지는 최대 5개까지 설정할 수 있습니다!");
+    }
+  };
+
+  // 이미지 삭제 함수
+  const deleteImage = (e) => {
+    console.log(e);
+    // const preview = setImagePreview((prev) =>
+    //   prev.filter((el) => {
+    //     return el !== preview;
+    //   })
+    // );
   };
 
   // 태그 선택 함수
@@ -128,8 +142,8 @@ const RoomTagInfo = () => {
   // test
   useEffect(() => {
     //console.log(roomContent);
-    //console.log(roomImage);
-    //console.log(imagePreview);
+    console.log(roomImage);
+    console.log(imagePreview);
     //console.log(tag);
   });
 
