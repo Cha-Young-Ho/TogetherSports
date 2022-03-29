@@ -2,6 +2,7 @@ package com.togethersports.tosproejct.security.jwt.filter;
 
 import com.togethersports.tosproejct.security.jwt.exception.AuthorizationHeaderNotFoundException;
 import com.togethersports.tosproejct.security.jwt.token.JwtPreAuthenticationToken;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContext;
@@ -23,6 +24,7 @@ import java.util.Objects;
  * </p>
  * @author seunjeon
  */
+@Slf4j
 public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
@@ -32,6 +34,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
      * @param requiresAuthenticationRequestMatcher
      */
     public JwtAuthenticationFilter(RequestMatcher requiresAuthenticationRequestMatcher) {
+
         super(requiresAuthenticationRequestMatcher);
     }
 
@@ -41,6 +44,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
+        log.info("jwt auth 필터 작동");
         String authorizationHeader = request.getHeader(AUTHORIZATION_HEADER);
 
         // 인증 헤더가 없는 경우 예외 발생
