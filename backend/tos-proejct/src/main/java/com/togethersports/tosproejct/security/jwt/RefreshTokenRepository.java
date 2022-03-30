@@ -11,4 +11,5 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
     RefreshToken findByRefreshToken(String refreshToken);
     boolean existsByClientIpAndUserAgentAndProvider(String clientIp, String userAgent, String provider);
     void deleteByClientIpAndUserAgentAndProvider(String clientIp, String userAgent, String provider);
+    void deleteByRefreshToken(String refreshToken);
 }
