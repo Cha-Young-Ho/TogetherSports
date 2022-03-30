@@ -10,7 +10,7 @@ import axios from "axios";
 const getUserInfoCheck = async (email, name, provi) => {
   //http://localhost:8080/test
 
-  const promise = axios.get("http://localhost:8080/user/check", {
+  const promise = axios.get("http://localhost:8080/api/user/check", {
     headers: {
       "Content-type": "application/json; charset=UTF-8",
       Accept: "*/*",
@@ -30,7 +30,7 @@ const getUserInfoCheck = async (email, name, provi) => {
 const getUserLogin = async (email, name, provi) => {
   //http://localhost:8080/test
 
-  const promise = axios.get("http://localhost:8080/login", {
+  const promise = axios.get("http://localhost:8080/api/login", {
     headers: {
       "Content-type": "application/json; charset=UTF-8",
       Accept: "*/*",
@@ -48,7 +48,7 @@ const getUserLogin = async (email, name, provi) => {
 
 // 닉네임 중복확인
 const getDuplicationCheck = async (nickname) => {
-  const promise = axios.get("http://localhost:8080/duplication", {
+  const promise = axios.get("http://localhost:8080/api/duplication", {
     headers: {
       "Content-type": "application/json; charset=UTF-8",
       Accept: "*/*",
@@ -64,11 +64,11 @@ const getDuplicationCheck = async (nickname) => {
 
 // 내 정보 조회
 const getMyInfo = async () => {
-  const promise = axios.get("http://localhost:8080/user", {
+  const promise = axios.get("http://localhost:8080/api/user", {
     headers: {
       "Content-type": "application/json; charset=UTF-8",
       Accept: "*/*",
-      Authorization: localStorage.getItem("accessToken"),
+      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
     },
   });
   const dataPromise = promise.then((res) => res.data);
@@ -78,11 +78,11 @@ const getMyInfo = async () => {
 
 // 다른 회원 정보 조회
 const getOtherInfo = async (nickname) => {
-  const promise = axios.get("http://localhost:8080/other", {
+  const promise = axios.get("http://localhost:8080/api/other", {
     headers: {
       "Content-type": "application/json; charset=UTF-8",
       Accept: "*/*",
-      Authorization: localStorage.getItem("accessToken"),
+      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
     },
     params: {
       userNickName: nickname,
@@ -100,37 +100,31 @@ const postUserRequest = async (
   activeAreas,
   gender,
   interests,
-  mannerPoint,
   provider,
-  userBirthDay,
-  userBirthMonday,
-  userBirthYear,
+  userBirth,
   userEmail,
   userName,
   userNickname,
   userProfileImage
 ) => {
-  const promise = axios.post("http://localhost:8080/user", {
-    headers: {
-      "Content-type": "application/json; charset=UTF-8",
-      Accept: "*/*",
-    },
-    data: {
-      mannerPoint: mannerPoint,
+  const promise = axios.post(
+    "http://localhost:8080/api/user",
+    {
       userEmail: userEmail,
       userName: userName,
       userNickname: userNickname,
-      userBirthYear: userBirthYear,
-      userBirthMonth: userBirthMonday,
-      userBirthDay: userBirthDay,
-      mannerPoint: 10,
+      userBirth: userBirth,
       activeAreas: activeAreas,
       gender: gender,
       userProfileImage: userProfileImage,
       provider: provider,
       interests: interests, //--> 5개까지
     },
-  });
+    {
+      "Content-type": "application/json; charset=UTF-8",
+      Accept: "*/*",
+    }
+  );
   const dataPromise = promise.then((res) => res.data);
 
   return dataPromise;
@@ -139,19 +133,37 @@ const postUserRequest = async (
 // PUT
 
 // 회원 정보 수정
-const putUpdateUserInfo = async () => {
-  //http://localhost:8080/test
-
-  const promise = axios.put("http://localhost:8080/user", {
-    headers: {
+const putUpdateUserInfo = async (
+  userEmail,
+  userName,
+  userNickname,
+  userBirth,
+  activeAreas,
+  gender,
+  userProfileImage,
+  provider,
+  interests
+) => {
+  const promise = axios.put(
+    "http://localhost:8080/api/user",
+    {
+      userEmail: userEmail,
+      userName: userName,
+      userNickname: userNickname,
+      userBirth: userBirth,
+      mannerPoint: 10,
+      activeAreas: activeAreas,
+      gender: gender,
+      userProfileImage: userProfileImage,
+      provider: provider,
+      interests: interests, //--> 5개까지
+    },
+    {
       "Content-type": "application/json; charset=UTF-8",
       Accept: "*/*",
-      Authorization: localStorage.getItem("accessToken"),
-    },
-    params: {
-      // 굉장히 많음
-    },
-  });
+      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+    }
+  );
   const dataPromise = promise.then((res) => res.data);
 
   return dataPromise;
@@ -163,11 +175,13 @@ const putUpdateUserInfo = async () => {
 const deleteLogout = async () => {
   //http://localhost:8080/test
 
-  const promise = axios.delete("http://localhost:8080/logout", {
+  const promise = axios.delete("http://localhost:8080/api/logout", {
     headers: {
       "Content-type": "application/json; charset=UTF-8",
       Accept: "*/*",
-      Authorization: localStorage.getItem("accessToken"),
+    },
+    params: {
+      refreshToken: localStorage.getItem("refreshToken"),
     },
   });
   const dataPromise = promise.then((res) => res.data);

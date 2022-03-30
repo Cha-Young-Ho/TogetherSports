@@ -1,11 +1,9 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import jquery from "jquery";
 import $ from "jquery";
 import { useDispatch } from "react-redux";
-//import { getDuplicationCheck } from "../../../api/members";
+import { getDuplicationCheck } from "../../../api/members";
 import UserInfoNavBar from "../../../components/userInfoNavBar";
-import axios from "axios";
 
 const PersonalInfo = () => {
   const dispatch = useDispatch();
@@ -18,6 +16,7 @@ const PersonalInfo = () => {
   const [birthYear, setBirthYear] = useState("YYYY");
   const [birthMonth, setBirthMonth] = useState("MM");
   const [birthDay, setBirthDay] = useState("DD");
+  const userBirth = `${birthYear}-${birthMonth}-${birthDay}`;
 
   //성별
   const [gender, setGender] = useState("male");
@@ -38,8 +37,8 @@ const PersonalInfo = () => {
       alert("닉네임은 최소 2글자 이상 입력해주세요.");
     } else {
       getDuplicationCheck(nickname).then((res) => {
-        console.log(res.message);
-        if (res.code === 5000) {
+        console.log(res.status.message);
+        if (res.status.code === 5000) {
           setIsNicknameCheck(true);
           alert("사용 가능한 닉네임입니다.");
         } else {
@@ -90,12 +89,15 @@ const PersonalInfo = () => {
     reader.readAsDataURL(fileBlob);
     return new Promise((resolve) => {
       reader.onload = () => {
-        setImagesrc(reader.result);
+        const src = reader.result;
+        const sliceIndex = src.indexOf(",");
+        setImagesrc(src.substr(sliceIndex + 1));
         resolve();
       };
     });
   };
 
+  // 프로필 이미지 확장자 index 반환 함수
   const getExtension = (profilename) => {
     if (profilename.indexOf("png") !== -1) {
       return profilename.indexOf("png");
@@ -157,9 +159,7 @@ const PersonalInfo = () => {
       type: "PERSONALINFO",
       payload: {
         userNickname: nickname,
-        userBirthYear: birthYear,
-        userBirthMonday: birthMonth,
-        userBirthDay: birthDay,
+        userBirth: userBirth,
         gender: gender,
         userProfileRealName: fileName,
         userProfileExtension: extension,
@@ -178,6 +178,7 @@ const PersonalInfo = () => {
           interest_atv={"deactivation"}
           activearea={"deactivation"}
         />
+
         <div className="content-showbox">
           <div className="nickname">
             <div className="nickname-text-box">
@@ -195,6 +196,7 @@ const PersonalInfo = () => {
               중복확인
             </button>
           </div>
+
           <div className="birth">
             <div className="birth-text-box">
               <div className="essential-mark">*</div>
@@ -227,6 +229,7 @@ const PersonalInfo = () => {
               </div>
             </div>
           </div>
+
           <div className="gender">
             <div className="gender-text-box">
               <div className="essential-mark">*</div>
@@ -259,6 +262,7 @@ const PersonalInfo = () => {
               </div>
             </div>
           </div>
+
           <div className="profile">
             <div className="text-profile">프로필</div>
             <input
@@ -275,7 +279,7 @@ const PersonalInfo = () => {
               accept=".jpg, .jpeg, .png"
               onChange={(e) => {
                 setProfile((profile = e.target.value));
-                const index = getExtension(profile.substr(12)); // 확장자 index 받아오기
+                const index = getExtension(profile.substr(12));
                 const splitData1 = profile.substr(12).substring(0, index - 1);
                 const splitData2 = profile.substr(12).substring(index);
                 setFileName(splitData1);
@@ -285,6 +289,7 @@ const PersonalInfo = () => {
             />
           </div>
         </div>
+
         <Link href="/signup/addinfo/interest">
           <button className="button-next" onClick={getNext}>
             다음
@@ -301,36 +306,6 @@ const PersonalInfo = () => {
           flex-direction: column;
           align-items: center;
           justify-content: center;
-        }
-
-        h1 {
-          padding: 35px 0;
-          font-weight: bold;
-          font-size: 2.5rem;
-        }
-
-        .title {
-          width: 500px;
-          display: flex;
-          justify-content: space-around;
-          margin-bottom: 20px;
-        }
-
-        .title-circle-personalinfo,
-        .title-circle-interest,
-        .title-circle-activearea {
-          border-radius: 50px;
-          width: 90px;
-          height: 90px;
-          margin: 10px;
-        }
-
-        p {
-          display: flex;
-          justify-content: center;
-          font-size: 1.5rem;
-          align-items: center;
-          margin: 5px 0;
         }
 
         .content-showbox {
@@ -531,7 +506,7 @@ const PersonalInfo = () => {
           width: 430px;
           height: 30px;
           border-style: none;
-          font-size: 1.5em;
+          font-size: 1.4em;
           padding: 5px;
         }
 

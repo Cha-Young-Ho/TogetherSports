@@ -1,16 +1,22 @@
 import Link from "next/link";
-import { useSession, signOut } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { deleteLogout } from "../api/members";
-import Modal from "./userInfoModal";
+import { FailResponse } from "../api/failResponse";
+import Modal from "./modals/userInfoModal";
+import { getNavBar } from "../api/etc";
 
 const NavigationBar = () => {
   // 로그인 상태 임을 판별하는 변수
   const [loginData, setLoginData] = useState(false);
 
-  // 유저 세션 정보(auth name, email, provider)
-  const { data: session, status } = useSession();
-  const loading = status === "loading";
+  // 로그인 요청으로 받아온 정보
+  const [userNickname, setUserNickname] = useState("");
+  const [imageSource, setImageSource] = useState("");
+
+  // // 유저 세션 정보(auth name, email, provider)
+  // const { data: session, status } = useSession();
+  // const loading = status === "loading";
 
   // 유저 프로필 클릭 시 뜨는 팝업 창 관리 state
   const [modalOpen, setModalOpen] = useState(false);
@@ -22,21 +28,33 @@ const NavigationBar = () => {
     setModalOpen(false);
   };
 
-  // 로컬 스토리지에 accessToken 가져오기
-  useEffect(() => {
-    setLoginData((loginData = localStorage.getItem("accessToken")));
-  }, []);
+  // 서버로 로그인 요청
+  // useEffect(() => {
+  //   getNavBar().then((res) => {
+  //     if (res.status.code === 5000) {
+  //       console.log(res.status.message);
+  //       setLoginData((loginData = true));
+  //       setUserNickname((userNickname = res.content.userNickname));
+  //       setImageSource(
+  //         (imageSource = res.content.userProfileImage.imageSource)
+  //       );
+  //     } else {
+  //       FailResponse(res.status.code);
+  //     }
+  //   });
+  // }, []);
 
+  // 로그아웃 버튼 클릭
   const ClickLogout = () => {
     deleteLogout().then((res) => {
-      console.log(res.message);
-      if (res.code === 5000) {
+      console.log(res.status.message);
+      if (res.status.code === 5000) {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         setLoginData((loginData = false));
         console.log("로그아웃 완료");
       } else {
-        console.log("잘못 된 요청입니다.");
+        FailResponse(res.status.code);
       }
     });
     console.log("로그아웃 시도");
@@ -58,7 +76,7 @@ const NavigationBar = () => {
               <Link href="/">
                 <div className="tag">소개</div>
               </Link>
-              <Link href="/">
+              <Link href="/room/roomlist">
                 <div className="tag">방 목록</div>
               </Link>
               <Link href="/">
@@ -67,43 +85,38 @@ const NavigationBar = () => {
             </div>
           </div>
           <div>
-            {!loading ? (
-              <div className="sign">
-                {!session || !loginData ? (
-                  <>
-                    <Link href="/signup/oauth">
-                      <div className="tag">회원가입</div>
-                    </Link>
-                    <Link href="/login">
-                      <div className="tag">로그인</div>
-                    </Link>
-                  </>
-                ) : (
-                  <>
-                    <button className="user-box" onClick={openModal}>
-                      <div className="ProfileImage"></div>
-                      <div className="logOn">
-                        {session.user.name} 님 반갑습니다!
-                      </div>
-                    </button>
+            <div className="sign">
+              {!loginData ? (
+                <>
+                  <Link href="/login">
+                    <div className="tag">로그인</div>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <button className="user-box" onClick={openModal}>
+                    <img className="ProfileImage" src={`${imageSource}`}></img>
+                    <div className="logOn">
+                      {`${userNickname}`} 님 반갑습니다!
+                    </div>
+                  </button>
 
-                    <Modal open={modalOpen} close={closeModal}></Modal>
+                  <Modal open={modalOpen} close={closeModal}></Modal>
 
-                    <button
-                      className="btn_signout"
-                      onClick={() => {
-                        ClickLogout();
-                        signOut({
-                          callbackUrl: "/",
-                        });
-                      }}
-                    >
-                      로그아웃
-                    </button>
-                  </>
-                )}
-              </div>
-            ) : null}
+                  <button
+                    className="btn_signout"
+                    onClick={() => {
+                      ClickLogout();
+                      signOut({
+                        callbackUrl: "/",
+                      });
+                    }}
+                  >
+                    로그아웃
+                  </button>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -150,11 +163,10 @@ const NavigationBar = () => {
         }
 
         .sign {
-          width: 300px;
           height: 62px;
           display: flex;
           position: relative;
-          justify-content: space-between;
+          justify-content: center;
           font-size: 1.5rem;
         }
 
@@ -169,6 +181,7 @@ const NavigationBar = () => {
           height: 40px;
           border-radius: 50px;
           background-color: black;
+          object-fit: cover;
         }
 
         .logOn {
