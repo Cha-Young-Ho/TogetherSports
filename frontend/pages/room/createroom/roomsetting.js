@@ -178,7 +178,7 @@ const RoomSetting = () => {
               value={roomTitle}
               onChange={(e) => setRoomTitle(e.target.value)}
               type="text"
-              maxLength="30"
+              maxLength="20"
             />
           </div>
 
