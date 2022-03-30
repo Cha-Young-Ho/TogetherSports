@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 /**
  * <h1>Account</h1>
@@ -45,6 +46,16 @@ public class Account {
 
     @Column(name = "ACCOUNT_IS_FIRST") // 가입 이후 추가정보 입력 여부
     private boolean isFirst;
+
+    @Column(name = "ACCOUNT_PROFILE_IMAGE_PATH")
+    private String userProfileImage; // 프로필 이미지 저장 경로
+
+    @Column(name = "ACCOUNT_GENDER")
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
+    @Column(name = "ACCOUNT_BIRTH_DAY")
+    private LocalDate birthDay;
 
     // 계정 엔티티를 생성자 및 빌더로 직접 접근해서 생성하는 것은 불가능 반드시 특정 메소드 사용하도록 강제
     @Builder(access = AccessLevel.PRIVATE)
@@ -98,5 +109,19 @@ public class Account {
                 .nickname(nickname)
                 .role(role)
                 .build();
+    }
+
+    /**
+     * 신규 계정에 추가정보를 입력한다. <br>
+     * 해당 메소드 호출 이후 {@link #isFirst} 값이 false 로 설정된다.
+     * @param profileImagePath 프로필 이미지 접근 경로
+     * @param gender 성별
+     * @param birthDay 생년월일
+     */
+    public void initUser(String profileImagePath, Gender gender, LocalDate birthDay) {
+        this.userProfileImage = profileImagePath;
+        this.gender = gender;
+        this.birthDay = birthDay;
+        this.isFirst = false;
     }
 }
