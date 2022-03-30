@@ -81,16 +81,11 @@ const Interest = () => {
             );
           })}
         </div>
-        <div className="btn-wrapper">
-          <Link href="/signup/addinfo/personalinfo">
-            <button className="left-button">이전</button>
-          </Link>
-          <Link href="/signup/addinfo/activearea">
-            <button onClick={BtnClickedNext} className="next-button">
-              다음
-            </button>
-          </Link>
-        </div>
+        <Link href="/signup/addinfo/activearea">
+          <div onClick={BtnClickedNext} className="next-button">
+            다음
+          </div>
+        </Link>
       </div>
 
       <style jsx>{`
@@ -146,12 +141,6 @@ const Interest = () => {
           background-color: #468f5b;
         }
 
-        .btn-wrapper {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
         .next-button {
           display: flex;
           align-items: center;
@@ -167,24 +156,6 @@ const Interest = () => {
           cursor: pointer;
           border-radius: 10px;
           margin-bottom: 30px;
-        }
-
-        .left-button {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 120px;
-          height: 40px;
-          background-color: #08555f;
-          color: white;
-          font-size: 1.5rem;
-          margin-top: 25px;
-          border: 0;
-          outline: 0;
-          cursor: pointer;
-          border-radius: 10px;
-          margin-bottom: 30px;
-          margin-right: 30px;
         }
       `}</style>
     </>
