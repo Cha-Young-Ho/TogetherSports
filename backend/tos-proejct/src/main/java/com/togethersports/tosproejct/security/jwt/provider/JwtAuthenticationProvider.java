@@ -1,6 +1,6 @@
 package com.togethersports.tosproejct.security.jwt.provider;
 
-import com.togethersports.tosproejct.account.Account;
+import com.togethersports.tosproejct.account.User;
 import com.togethersports.tosproejct.security.jwt.exception.JwtExpiredTokenException;
 import com.togethersports.tosproejct.security.jwt.exception.JwtModulatedTokenException;
 import com.togethersports.tosproejct.security.jwt.token.JwtPostAuthenticationToken;
@@ -35,8 +35,8 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 
         String token = (String) authentication.getPrincipal();
         try {
-            Account verifiedAccount = jwtDecoder.verify(token, TokenType.ACCESS_TOKEN);
-            return new JwtPostAuthenticationToken(verifiedAccount);
+            User verifiedUser = jwtDecoder.verifyAccessToken(token, TokenType.ACCESS_TOKEN);
+            return new JwtPostAuthenticationToken(verifiedUser);
         } catch (SignatureException | MalformedJwtException | MissingClaimException ex) {
             throw new JwtModulatedTokenException("변조된 JWT 토큰입니다.");
         } catch (ExpiredJwtException ex) {
