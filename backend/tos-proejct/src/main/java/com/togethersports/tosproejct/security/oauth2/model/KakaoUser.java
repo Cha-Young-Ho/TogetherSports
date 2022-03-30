@@ -17,6 +17,7 @@ public class KakaoUser extends OAuth2UserInfo{
     // 카카오 프로필 정보
     private Map<String, Object> kakaoProfileAttributes;
 
+
     public KakaoUser(Map<String, Object> attributes) {
         super(attributes);
         kakaoAccountAttributes = (Map<String, Object>) attributes.get("kakao_account");

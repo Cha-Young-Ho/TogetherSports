@@ -2,15 +2,12 @@ package com.togethersports.tosproejct.security.oauth2.model;
 
 import java.util.Map;
 
-import static com.togethersports.tosproejct.security.oauth2.model.OAuth2Provider.NAVER;
-
 /**
  * <h1>OAuth2UserInfoFactory</h1>
  * <p>사용자가 로그인한 OAuth2 사업자에 맞는 적절한 타입의 OAuth2UserInfo 구현체를 반환하는 클래스</p>
  * <p>{@link #createUserInfo(OAuth2Provider, Map)} 해당 메소드 호출 시 적합한 구현체를 반환한다.</p>
  *
  * @author seunjeon
- * @auther younghocha
  * @see KakaoUser
  */
 public class OAuth2UserInfoFactory {
@@ -27,14 +24,8 @@ public class OAuth2UserInfoFactory {
             case KAKAO:
                 userInfo = new KakaoUser(attributes);
                 break;
-            case NAVER:
-                userInfo = new NaverUser(attributes);
-                break;
-            case GOOGLE:
-                userInfo = new GoogleUser(attributes);
-                break;
-        }
 
+        }
         return userInfo;
     }
 }

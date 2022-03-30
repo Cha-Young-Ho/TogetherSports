@@ -14,13 +14,13 @@ import lombok.Setter;
 public class Response<T> {
 
     // 요청 처리 후 추가 메시지에 대한 내용
-    private Status status;
+    private Message message;
 
     private T content;
 
     @Getter
     @Setter
-    private static class Status {
+    private static class Message {
         private int code;
         private String message;
     }
@@ -34,11 +34,11 @@ public class Response<T> {
     public static<T> Response<T> of(ResponseCode responseCode, T content) {
         Response<T> response = new Response<>();
 
-        Status status = new Status();
-        status.setCode(responseCode.getCode());
-        status.setMessage(responseCode.getMessage());
+        Message message = new Message();
+        message.setCode(responseCode.getCode());
+        message.setMessage(responseCode.getMessage());
 
-        response.setStatus(status);
+        response.setMessage(message);
         response.setContent(content);
 
         return response;

@@ -1,6 +1,6 @@
 package com.togethersports.tosproejct.security.oauth2;
 
-import com.togethersports.tosproejct.account.User;
+import com.togethersports.tosproejct.account.Account;
 import com.togethersports.tosproejct.security.oauth2.model.OAuth2UserInfo;
 import lombok.Getter;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,16 +20,15 @@ import java.util.List;
 @Getter
 public class CustomOAuth2User extends DefaultOAuth2User {
 
-    private User user;
-
+    private Account account;
 
     /**
      * OAuth2 사용자 정보, 사용자 계정 기반으로 CustomOAuth2User 객체를 생성할때 사용하는 생성자
      * @param oAuth2UserInfo OAuth2 사용자 정보 객체
-     * @param user OAuth2 계정 정보를 기반으로 생성/조회한 사용자 계정 엔티티
+     * @param account OAuth2 계정 정보를 기반으로 생성/조회한 사용자 계정 엔티티
      */
-    public CustomOAuth2User(OAuth2UserInfo oAuth2UserInfo, User user) {
-        super(List.of(new SimpleGrantedAuthority(user.getRole().name())), oAuth2UserInfo.getAttributes(), user.getProvider().getAttributeKey());
-        this.user = user;
+    public CustomOAuth2User(OAuth2UserInfo oAuth2UserInfo, Account account) {
+        super(List.of(new SimpleGrantedAuthority(account.getRole().name())), oAuth2UserInfo.getAttributes(), account.getProvider().getAttributeKey());
+        this.account = account;
     }
 }

@@ -12,32 +12,17 @@ const ActiveArea = () => {
   const [tagAreas, setTagAreas] = useState([]);
 
   // 서버에 회원가입 요청
-  const callUserRequest = (e) => {
-    console.log(activeAreas);
-    if (activeAreas.length === 0) {
-      e.preventDefault();
-      alert("활동 지역을 최소 한 개 선택해주세요!");
-      return;
-    }
-
-    if (
-      userInfo.userNickname === "" ||
-      userInfo.userBirthYear === "" ||
-      userInfo.gender === "" ||
-      userInfo.interests.length === 0
-    ) {
-      e.preventDefault();
-      alert("비정상적인 접근입니다. 정보를 처음부터 다시 입력해주세요.");
-      return;
-    }
-
+  const callUserRequest = () => {
     postUserRequest(
       activeAreas,
       userInfo.gender,
       userInfo.interests,
+      userInfo.provider,
       userInfo.userBirthDay,
       userInfo.userBirthMonday,
       userInfo.userBirthYear,
+      userInfo.userEmail,
+      userInfo.userName,
       userInfo.userNickname,
       userInfo.userProfileImage
     ).then((res) => {
@@ -203,16 +188,16 @@ const ActiveArea = () => {
             })}
         </div>
 
-        <div className="btn-wrapper">
-          <Link href="/signup/addinfo/interest">
-            <button className="left-button">이전</button>
-          </Link>
-          <Link href="/login">
-            <button className="button-done" onClick={callUserRequest}>
-              완료
-            </button>
-          </Link>
-        </div>
+        <Link href="/login">
+          <button
+            className="button-done"
+            onClick={() => {
+              callUserRequest();
+            }}
+          >
+            완료
+          </button>
+        </Link>
       </div>
 
       <style jsx>{`
@@ -298,30 +283,6 @@ const ActiveArea = () => {
           cursor: pointer;
           border-radius: 10px;
           margin-bottom: 30px;
-        }
-
-        .btn-wrapper {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .left-button {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 120px;
-          height: 40px;
-          background-color: #08555f;
-          color: white;
-          font-size: 1.5rem;
-          margin-top: 25px;
-          border: 0;
-          outline: 0;
-          cursor: pointer;
-          border-radius: 10px;
-          margin-bottom: 30px;
-          margin-right: 30px;
         }
       `}</style>
     </>

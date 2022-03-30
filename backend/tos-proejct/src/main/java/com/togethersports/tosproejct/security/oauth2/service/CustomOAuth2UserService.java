@@ -1,7 +1,7 @@
 package com.togethersports.tosproejct.security.oauth2.service;
 
-import com.togethersports.tosproejct.account.User;
-import com.togethersports.tosproejct.account.UserRepository;
+import com.togethersports.tosproejct.account.Account;
+import com.togethersports.tosproejct.account.AccountRepository;
 import com.togethersports.tosproejct.security.oauth2.CustomOAuth2User;
 import com.togethersports.tosproejct.security.oauth2.model.OAuth2Provider;
 import com.togethersports.tosproejct.security.oauth2.model.OAuth2UserInfo;
@@ -27,11 +27,10 @@ import java.util.Optional;
  * {@link DefaultOAuth2UserService} 를 사용해 사용자 계정 정보를 일단 처리하고 부수적인 작업을 수행한다.
  * </p>
  *
- * @author seunjeon, chayoungho
+ * @author seunjeon
  * @see org.springframework.security.oauth2.client.authentication.OAuth2LoginAuthenticationProvider
  * @see DefaultOAuth2UserService
  */
-
 @RequiredArgsConstructor
 @Service
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
@@ -39,7 +38,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     // Spring Security OAuth2 에서 기본으로 제공하는 OAuth2UserService 를 사용하기 위함
     private final OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
 
-    private final UserRepository accountRepository;
+    private final AccountRepository accountRepository;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -52,23 +51,21 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         OAuth2User oAuth2User = delegate.loadUser(userRequest);
         Map<String, Object> attributes = oAuth2User.getAttributes();
 
-
         OAuth2UserInfo userInfo = OAuth2UserInfoFactory.createUserInfo(provider, attributes);
 
-        Optional<User> findAccount = accountRepository.findByEmailAndProvider(userInfo.getEmail(), userInfo.getOAuth2Provider());
+        Account account = null;
+        Optional<Account> findAccount = accountRepository.findByEmail(userInfo.getEmail());
 
         if (findAccount.isEmpty()) {
             // 신규 회원일 경우
-            User newUser = User.
-                    createUser(userInfo.getOAuth2Id(),
-                            userInfo.getEmail(),
-                            userInfo.getNickname(),
-                            userInfo.getOAuth2Provider());
-            accountRepository.save(newUser);
-            User user = newUser;
-            return new CustomOAuth2User(userInfo, user);
+            Account newAccount = Account.createAccount(userInfo.getOAuth2Id(), userInfo.getEmail(), userInfo.getNickname(), userInfo.getOAuth2Provider());
+            accountRepository.save(newAccount);
+            account = newAccount;
+        } else {
+            // 기존 회원일 경우
+            account = findAccount.get();
         }
 
-            return new CustomOAuth2User(userInfo, findAccount.get());
+        return new CustomOAuth2User(userInfo, account);
     }
 }

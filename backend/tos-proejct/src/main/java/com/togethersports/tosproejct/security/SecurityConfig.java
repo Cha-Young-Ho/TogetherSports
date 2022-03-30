@@ -1,26 +1,20 @@
 package com.togethersports.tosproejct.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.togethersports.tosproejct.security.jwt.RefreshTokenService;
 import com.togethersports.tosproejct.security.jwt.filter.JwtAuthenticationFilter;
-import com.togethersports.tosproejct.security.jwt.filter.JwtRefreshFilter;
 import com.togethersports.tosproejct.security.jwt.handler.JwtAuthenticationFailureHandler;
 import com.togethersports.tosproejct.security.jwt.provider.JwtAuthenticationProvider;
-import com.togethersports.tosproejct.security.jwt.util.JwtTokenFactory;
 import com.togethersports.tosproejct.security.oauth2.handler.OAuth2LoginAuthenticationSuccessHandler;
 import com.togethersports.tosproejct.security.oauth2.service.CustomOAuth2UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.servlet.Filter;
 
@@ -39,9 +33,6 @@ import javax.servlet.Filter;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     // OAuth2 Beans
     @Autowired
     private CustomOAuth2UserService customOAuth2UserService;
@@ -49,30 +40,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private OAuth2LoginAuthenticationSuccessHandler oAuth2LoginAuthenticationSuccessHandler;
 
-
-
-    /**
-     *  jwt Beans
-     */
-
-    //Jwt Util
+    // jwt Beans
     @Autowired
     private JwtAuthenticationProvider jwtAuthenticationProvider;
-
-    @Autowired
-    private RefreshTokenService refreshTokenService;
-
-    @Autowired
-    private JwtTokenFactory jwtTokenFactory;
-
-    //Jwt Refresh Filter
-
-    public Filter jwtRefreshFilter() throws Exception{
-        JwtRefreshFilter jwtRefreshFilter = new JwtRefreshFilter(refreshTokenService, jwtTokenFactory);
-
-
-        return jwtRefreshFilter;
-    }
 
     @Autowired
     private JwtAuthenticationFailureHandler jwtAuthenticationFailureHandler;
@@ -102,31 +72,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .successHandler(oAuth2LoginAuthenticationSuccessHandler)
                 .userInfoEndpoint()
                 .userService(customOAuth2UserService);
-        /**
-         * JWT
-         */
+
         // JWT Authentication filter chain configuration
         http.addFilterBefore(jwtAuthenticationFilter(), OAuth2AuthorizationRequestRedirectFilter.class);
-        http.addFilterBefore(jwtRefreshFilter(), JwtAuthenticationFilter.class);
-        http.cors();
+
         // URL security
         http.authorizeRequests()
                 .antMatchers("/api/a").access("hasRole('ROLE_ADMIN')");
-
-
-    }
-    //fixme cors
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-
-        configuration.addAllowedOrigin("http://localhost:3000");
-        configuration.addAllowedHeader("*");
-        configuration.addAllowedMethod("*");
-        configuration.setAllowCredentials(true);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
     }
 }
