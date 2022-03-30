@@ -1,7 +1,7 @@
 package com.togethersports.tosproejct.security.jwt.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.togethersports.tosproejct.common.CommonCode;
+import com.togethersports.tosproejct.common.code.CommonCode;
 import com.togethersports.tosproejct.common.dto.Response;
 import com.togethersports.tosproejct.security.jwt.JwtProperties;
 import com.togethersports.tosproejct.security.jwt.RefreshTokenService;

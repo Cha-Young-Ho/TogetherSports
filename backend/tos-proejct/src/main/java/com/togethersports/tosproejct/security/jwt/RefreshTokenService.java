@@ -1,12 +1,12 @@
 package com.togethersports.tosproejct.security.jwt;
 
-import com.togethersports.tosproejct.account.Account;
+import com.togethersports.tosproejct.account.User;
 import com.togethersports.tosproejct.security.jwt.token.RefreshToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Optional;
+
 // fixme 파라미터 -> DTO
 @RequiredArgsConstructor
 @Transactional
@@ -15,7 +15,7 @@ public class RefreshTokenService {
 
     private final RefreshTokenRepository refreshTokenRepository;
 
-    public void saveRefreshToken(Account loggedInUser, String refreshToken, String clientIp, String userAgent) {
+    public void saveRefreshToken(User loggedInUser, String refreshToken, String clientIp, String userAgent) {
 
         if(refreshTokenRepository.existsByClientIpAndUserAgentAndProvider
                 (clientIp, userAgent, loggedInUser.getProvider().getProviderName())){
@@ -32,7 +32,7 @@ public class RefreshTokenService {
         refreshTokenRepository.save(refreshToken);
     }
 
-    public RefreshToken createRefreshToken(Account loggedInUser, String refreshToken, String clientIp, String userAgent){
+    public RefreshToken createRefreshToken(User loggedInUser, String refreshToken, String clientIp, String userAgent){
 
         return RefreshToken.createRefreshToken
                 (loggedInUser.getEmail(),
