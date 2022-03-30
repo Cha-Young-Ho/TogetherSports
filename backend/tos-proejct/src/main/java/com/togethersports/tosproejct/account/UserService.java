@@ -1,7 +1,9 @@
 package com.togethersports.tosproejct.account;
 
 import com.togethersports.tosproejct.account.dto.UserOfInitInfo;
+import com.togethersports.tosproejct.account.dto.UserOfModifyInfo;
 import com.togethersports.tosproejct.account.dto.UserOfOtherInfo;
+import com.togethersports.tosproejct.account.exception.NicknameDuplicationException;
 import com.togethersports.tosproejct.account.exception.UserNotFoundException;
 import com.togethersports.tosproejct.area.ActiveArea;
 import com.togethersports.tosproejct.area.ActiveAreaRepository;
@@ -117,6 +119,32 @@ public class UserService {
                 .userNickname(userEntity.getNickname())
                 .mannerPoint(userEntity.getMannerPoint())
                 .build();
+
+    }
+
+    //fixme 회원 정보 수정
+    //회원 정보 수정 메소드
+    @Transactional
+    public void modifyMyInfo(Long id, UserOfModifyInfo userOfModifyInfo){
+        if(userRepository.existsByNickname(userOfModifyInfo.getUserNickname())){
+            throw new NicknameDuplicationException("닉네임이 중복되었습니다.");
+        }
+        User findUser = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("사용자가 존재하지 않습니다."));
+
+        List<ActiveArea> activeAreas = parsingEntityUtils.parsingStringToActivesEntity(userOfModifyInfo.getActiveAreas());
+        List<Interest> interests = parsingEntityUtils.parsingStringToInterestsEntity(userOfModifyInfo.getInterests());
+        if(userOfModifyInfo.getUserProfileImage().equals("정보 없음")){
+
+            findUser.updateUser(userOfModifyInfo, activeAreas, interests, null);
+            return;
+        }
+
+        String encodedImageSource = userOfModifyInfo.getUserProfileImage();
+        byte[] imageSource = base64Decoder.decode(encodedImageSource);
+        String fileName = nameGenerator.generateRandomName().concat(".").concat("png");
+        String imagePath = storageService.store(imageSource, fileName);
+        findUser.updateUser(userOfModifyInfo, activeAreas, interests, imagePath);
 
     }
 }

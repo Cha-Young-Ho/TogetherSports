@@ -1,6 +1,7 @@
 package com.togethersports.tosproejct.common.controller;
 
 import com.togethersports.tosproejct.account.code.UserCode;
+import com.togethersports.tosproejct.account.exception.NicknameDuplicationException;
 import com.togethersports.tosproejct.account.exception.UserNotFoundException;
 import com.togethersports.tosproejct.common.code.CommonCode;
 import com.togethersports.tosproejct.common.dto.FieldValidationError;
@@ -38,9 +39,18 @@ public class ExceptionControllerAdvice {
         return ResponseEntity.badRequest().body(Response.of(CommonCode.VALIDATION_FAIL, errors));
     }
 
+    // non User found exception
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<Response> handleUserNotFountException() {
 
         return ResponseEntity.badRequest().body(Response.of(UserCode.USER_NOT_FOUNT, null));
     }
+
+    // Nickname Duplication exception
+    @ExceptionHandler(NicknameDuplicationException.class)
+    public ResponseEntity<Response> handleNicknameDuplicationException() {
+
+        return ResponseEntity.badRequest().body(Response.of(UserCode.DUPLICATED_NICKNAME, null));
+    }
+
 }

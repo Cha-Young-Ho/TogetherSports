@@ -22,34 +22,24 @@ import java.util.Objects;
  */
 public class JwtRefreshTokenExceptionHandler {
 
-
+    //변조 토큰 응답 메소드
     public void createModulatedResponse(HttpServletResponse response) throws IOException {
-
-        Response<?> responseValue = Response.of(JwtErrorCode.TOKEN_MODULATED, null);
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
-        response.setHeader(HttpHeaders.CONTENT_ENCODING, "UTF-8");
-        response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        if (Objects.nonNull(responseValue)) {
-            ObjectMapper objectMapper = new ObjectMapper();
-            PrintWriter writer = response.getWriter();
-            writer.write(objectMapper.writeValueAsString(responseValue));
-        }
+        setDefaultResponse(response, JwtErrorCode.TOKEN_MODULATED);
     }
 
+    //만료 토큰 응답 메소드
     public void createExpiredResponse(HttpServletResponse response) throws IOException {
-        Response<?> responseValue = Response.of(JwtErrorCode.REFRESH_TOKEN_EXPIRATION, null);
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
-        response.setHeader(HttpHeaders.CONTENT_ENCODING, "UTF-8");
-        response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        if (Objects.nonNull(responseValue)) {
-            ObjectMapper objectMapper = new ObjectMapper();
-            PrintWriter writer = response.getWriter();
-            writer.write(objectMapper.writeValueAsString(responseValue));
-        }
+        setDefaultResponse(response, JwtErrorCode.REFRESH_TOKEN_EXPIRATION);
     }
 
+    //DB에 저장되지 않은 리프레시 토큰 응답 메소드
     public void createNullResponse(HttpServletResponse response) throws IOException {
-        Response<?> responseValue = Response.of(JwtErrorCode.DELETED_REFRESH_TOKEN, null);
+        setDefaultResponse(response, JwtErrorCode.DELETED_REFRESH_TOKEN);
+    }
+
+    //응답 셋팅 공통 메소드
+    public void setDefaultResponse(HttpServletResponse response, JwtErrorCode code) throws IOException {
+        Response<?> responseValue = Response.of(code, null);
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setHeader(HttpHeaders.CONTENT_ENCODING, "UTF-8");
         response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
