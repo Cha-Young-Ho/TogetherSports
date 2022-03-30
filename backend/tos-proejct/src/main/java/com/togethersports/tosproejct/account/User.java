@@ -1,13 +1,18 @@
 package com.togethersports.tosproejct.account;
 
+import com.togethersports.tosproejct.area.ActiveArea;
+import com.togethersports.tosproejct.interest.Interest;
 import com.togethersports.tosproejct.security.Role;
 import com.togethersports.tosproejct.security.oauth2.model.OAuth2Provider;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * <h1>User</h1>
@@ -19,6 +24,7 @@ import java.time.LocalDate;
  * @author seunjeon
  * @author younghocha
  */
+@DynamicInsert // insert 시, null 값은 insert를 하지 않음
 @Getter
 @Entity
 public class User {
@@ -46,8 +52,11 @@ public class User {
 
     @Column(name = "USER_IS_FIRST") // 가입 이후 추가정보 입력 여부
     private boolean isFirst;
-  
+
+
     @Column(name = "USER_PROFILE_IMAGE_PATH")
+    //fixme yml에서 파일 끌고와야함 할 줄 모르게씀 ㅋ
+    @ColumnDefault("'/Users/seunjeon/Workspace/samples/defaultImage.png'") //설정 안할 시 기본 이미지 등록
     private String userProfileImage; // 프로필 이미지 저장 경로
 
     @Column(name = "USER_GENDER")
@@ -56,6 +65,14 @@ public class User {
 
     @Column(name = "USER_BIRTH_DAY")
     private LocalDate birthDay;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "USER_ID")
+    private List<Interest> interests;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "USER_ID")
+    private List<ActiveArea> activeAreas;
 
     // 계정 엔티티를 생성자 및 빌더로 직접 접근해서 생성하는 것은 불가능 반드시 특정 메소드 사용하도록 강제
     @Builder(access = AccessLevel.PRIVATE)
@@ -116,10 +133,12 @@ public class User {
      * @param gender 성별
      * @param birthDay 생년월일
      */
-    public void initUser(String profileImagePath, Gender gender, LocalDate birthDay) {
+    public void initUser(String profileImagePath, Gender gender, LocalDate birthDay, List<ActiveArea> activeAreas, List<Interest> interests) {
         this.userProfileImage = profileImagePath;
         this.gender = gender;
         this.birthDay = birthDay;
         this.isFirst = false;
+        this.activeAreas = activeAreas;
+        this.interests = interests;
     }
 }
