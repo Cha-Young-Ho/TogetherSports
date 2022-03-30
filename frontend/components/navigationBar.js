@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { deleteLogout } from "../api/members";
 import { FailResponse } from "../api/failResponse";
 import Modal from "./modals/userInfoModal";
-import RoomModal from "./roomModal";
+import RoomModal from "./modals/roomModal";
 import { getNavBar } from "../api/etc";
 
 const NavigationBar = () => {
