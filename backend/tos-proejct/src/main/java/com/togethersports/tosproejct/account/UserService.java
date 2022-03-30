@@ -65,4 +65,19 @@ public class UserService {
         // 계정에 변경 사항 적용
         findUser.initUser(imagePath, initialInfo.getGender(), initialInfo.getUserBirth());
     }
+
+    /**
+     * 이메일 중복 체크를 위한 메소드
+     * @param nickname : 입력받은 이메일
+     * @return : 존재할경우 false, 존재하지 않을 경우 true
+     */
+    public boolean nicknameDuplicationCheck(String nickname){
+        // 존재할 경우
+        if(userRepository.existsByNickname(nickname)){
+            return false;
+        }
+
+        //존재하지 않을 경우
+        return true;
+    }
 }
