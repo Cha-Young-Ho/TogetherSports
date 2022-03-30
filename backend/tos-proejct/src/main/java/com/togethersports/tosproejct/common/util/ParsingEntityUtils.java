@@ -40,4 +40,24 @@ public class ParsingEntityUtils {
         }
         return entityList;
     }
+
+    public List<String> parsingInterestsEntityToString(List<Interest> interestList){
+        List<String> strList = new ArrayList<>();
+
+        for(Interest interest : interestList){
+            strList.add(interest.getName());
+        }
+
+        return strList;
+    }
+
+    public List<String> parsingAreasEntityToString(List<ActiveArea> activeAreaList){
+        List<String> strList = new ArrayList<>();
+
+        for(ActiveArea activeArea : activeAreaList){
+            strList.add(activeArea.getAddress());
+        }
+
+        return strList;
+    }
 }

@@ -73,6 +73,9 @@ public class User {
     @JoinColumn(name = "USER_ID")
     private List<ActiveArea> activeAreas;
 
+    @Column(name = "MANNER_POINT", columnDefinition = "int default 10")
+    private int mannerPoint;
+
     // 계정 엔티티를 생성자 및 빌더로 직접 접근해서 생성하는 것은 불가능 반드시 특정 메소드 사용하도록 강제
     @Builder(access = AccessLevel.PRIVATE)
     private User(Long id, Long oauth2Id, String email, String nickname, OAuth2Provider provider, Role role, boolean isFirst) {

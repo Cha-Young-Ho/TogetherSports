@@ -2,6 +2,7 @@ package com.togethersports.tosproejct.account;
 
 import com.togethersports.tosproejct.account.code.UserCode;
 import com.togethersports.tosproejct.account.dto.UserOfInitInfo;
+import com.togethersports.tosproejct.account.dto.UserOfOtherInfo;
 import com.togethersports.tosproejct.common.code.CommonCode;
 import com.togethersports.tosproejct.common.dto.Response;
 import com.togethersports.tosproejct.security.annotation.CurrentUser;
@@ -49,8 +50,9 @@ public class UserController {
     @GetMapping("/api/user/{id}")
     public ResponseEntity<Response> otherInfo(@PathVariable Long id){
 
-        userService.getOtherInfo(id);
-        return null;
+        UserOfOtherInfo userOfOtherInfo = userService.getOtherInfo(id);
+
+        return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, userOfOtherInfo));
 
     }
 }
