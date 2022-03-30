@@ -68,7 +68,7 @@ const getMyInfo = async () => {
     headers: {
       "Content-type": "application/json; charset=UTF-8",
       Accept: "*/*",
-      Authorization: localStorage.getItem("accessToken"),
+      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
     },
   });
   const dataPromise = promise.then((res) => res.data);
@@ -82,7 +82,7 @@ const getOtherInfo = async (nickname) => {
     headers: {
       "Content-type": "application/json; charset=UTF-8",
       Accept: "*/*",
-      Authorization: localStorage.getItem("accessToken"),
+      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
     },
     params: {
       userNickName: nickname,
@@ -161,7 +161,7 @@ const putUpdateUserInfo = async (
     {
       "Content-type": "application/json; charset=UTF-8",
       Accept: "*/*",
-      Authorization: localStorage.getItem("accessToken"),
+      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
     }
   );
   const dataPromise = promise.then((res) => res.data);

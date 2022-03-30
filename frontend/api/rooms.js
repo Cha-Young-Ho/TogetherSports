@@ -14,7 +14,7 @@ const getRoomInfo = async (roomSequenceId) => {
       headers: {
         "Content-type": "application/json; charset=UTF-8",
         Accept: "*/*",
-        Authorization: localStorage.getItem("accessToken"),
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
       params: {
         roomSequenceId: roomSequenceId,
@@ -40,7 +40,7 @@ const getRoomList = async (
     headers: {
       "Content-type": "application/json; charset=UTF-8",
       Accept: "*/*",
-      Authorization: localStorage.getItem("accessToken"),
+      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
     },
     params: {
       creatorNickName: creatorNickName,
@@ -87,7 +87,7 @@ const postCreateRoom = async (
     {
       "Content-type": "application/json; charset=UTF-8",
       Accept: "*/*",
-      Authorization: localStorage.getItem("accessToken"),
+      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
     }
   );
   const dataPromise = promise.then((res) => res.data);
@@ -119,7 +119,7 @@ const postUpdateRoom = async (
     {
       "Content-type": "application/json; charset=UTF-8",
       Accept: "*/*",
-      Authorization: localStorage.getItem("accessToken"),
+      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
     }
   );
   const dataPromise = promise.then((res) => res.data);
@@ -137,7 +137,7 @@ const deleteRoom = async (roomSequenceId) => {
       headers: {
         "Content-type": "application/json; charset=UTF-8",
         Accept: "*/*",
-        Authorization: localStorage.getItem("accessToken"),
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
       // params: {
       //   roomSequenceId: roomSequenceId,

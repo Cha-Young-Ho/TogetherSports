@@ -12,11 +12,12 @@ const WeekWrapper = () => {
       <style jsx>{`
         .days-grid {
           width: 100%;
-          height: 20px;
+          height: 30px;
           display: grid;
           grid-template-rows: repeat(1, 20px);
           grid-template-columns: repeat(7, 1fr);
-          margin-top: 10px;
+          padding-top: 10px;
+          background-color: white;
         }
 
         .week-of-month-ko {

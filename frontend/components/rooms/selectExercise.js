@@ -33,19 +33,14 @@ const SelectExercise = () => {
       <style jsx>{`
         .exercise-wrapper {
           width: 100%;
-          max-width: 1920px;
-          height: 90px;
           margin-bottom: 10px;
-          box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.16);
           display: flex;
           justify-content: center;
         }
 
         .centerLine {
-          width: 1200px;
-          height: 100%;
+          width: 100%;
           display: flex;
-          flex-direction: column;
         }
 
         p {
@@ -57,14 +52,13 @@ const SelectExercise = () => {
         .exercises {
           display: flex;
           align-items: center;
-          margin-top: 5px;
         }
 
         .exercise {
           cursor: pointer;
           border-radius: 6px;
           box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.16);
-          margin: 5px;
+          margin-right: 10px;
           width: 70px;
           height: 20px;
           border: 0.5px solid #d8d8d8;

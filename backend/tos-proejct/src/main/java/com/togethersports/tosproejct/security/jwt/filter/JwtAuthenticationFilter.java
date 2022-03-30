@@ -44,7 +44,10 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
-        log.info("jwt auth 필터 작동");
+        log.info("uri = {}", request.getRequestURI());
+        if(request.getRequestURI().equals("/api/refresh")){
+            return null;
+        }
         String authorizationHeader = request.getHeader(AUTHORIZATION_HEADER);
 
         // 인증 헤더가 없는 경우 예외 발생

@@ -1,7 +1,7 @@
 package com.togethersports.tosproejct.security.jwt.util;
 
 
-import com.togethersports.tosproejct.account.Account;
+import com.togethersports.tosproejct.account.User;
 import com.togethersports.tosproejct.security.Role;
 import com.togethersports.tosproejct.security.jwt.JwtProperties;
 
@@ -10,7 +10,11 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * <h1>JwtDecoder</h1>
@@ -19,7 +23,9 @@ import org.springframework.stereotype.Component;
  * </p>
  *
  * @author seunjeon
+ * @author younghocha
  */
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class JwtDecoder {
@@ -35,33 +41,85 @@ public class JwtDecoder {
      * @throws MissingClaimException 토큰에 특정 클레임이 없는 경우 발생
      * @throws MalformedJwtException 토큰이 유효한 형식이 아닌 경우 발생
      */
-    public Account verify(String token, TokenType tokenType) throws ExpiredJwtException, SignatureException, MissingClaimException, MalformedJwtException {
-        String key = properties.getAccessTokenSigningKey();
-
-        if(tokenType == TokenType.REFRESH_TOKEN){
-            key = properties.getRefreshTokenSigningKey();
-        }
-        Jws<Claims> jwt = Jwts.parserBuilder()
-                .setSigningKey(Keys.hmacShaKeyFor(key.getBytes()))
-//                .setSigningKey(Keys.hmacShaKeyFor("kGO2WGNVgLVHVhz5M1Y8nQuT7mH69JHlGqSk5X9Qi7M=".getBytes()))
-                .requireIssuer(properties.getIssuer())
-//                .requireIssuer("together-sports")
-                .build()
-                .parseClaimsJws(token);
-
+    public User verifyAccessToken(String token, TokenType tokenType) throws ExpiredJwtException, SignatureException, MissingClaimException, MalformedJwtException {
         if (tokenType == TokenType.ACCESS_TOKEN) {
+
+            String key = properties.getAccessTokenSigningKey();
+            Jws<Claims> jwt = Jwts.parserBuilder()
+                    .setSigningKey(Keys.hmacShaKeyFor(key.getBytes()))
+                    .requireIssuer(properties.getIssuer())
+                    .build()
+                    .parseClaimsJws(token);
             Claims jwtBody = jwt.getBody();
             Long id = Long.valueOf(jwtBody.getSubject());
             String email = (String) jwtBody.get("email");
-            String nickname = (String) jwtBody.get("user");
             Role role = Role.valueOf((String) jwtBody.get("role"));
 
-            return Account.convertAccount(id, email, nickname, role);
+            return User.convertUser(id, email, role);
         }
 
         //refresh 경우
         return null;
 
+    }
+
+    /**
+     * 리프레시 토큰을 검증하고, 갱신여부를 판단하는 메소드이다.
+     * @param refreshToken : 리프레시 과정 중 전달 받은 리프레시 토큰이다.
+     * @return boolean
+     *  - true : 갱신 필요
+     *  - false : 갱신 불필요
+     */
+    public boolean verifyRefreshToken(String refreshToken){
+        //JwtProperties jwtProperties = new JwtProperties();
+        log.info("여기까지 옴");
+        String key = "kGO2WGNVgLVHVhz5M1Y8nQuT7mH69JHlGqSk5X9Qi7M!";
+        log.info("key = {}", key);
+
+        Jws<Claims> jwt = Jwts.parserBuilder()
+                .setSigningKey(Keys.hmacShaKeyFor(key.getBytes()))
+                .build()
+                .parseClaimsJws(refreshToken);
+
+
+        log.info("여기까지옴 2");
+
+
+        if(checkRenewal(jwt.getBody().getExpiration())){
+            return true;
+        }
+
+        return false;
+
+    }
+
+    /**
+     * Refresh Token의 말료 날짜를 확인하여 3일 이하로 남았을 경우 갱신하기 위한, 날짜 차이를 계산하는 메소드.
+     * @param expireDate 토큰의 만료 날짜
+     * @return boolean
+     *  - true: 만료날짜가 3일 남았음, 리프레시 토큰 갱신 필요
+     *  - false: 만료날짜가 3일 이상 남았음, 리프레시 토큰 갱신 불필요
+     */
+    public boolean checkRenewal(Date expireDate){
+
+        //현재 시간
+        Calendar now = Calendar.getInstance();
+        now.setTime(new Date());
+
+        //만료 시간
+        Calendar expireCalendar = Calendar.getInstance();
+        expireCalendar.setTime(expireDate);
+
+
+        //시간 차이
+        long diffSec = (expireCalendar.getTimeInMillis() - now.getTimeInMillis()) / 1000;
+        long diffDays = diffSec / (24*60*60); //일자수 차이
+
+        if(diffDays <= 3){
+            return true;
+        }
+
+        return false;
     }
 
 }
