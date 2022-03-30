@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -79,5 +80,14 @@ public class UserService {
 
         //존재하지 않을 경우
         return true;
+    }
+
+    public User getOtherInfo(Long id){
+        //유저 엔티티
+        Optional<User> userEntity = userRepository.findById(id);
+
+        //다른 회원 정보 조회 DTO
+        return null;
+
     }
 }

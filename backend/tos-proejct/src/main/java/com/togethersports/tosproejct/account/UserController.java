@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
  * </p>
  *
  * @author seunjeon
+ * @author younghoCha
  */
 @RequiredArgsConstructor
 @RestController
@@ -43,5 +44,13 @@ public class UserController {
 
         //존재할 경우
         return ResponseEntity.ok(Response.of(UserCode.DUPLICATED_NICKNAME, null));
+    }
+
+    @GetMapping("/api/user/{id}")
+    public ResponseEntity<Response> otherInfo(@PathVariable Long id){
+
+        userService.getOtherInfo(id);
+        return null;
+
     }
 }
