@@ -122,7 +122,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors();
         // URL security
         http.authorizeRequests()
-                .antMatchers("/api/a").access("hasRole('ROLE_ADMIN')");
+                .antMatchers("/api/a").access("hasRole('ROLE_ADMIN')")
+                .antMatchers("/api/user").authenticated();
 
 
     }

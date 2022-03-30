@@ -2,10 +2,12 @@ package com.togethersports.tosproejct.account;
 
 import com.togethersports.tosproejct.account.code.UserCode;
 import com.togethersports.tosproejct.account.dto.UserOfInitInfo;
+import com.togethersports.tosproejct.account.dto.UserOfOtherInfo;
 import com.togethersports.tosproejct.common.code.CommonCode;
 import com.togethersports.tosproejct.common.dto.Response;
 import com.togethersports.tosproejct.security.annotation.CurrentUser;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
  * @author seunjeon
  * @author younghoCha
  */
+
 @RequiredArgsConstructor
 @RestController
 public class UserController {
@@ -48,9 +51,9 @@ public class UserController {
 
     @GetMapping("/api/user/{id}")
     public ResponseEntity<Response> otherInfo(@PathVariable Long id){
+        UserOfOtherInfo userOfOtherInfo = userService.getOtherInfo(id);
 
-        userService.getOtherInfo(id);
-        return null;
+        return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, userOfOtherInfo));
 
     }
 }

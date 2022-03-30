@@ -82,6 +82,11 @@ public class JwtRefreshFilter extends OncePerRequestFilter {
                         = new JwtRefreshTokenExceptionHandler();
 
                 jwtRefreshTokenExceptionHandler.createExpiredResponse(response);
+            } catch (NullPointerException ex){
+                JwtRefreshTokenExceptionHandler jwtRefreshTokenExceptionHandler
+                        = new JwtRefreshTokenExceptionHandler();
+
+                jwtRefreshTokenExceptionHandler.createNullResponse(response);
             }
 
         }

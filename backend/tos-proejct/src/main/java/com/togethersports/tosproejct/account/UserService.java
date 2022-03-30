@@ -1,6 +1,7 @@
 package com.togethersports.tosproejct.account;
 
 import com.togethersports.tosproejct.account.dto.UserOfInitInfo;
+import com.togethersports.tosproejct.account.dto.UserOfOtherInfo;
 import com.togethersports.tosproejct.account.exception.UserNotFoundException;
 import com.togethersports.tosproejct.area.ActiveArea;
 import com.togethersports.tosproejct.area.ActiveAreaRepository;
@@ -98,23 +99,24 @@ public class UserService {
         return true;
     }
 
-    public void saveActiveArea(List<ActiveArea> activeAreas){
-
-        for(ActiveArea activeArea : activeAreas){
-            activeAreaRepository.save(activeArea);
-        }
-    }
-    public void saveInterests(List<Interest> interests) {
-        for (Interest interest : interests) {
-            interestRepository.save(interest);
-        }
-    }
-    public User getOtherInfo(Long id){
+    /**
+     * 다른 회원 정보 조회 메소드
+     * @param id : 전달받은 id
+     * @return USerOfOtherInfo : 다른 회원 정보에 대한 DTO
+     */
+    public UserOfOtherInfo getOtherInfo(Long id){
         //유저 엔티티
-        Optional<User> userEntity = userRepository.findById(id);
+        User userEntity = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("해당 사용자를 찾을 수 없습니다."));
 
-        //다른 회원 정보 조회 DTO
-        return null;
+        //다른 회원 정보 조회 DTO 리턴
+        return UserOfOtherInfo.builder()
+                .activeAreas(parsingEntityUtils.parsingAreasEntityToString(userEntity.getActiveAreas()))
+                .gender(userEntity.getGender())
+                .interests(parsingEntityUtils.parsingInterestsEntityToString(userEntity.getInterests()))
+                .userNickname(userEntity.getNickname())
+                .mannerPoint(userEntity.getMannerPoint())
+                .build();
 
     }
 }
