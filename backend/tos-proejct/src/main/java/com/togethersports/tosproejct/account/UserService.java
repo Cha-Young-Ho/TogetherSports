@@ -7,9 +7,11 @@ import com.togethersports.tosproejct.area.ActiveAreaRepository;
 import com.togethersports.tosproejct.common.file.service.StorageService;
 import com.togethersports.tosproejct.common.file.util.Base64Decoder;
 import com.togethersports.tosproejct.common.file.util.NameGenerator;
+import com.togethersports.tosproejct.common.util.ParsingEntityUtils;
 import com.togethersports.tosproejct.interest.Interest;
 import com.togethersports.tosproejct.interest.InterestRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,44 +28,57 @@ import java.util.stream.Collectors;
  * </p>
  *
  * @author seunjeon
+ * @author younghoCha
  */
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserService {
 
     private final StorageService storageService;
     private final UserRepository userRepository;
-    private final ActiveAreaRepository activeAreaRepository;
-    private final InterestRepository interestRepository;
     private final Base64Decoder base64Decoder;
     private final NameGenerator nameGenerator;
-
+    private final ParsingEntityUtils parsingEntityUtils;
+    private final ActiveAreaRepository activeAreaRepository;
+    private final InterestRepository interestRepository;
     // 사용자 계정 추가정보 최초 설정
+    // fixme 매핑 방향 변화에 따른 로직 수정, null 예외 처리
     @Transactional
     public void initUserInfo(Long id, UserOfInitInfo initialInfo) {
+        List<ActiveArea> activeAreas = null;
+        List<Interest> interests = null;
+        String encodedImageSource = null;
+        String imagePath = null;
         User findUser = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("사용자가 존재하지 않습니다."));
 
-        // ActiveArea 설정 (활동지역)
-        List<ActiveArea> activeAreas = initialInfo.getActiveAreas().stream()
-                .map(activeArea -> ActiveArea.createActiveArea(findUser, activeArea))
-                .collect(Collectors.toList());
-        activeAreaRepository.saveAll(activeAreas);
+        // ActiveArea 설정 (활동지역), String List -> ActiveAreas List
+        if(initialInfo.getActiveAreas() != null) {
+            activeAreas =
+                    parsingEntityUtils.parsingStringToActivesEntity(initialInfo.getActiveAreas());
+        }
 
-        // Interest 설정 (관심종목)
-        List<Interest> interests = initialInfo.getInterests().stream()
-                .map(interest -> Interest.createInterest(findUser, interest))
-                .collect(Collectors.toList());
-        interestRepository.saveAll(interests);
+        if(initialInfo.getInterests() != null) {
+            // Interest 설정 (관심종목), String List -> Interests List
+            interests =
+                    parsingEntityUtils.parsingStringToInterestsEntity(initialInfo.getInterests());
+        }
 
-        // 프로필 이미지 저장
-        String encodedImageSource = initialInfo.getUserProfileImage().getImageSource();
-        byte[] imageSource = base64Decoder.decode(encodedImageSource);
-        String extension = initialInfo.getUserProfileImage().getUserProfileExtension();
-        String fileName = nameGenerator.generateRandomName().concat(".").concat(extension);
-        String imagePath = storageService.store(imageSource, fileName);
-
+        if(initialInfo.getUserProfileImage().getImageSource() != null) {
+            // 프로필 이미지 저장
+            encodedImageSource = initialInfo.getUserProfileImage().getImageSource();
+            byte[] imageSource = base64Decoder.decode(encodedImageSource);
+            String extension = initialInfo.getUserProfileImage().getUserProfileExtension();
+            String fileName = nameGenerator.generateRandomName().concat(".").concat(extension);
+            imagePath = storageService.store(imageSource, fileName);
+        }
+        saveActiveArea(activeAreas);
+        saveInterests(interests);
         // 계정에 변경 사항 적용
-        findUser.initUser(imagePath, initialInfo.getGender(), initialInfo.getUserBirth());
+        findUser.initUser(imagePath, initialInfo.getGender(), initialInfo.getUserBirth(), activeAreas, interests);
+
+        log.info("area = {}", activeAreas);
+        log.info("interests = {}", interests);
     }
 
     /**
@@ -79,5 +94,17 @@ public class UserService {
 
         //존재하지 않을 경우
         return true;
+    }
+
+    public void saveActiveArea(List<ActiveArea> activeAreas){
+
+        for(ActiveArea activeArea : activeAreas){
+            activeAreaRepository.save(activeArea);
+        }
+    }
+    public void saveInterests(List<Interest> interests){
+        for(Interest interest : interests){
+            interestRepository.save(interest);
+        }
     }
 }
