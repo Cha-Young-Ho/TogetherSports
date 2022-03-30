@@ -28,7 +28,7 @@ import java.util.Map;
  * @author seunjeon
  * @author yunghocha
  */
-@Slf4j
+
 @RequiredArgsConstructor
 @Component
 public class JwtTokenFactory {
@@ -108,9 +108,9 @@ public class JwtTokenFactory {
 
         // jwt expiration time setting
         Instant now = Instant.now();
-        log.info("refresh key = {}", properties.getRefreshTokenSigningKey());
+
         return Jwts.builder()
-                .setExpiration(Date.from(now.plus(properties.getRefreshTokenExpirationTime(), ChronoUnit.MINUTES)))
+                .setExpiration(Date.from(now.plus(properties.getRefreshTokenExpirationTime(), ChronoUnit.DAYS)))
                 .signWith(Keys.hmacShaKeyFor(properties.getRefreshTokenSigningKey().getBytes()))
                 .compact();
     }

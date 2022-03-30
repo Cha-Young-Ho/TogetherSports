@@ -48,4 +48,16 @@ public class JwtRefreshTokenExceptionHandler {
         }
     }
 
+    public void createNullResponse(HttpServletResponse response) throws IOException {
+        Response<?> responseValue = Response.of(JwtErrorCode.DELETED_REFRESH_TOKEN, null);
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setHeader(HttpHeaders.CONTENT_ENCODING, "UTF-8");
+        response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+        if (Objects.nonNull(responseValue)) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            PrintWriter writer = response.getWriter();
+            writer.write(objectMapper.writeValueAsString(responseValue));
+        }
+    }
+
 }

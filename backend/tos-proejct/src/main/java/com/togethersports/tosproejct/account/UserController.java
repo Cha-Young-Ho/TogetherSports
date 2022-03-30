@@ -7,6 +7,7 @@ import com.togethersports.tosproejct.common.code.CommonCode;
 import com.togethersports.tosproejct.common.dto.Response;
 import com.togethersports.tosproejct.security.annotation.CurrentUser;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
  * @author seunjeon
  * @author younghoCha
  */
+
 @RequiredArgsConstructor
 @RestController
 public class UserController {
@@ -49,7 +51,6 @@ public class UserController {
 
     @GetMapping("/api/user/{id}")
     public ResponseEntity<Response> otherInfo(@PathVariable Long id){
-
         UserOfOtherInfo userOfOtherInfo = userService.getOtherInfo(id);
 
         return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, userOfOtherInfo));
