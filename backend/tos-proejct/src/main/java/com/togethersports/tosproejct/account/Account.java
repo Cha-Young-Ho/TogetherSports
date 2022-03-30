@@ -17,7 +17,7 @@ import java.time.LocalDate;
  * <p>신규 계정을 생성하려면 {@link #createAccount(Long, String, String, OAuth2Provider)} 참조</p>
  * <p>기존 계정 정보를 계정 엔티티로 변환하려면 {@link #convertAccount(Long, String, String, Role)} 참조</p>
  * @author seunjeon
- * @author yunghocha
+ * @author younghocha
  */
 @Getter
 @Entity
@@ -46,7 +46,7 @@ public class Account {
 
     @Column(name = "ACCOUNT_IS_FIRST") // 가입 이후 추가정보 입력 여부
     private boolean isFirst;
-
+  
     @Column(name = "ACCOUNT_PROFILE_IMAGE_PATH")
     private String userProfileImage; // 프로필 이미지 저장 경로
 

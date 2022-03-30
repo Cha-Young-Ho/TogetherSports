@@ -1,5 +1,6 @@
 package com.togethersports.tosproejct.account;
 
+import com.togethersports.tosproejct.security.oauth2.model.OAuth2Provider;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
@@ -19,4 +20,5 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
      * @return Optional 객체 (account 객체 있는 경우), 빈 Optional 객체 (account 가 없는 경우)
      */
     Optional<Account> findByEmail(String email);
+    Optional<Account> findByEmailAndProvider(String email, OAuth2Provider provider);
 }

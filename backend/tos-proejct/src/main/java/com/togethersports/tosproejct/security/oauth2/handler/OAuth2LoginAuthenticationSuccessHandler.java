@@ -1,9 +1,15 @@
 package com.togethersports.tosproejct.security.oauth2.handler;
 
 import com.togethersports.tosproejct.account.Account;
+import com.togethersports.tosproejct.security.jwt.RefreshTokenRepository;
+import com.togethersports.tosproejct.security.jwt.RefreshTokenService;
+import com.togethersports.tosproejct.security.jwt.dto.TokenOfLogin;
+import com.togethersports.tosproejct.security.jwt.token.RefreshToken;
 import com.togethersports.tosproejct.security.jwt.util.JwtTokenFactory;
 import com.togethersports.tosproejct.security.oauth2.CustomOAuth2User;
+import com.togethersports.tosproejct.security.util.ClientIpUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2LoginAuthenticationToken;
@@ -17,11 +23,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class OAuth2LoginAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtTokenFactory jwtTokenFactory;
+    private final RefreshTokenService refreshTokenService;
+
 
     @Value("${app.oauth2.authorized-redirect-uri}")
     private String redirectUrl;
@@ -36,15 +45,30 @@ public class OAuth2LoginAuthenticationSuccessHandler implements AuthenticationSu
         // 추가정보 기입 여부
         boolean first = loggedInUser.isFirst();
 
-        // 액세스 토큰
-        String accessToken = jwtTokenFactory.createAccessToken(loggedInUser);
+        // 로그인 시, 발급되는 엑세스토큰, 리프레시토큰 dto 생성
+        TokenOfLogin tokenOfLogin = jwtTokenFactory.createTokens(loggedInUser);
 
-        String uri = UriComponentsBuilder
+        String clientIp = ClientIpUtils.getClientIP(request);
+        String userAgent = request.getHeader("User-Agent");
+        // Save Refresh Token Entity To Data Base
+        refreshTokenService.saveRefreshToken(loggedInUser,
+                tokenOfLogin.getRefreshToken(),
+                clientIp,
+                userAgent);
+
+        log.info("agent = {}", request.getHeader("User-Agent"));
+
+        String redirectUri = UriComponentsBuilder
                 .fromUriString(redirectUrl)
-                .queryParam("access-token", accessToken)
+                .queryParam("access-token", tokenOfLogin.getAccessToken())
+                .queryParam("refresh-token", tokenOfLogin.getRefreshToken())
                 .queryParam("is-first", first)
                 .toUriString();
 
-        response.sendRedirect(uri);
+        response.sendRedirect(redirectUri);
     }
+
+
+
+
 }

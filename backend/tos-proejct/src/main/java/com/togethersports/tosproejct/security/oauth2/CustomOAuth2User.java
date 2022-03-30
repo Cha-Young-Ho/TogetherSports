@@ -22,6 +22,7 @@ public class CustomOAuth2User extends DefaultOAuth2User {
 
     private Account account;
 
+
     /**
      * OAuth2 사용자 정보, 사용자 계정 기반으로 CustomOAuth2User 객체를 생성할때 사용하는 생성자
      * @param oAuth2UserInfo OAuth2 사용자 정보 객체

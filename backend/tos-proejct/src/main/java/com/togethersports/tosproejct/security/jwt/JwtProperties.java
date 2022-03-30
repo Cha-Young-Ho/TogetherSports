@@ -26,10 +26,16 @@ public class JwtProperties {
 
     private String issuer;
 
-    private String signingKey;
+    //엑세스 토큰 키
+    private String accessTokenSigningKey;
 
+    //리프레시 토큰 키
+    private String refreshTokenSigningKey;
+
+    //엑세스 토큰 만료기간
     private Long accessTokenExpirationTime;
 
+    //리프레시 토큰 만료기간
     private Long refreshTokenExpirationTime;
 
 }
