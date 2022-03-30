@@ -106,7 +106,8 @@ public class UserService {
      */
     public UserOfOtherInfo getOtherInfo(Long id){
         //유저 엔티티
-        User userEntity = userRepository.findById(id).get();
+        User userEntity = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("해당 사용자를 찾을 수 없습니다."));
 
         //다른 회원 정보 조회 DTO 리턴
         return UserOfOtherInfo.builder()
