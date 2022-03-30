@@ -1,16 +1,26 @@
 import { useState } from "react";
 import CalendarModal from "../modals/calendarModal";
 import SelectExercise from "./selectExercise";
+import AddAreaModal from "../modals/addAreaModal";
 
 const Filter = () => {
-  // 유저 프로필 클릭 시 뜨는 팝업 창 관리 state
-  const [modalOpen, setModalOpen] = useState(false);
+  // 모달 관리 state
+  const [calendarModalOpen, setCalendarModalOpen] = useState(false);
+  const [areaModalOpen, setAreaModalOpen] = useState(false);
 
-  const openModal = () => {
-    setModalOpen(true);
+  const openCalendarModal = () => {
+    setCalendarModalOpen(true);
   };
-  const closeModal = () => {
-    setModalOpen(false);
+  const closeCalendarModal = () => {
+    setCalendarModalOpen(false);
+  };
+
+  const openAreaModal = () => {
+    setAreaModalOpen(true);
+  };
+
+  const closeAreaModal = () => {
+    setAreaModalOpen(false);
   };
 
   // 시간 (태그로 된 선택)
@@ -42,7 +52,13 @@ const Filter = () => {
           </div>
           <div className="categories">
             <p>지역</p>
-            <button className="directInput">지역추가</button>
+            <button className="directInput" onClick={openAreaModal}>
+              지역추가
+            </button>
+            <AddAreaModal
+              open={areaModalOpen}
+              close={closeAreaModal}
+            ></AddAreaModal>
           </div>
           <div className="categories">
             <p>시간</p>
@@ -72,7 +88,10 @@ const Filter = () => {
           </div>
           <div className="categories">
             <p>시기</p>
-            <button className="modalCalendar" onClick={openModal}></button>
+            <button
+              className="modalCalendar"
+              onClick={openCalendarModal}
+            ></button>
             <div className="date-showBox">
               {curFilteringDate.substring(0, 4)}
             </div>
@@ -85,8 +104,8 @@ const Filter = () => {
             <p>일</p>
             <CalendarModal
               setFilterDate={setFilterDate}
-              open={modalOpen}
-              close={closeModal}
+              open={calendarModalOpen}
+              close={closeCalendarModal}
             ></CalendarModal>
           </div>
           <div className="last-categories">
@@ -121,6 +140,7 @@ const Filter = () => {
 
         .checkbox-wrapper {
           display: flex;
+          margin: 15px;
         }
 
         input[type="checkbox"] {
@@ -130,7 +150,7 @@ const Filter = () => {
           appearance: none;
           cursor: pointer;
           border: 1px solid #999;
-          margin: 5px 5px 5px 20px;
+          margin: 5px 10px 5px 20px;
         }
 
         input[type="checkbox"]:checked {
@@ -233,7 +253,7 @@ const Filter = () => {
         }
 
         .buttons-wrapper {
-          margin-top: 20px;
+          margin: 20px 0;
           display: flex;
           justify-content: center;
           align-items: center;
