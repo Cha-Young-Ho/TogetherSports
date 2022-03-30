@@ -1,8 +1,4 @@
 spring:
-
-  h2:
-    console.enabled: true
-
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:test;
@@ -15,7 +11,7 @@ spring:
       ddl-auto: create
 
   profiles:
-    include: oauth2, jwt, storage
+    include: oauth2, jwt
 
 server:
   servlet:

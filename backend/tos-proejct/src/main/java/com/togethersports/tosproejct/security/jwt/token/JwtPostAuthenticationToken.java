@@ -1,6 +1,6 @@
 package com.togethersports.tosproejct.security.jwt.token;
 
-import com.togethersports.tosproejct.account.User;
+import com.togethersports.tosproejct.account.Account;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -12,22 +12,22 @@ import java.util.List;
  *     JWT 인증 후 객체
  * </p>
  * <p>
- *     인증 후 객체는 {@link User} 객체를 가지고 있다. <br>
+ *     인증 후 객체는 {@link com.togethersports.tosproejct.account.Account} 객체를 가지고 있다. <br>
  *     주의! 단 영속성 컨텍스트에 저장되어 영속상태가 된 것은 아니다.
  * </p>
  * @author seunjeon
  */
 public class JwtPostAuthenticationToken extends AbstractAuthenticationToken {
 
-    private User user;
+    private Account account;
 
     /**
      * 인증 시도 사용자의 계정 정보를 바탕으로 인증 후 객체를 생성한다.
-     * @param user jwt token 의 값을 기반으로 하는 계정 엔티티
+     * @param account jwt token 의 값을 기반으로 하는 계정 엔티티
      */
-    public JwtPostAuthenticationToken(User user) {
-        super(List.of(new SimpleGrantedAuthority(user.getRole().name())));
-        this.user = user;
+    public JwtPostAuthenticationToken(Account account) {
+        super(List.of(new SimpleGrantedAuthority(account.getRole().name())));
+        this.account = account;
         this.setAuthenticated(true);
     }
 
@@ -40,6 +40,6 @@ public class JwtPostAuthenticationToken extends AbstractAuthenticationToken {
     // 로그인 된 사용자 계정 정보 반환
     @Override
     public Object getPrincipal() {
-        return user;
+        return account;
     }
 }

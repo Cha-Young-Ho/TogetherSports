@@ -1,6 +1,5 @@
 jwt:
   issuer: together-sports
-  access-token-signing-key: kGO2WGNVgLVHVhz5M1Y8nQuT7mH69JHlGqSk5X9Qi7M=
-  refresh-token-signing-key : kGO2WGNVgLVHVhz5M1Y8nQuT7mH69JHlGqSk5X9Qi7M!
+  signing-key: kGO2WGNVgLVHVhz5M1Y8nQuT7mH69JHlGqSk5X9Qi7M=
   access-token-expiration-time: 30 # 분단위
   refresh-token-expiration-time: 15 # 일단위
