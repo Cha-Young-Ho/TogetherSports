@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.togethersports.tosproejct.security.jwt.RefreshTokenService;
 import com.togethersports.tosproejct.security.jwt.filter.JwtAuthenticationFilter;
 import com.togethersports.tosproejct.security.jwt.filter.JwtRefreshFilter;
+import com.togethersports.tosproejct.security.jwt.handler.CustomLogoutHandler;
 import com.togethersports.tosproejct.security.jwt.handler.JwtAuthenticationFailureHandler;
 import com.togethersports.tosproejct.security.jwt.provider.JwtAuthenticationProvider;
 import com.togethersports.tosproejct.security.jwt.util.JwtTokenFactory;
@@ -48,6 +49,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private OAuth2LoginAuthenticationSuccessHandler oAuth2LoginAuthenticationSuccessHandler;
+
+    @Autowired
+    private CustomLogoutHandler logoutHandler;
 
 
 
@@ -96,6 +100,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.httpBasic().disable();
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        //logout
+        http.logout()
+                .logoutUrl("/api/logout")
+                .addLogoutHandler(logoutHandler)
+                .permitAll();
+
 
         // OAuth2 filter chain configuration
         http.oauth2Login()

@@ -3,11 +3,18 @@ package com.togethersports.tosproejct.security.jwt;
 import com.togethersports.tosproejct.account.User;
 import com.togethersports.tosproejct.security.jwt.token.RefreshToken;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
 // fixme 파라미터 -> DTO
+/**
+ * <h1>RefreshTokenService</h1>
+ * <p>Refresh Entity 관리 Service</p>
+ * <p>해당 클래스는 Refresh Entity와 관련한 비즈니스 로직 담당 클래스다.</p>
+ * @author yunghocha
+ */
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -57,4 +64,13 @@ public class RefreshTokenService {
             refreshTokenRepository.deleteByClientIpAndUserAgentAndProvider(clientIp, userAgent, provider);
         }
     }
+
+    public void removeRefreshTokenByToken(String refreshToken){
+
+        // 기존에 존재하던 refresh Token 제거
+        refreshTokenRepository.deleteByRefreshToken(refreshToken);
+
+    }
+
+
 }
