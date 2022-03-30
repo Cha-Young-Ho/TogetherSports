@@ -22,8 +22,7 @@ const RoomTagInfo = () => {
 
   /* 수정 필요 */
   // 1. 완료 버튼 클릭 시, 새로 만들어진 방으로 이동
-  // 2. X 버튼 누르면 프리뷰 삭제하고 객체배열에서도 데이터 빼기
-  // 3. 프리뷰 이미지를 선택하면 테두리가 초록색으로 변하고 대표사진으로 됨(대표사진에 대한 API 수정 필요) + 다른걸 누르면 그걸로 대체(중복X)
+  // 2. 프리뷰 이미지를 선택하면 테두리가 초록색으로 변하고 대표사진으로 됨(대표사진에 대한 API 수정 필요) + 다른걸 누르면 그걸로 대체(중복X)
 
   // 예외 처리 및 서버에 방 생성 요청
   const callCreateRoomRequest = (e) => {
@@ -85,7 +84,7 @@ const RoomTagInfo = () => {
   };
 
   // 이미지가 선택 함수
-  const onChangeImage = (e) => {
+  const onClickImage = (e) => {
     const file = e.target.files[0];
     const index = getExtension(file.name);
     const imageFileRealName = file.name.substring(0, index - 1);
@@ -111,12 +110,28 @@ const RoomTagInfo = () => {
 
   // 이미지 삭제 함수
   const deleteImage = (e) => {
-    console.log(e);
-    // const preview = setImagePreview((prev) =>
-    //   prev.filter((el) => {
-    //     return el !== preview;
-    //   })
-    // );
+    const selectedImageIndex = e.target.classList[1];
+    const imageIndex = selectedImageIndex.slice(4);
+    const selectedImg = document.querySelector(`.img-${imageIndex}`);
+
+    // input 비우기
+    setImage((image = ""));
+
+    // 프리뷰 삭제
+    setImagePreview((prev) =>
+      prev.filter((el) => {
+        return el !== selectedImg.src;
+      })
+    );
+
+    // 서버에게 전달할 객체배열 안에서 데이터 삭제
+    const sliceIndex = selectedImg.src.indexOf(",");
+    const src = selectedImg.src.substr(sliceIndex + 1);
+    setRoomImage((prev) =>
+      prev.filter((el) => {
+        return el.imageSource !== src;
+      })
+    );
   };
 
   // 태그 선택 함수
@@ -142,8 +157,8 @@ const RoomTagInfo = () => {
   // test
   useEffect(() => {
     //console.log(roomContent);
-    console.log(roomImage);
-    console.log(imagePreview);
+    //console.log(roomImage);
+    //console.log(imagePreview);
     //console.log(tag);
   });
 
@@ -178,7 +193,7 @@ const RoomTagInfo = () => {
                 type="file"
                 id="filename"
                 accept=".jpg, .jpeg, .png"
-                onChange={onChangeImage}
+                onChange={onClickImage}
               />
             </div>
 
@@ -187,9 +202,15 @@ const RoomTagInfo = () => {
                 return (
                   <div className="preview" key={index}>
                     <div>
-                      <img src={preview} alt="preview" />
+                      <img
+                        src={preview}
+                        alt="preview"
+                        className={`img-${index}`}
+                      />
                     </div>
-                    <button>X</button>
+                    <button className={`btn-${index}`} onClick={deleteImage}>
+                      X
+                    </button>
                   </div>
                 );
               })}
