@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final StorageService storageService;
-    private final AccountRepository accountRepository;
+    private final UserRepository userRepository;
     private final ActiveAreaRepository activeAreaRepository;
     private final InterestRepository interestRepository;
     private final Base64Decoder base64Decoder;
@@ -41,17 +41,17 @@ public class UserService {
     // 사용자 계정 추가정보 최초 설정
     @Transactional
     public void initUserInfo(Long id, UserOfInitInfo initialInfo) {
-        Account findAccount = accountRepository.findById(id).orElseThrow(() -> new UserNotFoundException("사용자가 존재하지 않습니다."));
+        User findUser = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("사용자가 존재하지 않습니다."));
 
         // ActiveArea 설정 (활동지역)
         List<ActiveArea> activeAreas = initialInfo.getActiveAreas().stream()
-                .map(activeArea -> ActiveArea.createActiveArea(findAccount, activeArea))
+                .map(activeArea -> ActiveArea.createActiveArea(findUser, activeArea))
                 .collect(Collectors.toList());
         activeAreaRepository.saveAll(activeAreas);
 
         // Interest 설정 (관심종목)
         List<Interest> interests = initialInfo.getInterests().stream()
-                .map(interest -> Interest.createInterest(findAccount, interest))
+                .map(interest -> Interest.createInterest(findUser, interest))
                 .collect(Collectors.toList());
         interestRepository.saveAll(interests);
 
@@ -63,6 +63,6 @@ public class UserService {
         String imagePath = storageService.store(imageSource, fileName);
 
         // 계정에 변경 사항 적용
-        findAccount.initUser(imagePath, initialInfo.getGender(), initialInfo.getUserBirth());
+        findUser.initUser(imagePath, initialInfo.getGender(), initialInfo.getUserBirth());
     }
 }

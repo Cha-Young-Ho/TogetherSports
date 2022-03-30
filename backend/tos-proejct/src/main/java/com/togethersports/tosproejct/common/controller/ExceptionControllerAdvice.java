@@ -1,6 +1,6 @@
 package com.togethersports.tosproejct.common.controller;
 
-import com.togethersports.tosproejct.common.code.Code;
+import com.togethersports.tosproejct.common.code.CommonCode;
 import com.togethersports.tosproejct.common.dto.FieldValidationError;
 import com.togethersports.tosproejct.common.dto.Response;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +32,6 @@ public class ExceptionControllerAdvice {
         List<FieldValidationError> errors = ex.getFieldErrors().stream()
                 .map(error -> FieldValidationError.of(error.getField(), error.getDefaultMessage()))
                 .collect(Collectors.toList());
-        return ResponseEntity.badRequest().body(Response.of(Code.VALIDATION_FAIL, errors));
+        return ResponseEntity.badRequest().body(Response.of(CommonCode.VALIDATION_FAIL, errors));
     }
 }

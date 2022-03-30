@@ -1,7 +1,7 @@
 package com.togethersports.tosproejct.security.jwt.util;
 
 
-import com.togethersports.tosproejct.account.Account;
+import com.togethersports.tosproejct.account.User;
 import com.togethersports.tosproejct.security.Role;
 import com.togethersports.tosproejct.security.jwt.JwtProperties;
 
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Properties;
 
 /**
  * <h1>JwtDecoder</h1>
@@ -42,7 +41,7 @@ public class JwtDecoder {
      * @throws MissingClaimException 토큰에 특정 클레임이 없는 경우 발생
      * @throws MalformedJwtException 토큰이 유효한 형식이 아닌 경우 발생
      */
-    public Account verifyAccessToken(String token, TokenType tokenType) throws ExpiredJwtException, SignatureException, MissingClaimException, MalformedJwtException {
+    public User verifyAccessToken(String token, TokenType tokenType) throws ExpiredJwtException, SignatureException, MissingClaimException, MalformedJwtException {
         if (tokenType == TokenType.ACCESS_TOKEN) {
 
             String key = properties.getAccessTokenSigningKey();
@@ -54,10 +53,9 @@ public class JwtDecoder {
             Claims jwtBody = jwt.getBody();
             Long id = Long.valueOf(jwtBody.getSubject());
             String email = (String) jwtBody.get("email");
-            String nickname = (String) jwtBody.get("user");
             Role role = Role.valueOf((String) jwtBody.get("role"));
 
-            return Account.convertAccount(id, email, nickname, role);
+            return User.convertUser(id, email, role);
         }
 
         //refresh 경우
