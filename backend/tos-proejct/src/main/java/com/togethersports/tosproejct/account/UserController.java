@@ -2,7 +2,9 @@ package com.togethersports.tosproejct.account;
 
 import com.togethersports.tosproejct.account.code.UserCode;
 import com.togethersports.tosproejct.account.dto.UserOfInitInfo;
+import com.togethersports.tosproejct.account.dto.UserOfModifyInfo;
 import com.togethersports.tosproejct.account.dto.UserOfOtherInfo;
+import com.togethersports.tosproejct.account.exception.NicknameDuplicationException;
 import com.togethersports.tosproejct.common.code.CommonCode;
 import com.togethersports.tosproejct.common.dto.Response;
 import com.togethersports.tosproejct.security.annotation.CurrentUser;
@@ -46,7 +48,7 @@ public class UserController {
         }
 
         //존재할 경우
-        return ResponseEntity.ok(Response.of(UserCode.DUPLICATED_NICKNAME, null));
+        throw new NicknameDuplicationException("닉네임이 중복되었습니다.");
     }
 
     @GetMapping("/api/user/{id}")
@@ -55,5 +57,13 @@ public class UserController {
 
         return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, userOfOtherInfo));
 
+    }
+
+    @PutMapping("/api/user")
+    public ResponseEntity<Response> modifyMyInfo(@CurrentUser User user,
+                                                 @RequestBody @Validated UserOfModifyInfo userOfOtherInfo){
+
+        userService.modifyMyInfo(user.getId(), userOfOtherInfo);
+        return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, userOfOtherInfo));
     }
 }
