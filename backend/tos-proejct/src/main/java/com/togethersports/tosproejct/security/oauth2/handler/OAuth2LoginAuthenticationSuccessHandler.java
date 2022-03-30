@@ -7,6 +7,7 @@ import com.togethersports.tosproejct.security.jwt.dto.TokenOfLogin;
 import com.togethersports.tosproejct.security.jwt.token.RefreshToken;
 import com.togethersports.tosproejct.security.jwt.util.JwtTokenFactory;
 import com.togethersports.tosproejct.security.oauth2.CustomOAuth2User;
+import com.togethersports.tosproejct.security.util.ClientIpUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,8 +48,15 @@ public class OAuth2LoginAuthenticationSuccessHandler implements AuthenticationSu
         // 로그인 시, 발급되는 엑세스토큰, 리프레시토큰 dto 생성
         TokenOfLogin tokenOfLogin = jwtTokenFactory.createTokens(loggedInUser);
 
+        String clientIp = ClientIpUtils.getClientIP(request);
+        String userAgent = request.getHeader("User-Agent");
         // Save Refresh Token Entity To Data Base
-        refreshTokenService.saveRefreshToken(loggedInUser, tokenOfLogin.getRefreshToken());
+        refreshTokenService.saveRefreshToken(loggedInUser,
+                tokenOfLogin.getRefreshToken(),
+                clientIp,
+                userAgent);
+
+        log.info("agent = {}", request.getHeader("User-Agent"));
 
         String redirectUri = UriComponentsBuilder
                 .fromUriString(redirectUrl)

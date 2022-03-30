@@ -32,7 +32,7 @@ import java.util.Optional;
  * @see org.springframework.security.oauth2.client.authentication.OAuth2LoginAuthenticationProvider
  * @see DefaultOAuth2UserService
  */
-@Slf4j
+
 @RequiredArgsConstructor
 @Service
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
@@ -52,6 +52,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         // OAuth2 계정 정보 가져오기
         OAuth2User oAuth2User = delegate.loadUser(userRequest);
         Map<String, Object> attributes = oAuth2User.getAttributes();
+
 
         OAuth2UserInfo userInfo = OAuth2UserInfoFactory.createUserInfo(provider, attributes);
 
