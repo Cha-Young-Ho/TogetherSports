@@ -42,7 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private OAuth2LoginAuthenticationSuccessHandler oAuth2LoginAuthenticationSuccessHandler;
 
-    // jwt Beans
+    
     @Autowired
     private CustomLogoutHandler logoutHandler;
 
