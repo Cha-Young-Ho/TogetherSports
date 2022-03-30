@@ -53,10 +53,9 @@ public class User {
     @Column(name = "USER_IS_FIRST") // 가입 이후 추가정보 입력 여부
     private boolean isFirst;
 
-
-    @Column(name = "USER_PROFILE_IMAGE_PATH")
-    //fixme yml에서 파일 끌고와야함 할 줄 모르게씀 ㅋ
-    @ColumnDefault("'/Users/seunjeon/Workspace/samples/defaultImage.png'") //설정 안할 시 기본 이미지 등록
+    //fixme yml에서 파일 끌고와야함
+    //설정 안할 시 기본 이미지 등록
+    @Column(name = "USER_PROFILE_IMAGE_PATH", columnDefinition = "varchar(255) default '/Users/seunjeon/Workspace/samples/'")
     private String userProfileImage; // 프로필 이미지 저장 경로
 
     @Column(name = "USER_GENDER")
@@ -135,6 +134,13 @@ public class User {
      */
     public void initUser(String profileImagePath, Gender gender, LocalDate birthDay, List<ActiveArea> activeAreas, List<Interest> interests) {
         this.userProfileImage = profileImagePath;
+        this.gender = gender;
+        this.birthDay = birthDay;
+        this.isFirst = false;
+        this.activeAreas = activeAreas;
+        this.interests = interests;
+    }
+    public void initUser(Gender gender, LocalDate birthDay, List<ActiveArea> activeAreas, List<Interest> interests) {
         this.gender = gender;
         this.birthDay = birthDay;
         this.isFirst = false;

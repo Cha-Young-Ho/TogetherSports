@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  * @author seunjeon
  * @author younghoCha
  */
-@Slf4j
+
 @RequiredArgsConstructor
 @Service
 public class UserService {
@@ -73,13 +73,14 @@ public class UserService {
             String fileName = nameGenerator.generateRandomName().concat(".").concat(extension);
             imagePath = storageService.store(imageSource, fileName);
         }
-        saveActiveArea(activeAreas);
-        saveInterests(interests);
+        if(imagePath == null){
+            findUser.initUser(initialInfo.getGender(), initialInfo.getUserBirth(), activeAreas, interests);
+            return;
+        }
+
         // 계정에 변경 사항 적용
         findUser.initUser(imagePath, initialInfo.getGender(), initialInfo.getUserBirth(), activeAreas, interests);
 
-        log.info("area = {}", activeAreas);
-        log.info("interests = {}", interests);
     }
 
     /**
@@ -103,10 +104,11 @@ public class UserService {
             activeAreaRepository.save(activeArea);
         }
     }
-    public void saveInterests(List<Interest> interests){
-        for(Interest interest : interests){
+    public void saveInterests(List<Interest> interests) {
+        for (Interest interest : interests) {
             interestRepository.save(interest);
         }
+    }
     public User getOtherInfo(Long id){
         //유저 엔티티
         Optional<User> userEntity = userRepository.findById(id);
