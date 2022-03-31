@@ -1,13 +1,18 @@
 package com.togethersports.tosproejct.account;
 
+import com.togethersports.tosproejct.account.dto.UserOfModifyInfo;
+import com.togethersports.tosproejct.area.ActiveArea;
+import com.togethersports.tosproejct.interest.Interest;
 import com.togethersports.tosproejct.security.Role;
 import com.togethersports.tosproejct.security.oauth2.model.OAuth2Provider;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * <h1>User</h1>
@@ -15,10 +20,11 @@ import java.time.LocalDate;
  *     사용자 계정 엔티티
  * </p>
  * <p>신규 계정을 생성하려면 {@link #createUser(Long, String, String, OAuth2Provider)} 참조</p>
- * <p>기존 계정 정보를 계정 엔티티로 변환하려면 {@link #convertUser(Long, String, String, Role)} 참조</p>
+ * <p>기존 계정 정보를 계정 엔티티로 변환하려면 {@link #convertUser(Long, String, Role)} 참조</p>
  * @author seunjeon
  * @author younghocha
  */
+@DynamicInsert // insert 시, null 값은 insert를 하지 않음
 @Getter
 @Entity
 public class User {
@@ -46,8 +52,10 @@ public class User {
 
     @Column(name = "USER_IS_FIRST") // 가입 이후 추가정보 입력 여부
     private boolean isFirst;
-  
-    @Column(name = "USER_PROFILE_IMAGE_PATH")
+
+    //fixme yml에서 파일 끌고와야함
+    //설정 안할 시 기본 이미지 등록
+    @Column(name = "USER_PROFILE_IMAGE_PATH", columnDefinition = "varchar(255) default '/Users/seunjeon/Workspace/samples/defaultImage.png'")
     private String userProfileImage; // 프로필 이미지 저장 경로
 
     @Column(name = "USER_GENDER")
@@ -55,7 +63,18 @@ public class User {
     private Gender gender;
 
     @Column(name = "USER_BIRTH_DAY")
-    private LocalDate birthDay;
+    private LocalDate userBirth;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "USER_ID")
+    private List<Interest> interests;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "USER_ID")
+    private List<ActiveArea> activeAreas;
+
+    @Column(name = "MANNER_POINT", columnDefinition = "int default 10")
+    private int mannerPoint;
 
     // 계정 엔티티를 생성자 및 빌더로 직접 접근해서 생성하는 것은 불가능 반드시 특정 메소드 사용하도록 강제
     @Builder(access = AccessLevel.PRIVATE)
@@ -114,12 +133,30 @@ public class User {
      * 해당 메소드 호출 이후 {@link #isFirst} 값이 false 로 설정된다.
      * @param profileImagePath 프로필 이미지 접근 경로
      * @param gender 성별
-     * @param birthDay 생년월일
+     * @param userBirth 생년월일
      */
-    public void initUser(String profileImagePath, Gender gender, LocalDate birthDay) {
+    public void initUser(String profileImagePath, Gender gender, LocalDate userBirth, List<ActiveArea> activeAreas, List<Interest> interests) {
         this.userProfileImage = profileImagePath;
         this.gender = gender;
-        this.birthDay = birthDay;
+        this.userBirth = userBirth;
         this.isFirst = false;
+        this.activeAreas = activeAreas;
+        this.interests = interests;
+    }
+    public void initUser(Gender gender, LocalDate userBirth, List<ActiveArea> activeAreas, List<Interest> interests) {
+        this.gender = gender;
+        this.userBirth = userBirth;
+        this.isFirst = false;
+        this.activeAreas = activeAreas;
+        this.interests = interests;
+    }
+
+    public void updateUser(UserOfModifyInfo userOfModifyInfo, List<ActiveArea> activeAreas, List<Interest> interests, String userProfileImage){
+        this.gender = userOfModifyInfo.getGender();
+        this.userBirth = userOfModifyInfo.getUserBirth();
+        this.interests = interests;
+        this.activeAreas = activeAreas;
+        this.userProfileImage = userProfileImage;
+        this.nickname = userOfModifyInfo.getUserNickname();
     }
 }

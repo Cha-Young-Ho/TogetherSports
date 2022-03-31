@@ -27,18 +27,18 @@ public class ActiveArea {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ACTIVE_AREA_ID")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "ACCOUNT_ID")
-    private User user;
+    @Column(name = "USER_ID")
+    private String userId;
+
 
     private String address; // 지역 주소 명
 
     // 활동 지역 엔티티를 생성자 및 빌더로 직접 접근해서 생성하는 것은 불가능 반드시 특정 메소드 사용하도록 강제
     @Builder(access = AccessLevel.PRIVATE)
-    private ActiveArea(User user, String address) {
-        this.user = user;
+    private ActiveArea(String address) {
         this.address = address;
     }
 
@@ -50,9 +50,8 @@ public class ActiveArea {
      * @param address 활동 지역 주소명
      * @return activeArea 활동 지역 엔티티
      */
-    public static ActiveArea createActiveArea(User user, String address) {
+    public static ActiveArea createActiveArea(String address) {
         return ActiveArea.builder()
-                .user(user)
                 .address(address)
                 .build();
     }

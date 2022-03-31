@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { deleteLogout } from "../api/members";
 import { FailResponse } from "../api/failResponse";
 import Modal from "./modals/userInfoModal";
+import RoomModal from "./modals/roomModal";
 import { getNavBar } from "../api/etc";
 
 const NavigationBar = () => {
@@ -29,20 +30,20 @@ const NavigationBar = () => {
   };
 
   // 서버로 로그인 요청
-  useEffect(() => {
-    getNavBar().then((res) => {
-      if (res.status.code === 5000) {
-        console.log(res.status.message);
-        setLoginData((loginData = true));
-        setUserNickname((userNickname = res.content.userNickname));
-        setImageSource(
-          (imageSource = res.content.userProfileImage.imageSource)
-        );
-      } else {
-        FailResponse(res.status.code);
-      }
-    });
-  }, []);
+  // useEffect(() => {
+  //   getNavBar().then((res) => {
+  //     if (res.status.code === 5000) {
+  //       console.log(res.status.message);
+  //       setLoginData((loginData = true));
+  //       setUserNickname((userNickname = res.content.userNickname));
+  //       setImageSource(
+  //         (imageSource = res.content.userProfileImage.imageSource)
+  //       );
+  //     } else {
+  //       FailResponse(res.status.code);
+  //     }
+  //   });
+  // }, []);
 
   // 로그아웃 버튼 클릭
   const ClickLogout = () => {
@@ -73,9 +74,13 @@ const NavigationBar = () => {
               </Link>
             </div>
             <div className="category">
-              <Link href="/">
+              {/* <Link href="/">
                 <div className="tag">소개</div>
-              </Link>
+              </Link> */}
+              <div className="tag" onClick={openModal}>
+                소개
+              </div>
+              <RoomModal open={modalOpen} close={closeModal}></RoomModal>
               <Link href="/room/roomlist">
                 <div className="tag">방 목록</div>
               </Link>

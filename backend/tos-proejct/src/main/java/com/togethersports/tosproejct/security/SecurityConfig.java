@@ -2,8 +2,10 @@ package com.togethersports.tosproejct.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.togethersports.tosproejct.security.jwt.RefreshTokenService;
+import com.togethersports.tosproejct.security.jwt.entrypoint.JwtAuthenticationEntryPoint;
 import com.togethersports.tosproejct.security.jwt.filter.JwtAuthenticationFilter;
 import com.togethersports.tosproejct.security.jwt.filter.JwtRefreshFilter;
+import com.togethersports.tosproejct.security.jwt.handler.CustomLogoutHandler;
 import com.togethersports.tosproejct.security.jwt.handler.JwtAuthenticationFailureHandler;
 import com.togethersports.tosproejct.security.jwt.provider.JwtAuthenticationProvider;
 import com.togethersports.tosproejct.security.jwt.util.JwtTokenFactory;
@@ -39,15 +41,15 @@ import javax.servlet.Filter;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     // OAuth2 Beans
     @Autowired
     private CustomOAuth2UserService customOAuth2UserService;
 
     @Autowired
     private OAuth2LoginAuthenticationSuccessHandler oAuth2LoginAuthenticationSuccessHandler;
+
+    @Autowired
+    private CustomLogoutHandler logoutHandler;
 
 
 
@@ -57,25 +59,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     //Jwt Util
     @Autowired
+    private JwtTokenFactory jwtTokenFactory;
+
+    @Autowired
     private JwtAuthenticationProvider jwtAuthenticationProvider;
+
+    @Autowired
+    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
+    @Autowired
+    private JwtAuthenticationFailureHandler jwtAuthenticationFailureHandler;
 
     @Autowired
     private RefreshTokenService refreshTokenService;
 
-    @Autowired
-    private JwtTokenFactory jwtTokenFactory;
 
     //Jwt Refresh Filter
-
     public Filter jwtRefreshFilter() throws Exception{
         JwtRefreshFilter jwtRefreshFilter = new JwtRefreshFilter(refreshTokenService, jwtTokenFactory);
-
-
         return jwtRefreshFilter;
     }
-
-    @Autowired
-    private JwtAuthenticationFailureHandler jwtAuthenticationFailureHandler;
     public Filter jwtAuthenticationFilter() throws Exception{
         JwtAuthenticationFilter filter = new JwtAuthenticationFilter("/api/**");
         filter.setAuthenticationManager(super.authenticationManager());
@@ -97,6 +100,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
+        //logout
+        http.logout()
+                .logoutUrl("/api/logout")
+                .addLogoutHandler(logoutHandler)
+                .permitAll();
+
         // OAuth2 filter chain configuration
         http.oauth2Login()
                 .successHandler(oAuth2LoginAuthenticationSuccessHandler)
@@ -111,11 +120,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors();
         // URL security
         http.authorizeRequests()
-                .antMatchers("/api/a").access("hasRole('ROLE_ADMIN')");
+                .antMatchers("/api/a").access("hasRole('ROLE_ADMIN')")
+                .antMatchers("/api/user").authenticated()
+                .antMatchers("/api/test").anonymous();
 
-
+        // exception handling
+        http.exceptionHandling()
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint);
     }
-    //fixme cors
+
+    // TODO nginx 를 이용한 배포시 포트 변경 필요할 수 있음
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
