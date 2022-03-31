@@ -42,7 +42,7 @@ const RoomTagInfo = () => {
         tag,
         roomInfo.startAppointmentDate,
         roomInfo.endAppointmentDate,
-        roomImages
+        roomImage
       ).then((res) => {
         console.log(res.status.message);
         if (res.status.code === 5000) {
