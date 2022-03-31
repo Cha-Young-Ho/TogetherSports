@@ -22,7 +22,7 @@ const RoomTagInfo = () => {
 
   /* 수정 필요 */
   // 1. 완료 버튼 클릭 시, 새로 만들어진 방으로 이동
-  // 2. 프리뷰 이미지를 선택하면 테두리가 초록색으로 변하고 대표사진으로 됨(대표사진에 대한 API 수정 필요) + 다른걸 누르면 그걸로 대체(중복X)
+  // 2. 대표사진에 대한 구현
 
   // 예외 처리 및 서버에 방 생성 요청
   const callCreateRoomRequest = (e) => {
@@ -42,7 +42,7 @@ const RoomTagInfo = () => {
         tag,
         roomInfo.startAppointmentDate,
         roomInfo.endAppointmentDate,
-        roomImages
+        roomImage
       ).then((res) => {
         console.log(res.status.message);
         if (res.status.code === 5000) {
@@ -86,6 +86,10 @@ const RoomTagInfo = () => {
   // 이미지가 선택 함수
   const onClickImage = (e) => {
     const file = e.target.files[0];
+    if (file === undefined) {
+      e.preventDefault();
+      return;
+    }
     const index = getExtension(file.name);
     const imageFileRealName = file.name.substring(0, index - 1);
     const imageFileExtension = file.type.split("/")[1];
@@ -157,8 +161,8 @@ const RoomTagInfo = () => {
   // test
   useEffect(() => {
     //console.log(roomContent);
-    //console.log(roomImage);
-    //console.log(imagePreview);
+    console.log(roomImage);
+    console.log(imagePreview);
     //console.log(tag);
   });
 
