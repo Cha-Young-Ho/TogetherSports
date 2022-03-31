@@ -27,11 +27,7 @@ const PersonalInfo = () => {
   const [fileName, setFileName] = useState("정보 없음");
   const [extension, setExtension] = useState("정보 없음");
 
-  /* 
-  닉네임 중복확인
-  Success => nickName = 현재 적혀있는 input
-  fail => nickName = 초기화
-  */
+  // 닉네임 중복확인
   const checkDuplication = () => {
     if (nickname.length < 2) {
       alert("닉네임은 최소 2글자 이상 입력해주세요.");
@@ -49,6 +45,7 @@ const PersonalInfo = () => {
     }
   };
 
+  // 생년월일 dropdown 데이터 가져오기
   const getBirthDay = () => {
     $(document).ready(function () {
       const now = new Date();
@@ -79,20 +76,23 @@ const PersonalInfo = () => {
     });
   };
 
+  // 성별 설정
   const getGender = (genderType) => {
     setGender(genderType);
   };
 
   //프로필 이미지 source 인코딩
-  const encodeFileToBase64 = (fileBlob) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(fileBlob);
+  const encodeFileToBase64 = (file) => {
     return new Promise((resolve) => {
+      const reader = new FileReader();
+      const baseURL = "";
+      reader.readAsDataURL(file); //파일을 base64 text로 전환
+
       reader.onload = () => {
-        const src = reader.result;
-        const sliceIndex = src.indexOf(",");
-        setImagesrc(src.substr(sliceIndex + 1));
-        resolve();
+        baseURL = reader.result;
+        const sliceIndex = baseURL.indexOf(",");
+        setImagesrc(baseURL.substr(sliceIndex + 1));
+        resolve(baseURL);
       };
     });
   };
@@ -107,6 +107,22 @@ const PersonalInfo = () => {
     if (profilename.indexOf("jpeg") !== -1) {
       return profilename.indexOf("jpeg");
     }
+  };
+
+  const onClickProfileImage = (e) => {
+    const file = e.target.files[0];
+    if (file === undefined) {
+      e.preventDefault();
+      return;
+    }
+    const index = getExtension(file.name);
+    const imageFileRealName = file.name.substring(0, index - 1);
+    const imageFileExtension = file.type.split("/")[1];
+
+    setProfile(file.name);
+    encodeFileToBase64(file);
+    setFileName(imageFileRealName);
+    setExtension(imageFileExtension);
   };
 
   //예외처리
@@ -167,6 +183,13 @@ const PersonalInfo = () => {
       },
     });
   };
+
+  // test
+  useEffect(() => {
+    console.log(imagesrc);
+    console.log(fileName);
+    console.log(extension);
+  });
 
   useEffect(getBirthDay, []);
 
@@ -268,7 +291,8 @@ const PersonalInfo = () => {
             <input
               readOnly
               className="upload-name"
-              value={profile.substr(12)}
+              value={profile}
+              // value={profile.substr(12)}
             />
             <label htmlFor="filename">
               <div>파일찾기</div>
@@ -277,15 +301,7 @@ const PersonalInfo = () => {
               type="file"
               id="filename"
               accept=".jpg, .jpeg, .png"
-              onChange={(e) => {
-                setProfile((profile = e.target.value));
-                const index = getExtension(profile.substr(12));
-                const splitData1 = profile.substr(12).substring(0, index - 1);
-                const splitData2 = profile.substr(12).substring(index);
-                setFileName(splitData1);
-                setExtension(splitData2);
-                encodeFileToBase64(e.target.files[0]);
-              }}
+              onChange={onClickProfileImage}
             />
           </div>
         </div>

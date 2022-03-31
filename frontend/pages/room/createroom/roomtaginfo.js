@@ -83,7 +83,7 @@ const RoomTagInfo = () => {
     }
   };
 
-  // 이미지가 선택 함수
+  // 이미지 선택 함수
   const onClickImage = (e) => {
     const file = e.target.files[0];
     if (file === undefined) {
