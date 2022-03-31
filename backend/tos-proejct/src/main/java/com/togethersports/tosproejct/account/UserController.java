@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
  * @author seunjeon
  * @author younghoCha
  */
-
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -39,7 +38,6 @@ public class UserController {
     public ResponseEntity<Response<?>> updateUserInfo(@CurrentUser User user,
                                                       @RequestBody @Validated UserOfInitInfo userOfInfoUpdate) {
         userService.initUserInfo(user.getId(), userOfInfoUpdate);
-
 
         return ResponseEntity.ok().body(Response.of(CommonCode.GOOD_REQUEST, null));
     }
@@ -72,16 +70,11 @@ public class UserController {
         userService.modifyMyInfo(user.getId(), userOfOtherInfo);
         return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, userOfOtherInfo));
     }
-    @GetMapping("/api/test2")
-    public ResponseEntity<Response> myinfoo(@CurrentUser User user){
-        log.info("여기 실행했음");
-        log.info("user id = {}", user.getId());
-        UserOfMyInfo myinfo = userService.myinfo(user.getId());
 
-        log.info("여기 실행했음 4");
-
+    @GetMapping("/api/user")
+    public ResponseEntity<Response> getMyInfo(@CurrentUser User user){
+        UserOfMyInfo myinfo = userService.getMyInfo(user.getId());
 
         return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, myinfo));
-
     }
 }
