@@ -1,9 +1,6 @@
 package com.togethersports.tosproejct.account;
 
-import com.togethersports.tosproejct.account.dto.UserOfInitInfo;
-import com.togethersports.tosproejct.account.dto.UserOfModifyInfo;
-import com.togethersports.tosproejct.account.dto.UserOfMyInfo;
-import com.togethersports.tosproejct.account.dto.UserOfOtherInfo;
+import com.togethersports.tosproejct.account.dto.*;
 import com.togethersports.tosproejct.account.exception.NicknameDuplicationException;
 import com.togethersports.tosproejct.account.exception.UserNotFoundException;
 import com.togethersports.tosproejct.area.ActiveArea;
@@ -21,8 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * <h1>UserService</h1>
@@ -60,18 +55,18 @@ public class UserService {
         User findUser = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("사용자가 존재하지 않습니다."));
 
         // ActiveArea 설정 (활동지역), String List -> ActiveAreas List
-        if(initialInfo.getActiveAreas() != null) {
-            activeAreas =
+        activeAreas =
                     parsingEntityUtils.parsingStringToActivesEntity(initialInfo.getActiveAreas());
-        }
 
-        if(initialInfo.getInterests() != null) {
-            // Interest 설정 (관심종목), String List -> Interests List
-            interests =
-                    parsingEntityUtils.parsingStringToInterestsEntity(initialInfo.getInterests());
-        }
 
-        if(initialInfo.getUserProfileImage().getImageSource() != null) {
+
+        // Interest 설정 (관심종목), String List -> Interests List
+        interests =
+                parsingEntityUtils.parsingStringToInterestsEntity(initialInfo.getInterests());
+
+
+        if(initialInfo.getUserProfileImage().getImageSource() != null
+        || initialInfo.getUserProfileImage().getImageSource().equals("정보 없음")) {
             // 프로필 이미지 저장
             encodedImageSource = initialInfo.getUserProfileImage().getImageSource();
             byte[] imageSource = base64Decoder.decode(encodedImageSource);
@@ -105,12 +100,12 @@ public class UserService {
 
     /**
      * 다른 회원 정보 조회 메소드
-     * @param id : 전달받은 id
+     * @param userEmail : 전달받은 user email
      * @return USerOfOtherInfo : 다른 회원 정보에 대한 DTO
      */
-    public UserOfOtherInfo getOtherInfo(Long id){
+    public UserOfOtherInfo getOtherInfo(String userEmail){
         //유저 엔티티
-        User userEntity = userRepository.findById(id)
+        User userEntity = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new UserNotFoundException("해당 사용자를 찾을 수 없습니다."));
 
         //다른 회원 정보 조회 DTO 리턴
@@ -171,5 +166,15 @@ public class UserService {
                .interests(parsedInterestList)
                .build();
 
+    }
+
+    public UserOfMyInfoSummary getMyInfoSummary(Long id){
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("해당 사용자를 찾을 수 없습니다."));
+
+        return UserOfMyInfoSummary.builder()
+                .userProfileImage(user.getUserProfileImage())
+                .userNickname(user.getNickname())
+                .build();
     }
 }
