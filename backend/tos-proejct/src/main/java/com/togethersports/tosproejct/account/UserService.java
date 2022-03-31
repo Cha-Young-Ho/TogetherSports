@@ -16,6 +16,7 @@ import com.togethersports.tosproejct.interest.Interest;
 import com.togethersports.tosproejct.interest.InterestRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -85,7 +86,6 @@ public class UserService {
 
         // 계정에 변경 사항 적용
         findUser.initUser(imagePath, initialInfo.getGender(), initialInfo.getUserBirth(), activeAreas, interests);
-
     }
 
     /**
@@ -150,8 +150,10 @@ public class UserService {
 
     }
 
-    public UserOfMyInfo myinfo(Long id){
-        User user =  userRepository.getById(id);
+    public UserOfMyInfo getMyInfo(Long id){
+        User user =  userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("해당 사용자가 존재하지 않습니다."));
+
 
         List<String> parsedAreaList = parsingEntityUtils.parsingAreasEntityToString(user.getActiveAreas());
         List<String> parsedInterestList = parsingEntityUtils.parsingInterestsEntityToString(user.getInterests());
