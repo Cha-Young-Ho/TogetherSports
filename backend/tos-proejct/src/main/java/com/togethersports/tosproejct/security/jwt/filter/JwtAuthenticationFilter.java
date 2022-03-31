@@ -1,10 +1,13 @@
 package com.togethersports.tosproejct.security.jwt.filter;
 
+import com.togethersports.tosproejct.common.file.util.NameGenerator;
 import com.togethersports.tosproejct.security.jwt.exception.AuthorizationHeaderNotFoundException;
 import com.togethersports.tosproejct.security.jwt.token.JwtPreAuthenticationToken;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
@@ -15,7 +18,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * <h1>JwtAuthenticationFilter</h1>
@@ -29,14 +34,6 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER_PREFIX = "Bearer ";
-    /**
-     * 필터에 어떤 URL 로 요청이 들어왔을 때 처리할 것인지 설정할 수 있도록 {@link RequestMatcher} 타입을 받는 생성자
-     * @param requiresAuthenticationRequestMatcher
-     */
-    public JwtAuthenticationFilter(RequestMatcher requiresAuthenticationRequestMatcher) {
-
-        super(requiresAuthenticationRequestMatcher);
-    }
 
     public JwtAuthenticationFilter(String request) {
         super(request);
@@ -50,9 +47,11 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
         }
         String authorizationHeader = request.getHeader(AUTHORIZATION_HEADER);
 
-        // 인증 헤더가 없는 경우 예외 발생
+        // 인증 헤더가 없는 경우 익명 사용자로 간주 (Anonymous Authentication)
         if (Objects.isNull(authorizationHeader)) {
-            throw new AuthorizationHeaderNotFoundException("인증 헤더가 존재하지 않습니다.");
+            return new AnonymousAuthenticationToken(UUID.randomUUID().toString(),
+                    "anonymousUser",
+                    List.of(new SimpleGrantedAuthority("ROLE_ANONYMOUS")));
         }
         // Bearer 접두어 제거
         String token = authorizationHeader.substring(BEARER_PREFIX.length());
@@ -61,6 +60,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
         return this.getAuthenticationManager().authenticate(preAuthenticationToken);
     }
 
+    // 인증 성공 후 추가 작업
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
