@@ -2,6 +2,7 @@ package com.togethersports.tosproejct.account;
 
 import com.togethersports.tosproejct.account.dto.UserOfInitInfo;
 import com.togethersports.tosproejct.account.dto.UserOfModifyInfo;
+import com.togethersports.tosproejct.account.dto.UserOfMyInfo;
 import com.togethersports.tosproejct.account.dto.UserOfOtherInfo;
 import com.togethersports.tosproejct.account.exception.NicknameDuplicationException;
 import com.togethersports.tosproejct.account.exception.UserNotFoundException;
@@ -35,6 +36,7 @@ import java.util.stream.Collectors;
  * @author younghoCha
  */
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserService {
@@ -47,7 +49,7 @@ public class UserService {
     private final ActiveAreaRepository activeAreaRepository;
     private final InterestRepository interestRepository;
     // 사용자 계정 추가정보 최초 설정
-    // fixme 매핑 방향 변화에 따른 로직 수정, null 예외 처리
+
     @Transactional
     public void initUserInfo(Long id, UserOfInitInfo initialInfo) {
         List<ActiveArea> activeAreas = null;
@@ -145,6 +147,27 @@ public class UserService {
         String fileName = nameGenerator.generateRandomName().concat(".").concat("png");
         String imagePath = storageService.store(imageSource, fileName);
         findUser.updateUser(userOfModifyInfo, activeAreas, interests, imagePath);
+
+    }
+
+    public UserOfMyInfo myinfo(Long id){
+        User user =  userRepository.getById(id);
+
+        List<String> parsedAreaList = parsingEntityUtils.parsingAreasEntityToString(user.getActiveAreas());
+        List<String> parsedInterestList = parsingEntityUtils.parsingInterestsEntityToString(user.getInterests());
+
+       return UserOfMyInfo.builder()
+               .id(user.getId())
+               .isFirst(user.isFirst())
+               .userBirth(user.getUserBirth())
+               .activeAreas(parsedAreaList)
+               .image(user.getUserProfileImage())
+               .userEmail(user.getEmail())
+               .oAuth2Provider(user.getProvider())
+               .mannerPoint(user.getMannerPoint())
+               .gender(user.getGender())
+               .interests(parsedInterestList)
+               .build();
 
     }
 }

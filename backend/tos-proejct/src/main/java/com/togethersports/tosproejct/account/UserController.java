@@ -3,10 +3,13 @@ package com.togethersports.tosproejct.account;
 import com.togethersports.tosproejct.account.code.UserCode;
 import com.togethersports.tosproejct.account.dto.UserOfInitInfo;
 import com.togethersports.tosproejct.account.dto.UserOfModifyInfo;
+import com.togethersports.tosproejct.account.dto.UserOfMyInfo;
 import com.togethersports.tosproejct.account.dto.UserOfOtherInfo;
 import com.togethersports.tosproejct.account.exception.NicknameDuplicationException;
+import com.togethersports.tosproejct.area.ActiveArea;
 import com.togethersports.tosproejct.common.code.CommonCode;
 import com.togethersports.tosproejct.common.dto.Response;
+import com.togethersports.tosproejct.interest.Interest;
 import com.togethersports.tosproejct.security.annotation.CurrentUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
  * @author younghoCha
  */
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class UserController {
@@ -35,6 +39,8 @@ public class UserController {
     public ResponseEntity<Response<?>> updateUserInfo(@CurrentUser User user,
                                                       @RequestBody @Validated UserOfInitInfo userOfInfoUpdate) {
         userService.initUserInfo(user.getId(), userOfInfoUpdate);
+
+
         return ResponseEntity.ok().body(Response.of(CommonCode.GOOD_REQUEST, null));
     }
 
@@ -65,5 +71,17 @@ public class UserController {
 
         userService.modifyMyInfo(user.getId(), userOfOtherInfo);
         return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, userOfOtherInfo));
+    }
+    @GetMapping("/api/test2")
+    public ResponseEntity<Response> myinfoo(@CurrentUser User user){
+        log.info("여기 실행했음");
+        log.info("user id = {}", user.getId());
+        UserOfMyInfo myinfo = userService.myinfo(user.getId());
+
+        log.info("여기 실행했음 4");
+
+
+        return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, myinfo));
+
     }
 }

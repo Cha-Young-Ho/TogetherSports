@@ -32,9 +32,9 @@ public class JwtRefreshTokenExceptionHandler {
         setDefaultResponse(response, JwtErrorCode.REFRESH_TOKEN_EXPIRATION);
     }
 
-    //DB에 저장되지 않은 리프레시 토큰 응답 메소드
+    //DB에 저장되지 않은 리프레시 토큰 응답 메소드 -> 만료로 응답
     public void createNullResponse(HttpServletResponse response) throws IOException {
-        setDefaultResponse(response, JwtErrorCode.DELETED_REFRESH_TOKEN);
+        setDefaultResponse(response, JwtErrorCode.REFRESH_TOKEN_EXPIRATION);
     }
 
     //응답 셋팅 공통 메소드
