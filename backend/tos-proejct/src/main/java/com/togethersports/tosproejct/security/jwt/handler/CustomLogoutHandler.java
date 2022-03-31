@@ -4,7 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.togethersports.tosproejct.common.code.CommonCode;
 import com.togethersports.tosproejct.common.dto.Response;
 import com.togethersports.tosproejct.security.jwt.JwtErrorCode;
+import com.togethersports.tosproejct.security.jwt.JwtProperties;
 import com.togethersports.tosproejct.security.jwt.RefreshTokenService;
+import com.togethersports.tosproejct.security.jwt.dto.TokenOfLogin;
+import com.togethersports.tosproejct.security.jwt.util.JwtDecoder;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.MissingClaimException;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +38,12 @@ import java.util.Objects;
  * <p>해당 클래스는 request를 검증하고, DB에 Refresh Token을 삭제하기 위한 클래스다.</p>
  * @author yunghocha
  */
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CustomLogoutHandler implements LogoutHandler {
+    @Autowired
+    private JwtProperties jwtProperties;
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -48,9 +57,10 @@ public class CustomLogoutHandler implements LogoutHandler {
         if(map != null) {
             // refresh 값이 있을 경우 필요한 헤더 추출
             String refreshToken = map.get("refreshToken");
-
             // refresh 제거
             refreshTokenService.removeRefreshTokenByToken(refreshToken);
+
+
             return;
         }
 
@@ -63,7 +73,7 @@ public class CustomLogoutHandler implements LogoutHandler {
         try {
             inputStream = request.getInputStream();
             map = objectMapper.readValue(StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8), Map.class);
-
+            log.info("로그아웃 실행");
             setResponse(response, map);
 
         } catch (IOException e) {
@@ -82,16 +92,25 @@ public class CustomLogoutHandler implements LogoutHandler {
         Response<?> responseValue = Response.of(CommonCode.GOOD_REQUEST, null);
         // 토큰 누락
         if(map.get("refreshToken") == null){
+            log.info("토큰 누락");
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             responseValue = Response.of(JwtErrorCode.TOKEN_NOTFOUND, null);
         }
 
         if (Objects.nonNull(responseValue)) {
+            log.info("굳");
             PrintWriter writer = response.getWriter();
             writer.write(objectMapper.writeValueAsString(responseValue));
         }
         return response;
     }
 
+    public JwtDecoder getJwtDecoder(){
+        return new JwtDecoder(this.jwtProperties);
+    }
+
+    public void checkRefreshToken(String refreshToken, HttpServletResponse response){
+        getJwtDecoder().verifyRefreshToken(refreshToken);
+    }
 
 }

@@ -50,7 +50,7 @@ public class ExceptionControllerAdvice {
     @ExceptionHandler(NicknameDuplicationException.class)
     public ResponseEntity<Response> handleNicknameDuplicationException() {
 
-        return ResponseEntity.badRequest().body(Response.of(UserCode.DUPLICATED_NICKNAME, null));
+        return ResponseEntity.ok().body(Response.of(UserCode.DUPLICATED_NICKNAME, null));
     }
 
 }
