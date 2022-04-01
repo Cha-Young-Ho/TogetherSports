@@ -18,7 +18,5 @@ public class UserOfOtherInfo {
     private List<String> interests;
     private String userProfileImage;
 
-
-
 }
 

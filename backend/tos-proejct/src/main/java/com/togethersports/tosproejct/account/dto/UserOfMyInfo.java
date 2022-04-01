@@ -19,7 +19,7 @@ public class UserOfMyInfo {
     private Long id;
     private List<String> activeAreas;
     private List<String> interests;
-    private String image;
+    private String userProfileImage;
     private LocalDate userBirth;
     private OAuth2Provider oAuth2Provider;
     private boolean isFirst;

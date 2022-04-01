@@ -67,9 +67,9 @@ public class UserController {
     //내 정보 조회
     @GetMapping("/api/user")
     public ResponseEntity<Response> getMyInfo(@CurrentUser User user){
-        UserOfMyInfo myinfo = userService.getMyInfo(user.getId());
+        UserOfMyInfo myInfo = userService.getMyInfo(user.getId());
 
-        return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, myinfo));
+        return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, myInfo));
     }
 
     //내 정보 조회 간소화
