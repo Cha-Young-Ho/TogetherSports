@@ -25,6 +25,11 @@ const RoomTagInfo = () => {
   const tagsLevel = ["입문만", "초보만", "중수만", "고수만"];
   const tagsGender = ["남자만", "여자만"];
 
+  // setRoomImages 컴포넌트에서 데이터 받기
+  const getRoomImages = (roomImage) => {
+    setRoomImages(roomImage);
+  };
+
   // 태그 선택 함수
   const onClickTag = (e) => {
     if (e.target.classList[2] === "tag-clicked") {
@@ -63,7 +68,7 @@ const RoomTagInfo = () => {
         tag,
         roomInfo.startAppointmentDate,
         roomInfo.endAppointmentDate,
-        roomImage
+        roomImages
       ).then((res) => {
         console.log(res.status.message);
         if (res.status.code === 5000) {
@@ -95,7 +100,7 @@ const RoomTagInfo = () => {
             ></textarea>
           </div>
 
-          <SetRoomImages />
+          <SetRoomImages getData={getRoomImages} />
 
           <div className="content-tag">
             <p>빠른 태그 추가 (최대 10개)</p>

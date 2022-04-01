@@ -3,11 +3,18 @@ import { useEffect, useState } from "react";
 /* 수정 필요 */
 // 1. 대표사진에 대한 구현
 
-const SetRoomImages = () => {
+const SetRoomImages = (props) => {
   const [image, setImage] = useState("");
   const [imagesrc, setImagesrc] = useState("");
   const [roomImage, setRoomImage] = useState([]); //서버로 보낼 데이터
   const [imagePreview, setImagePreview] = useState([]);
+
+  useEffect(() => {
+    if (props.getData) {
+      props.getData(roomImage);
+      return;
+    }
+  }, [roomImage]);
 
   // 이미지 source 인코딩
   const encodeFileToBase64 = async (file) => {
@@ -61,7 +68,7 @@ const SetRoomImages = () => {
     // input 비우기
     setImage((image = ""));
 
-    // 프리뷰 삭제
+    // 프리뷰에서 삭제
     setImagePreview((prev) =>
       prev.filter((el) => {
         return el !== selectedImg.src;
@@ -77,12 +84,6 @@ const SetRoomImages = () => {
       })
     );
   };
-
-  // test
-  useEffect(() => {
-    console.log(roomImage);
-    console.log(imagePreview);
-  });
 
   return (
     <>
