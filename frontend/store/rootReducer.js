@@ -77,7 +77,6 @@ const userRequestReducer = (state = signupInitialState, action) => {
         userBirth: action.payload.userBirth,
         gender: action.payload.gender,
         userProfileImage: {
-          userProfileRealName: action.payload.userProfileRealName,
           userProfileExtension: action.payload.userProfileExtension,
           imageSource: action.payload.imageSource,
         },
@@ -151,7 +150,6 @@ const createRoomReducer = (state = createRoomInitialState, action) => {
         ...state,
         startAppointmentDate: action.payload.startAppointmentDate,
         endAppointmentDate: action.payload.endAppointmentDate,
-        roomImages: action.payload.roomImages, // 수정 필요
       };
     default:
       return state;

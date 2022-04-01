@@ -23,15 +23,10 @@ const PersonalInfo = () => {
 
   //프로필
   const [profile, setProfile] = useState("");
-  const [imagesrc, setImagesrc] = useState("정보 없음");
-  const [fileName, setFileName] = useState("정보 없음");
   const [extension, setExtension] = useState("정보 없음");
+  const [imagesrc, setImagesrc] = useState("정보 없음");
 
-  /* 
-  닉네임 중복확인
-  Success => nickName = 현재 적혀있는 input
-  fail => nickName = 초기화
-  */
+  // 닉네임 중복확인
   const checkDuplication = () => {
     if (nickname.length < 2) {
       alert("닉네임은 최소 2글자 이상 입력해주세요.");
@@ -49,6 +44,7 @@ const PersonalInfo = () => {
     }
   };
 
+  // 생년월일 dropdown 데이터 가져오기
   const getBirthDay = () => {
     $(document).ready(function () {
       const now = new Date();
@@ -79,37 +75,42 @@ const PersonalInfo = () => {
     });
   };
 
+  // 성별 설정
   const getGender = (genderType) => {
     setGender(genderType);
   };
 
   //프로필 이미지 source 인코딩
-  const encodeFileToBase64 = (fileBlob) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(fileBlob);
+  const encodeFileToBase64 = (file) => {
     return new Promise((resolve) => {
+      const reader = new FileReader();
+      const baseURL = "";
+      reader.readAsDataURL(file); //파일을 base64 text로 전환
+
       reader.onload = () => {
-        const src = reader.result;
-        const sliceIndex = src.indexOf(",");
-        setImagesrc(src.substr(sliceIndex + 1));
-        resolve();
+        baseURL = reader.result;
+        const sliceIndex = baseURL.indexOf(",");
+        setImagesrc(baseURL.substr(sliceIndex + 1));
+        resolve(baseURL);
       };
     });
   };
 
-  // 프로필 이미지 확장자 index 반환 함수
-  const getExtension = (profilename) => {
-    if (profilename.indexOf("png") !== -1) {
-      return profilename.indexOf("png");
-    } else if (profilename.indexOf("jpg") !== -1) {
-      return profilename.indexOf("jpg");
+  // 프로필 이미지 선택 함수
+  const onClickProfileImage = (e) => {
+    const file = e.target.files[0];
+    if (file === undefined) {
+      e.preventDefault();
+      return;
     }
-    if (profilename.indexOf("jpeg") !== -1) {
-      return profilename.indexOf("jpeg");
-    }
+    const imageFileExtension = file.type.split("/")[1];
+
+    setProfile(file.name);
+    encodeFileToBase64(file);
+    setExtension(imageFileExtension);
   };
 
-  //예외처리
+  //예외처리 및 다음 페이지 실행
   const getNext = (e) => {
     const checkNickname = $("#input-nickname").val();
 
@@ -161,7 +162,6 @@ const PersonalInfo = () => {
         userNickname: nickname,
         userBirth: userBirth,
         gender: gender,
-        userProfileRealName: fileName,
         userProfileExtension: extension,
         imageSource: imagesrc,
       },
@@ -268,7 +268,8 @@ const PersonalInfo = () => {
             <input
               readOnly
               className="upload-name"
-              value={profile.substr(12)}
+              value={profile}
+              // value={profile.substr(12)}
             />
             <label htmlFor="filename">
               <div>파일찾기</div>
@@ -277,15 +278,7 @@ const PersonalInfo = () => {
               type="file"
               id="filename"
               accept=".jpg, .jpeg, .png"
-              onChange={(e) => {
-                setProfile((profile = e.target.value));
-                const index = getExtension(profile.substr(12));
-                const splitData1 = profile.substr(12).substring(0, index - 1);
-                const splitData2 = profile.substr(12).substring(index);
-                setFileName(splitData1);
-                setExtension(splitData2);
-                encodeFileToBase64(e.target.files[0]);
-              }}
+              onChange={onClickProfileImage}
             />
           </div>
         </div>
