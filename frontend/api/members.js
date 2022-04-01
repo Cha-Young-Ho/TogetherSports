@@ -48,15 +48,18 @@ const getUserLogin = async (email, name, provi) => {
 
 // 닉네임 중복확인
 const getDuplicationCheck = async (nickname) => {
-  const promise = axios.get("http://localhost:8080/api/duplication", {
-    headers: {
-      "Content-type": "application/json; charset=UTF-8",
-      Accept: "*/*",
-    },
-    params: {
-      userNickname: nickname,
-    },
-  });
+  const promise = axios.get(
+    "http://localhost:8080/api/user/duplication/nickname",
+    {
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        Accept: "*/*",
+      },
+      params: {
+        userNickname: nickname,
+      },
+    }
+  );
   const dataPromise = promise.then((res) => res.data);
 
   return dataPromise;

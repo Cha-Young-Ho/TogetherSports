@@ -23,9 +23,8 @@ const PersonalInfo = () => {
 
   //프로필
   const [profile, setProfile] = useState("");
-  const [imagesrc, setImagesrc] = useState("정보 없음");
-  const [fileName, setFileName] = useState("정보 없음");
   const [extension, setExtension] = useState("정보 없음");
+  const [imagesrc, setImagesrc] = useState("정보 없음");
 
   // 닉네임 중복확인
   const checkDuplication = () => {
@@ -97,35 +96,21 @@ const PersonalInfo = () => {
     });
   };
 
-  // 프로필 이미지 확장자 index 반환 함수
-  const getExtension = (profilename) => {
-    if (profilename.indexOf("png") !== -1) {
-      return profilename.indexOf("png");
-    } else if (profilename.indexOf("jpg") !== -1) {
-      return profilename.indexOf("jpg");
-    }
-    if (profilename.indexOf("jpeg") !== -1) {
-      return profilename.indexOf("jpeg");
-    }
-  };
-
+  // 프로필 이미지 선택 함수
   const onClickProfileImage = (e) => {
     const file = e.target.files[0];
     if (file === undefined) {
       e.preventDefault();
       return;
     }
-    const index = getExtension(file.name);
-    const imageFileRealName = file.name.substring(0, index - 1);
     const imageFileExtension = file.type.split("/")[1];
 
     setProfile(file.name);
     encodeFileToBase64(file);
-    setFileName(imageFileRealName);
     setExtension(imageFileExtension);
   };
 
-  //예외처리
+  //예외처리 및 다음 페이지 실행
   const getNext = (e) => {
     const checkNickname = $("#input-nickname").val();
 
@@ -177,19 +162,11 @@ const PersonalInfo = () => {
         userNickname: nickname,
         userBirth: userBirth,
         gender: gender,
-        userProfileRealName: fileName,
         userProfileExtension: extension,
         imageSource: imagesrc,
       },
     });
   };
-
-  // test
-  useEffect(() => {
-    console.log(imagesrc);
-    console.log(fileName);
-    console.log(extension);
-  });
 
   useEffect(getBirthDay, []);
 
