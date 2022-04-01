@@ -1,9 +1,6 @@
 package com.togethersports.tosproejct.account;
 
-import com.togethersports.tosproejct.account.code.UserCode;
-import com.togethersports.tosproejct.account.dto.UserOfInitInfo;
-import com.togethersports.tosproejct.account.dto.UserOfModifyInfo;
-import com.togethersports.tosproejct.account.dto.UserOfOtherInfo;
+import com.togethersports.tosproejct.account.dto.*;
 import com.togethersports.tosproejct.account.exception.NicknameDuplicationException;
 import com.togethersports.tosproejct.common.code.CommonCode;
 import com.togethersports.tosproejct.common.dto.Response;
@@ -23,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
  * @author seunjeon
  * @author younghoCha
  */
-
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class UserController {
@@ -35,6 +32,7 @@ public class UserController {
     public ResponseEntity<Response<?>> updateUserInfo(@CurrentUser User user,
                                                       @RequestBody @Validated UserOfInitInfo userOfInfoUpdate) {
         userService.initUserInfo(user.getId(), userOfInfoUpdate);
+
         return ResponseEntity.ok().body(Response.of(CommonCode.GOOD_REQUEST, null));
     }
 
@@ -52,18 +50,35 @@ public class UserController {
     }
 
     @GetMapping("/api/user/{id}")
-    public ResponseEntity<Response> otherInfo(@PathVariable Long id){
-        UserOfOtherInfo userOfOtherInfo = userService.getOtherInfo(id);
+    public ResponseEntity<Response> otherInfo(@PathVariable String userEmail){
+        UserOfOtherInfo userOfOtherInfo = userService.getOtherInfo(userEmail);
 
         return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, userOfOtherInfo));
 
     }
-
+    //내 정보 수정
     @PutMapping("/api/user")
     public ResponseEntity<Response> modifyMyInfo(@CurrentUser User user,
                                                  @RequestBody @Validated UserOfModifyInfo userOfOtherInfo){
 
         userService.modifyMyInfo(user.getId(), userOfOtherInfo);
         return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, userOfOtherInfo));
+    }
+    //내 정보 조회
+    @GetMapping("/api/user")
+    public ResponseEntity<Response> getMyInfo(@CurrentUser User user){
+        UserOfMyInfo myinfo = userService.getMyInfo(user.getId());
+
+        return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, myinfo));
+    }
+
+    //내 정보 조회 간소화
+    @GetMapping("/api/nav")
+    public ResponseEntity<Response> getMyInfoMin(@CurrentUser User user){
+
+        UserOfMyInfoSummary userOfMyInfoSummary = userService.getMyInfoSummary(user.getId());
+
+        return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, userOfMyInfoSummary));
+
     }
 }

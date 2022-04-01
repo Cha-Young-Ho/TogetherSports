@@ -52,8 +52,6 @@ public class OAuth2LoginAuthenticationSuccessHandler implements AuthenticationSu
                 clientIp,
                 userAgent);
 
-        log.info("agent = {}", request.getHeader("User-Agent"));
-
         String redirectUri = UriComponentsBuilder
                 .fromUriString(redirectUrl)
                 .queryParam("access-token", tokenOfLogin.getAccessToken())

@@ -1,12 +1,31 @@
+import { useState } from "react";
+import ModifyRoomModal from "../modals/modifyRoomModal";
+
 const FilteredRooms = () => {
+  const [modifyModalOpen, setModifyModalOpen] = useState(false);
+
+  const openModifyModal = () => {
+    setModifyModalOpen(true);
+  };
+
+  const closeModifyModal = () => {
+    setModifyModalOpen(false);
+  };
+
   return (
     <>
       <div className="rooms-wrapper">
         <div className="centerLine">
           <div>
-            <button className="buttons">최신순</button>
+            <button className="buttons" onClick={openModifyModal}>
+              최신순
+            </button>
             <button className="buttons">시간순</button>
             <button className="buttons">참여자순</button>
+            <ModifyRoomModal
+              open={modifyModalOpen}
+              close={closeModifyModal}
+            ></ModifyRoomModal>
           </div>
         </div>
       </div>
