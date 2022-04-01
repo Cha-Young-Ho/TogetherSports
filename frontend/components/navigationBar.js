@@ -6,14 +6,18 @@ import { FailResponse } from "../api/failResponse";
 import Modal from "./modals/userInfoModal";
 import RoomModal from "./modals/roomModal";
 import { getNavBar } from "../api/etc";
+import { useSelector } from "react-redux";
 
 const NavigationBar = () => {
   // 로그인 상태 임을 판별하는 변수
   const [loginData, setLoginData] = useState(false);
 
+  // 로그인 시 저장되는
+  const myinfo = useSelector((state) => state.myInfoReducer);
+
   // 로그인 요청으로 받아온 정보
-  const [userNickname, setUserNickname] = useState("");
-  const [imageSource, setImageSource] = useState("");
+  // const [userNickname, setUserNickname] = useState("");
+  // const [imageSource, setImageSource] = useState("");
 
   // // 유저 세션 정보(auth name, email, provider)
   // const { data: session, status } = useSession();
