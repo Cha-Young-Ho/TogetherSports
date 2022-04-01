@@ -2,6 +2,7 @@ package com.togethersports.tosproejct.account;
 
 import com.togethersports.tosproejct.account.dto.*;
 import com.togethersports.tosproejct.account.exception.NicknameDuplicationException;
+import com.togethersports.tosproejct.account.exception.NotEnteredInformationException;
 import com.togethersports.tosproejct.account.exception.UserNotFoundException;
 import com.togethersports.tosproejct.area.ActiveArea;
 import com.togethersports.tosproejct.area.ActiveAreaRepository;
@@ -119,7 +120,7 @@ public class UserService {
 
     }
 
-    //fixme 회원 정보 수정
+
     //회원 정보 수정 메소드
     @Transactional
     public void modifyMyInfo(Long id, UserOfModifyInfo userOfModifyInfo){
@@ -149,6 +150,7 @@ public class UserService {
         User user =  userRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("해당 사용자가 존재하지 않습니다."));
 
+        checkIsFirst(user);
 
         List<String> parsedAreaList = parsingEntityUtils.parsingAreasEntityToString(user.getActiveAreas());
         List<String> parsedInterestList = parsingEntityUtils.parsingInterestsEntityToString(user.getInterests());
@@ -158,7 +160,7 @@ public class UserService {
                .isFirst(user.isFirst())
                .userBirth(user.getUserBirth())
                .activeAreas(parsedAreaList)
-               .image(user.getUserProfileImage())
+               .userProfileImage(user.getUserProfileImage())
                .userEmail(user.getEmail())
                .oAuth2Provider(user.getProvider())
                .mannerPoint(user.getMannerPoint())
@@ -176,5 +178,12 @@ public class UserService {
                 .userProfileImage(user.getUserProfileImage())
                 .userNickname(user.getNickname())
                 .build();
+    }
+
+
+    public void checkIsFirst(User user){
+        if(user.isFirst()){
+            throw new NotEnteredInformationException("추가 정보를 입력하지 않은 계정입니다.");
+        }
     }
 }

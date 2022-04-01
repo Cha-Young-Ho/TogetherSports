@@ -54,9 +54,9 @@ public class OAuth2LoginAuthenticationSuccessHandler implements AuthenticationSu
 
         String redirectUri = UriComponentsBuilder
                 .fromUriString(redirectUrl)
-                .queryParam("access-token", tokenOfLogin.getAccessToken())
-                .queryParam("refresh-token", tokenOfLogin.getRefreshToken())
-                .queryParam("is-first", first)
+                .queryParam("access_token", tokenOfLogin.getAccessToken())
+                .queryParam("refresh_token", tokenOfLogin.getRefreshToken())
+                .queryParam("is_first", first)
                 .toUriString();
 
         response.sendRedirect(redirectUri);
