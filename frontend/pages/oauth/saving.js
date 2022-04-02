@@ -25,30 +25,28 @@ const Saving = () => {
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
 
-      useEffect(() => {
-        getMyInfo().then((res) => {
-          if (res.status.code === 5000) {
-            console.log(res.status.message);
-            dispatch({
-              type: "SAVEMYINFO",
-              payload: {
-                userEmail: res.content.userEmail,
-                userName: res.content.userName,
-                userNickname: res.content.userNickname,
-                userBirth: res.content.userBirth,
-                gender: res.content.gender,
-                userProfileImagePath: res.content.userProfileImagePath,
-                activeAreas: res.content.activeAreas.map((el) => el),
-                interests: res.content.interests.map((el) => el),
-                mannerPoint: res.content.mannerPoint,
-              },
-            });
-            router.replace("/");
-          } else {
-            FailResponse(res.status.code);
-          }
-        });
-      }, []);
+      getMyInfo().then((res) => {
+        if (res.status.code === 5000) {
+          console.log(res.status.message);
+          dispatch({
+            type: "SAVEMYINFO",
+            payload: {
+              userEmail: res.content.userEmail,
+              userName: res.content.userName,
+              userNickname: res.content.userNickname,
+              userBirth: res.content.userBirth,
+              gender: res.content.gender,
+              userProfileImagePath: res.content.userProfileImagePath,
+              activeAreas: res.content.activeAreas.map((el) => el),
+              interests: res.content.interests.map((el) => el),
+              mannerPoint: res.content.mannerPoint,
+            },
+          });
+          router.replace("/");
+        } else {
+          FailResponse(res.status.code);
+        }
+      });
     }
   }, [accessToken, refreshToken]);
 
