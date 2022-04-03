@@ -85,6 +85,27 @@ const SetRoomImages = (props) => {
     );
   };
 
+  const onChangeRepresentativeImage = (e) => {
+    const targetIndex = e.target.classList[1].slice(-1);
+    const moveValue = Math.abs(targetIndex) * -1;
+    console.log(changeArrayOrder(imagePreview, targetIndex, moveValue));
+  };
+
+  // 대표사진을 위해 배열의 index 변경
+  const changeArrayOrder = (arr, targetIndex, moveValue) => {
+    const newPositionIndex = targetIndex + moveValue; // 이동할 index
+    if (newPositionIndex < 0 || newPositionIndex >= arr.length) return;
+    // const tempArr = JSON.parse(JSON.stringify(arr));
+    const tempArr = arr;
+    const target = tempArr.splice(targetIndex, 1)[0];
+    tempArr.splice(newPositionIndex, 0, target);
+    return tempArr;
+  };
+
+  const onClickImg = () => {
+    console.log("이미지누름");
+  };
+
   return (
     <>
       <div className="content-images">
@@ -106,8 +127,19 @@ const SetRoomImages = (props) => {
           {imagePreview.map((preview, index) => {
             return (
               <div className="preview" key={index}>
-                <div>
-                  <img src={preview} alt="preview" className={`img-${index}`} />
+                <div
+                  className={`preview-${index}`}
+                  onClick={onChangeRepresentativeImage}
+                  style={{
+                    border: index === 0 ? "solid 3px #468f5b" : "none",
+                  }}
+                >
+                  <img
+                    src={preview}
+                    alt="preview"
+                    className={`img-${index}`}
+                    onClick={onClickImg}
+                  />
                 </div>
                 <button className={`btn-${index}`} onClick={deleteImage}>
                   X
@@ -190,12 +222,12 @@ const SetRoomImages = (props) => {
           width: 90px;
           height: 90px;
           margin: 0 10px;
-          border: none;
           border-radius: 10px;
           background-color: #d8d8d8;
           overflow: hidden;
           display: table-cell;
           vertical-align: middle;
+          cursor: pointer;
         }
 
         .preview img {
