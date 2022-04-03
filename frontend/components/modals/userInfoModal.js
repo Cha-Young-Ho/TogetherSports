@@ -1,51 +1,26 @@
-import { useDispatch } from "react-redux";
-import { getMyInfo } from "../../api/members";
-import { FailResponse } from "../../api/failResponse";
+import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
 const UserInfoModal = ({ open, close }) => {
-  const dispatch = useDispatch();
-  const [imageSrc, setImageSrc] = useState();
-  const [nickname, setNickname] = useState();
-  const [mannerPoint, setMannerPoint] = useState();
+  const myInfo = useSelector((state) => state.myInfoReducer);
+  // const dispatch = useDispatch();
+  const [imageSrc, setImageSrc] = useState("");
+  const [nickname, setNickname] = useState("");
+  const [mannerPoint, setMannerPoint] = useState("");
   const [interest, setInterest] = useState([]);
 
   useEffect(() => {
-    if (open) {
-      // 내 회원 정보 요청
-      getMyInfo().then((res) => {
-        if (res.code === 5000) {
-          // 현재 정보 값 내부에 저장
-          setImageSrc(res.imageSource);
-          setNickname(res.userNickname);
-          setMannerPoint(res.mannerPoint);
-          setInterest(res.interest);
-
-          // redux에 저장
-          dispatch({
-            type: "SAVEMYINFO",
-            payload: {
-              userEmail: res.userEmail,
-              userName: res.userName,
-              userNickname: res.userNickname,
-              userBirth: res.userBirth,
-              gender: res.gender,
-              userProfileImage: {
-                userProfileRealName: res.userProfileRealName,
-                userProfileExtension: res.userProfileExtension,
-                imageSource: res.imageSource,
-              },
-              activeAreas: res.activeAreas.map((el) => el),
-              interests: res.interests.map((el) => el),
-              mannerPoint: res.mannerPoint,
-            },
-          });
-        } else {
-          FailResponse(res.code);
-        }
-      });
+    if (open && myInfo.userNickname === "") {
+      alert("회원 추가 정보가 없어 내 정보를 요청할 수 없습니다.");
+      close();
+      return;
     }
+
+    setImageSrc(myInfo.userProfileImagePath);
+    setNickname(myInfo.userNickname);
+    setMannerPoint(myInfo.mannerPoint);
+    setInterest(myInfo.interests);
   }, [open]);
 
   return (
@@ -166,6 +141,11 @@ const UserInfoModal = ({ open, close }) => {
 
         .pf-interest {
           margin-bottom: 10px;
+          display: flex;
+        }
+
+        .pf-exercise {
+          margin: 5px;
         }
 
         .next-button {

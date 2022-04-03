@@ -26,7 +26,7 @@ const getUserInfoCheck = async (email, name, provi) => {
   return dataPromise;
 };
 
-// 로그인
+// 로그인 (삭제 예정)
 const getUserLogin = async (email, name, provi) => {
   //http://localhost:8080/test
 
@@ -100,28 +100,43 @@ const getOtherInfo = async (nickname) => {
 
 //회원가입 요청
 const postUserRequest = async (
+  userNickname,
+  userBirth,
   activeAreas,
   gender,
-  interests,
-  provider,
-  userBirth,
-  userEmail,
-  userName,
-  userNickname,
-  userProfileImage
+  userProfileExtension,
+  imageSource,
+  interests
 ) => {
   const promise = axios.post(
     "http://localhost:8080/api/user",
     {
-      userEmail: userEmail,
-      userName: userName,
       userNickname: userNickname,
       userBirth: userBirth,
       activeAreas: activeAreas,
       gender: gender,
-      userProfileImage: userProfileImage,
-      provider: provider,
+      userProfileImage: {
+        userProfileExtension: userProfileExtension,
+        imageSource: imageSource,
+      },
       interests: interests, //--> 5개까지
+    },
+    {
+      "Content-type": "application/json; charset=UTF-8",
+      Accept: "*/*",
+    }
+  );
+  const dataPromise = promise.then((res) => res.data);
+
+  return dataPromise;
+};
+
+// 로그아웃 요청
+const deleteLogout = async () => {
+  const promise = axios.post(
+    "http://localhost:8080/api/logout",
+    {
+      refreshToken: localStorage.getItem("refreshToken"),
     },
     {
       "Content-type": "application/json; charset=UTF-8",
@@ -173,24 +188,6 @@ const putUpdateUserInfo = async (
 };
 
 // DELETE
-
-// 로그아웃 요청
-const deleteLogout = async () => {
-  //http://localhost:8080/test
-
-  const promise = axios.delete("http://localhost:8080/api/logout", {
-    headers: {
-      "Content-type": "application/json; charset=UTF-8",
-      Accept: "*/*",
-    },
-    params: {
-      refreshToken: localStorage.getItem("refreshToken"),
-    },
-  });
-  const dataPromise = promise.then((res) => res.data);
-
-  return dataPromise;
-};
 
 export {
   getUserInfoCheck,

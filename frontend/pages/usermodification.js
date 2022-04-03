@@ -27,28 +27,26 @@ const UserModification = () => {
   const [imagesrc, setImagesrc] = useState(
     userInfo.userProfileImage.imageSource
   );
-  const [fileName, setFileName] = useState(
-    userInfo.userProfileImage.userProfileRealName
-  );
   const [extension, setExtension] = useState(
     userInfo.userProfileImage.userProfileExtension
   );
+
+  const onClickImage = (e) => {
+    const file = e.target.files[0];
+    if (file === undefined) {
+      e.preventDefault();
+      return;
+    }
+    const imageFileExtension = file.type.split("/")[1];
+    setProfile((profile = file.name));
+    setExtension(imageFileExtension);
+    encodeFileToBase64(file);
+  };
 
   // 활동지역
   let activeAreas = [];
   const [tagAreas, setTagAreas] = useState([]);
 
-  useEffect(() => {
-    console.log(birthYear);
-    console.log(birthMonth);
-    console.log(birthDay);
-  });
-
-  /* 
-  닉네임 중복확인
-  Success => nickName = 현재 적혀있는 input
-  fail => nickName = 초기화
-  */
   const checkDuplication = () => {
     if (nickname.length < 2) {
       alert("닉네임은 최소 2글자 이상 입력해주세요.");
@@ -115,26 +113,19 @@ const UserModification = () => {
   };
 
   //프로필 이미지 source 인코딩
-  const encodeFileToBase64 = (fileBlob) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(fileBlob);
+  const encodeFileToBase64 = (file) => {
     return new Promise((resolve) => {
+      const reader = new FileReader();
+      const baseURL = "";
+      reader.readAsDataURL(file); //파일을 base64 text로 전환
+
       reader.onload = () => {
-        setImagesrc(reader.result);
-        resolve();
+        baseURL = reader.result;
+        const sliceIndex = baseURL.indexOf(",");
+        setImagesrc(baseURL.substr(sliceIndex + 1));
+        resolve(baseURL);
       };
     });
-  };
-
-  const getExtension = (profilename) => {
-    if (profilename.indexOf("png") !== -1) {
-      return profilename.indexOf("png");
-    } else if (profilename.indexOf("jpg") !== -1) {
-      return profilename.indexOf("jpg");
-    }
-    if (profilename.indexOf("jpeg") !== -1) {
-      return profilename.indexOf("jpeg");
-    }
   };
 
   //관심종목
@@ -486,11 +477,7 @@ const UserModification = () => {
             </div>
             <div className="profile">
               <div className="text-profile">프로필</div>
-              <input
-                readOnly
-                className="upload-name"
-                value={profile.substr(12)}
-              />
+              <input readOnly className="upload-name" value={profile} />
               <label htmlFor="filename">
                 <div>파일찾기</div>
               </label>
@@ -498,15 +485,7 @@ const UserModification = () => {
                 type="file"
                 id="filename"
                 accept=".jpg, .jpeg, .png"
-                onChange={(e) => {
-                  setProfile((profile = e.target.value));
-                  const index = getExtension(profile.substr(12)); // 확장자 index 받아오기
-                  const splitData1 = profile.substr(12).substring(0, index - 1);
-                  const splitData2 = profile.substr(12).substring(index);
-                  setFileName(splitData1);
-                  setExtension(splitData2);
-                  encodeFileToBase64(e.target.files[0]);
-                }}
+                onChange={onClickImage}
               />
             </div>
           </div>

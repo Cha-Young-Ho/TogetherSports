@@ -1,5 +1,3 @@
-// import { signIn } from "next-auth/react";
-
 const Login = () => {
   // 네이버 로그인
   const naverLogin = () => {
