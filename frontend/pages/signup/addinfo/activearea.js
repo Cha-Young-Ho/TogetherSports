@@ -2,29 +2,25 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { postUserRequest } from "../../../api/members";
 import { useSelector } from "react-redux";
-import UserInfoNavBar from "../../../components/userInfoNavBar";
+import userInfoNavBar from "../../../components/userInfoNavBar";
 import { FailResponse } from "../../../api/failResponse";
 
 let activeAreas = [];
 const ActiveArea = () => {
-  const userInfo = useSelector((state) => state.userRequestReducer);
+  const userRequestInfo = useSelector((state) => state.userRequestReducer);
 
   const [tagAreas, setTagAreas] = useState([]);
 
   // 서버에 회원가입 요청
   const callUserRequest = () => {
     postUserRequest(
+      userRequestInfo.userNickname,
+      userRequestInfo.userBirth,
       activeAreas,
-      userInfo.gender,
-      userInfo.interests,
-      userInfo.provider,
-      userInfo.userBirthDay,
-      userInfo.userBirthMonday,
-      userInfo.userBirthYear,
-      userInfo.userEmail,
-      userInfo.userName,
-      userInfo.userNickname,
-      userInfo.userProfileImage
+      userRequestInfo.gender,
+      userRequestInfo.userProfileExtension,
+      userRequestInfo.imageSource,
+      userRequestInfo.interests
     ).then((res) => {
       console.log(res.status.message);
       if (res.status.code === 5000) {
@@ -35,6 +31,7 @@ const ActiveArea = () => {
     });
   };
 
+  // 카카오 지도 한번만 렌더링
   useEffect(() => {
     getMap();
   }, []);
@@ -165,7 +162,7 @@ const ActiveArea = () => {
   return (
     <>
       <div className="bg-container">
-        <UserInfoNavBar
+        <userInfoNavBar
           personal_atv={"deactivation"}
           interest_atv={"deactivation"}
           activearea={"activation"}

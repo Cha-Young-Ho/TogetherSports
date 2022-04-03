@@ -5,7 +5,7 @@ import { deleteLogout } from "../api/members";
 import { FailResponse } from "../api/failResponse";
 import Modal from "./modals/userInfoModal";
 import RoomModal from "./modals/roomModal";
-import { getNavBar } from "../api/etc";
+import { getMyInfo } from "../api/members";
 import { useSelector } from "react-redux";
 
 const NavigationBar = () => {
@@ -33,9 +33,18 @@ const NavigationBar = () => {
     setModalOpen(false);
   };
 
+  const [roomModalOpen, setRoomModalOpen] = useState(false);
+
+  const roomOpenModal = () => {
+    setRoomModalOpen(true);
+  };
+  const roomCloseModal = () => {
+    setRoomModalOpen(false);
+  };
+
   //서버로 로그인 요청
   useEffect(() => {
-    if (myinfo.userEmail === "") {
+    if (myinfo.userEmail !== "") {
       getMyInfo().then((res) => {
         if (res.status.code === 5000) {
           console.log(res.status.message);
@@ -56,10 +65,11 @@ const NavigationBar = () => {
           setLoginData(true);
         } else {
           FailResponse(res.status.code);
+          setLoginData(false);
         }
       });
     } else {
-      setLoginData(false);
+      setLoginData(true);
     }
   }, []);
 
@@ -95,10 +105,13 @@ const NavigationBar = () => {
               {/* <Link href="/">
                 <div className="tag">소개</div>
               </Link> */}
-              <div className="tag" onClick={openModal}>
+              <div className="tag" onClick={roomOpenModal}>
                 소개
               </div>
-              <RoomModal open={modalOpen} close={closeModal}></RoomModal>
+              <RoomModal
+                open={roomModalOpen}
+                close={roomCloseModal}
+              ></RoomModal>
               <Link href="/room/roomlist">
                 <div className="tag">방 목록</div>
               </Link>
@@ -118,9 +131,12 @@ const NavigationBar = () => {
               ) : (
                 <>
                   <button className="user-box" onClick={openModal}>
-                    <img className="ProfileImage" src={`${imageSource}`}></img>
+                    <img
+                      className="ProfileImage"
+                      src={`${myinfo.userProfileImagePath}`}
+                    ></img>
                     <div className="logOn">
-                      {`${userNickname}`} 님 반갑습니다!
+                      {`${myinfo.userNickname}`} 님 반갑습니다!
                     </div>
                   </button>
 
