@@ -5,15 +5,19 @@ import { deleteLogout } from "../api/members";
 import { FailResponse } from "../api/failResponse";
 import Modal from "./modals/userInfoModal";
 import RoomModal from "./modals/roomModal";
-import { getNavBar } from "../api/etc";
+import { getMyInfo } from "../api/members";
+import { useSelector } from "react-redux";
 
 const NavigationBar = () => {
   // 로그인 상태 임을 판별하는 변수
   const [loginData, setLoginData] = useState(false);
 
+  // 로그인 시 저장되는
+  const myinfo = useSelector((state) => state.myInfoReducer);
+
   // 로그인 요청으로 받아온 정보
-  const [userNickname, setUserNickname] = useState("");
-  const [imageSource, setImageSource] = useState("");
+  // const [userNickname, setUserNickname] = useState("");
+  // const [imageSource, setImageSource] = useState("");
 
   // // 유저 세션 정보(auth name, email, provider)
   // const { data: session, status } = useSession();
@@ -29,21 +33,45 @@ const NavigationBar = () => {
     setModalOpen(false);
   };
 
-  // 서버로 로그인 요청
-  // useEffect(() => {
-  //   getNavBar().then((res) => {
-  //     if (res.status.code === 5000) {
-  //       console.log(res.status.message);
-  //       setLoginData((loginData = true));
-  //       setUserNickname((userNickname = res.content.userNickname));
-  //       setImageSource(
-  //         (imageSource = res.content.userProfileImage.imageSource)
-  //       );
-  //     } else {
-  //       FailResponse(res.status.code);
-  //     }
-  //   });
-  // }, []);
+  const [roomModalOpen, setRoomModalOpen] = useState(false);
+
+  const roomOpenModal = () => {
+    setRoomModalOpen(true);
+  };
+  const roomCloseModal = () => {
+    setRoomModalOpen(false);
+  };
+
+  //서버로 로그인 요청
+  useEffect(() => {
+    if (myinfo.userEmail !== "") {
+      getMyInfo().then((res) => {
+        if (res.status.code === 5000) {
+          console.log(res.status.message);
+          dispatch({
+            type: "SAVEMYINFO",
+            payload: {
+              userEmail: res.content.userEmail,
+              userName: res.content.userName,
+              userNickname: res.content.userNickname,
+              userBirth: res.content.userBirth,
+              gender: res.content.gender,
+              userProfileImagePath: res.content.userProfileImagePath,
+              activeAreas: res.content.activeAreas.map((el) => el),
+              interests: res.content.interests.map((el) => el),
+              mannerPoint: res.content.mannerPoint,
+            },
+          });
+          setLoginData(true);
+        } else {
+          FailResponse(res.status.code);
+          setLoginData(false);
+        }
+      });
+    } else {
+      setLoginData(true);
+    }
+  }, []);
 
   // 로그아웃 버튼 클릭
   const ClickLogout = () => {
@@ -77,10 +105,13 @@ const NavigationBar = () => {
               {/* <Link href="/">
                 <div className="tag">소개</div>
               </Link> */}
-              <div className="tag" onClick={openModal}>
+              <div className="tag" onClick={roomOpenModal}>
                 소개
               </div>
-              <RoomModal open={modalOpen} close={closeModal}></RoomModal>
+              <RoomModal
+                open={roomModalOpen}
+                close={roomCloseModal}
+              ></RoomModal>
               <Link href="/room/roomlist">
                 <div className="tag">방 목록</div>
               </Link>
@@ -100,9 +131,12 @@ const NavigationBar = () => {
               ) : (
                 <>
                   <button className="user-box" onClick={openModal}>
-                    <img className="ProfileImage" src={`${imageSource}`}></img>
+                    <img
+                      className="ProfileImage"
+                      src={`${myinfo.userProfileImagePath}`}
+                    ></img>
                     <div className="logOn">
-                      {`${userNickname}`} 님 반갑습니다!
+                      {`${myinfo.userNickname}`} 님 반갑습니다!
                     </div>
                   </button>
 

@@ -4,14 +4,14 @@ import { composeWithDevTools } from "redux-devtools-extension";
 
 //회원가입 초기값
 const signupInitialState = {
-  userEmail: "",
-  userName: "",
   userNickname: "",
   userBirth: "",
-  gender: "",
-  userProfileImage: {},
-  provider: "",
   activeAreas: [],
+  gender: "",
+  userProfileImage: {
+    userProfileExtension: "",
+    imageSource: "",
+  },
   interests: [],
 };
 
@@ -20,9 +20,9 @@ const myInfoInitialState = {
   userEmail: "",
   userName: "",
   userNickname: "",
-  userBirth: "",
+  userBirth: "yyyy-mm-dd",
   gender: "",
-  userProfileImage: {},
+  userProfileImagePath: "",
   activeAreas: [],
   interests: [],
   mannerPoint: "",
@@ -58,19 +58,11 @@ const ROOMSCHEDULE = "ROOMSCHEDULE";
 // 유저 회원가입 정보 reducer
 const userRequestReducer = (state = signupInitialState, action) => {
   switch (action.type) {
-    case HYDRATE:
-      // Attention! This will overwrite client state! Real apps should use proper reconciliation.
-      console.log("hydrate");
-      return { ...state, ...action.payload };
-    case AUTHDATA:
-      return {
-        ...state,
-        userEmail: action.payload.userEmail,
-        userName: action.payload.userName,
-        provider: action.payload.provider,
-      };
+    //case HYDRATE:
+    // Attention! This will overwrite client state! Real apps should use proper reconciliation.
+    //  console.log("hydrate");
+    //  return { ...state, ...action.payload };
     case PERSONALINFO:
-      console.log(state);
       return {
         ...state,
         userNickname: action.payload.userNickname,
@@ -82,7 +74,6 @@ const userRequestReducer = (state = signupInitialState, action) => {
         },
       };
     case INTERESTS:
-      console.log(state);
       return {
         ...state,
         interests: Object.entries(action.payload.interests)
@@ -106,8 +97,6 @@ const myInfoReducer = (state = myInfoInitialState, action) => {
         userBirth: action.payload.userBirth,
         gender: action.payload.gender,
         userProfileImage: {
-          userProfileRealName: action.payload.userProfileRealName,
-          userProfileExtension: action.payload.userProfileExtension,
           imageSource: action.payload.imageSource,
         },
         activeAreas: action.payload.activeAreas.map((el) => el),

@@ -50,7 +50,7 @@ const Interest = () => {
     ) {
       e.preventDefault();
       alert("최소 1개의 종목을 선택하여야 합니다.");
-      return false;
+      return;
     }
 
     dispatch({
