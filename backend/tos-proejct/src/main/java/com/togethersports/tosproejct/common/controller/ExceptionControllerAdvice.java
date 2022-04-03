@@ -2,6 +2,7 @@ package com.togethersports.tosproejct.common.controller;
 
 import com.togethersports.tosproejct.account.code.UserCode;
 import com.togethersports.tosproejct.account.exception.NicknameDuplicationException;
+import com.togethersports.tosproejct.account.exception.NotEnteredInformationException;
 import com.togethersports.tosproejct.account.exception.UserNotFoundException;
 import com.togethersports.tosproejct.common.code.CommonCode;
 import com.togethersports.tosproejct.common.dto.FieldValidationError;
@@ -50,7 +51,14 @@ public class ExceptionControllerAdvice {
     @ExceptionHandler(NicknameDuplicationException.class)
     public ResponseEntity<Response> handleNicknameDuplicationException() {
 
-        return ResponseEntity.badRequest().body(Response.of(UserCode.DUPLICATED_NICKNAME, null));
+        return ResponseEntity.ok().body(Response.of(UserCode.DUPLICATED_NICKNAME, null));
+    }
+
+    // Not Entered Additional Information exception
+    @ExceptionHandler(NotEnteredInformationException.class)
+    public ResponseEntity<Response> handleNotEnteredInformationException() {
+
+        return ResponseEntity.ok().body(Response.of(UserCode.NOT_ENTERED_INFORMATION, null));
     }
 
 }

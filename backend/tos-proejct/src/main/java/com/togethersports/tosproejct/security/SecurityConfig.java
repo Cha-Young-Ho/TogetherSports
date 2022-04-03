@@ -1,6 +1,5 @@
 package com.togethersports.tosproejct.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.togethersports.tosproejct.security.jwt.RefreshTokenService;
 import com.togethersports.tosproejct.security.jwt.entrypoint.JwtAuthenticationEntryPoint;
 import com.togethersports.tosproejct.security.jwt.filter.JwtAuthenticationFilter;
