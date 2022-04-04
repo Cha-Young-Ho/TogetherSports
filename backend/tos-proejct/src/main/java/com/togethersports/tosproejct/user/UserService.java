@@ -1,9 +1,9 @@
-package com.togethersports.tosproejct.account;
+package com.togethersports.tosproejct.user;
 
-import com.togethersports.tosproejct.account.dto.*;
-import com.togethersports.tosproejct.account.exception.NicknameDuplicationException;
-import com.togethersports.tosproejct.account.exception.NotEnteredInformationException;
-import com.togethersports.tosproejct.account.exception.UserNotFoundException;
+import com.togethersports.tosproejct.user.dto.*;
+import com.togethersports.tosproejct.user.exception.NicknameDuplicationException;
+import com.togethersports.tosproejct.user.exception.NotEnteredInformationException;
+import com.togethersports.tosproejct.user.exception.UserNotFoundException;
 import com.togethersports.tosproejct.area.ActiveArea;
 import com.togethersports.tosproejct.area.ActiveAreaRepository;
 import com.togethersports.tosproejct.common.file.service.StorageService;

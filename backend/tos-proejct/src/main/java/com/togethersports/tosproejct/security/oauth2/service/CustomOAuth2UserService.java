@@ -1,7 +1,7 @@
 package com.togethersports.tosproejct.security.oauth2.service;
 
-import com.togethersports.tosproejct.account.User;
-import com.togethersports.tosproejct.account.UserRepository;
+import com.togethersports.tosproejct.user.User;
+import com.togethersports.tosproejct.user.UserRepository;
 import com.togethersports.tosproejct.security.oauth2.CustomOAuth2User;
 import com.togethersports.tosproejct.security.oauth2.model.OAuth2Provider;
 import com.togethersports.tosproejct.security.oauth2.model.OAuth2UserInfo;

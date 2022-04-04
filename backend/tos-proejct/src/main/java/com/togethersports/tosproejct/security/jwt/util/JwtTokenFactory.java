@@ -1,6 +1,6 @@
 package com.togethersports.tosproejct.security.jwt.util;
 
-import com.togethersports.tosproejct.account.User;
+import com.togethersports.tosproejct.user.User;
 import com.togethersports.tosproejct.security.jwt.JwtProperties;
 import com.togethersports.tosproejct.security.jwt.dto.TokenOfLogin;
 import com.togethersports.tosproejct.security.jwt.token.RefreshToken;

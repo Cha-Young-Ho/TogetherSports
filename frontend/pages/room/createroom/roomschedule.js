@@ -74,13 +74,13 @@ const RoomSchedule = () => {
     dispatch({
       type: "ROOMSCHEDULE",
       action: {
-        startAppointmentDate: `${curSelectedDate} ${String(hour).padStart(
+        startAppointmentDate: `${curSelectedDate}T${String(hour).padStart(
           2,
           0
         )}:${String(minute).padStart(2, 0)}`,
         endAppointmentDate: `${endTime.year()}-${String(
           endTime.month() + 1
-        ).padStart(2, 0)}-${String(endTime.date()).padStart(2, 0)} ${String(
+        ).padStart(2, 0)}-${String(endTime.date()).padStart(2, 0)}T${String(
           endTime.hours()
         ).padStart(2, 0)}:${String(endTime.minutes()).padStart(2, 0)}`,
       },

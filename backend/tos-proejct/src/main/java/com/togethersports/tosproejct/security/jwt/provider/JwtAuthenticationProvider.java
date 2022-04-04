@@ -1,6 +1,6 @@
 package com.togethersports.tosproejct.security.jwt.provider;
 
-import com.togethersports.tosproejct.account.User;
+import com.togethersports.tosproejct.user.User;
 import com.togethersports.tosproejct.security.jwt.exception.JwtExpiredTokenException;
 import com.togethersports.tosproejct.security.jwt.exception.JwtModulatedTokenException;
 import com.togethersports.tosproejct.security.jwt.token.JwtPostAuthenticationToken;

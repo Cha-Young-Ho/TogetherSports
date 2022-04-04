@@ -15,14 +15,6 @@ const NavigationBar = () => {
   // 로그인 시 저장되는
   const myinfo = useSelector((state) => state.myInfoReducer);
 
-  // 로그인 요청으로 받아온 정보
-  // const [userNickname, setUserNickname] = useState("");
-  // const [imageSource, setImageSource] = useState("");
-
-  // // 유저 세션 정보(auth name, email, provider)
-  // const { data: session, status } = useSession();
-  // const loading = status === "loading";
-
   // 유저 프로필 클릭 시 뜨는 팝업 창 관리 state
   const [modalOpen, setModalOpen] = useState(false);
 

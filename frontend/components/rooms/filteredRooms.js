@@ -25,6 +25,7 @@ const FilteredRooms = () => {
             <ModifyRoomModal
               open={modifyModalOpen}
               close={closeModifyModal}
+              sequenceId={"test"}
             ></ModifyRoomModal>
           </div>
         </div>

@@ -16,9 +16,6 @@ const getRoomInfo = async (roomSequenceId) => {
         Accept: "*/*",
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
-      params: {
-        roomSequenceId: roomSequenceId,
-      },
     }
   );
   const dataPromise = promise.then((res) => res.data);
@@ -101,20 +98,24 @@ const postCreateRoom = async (
 const postUpdateRoom = async (
   roomTitle,
   roomContent,
-  area,
+  roomArea,
+  exercise,
   tag,
-  appointmentDate,
-  roomImages
+  startAppointmentDate,
+  endAppointmentDate,
+  roomImage
 ) => {
   const promise = axios.put(
     "http://localhost:8080/api/room",
     {
       roomTitle: roomTitle,
       roomContent: roomContent,
-      area: area,
+      roomArea: roomArea,
+      exercise: exercise,
       tag: tag,
-      appointmentDate: appointmentDate,
-      roomImages: roomImages,
+      startAppointmentDate: startAppointmentDate,
+      endAppointmentDate: endAppointmentDate,
+      roomImage: roomImage,
     },
     {
       "Content-type": "application/json; charset=UTF-8",
