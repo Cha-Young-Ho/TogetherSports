@@ -47,7 +47,7 @@ const getUserLogin = async (email, name, provi) => {
 };
 
 // 닉네임 중복확인
-const getDuplicationCheck = async (nickname) => {
+const getNicknameDuplicationCheck = async (nickname) => {
   const promise = axios.get(
     "http://localhost:8080/api/user/duplication/nickname",
     {
@@ -191,7 +191,7 @@ const putUpdateUserInfo = async (
 
 export {
   getUserInfoCheck,
-  getDuplicationCheck,
+  getNicknameDuplicationCheck,
   getUserLogin,
   getMyInfo,
   getOtherInfo,

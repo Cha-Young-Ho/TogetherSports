@@ -1,4 +1,4 @@
-package com.togethersports.tosproejct.account.code;
+package com.togethersports.tosproejct.user.code;
 
 import com.togethersports.tosproejct.common.code.ResponseCode;
 

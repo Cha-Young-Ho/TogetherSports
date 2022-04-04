@@ -1,4 +1,4 @@
-package com.togethersports.tosproejct.account.exception;
+package com.togethersports.tosproejct.user.exception;
 
 /**
  * <h1>NotEnteredInformationException</h1>

@@ -1,4 +1,4 @@
-package com.togethersports.tosproejct.account;
+package com.togethersports.tosproejct.user;
 
 /**
  * <h1>Gender</h1>

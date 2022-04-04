@@ -1,6 +1,5 @@
 package com.togethersports.tosproejct.interest;
 
-import com.togethersports.tosproejct.account.User;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,6 +37,7 @@ public class Interest {
     private Interest(String name) {
         this.name = name;
     }
+
     protected Interest() {}
 
     /**
