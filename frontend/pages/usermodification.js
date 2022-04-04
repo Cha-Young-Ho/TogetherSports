@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import $ from "jquery";
-import { getDuplicationCheck, putUpdateUserInfo } from "../api/members";
+import { getNicknameDuplicationCheck, putUpdateUserInfo } from "../api/members";
 import { useSelector } from "react-redux";
 import { FailResponse } from "../api/failResponse";
 
@@ -47,11 +47,11 @@ const UserModification = () => {
   let activeAreas = [];
   const [tagAreas, setTagAreas] = useState([]);
 
-  const checkDuplication = () => {
+  const checkNicknameDuplication = () => {
     if (nickname.length < 2) {
       alert("닉네임은 최소 2글자 이상 입력해주세요.");
     } else {
-      getDuplicationCheck(nickname).then((res) => {
+      getNicknameDuplicationCheck(nickname).then((res) => {
         console.log(res.status.message);
         if (res.status.code === 5000) {
           setIsNicknameCheck(true);
@@ -278,13 +278,13 @@ const UserModification = () => {
           if (status === kakao.maps.services.Status.OK) {
             const area = result[0].address_name;
 
-            const checkDuplication = (element) => {
+            const checkAreaDuplication = (element) => {
               if (element === area) return true;
             };
 
             //배열에 담긴 지역이 5개 이하라면
             if (activeAreas.length < 5) {
-              if (activeAreas.some(checkDuplication) === false) {
+              if (activeAreas.some(checkAreaDuplication) === false) {
                 getMarker(map, mouseEvent.latLng, geocoder); //클릭된 지역 마커표시
               } else {
                 alert("해당 지역은 이미 선택되었습니다.");
@@ -407,7 +407,10 @@ const UserModification = () => {
                 name="nickname"
                 onChange={(e) => setNickname(e.target.value)}
               />
-              <button className="button-dup-check" onClick={checkDuplication}>
+              <button
+                className="button-dup-check"
+                onClick={checkNicknameDuplication}
+              >
                 중복확인
               </button>
             </div>

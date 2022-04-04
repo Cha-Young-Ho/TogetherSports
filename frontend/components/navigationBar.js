@@ -43,35 +43,35 @@ const NavigationBar = () => {
   };
 
   //서버로 로그인 요청
-  useEffect(() => {
-    if (myinfo.userEmail !== "") {
-      getMyInfo().then((res) => {
-        if (res.status.code === 5000) {
-          console.log(res.status.message);
-          dispatch({
-            type: "SAVEMYINFO",
-            payload: {
-              userEmail: res.content.userEmail,
-              userName: res.content.userName,
-              userNickname: res.content.userNickname,
-              userBirth: res.content.userBirth,
-              gender: res.content.gender,
-              userProfileImagePath: res.content.userProfileImagePath,
-              activeAreas: res.content.activeAreas.map((el) => el),
-              interests: res.content.interests.map((el) => el),
-              mannerPoint: res.content.mannerPoint,
-            },
-          });
-          setLoginData(true);
-        } else {
-          FailResponse(res.status.code);
-          setLoginData(false);
-        }
-      });
-    } else {
-      setLoginData(true);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (myinfo.userEmail === "") {
+  //     getMyInfo().then((res) => {
+  //       if (res.status.code === 5000) {
+  //         console.log(res.status.message);
+  //         dispatch({
+  //           type: "SAVEMYINFO",
+  //           payload: {
+  //             userEmail: res.content.userEmail,
+  //             userName: res.content.userName,
+  //             userNickname: res.content.userNickname,
+  //             userBirth: res.content.userBirth,
+  //             gender: res.content.gender,
+  //             userProfileImagePath: res.content.userProfileImagePath,
+  //             activeAreas: res.content.activeAreas.map((el) => el),
+  //             interests: res.content.interests.map((el) => el),
+  //             mannerPoint: res.content.mannerPoint,
+  //           },
+  //         });
+  //         setLoginData(true);
+  //       } else {
+  //         FailResponse(res.status.code);
+  //         setLoginData(false);
+  //       }
+  //     });
+  //   } else {
+  //     setLoginData(true);
+  //   }
+  // }, []);
 
   // 로그아웃 버튼 클릭
   const ClickLogout = () => {
