@@ -1,13 +1,12 @@
 package com.togethersports.tosproejct.security.jwt.util;
 
-import com.togethersports.tosproejct.account.User;
+import com.togethersports.tosproejct.user.User;
 import com.togethersports.tosproejct.security.jwt.JwtProperties;
 import com.togethersports.tosproejct.security.jwt.dto.TokenOfLogin;
 import com.togethersports.tosproejct.security.jwt.token.RefreshToken;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
@@ -28,7 +27,7 @@ import java.util.Map;
  * @author seunjeon
  * @author yunghocha
  */
-@Slf4j
+
 @RequiredArgsConstructor
 @Component
 public class JwtTokenFactory {
@@ -108,9 +107,9 @@ public class JwtTokenFactory {
 
         // jwt expiration time setting
         Instant now = Instant.now();
-        log.info("refresh key = {}", properties.getRefreshTokenSigningKey());
+
         return Jwts.builder()
-                .setExpiration(Date.from(now.plus(properties.getRefreshTokenExpirationTime(), ChronoUnit.MINUTES)))
+                .setExpiration(Date.from(now.plus(properties.getRefreshTokenExpirationTime(), ChronoUnit.DAYS)))
                 .signWith(Keys.hmacShaKeyFor(properties.getRefreshTokenSigningKey().getBytes()))
                 .compact();
     }

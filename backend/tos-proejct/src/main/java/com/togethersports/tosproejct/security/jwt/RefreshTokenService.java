@@ -1,9 +1,8 @@
 package com.togethersports.tosproejct.security.jwt;
 
-import com.togethersports.tosproejct.account.User;
+import com.togethersports.tosproejct.user.User;
 import com.togethersports.tosproejct.security.jwt.token.RefreshToken;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -13,7 +12,7 @@ import javax.transaction.Transactional;
  * <h1>RefreshTokenService</h1>
  * <p>Refresh Entity 관리 Service</p>
  * <p>해당 클래스는 Refresh Entity와 관련한 비즈니스 로직 담당 클래스다.</p>
- * @author yunghocha
+ * @author younghocha
  */
 @RequiredArgsConstructor
 @Transactional

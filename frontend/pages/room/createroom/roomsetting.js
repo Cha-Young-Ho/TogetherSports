@@ -25,14 +25,6 @@ const RoomSetting = () => {
     getMap();
   }, []);
 
-  useEffect(() => {
-    console.log(roomTitle);
-    console.log(exercise);
-    console.log(limitPeopleCount);
-    console.log(roomArea.area);
-    console.log(roomArea.areaDetail);
-  });
-
   const getMap = () => {
     const mapScript = document.createElement("script");
     mapScript.async = true;
@@ -178,7 +170,7 @@ const RoomSetting = () => {
               value={roomTitle}
               onChange={(e) => setRoomTitle(e.target.value)}
               type="text"
-              maxLength="30"
+              maxLength="20"
             />
           </div>
 

@@ -1,5 +1,9 @@
 package com.togethersports.tosproejct.common.controller;
 
+import com.togethersports.tosproejct.user.code.UserCode;
+import com.togethersports.tosproejct.user.exception.NicknameDuplicationException;
+import com.togethersports.tosproejct.user.exception.NotEnteredInformationException;
+import com.togethersports.tosproejct.user.exception.UserNotFoundException;
 import com.togethersports.tosproejct.common.code.CommonCode;
 import com.togethersports.tosproejct.common.dto.FieldValidationError;
 import com.togethersports.tosproejct.common.dto.Response;
@@ -18,6 +22,7 @@ import java.util.stream.Collectors;
  *    컨트롤러에서 발생한 예외 상황을 모두 처리하는 전역 컨트롤러
  * </p>
  * @author seunjeon
+ * @author younghoCha
  */
 @RestControllerAdvice
 public class ExceptionControllerAdvice {
@@ -34,4 +39,26 @@ public class ExceptionControllerAdvice {
                 .collect(Collectors.toList());
         return ResponseEntity.badRequest().body(Response.of(CommonCode.VALIDATION_FAIL, errors));
     }
+
+    // non User found exception
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<Response> handleUserNotFountException() {
+
+        return ResponseEntity.badRequest().body(Response.of(UserCode.USER_NOT_FOUNT, null));
+    }
+
+    // Nickname Duplication exception
+    @ExceptionHandler(NicknameDuplicationException.class)
+    public ResponseEntity<Response> handleNicknameDuplicationException() {
+
+        return ResponseEntity.ok().body(Response.of(UserCode.DUPLICATED_NICKNAME, null));
+    }
+
+    // Not Entered Additional Information exception
+    @ExceptionHandler(NotEnteredInformationException.class)
+    public ResponseEntity<Response> handleNotEnteredInformationException() {
+
+        return ResponseEntity.ok().body(Response.of(UserCode.NOT_ENTERED_INFORMATION, null));
+    }
+
 }

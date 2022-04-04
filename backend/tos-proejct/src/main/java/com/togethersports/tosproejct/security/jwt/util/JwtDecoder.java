@@ -1,7 +1,7 @@
 package com.togethersports.tosproejct.security.jwt.util;
 
 
-import com.togethersports.tosproejct.account.User;
+import com.togethersports.tosproejct.user.User;
 import com.togethersports.tosproejct.security.Role;
 import com.togethersports.tosproejct.security.jwt.JwtProperties;
 
@@ -10,7 +10,6 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.Calendar;
@@ -25,7 +24,6 @@ import java.util.Date;
  * @author seunjeon
  * @author younghocha
  */
-@Slf4j
 @RequiredArgsConstructor
 @Component
 public class JwtDecoder {
@@ -71,19 +69,15 @@ public class JwtDecoder {
      *  - false : 갱신 불필요
      */
     public boolean verifyRefreshToken(String refreshToken){
-        //JwtProperties jwtProperties = new JwtProperties();
-        log.info("여기까지 옴");
+
+
         String key = "kGO2WGNVgLVHVhz5M1Y8nQuT7mH69JHlGqSk5X9Qi7M!";
-        log.info("key = {}", key);
+
 
         Jws<Claims> jwt = Jwts.parserBuilder()
                 .setSigningKey(Keys.hmacShaKeyFor(key.getBytes()))
                 .build()
                 .parseClaimsJws(refreshToken);
-
-
-        log.info("여기까지옴 2");
-
 
         if(checkRenewal(jwt.getBody().getExpiration())){
             return true;
@@ -112,12 +106,16 @@ public class JwtDecoder {
 
 
         //시간 차이
-        long diffSec = (expireCalendar.getTimeInMillis() - now.getTimeInMillis()) / 1000;
-        long diffDays = diffSec / (24*60*60); //일자수 차이
+
+        long diffSec = (expireCalendar.getTimeInMillis() - now.getTimeInMillis()) / 1000L;
+
+        long diffDays = diffSec / (24L*60L*60L); //일자수 차이
 
         if(diffDays <= 3){
+
             return true;
         }
+
 
         return false;
     }

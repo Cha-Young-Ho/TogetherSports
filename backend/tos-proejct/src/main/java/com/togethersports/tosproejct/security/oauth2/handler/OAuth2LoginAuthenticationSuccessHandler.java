@@ -1,6 +1,6 @@
 package com.togethersports.tosproejct.security.oauth2.handler;
 
-import com.togethersports.tosproejct.account.User;
+import com.togethersports.tosproejct.user.User;
 import com.togethersports.tosproejct.security.jwt.RefreshTokenService;
 import com.togethersports.tosproejct.security.jwt.dto.TokenOfLogin;
 import com.togethersports.tosproejct.security.jwt.util.JwtTokenFactory;
@@ -52,13 +52,11 @@ public class OAuth2LoginAuthenticationSuccessHandler implements AuthenticationSu
                 clientIp,
                 userAgent);
 
-        log.info("agent = {}", request.getHeader("User-Agent"));
-
         String redirectUri = UriComponentsBuilder
                 .fromUriString(redirectUrl)
-                .queryParam("access-token", tokenOfLogin.getAccessToken())
-                .queryParam("refresh-token", tokenOfLogin.getRefreshToken())
-                .queryParam("is-first", first)
+                .queryParam("access_token", tokenOfLogin.getAccessToken())
+                .queryParam("refresh_token", tokenOfLogin.getRefreshToken())
+                .queryParam("is_first", first)
                 .toUriString();
 
         response.sendRedirect(redirectUri);

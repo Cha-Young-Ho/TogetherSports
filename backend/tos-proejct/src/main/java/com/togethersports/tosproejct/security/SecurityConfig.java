@@ -1,7 +1,7 @@
 package com.togethersports.tosproejct.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.togethersports.tosproejct.security.jwt.RefreshTokenService;
+import com.togethersports.tosproejct.security.jwt.entrypoint.JwtAuthenticationEntryPoint;
 import com.togethersports.tosproejct.security.jwt.filter.JwtAuthenticationFilter;
 import com.togethersports.tosproejct.security.jwt.filter.JwtRefreshFilter;
 import com.togethersports.tosproejct.security.jwt.handler.CustomLogoutHandler;
@@ -13,12 +13,17 @@ import com.togethersports.tosproejct.security.oauth2.service.CustomOAuth2UserSer
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.expression.SecurityExpressionHandler;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
+import org.springframework.security.web.FilterInvocation;
+import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -40,9 +45,6 @@ import javax.servlet.Filter;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     // OAuth2 Beans
     @Autowired
     private CustomOAuth2UserService customOAuth2UserService;
@@ -61,25 +63,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     //Jwt Util
     @Autowired
+    private JwtTokenFactory jwtTokenFactory;
+
+    @Autowired
     private JwtAuthenticationProvider jwtAuthenticationProvider;
+
+    @Autowired
+    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
+    @Autowired
+    private JwtAuthenticationFailureHandler jwtAuthenticationFailureHandler;
 
     @Autowired
     private RefreshTokenService refreshTokenService;
 
-    @Autowired
-    private JwtTokenFactory jwtTokenFactory;
 
     //Jwt Refresh Filter
-
     public Filter jwtRefreshFilter() throws Exception{
         JwtRefreshFilter jwtRefreshFilter = new JwtRefreshFilter(refreshTokenService, jwtTokenFactory);
-
-
         return jwtRefreshFilter;
     }
-
-    @Autowired
-    private JwtAuthenticationFailureHandler jwtAuthenticationFailureHandler;
     public Filter jwtAuthenticationFilter() throws Exception{
         JwtAuthenticationFilter filter = new JwtAuthenticationFilter("/api/**");
         filter.setAuthenticationManager(super.authenticationManager());
@@ -107,7 +110,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addLogoutHandler(logoutHandler)
                 .permitAll();
 
-
         // OAuth2 filter chain configuration
         http.oauth2Login()
                 .successHandler(oAuth2LoginAuthenticationSuccessHandler)
@@ -122,11 +124,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors();
         // URL security
         http.authorizeRequests()
-                .antMatchers("/api/a").access("hasRole('ROLE_ADMIN')");
+                .expressionHandler(expressionHandler())
+                .antMatchers("/api/a").access("hasRole('ROLE_ADMIN')")
+                .antMatchers("/api/user").authenticated()
+                .antMatchers("/api/test").anonymous();
 
-
+        // exception handling
+        http.exceptionHandling()
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint);
     }
-    //fixme cors
+
+    // TODO nginx 를 이용한 배포시 포트 변경 필요할 수 있음
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -139,5 +147,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+    // role hierarchy expression handler
+    @Bean
+    public SecurityExpressionHandler<FilterInvocation> expressionHandler() {
+        DefaultWebSecurityExpressionHandler expressionHandler = new DefaultWebSecurityExpressionHandler();
+        expressionHandler.setRoleHierarchy(roleHierarchy());
+        return expressionHandler;
+    }
+
+    @Bean
+    public RoleHierarchy roleHierarchy() {
+        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+        roleHierarchy.setHierarchy("ROLE_USER > ROLE_ANONYMOUS");
+        return roleHierarchy;
     }
 }

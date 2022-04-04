@@ -27,25 +27,22 @@ import java.util.Objects;
 /**
  * <h1>JwtAuthenticationFailureHandler</h1>
  * <p>
- *     JWT 인증 과정에서 예외 발생시 적절한 응답을 내려주는 핸들러
+ * JWT 인증 과정에서 예외 발생시 적절한 응답을 내려주는 핸들러
  * </p>
+ *
  * @author seunjeon
  */
 @RequiredArgsConstructor
 @Component
 public class JwtAuthenticationFailureHandler implements AuthenticationFailureHandler {
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
         SecurityContextHolder.clearContext();
         Response<?> responseValue = null;
-        if (exception instanceof AuthorizationHeaderNotFoundException) {
-            // 인증 토큰 누락
-            responseValue = Response.of(JwtErrorCode.TOKEN_NOTFOUND, null);
-        } else if (exception instanceof JwtExpiredTokenException) {
+        if (exception instanceof JwtExpiredTokenException) {
             // 액세스 토큰 만료
             responseValue = Response.of(JwtErrorCode.ACCESS_TOKEN_EXPIRATION, null);
         } else if (exception instanceof JwtModulatedTokenException) {

@@ -5,14 +5,14 @@ const RoomInfoNavBar = ({
 }) => {
   return (
     <>
-      <h1 className="title">방 생성하기</h1>
-      <div className="menus">
+      <h1>방 생성하기</h1>
+      <div className="container">
         <div>
           <div>
             <img
               src={`/roomsetting-${roomSetting_atv}.png`}
               alt="기본 정보 설정"
-              className="menu-circle-roomsetting"
+              className="roomsetting"
             ></img>
           </div>
           <p>기본 정보 설정</p>
@@ -22,7 +22,7 @@ const RoomInfoNavBar = ({
             <img
               src={`/roomschedule-${roomSchedule_atv}.png`}
               alt="일정 생성하기"
-              className="menu-circle-roomschedule"
+              className="roomschedule"
             ></img>
           </div>
           <p>일정 생성하기</p>
@@ -32,7 +32,7 @@ const RoomInfoNavBar = ({
             <img
               src={`/roomtaginfo-${roomTagInfo_atv}.png`}
               alt="태그 및 설명"
-              className="menu-circle-roomtaginfo"
+              className="roomtaginfo"
             ></img>
           </div>
           <p>태그 및 설명</p>
@@ -43,7 +43,7 @@ const RoomInfoNavBar = ({
           font-weight: bold;
         }
 
-        .title {
+        h1 {
           padding: 35px 0;
           font-size: 2.5rem;
         }
@@ -56,7 +56,7 @@ const RoomInfoNavBar = ({
           margin: 5px 0;
         }
 
-        .menus {
+        .container {
           width: 500px;
           display: flex;
           flex-direction: row;
@@ -64,9 +64,9 @@ const RoomInfoNavBar = ({
           margin-bottom: 20px;
         }
 
-        .menu-circle-roomsetting,
-        .menu-circle-roomschedule,
-        .menu-circle-roomtaginfo {
+        .roomsetting,
+        .roomschedule,
+        .roomtaginfo {
           border-radius: 50px;
           width: 90px;
           height: 90px;

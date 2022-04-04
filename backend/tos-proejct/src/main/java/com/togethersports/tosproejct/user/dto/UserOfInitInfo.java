@@ -1,6 +1,6 @@
-package com.togethersports.tosproejct.account.dto;
+package com.togethersports.tosproejct.user.dto;
 
-import com.togethersports.tosproejct.account.Gender;
+import com.togethersports.tosproejct.user.Gender;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -22,6 +22,7 @@ import java.util.List;
 @Getter
 public class UserOfInitInfo {
 
+    @NotNull
     @Size(min = 2, message = "최소 2자 이상이어야 합니다.")
     private String userNickname;
 
@@ -30,6 +31,7 @@ public class UserOfInitInfo {
 
     private UserProfileImage userProfileImage;
 
+    @NotNull
     private Gender gender;
 
     @NotNull

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import $ from "jquery";
 import { useDispatch } from "react-redux";
-import { getDuplicationCheck } from "../../../api/members";
+import { getNicknameDuplicationCheck } from "../../../api/members";
 import UserInfoNavBar from "../../../components/userInfoNavBar";
 
 const PersonalInfo = () => {
@@ -23,20 +23,15 @@ const PersonalInfo = () => {
 
   //프로필
   const [profile, setProfile] = useState("");
-  const [imagesrc, setImagesrc] = useState("정보 없음");
-  const [fileName, setFileName] = useState("정보 없음");
   const [extension, setExtension] = useState("정보 없음");
+  const [imagesrc, setImagesrc] = useState("정보 없음");
 
-  /* 
-  닉네임 중복확인
-  Success => nickName = 현재 적혀있는 input
-  fail => nickName = 초기화
-  */
-  const checkDuplication = () => {
+  // 닉네임 중복확인
+  const checkNicknameDuplication = () => {
     if (nickname.length < 2) {
       alert("닉네임은 최소 2글자 이상 입력해주세요.");
     } else {
-      getDuplicationCheck(nickname).then((res) => {
+      getNicknameDuplicationCheck(nickname).then((res) => {
         console.log(res.status.message);
         if (res.status.code === 5000) {
           setIsNicknameCheck(true);
@@ -49,6 +44,7 @@ const PersonalInfo = () => {
     }
   };
 
+  // 생년월일 dropdown 데이터 가져오기
   const getBirthDay = () => {
     $(document).ready(function () {
       const now = new Date();
@@ -79,48 +75,52 @@ const PersonalInfo = () => {
     });
   };
 
+  // 성별 설정
   const getGender = (genderType) => {
     setGender(genderType);
   };
 
-  //프로필 이미지 source 인코딩
-  const encodeFileToBase64 = (fileBlob) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(fileBlob);
+  // 프로필 이미지 source 인코딩
+  const encodeFileToBase64 = (file) => {
     return new Promise((resolve) => {
+      const reader = new FileReader();
+      const baseURL = "";
+      reader.readAsDataURL(file); //파일을 base64 text로 전환
+
       reader.onload = () => {
-        const src = reader.result;
-        const sliceIndex = src.indexOf(",");
-        setImagesrc(src.substr(sliceIndex + 1));
-        resolve();
+        baseURL = reader.result;
+        const sliceIndex = baseURL.indexOf(",");
+        setImagesrc(baseURL.substr(sliceIndex + 1));
+        resolve(baseURL);
       };
     });
   };
 
-  // 프로필 이미지 확장자 index 반환 함수
-  const getExtension = (profilename) => {
-    if (profilename.indexOf("png") !== -1) {
-      return profilename.indexOf("png");
-    } else if (profilename.indexOf("jpg") !== -1) {
-      return profilename.indexOf("jpg");
+  // 프로필 이미지 선택 함수
+  const onClickProfileImage = (e) => {
+    const file = e.target.files[0];
+    if (file === undefined) {
+      e.preventDefault();
+      return;
     }
-    if (profilename.indexOf("jpeg") !== -1) {
-      return profilename.indexOf("jpeg");
-    }
+    const imageFileExtension = file.type.split("/")[1];
+
+    setProfile(file.name);
+    encodeFileToBase64(file);
+    setExtension(imageFileExtension);
   };
 
-  //예외처리
+  // 예외처리 및 다음 페이지 실행
   const getNext = (e) => {
     const checkNickname = $("#input-nickname").val();
 
-    //닉네임 입력 안했을 경우
     if (checkNickname === "" || checkNickname === null) {
       e.preventDefault();
       alert("닉네임을 입력해주세요.");
       return false;
     }
 
-    //닉네임에 공백이 있을 경우
+    // 닉네임에 공백이 있을 경우
     const blank_pattern = /[\s]/g;
     if (blank_pattern.test(checkNickname) === true) {
       e.preventDefault();
@@ -128,7 +128,7 @@ const PersonalInfo = () => {
       return false;
     }
 
-    //특수문자 사용했을 경우
+    // 닉네임에 특수문자 사용했을 경우
     const special_pattern = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
     if (special_pattern.test(checkNickname) === true) {
       e.preventDefault();
@@ -136,7 +136,7 @@ const PersonalInfo = () => {
       return false;
     }
 
-    //중복체크를 하지 않은 경우
+    // 닉네임 중복체크를 하지 않은 경우
     if (!isNicknameCheck) {
       e.preventDefault();
       alert("닉네임 중복확인을 해주세요!");
@@ -161,7 +161,6 @@ const PersonalInfo = () => {
         userNickname: nickname,
         userBirth: userBirth,
         gender: gender,
-        userProfileRealName: fileName,
         userProfileExtension: extension,
         imageSource: imagesrc,
       },
@@ -172,74 +171,63 @@ const PersonalInfo = () => {
 
   return (
     <>
-      <div className="bg-container">
+      <div className="container">
         <UserInfoNavBar
           personal_atv={"activation"}
           interest_atv={"deactivation"}
           activearea={"deactivation"}
         />
 
-        <div className="content-showbox">
-          <div className="nickname">
-            <div className="nickname-text-box">
-              <div className="essential-mark">*</div>
-              <div className="text-nickname">닉네임</div>
-            </div>
+        <div className="contents">
+          <div className="content-nickname">
+            <p className="essential-mark">*</p>
+            <p>닉네임</p>
             <input
               type="text"
               id="input-nickname"
               value={nickname}
-              name="nickname"
               onChange={(e) => setNickname(e.target.value)}
             />
-            <button className="button-dup-check" onClick={checkDuplication}>
-              중복확인
-            </button>
+            <button onClick={checkNicknameDuplication}>중복확인</button>
           </div>
 
-          <div className="birth">
-            <div className="birth-text-box">
-              <div className="essential-mark">*</div>
-              <div className="text-birth">생년월일</div>
+          <div className="content-birth">
+            <div>
+              <p className="essential-mark">*</p>
+              <p>생년월일</p>
             </div>
-            <div className="dropdown-birth">
-              <div>
-                <select
-                  className="dropdown-year"
-                  title="년도"
-                  value={birthYear}
-                  onChange={(e) => setBirthYear(e.target.value)}
-                ></select>
-              </div>
-              <div>
-                <select
-                  className="dropdown-month"
-                  title="월"
-                  value={birthMonth}
-                  onChange={(e) => setBirthMonth(e.target.value)}
-                ></select>
-              </div>
-              <div>
-                <select
-                  className="dropdown-day"
-                  title="일"
-                  value={birthDay}
-                  onChange={(e) => setBirthDay(e.target.value)}
-                ></select>
-              </div>
+
+            <div>
+              <select
+                className="dropdown-year"
+                title="년도"
+                value={birthYear}
+                onChange={(e) => setBirthYear(e.target.value)}
+              ></select>
+              <select
+                className="dropdown-month"
+                title="월"
+                value={birthMonth}
+                onChange={(e) => setBirthMonth(e.target.value)}
+              ></select>
+              <select
+                className="dropdown-day"
+                title="일"
+                value={birthDay}
+                onChange={(e) => setBirthDay(e.target.value)}
+              ></select>
             </div>
           </div>
 
-          <div className="gender">
-            <div className="gender-text-box">
-              <div className="essential-mark">*</div>
-              <div className="text-gender">성별</div>
+          <div className="content-gender">
+            <div>
+              <p className="essential-mark">*</p>
+              <p>성별</p>
             </div>
-            <div className="radio-gender">
+
+            <div>
               <div className="male">
-                <label className="text-male" htmlFor="radio-male">
-                  남
-                </label>
+                <label htmlFor="radio-male">남</label>
                 <input
                   type="radio"
                   name="gender"
@@ -248,10 +236,9 @@ const PersonalInfo = () => {
                   onChange={() => getGender("male")}
                 />
               </div>
+
               <div className="female">
-                <label className="text-male" htmlFor="radio-female">
-                  여
-                </label>
+                <label htmlFor="radio-female">여</label>
                 <input
                   type="radio"
                   name="gender"
@@ -263,29 +250,17 @@ const PersonalInfo = () => {
             </div>
           </div>
 
-          <div className="profile">
-            <div className="text-profile">프로필</div>
-            <input
-              readOnly
-              className="upload-name"
-              value={profile.substr(12)}
-            />
+          <div className="content-profile">
+            <p>프로필</p>
+            <input readOnly value={profile} />
             <label htmlFor="filename">
-              <div>파일찾기</div>
+              <p>파일찾기</p>
             </label>
             <input
               type="file"
               id="filename"
               accept=".jpg, .jpeg, .png"
-              onChange={(e) => {
-                setProfile((profile = e.target.value));
-                const index = getExtension(profile.substr(12));
-                const splitData1 = profile.substr(12).substring(0, index - 1);
-                const splitData2 = profile.substr(12).substring(index);
-                setFileName(splitData1);
-                setExtension(splitData2);
-                encodeFileToBase64(e.target.files[0]);
-              }}
+              onChange={onClickProfileImage}
             />
           </div>
         </div>
@@ -298,7 +273,7 @@ const PersonalInfo = () => {
       </div>
 
       <style jsx>{`
-        .bg-container {
+        .container {
           margin-top: 10px;
           border-top: 1px solid #e4e8eb;
           width: 100%;
@@ -308,83 +283,65 @@ const PersonalInfo = () => {
           justify-content: center;
         }
 
-        .content-showbox {
+        .contents {
           width: 600px;
           border-top: 1px solid #e4e8eb;
           border-bottom: 1px solid #e4e8eb;
         }
 
-        .nickname {
-          width: 583px;
+        .essential-mark {
+          color: red;
+        }
+
+        .content-nickname p, .content-birth p, .content-gender p, .content-profile > p {
+          font-weight: bold;
+          font-size: 1.5em;
+          margin-right: 3px;
+        }
+
+        .content-nickname {
+          width: 100%;
           height: 40px;
-          margin: 44.5px 5.5px 27px;
+          margin: 40px 0;
           padding: 5px 10px 5px 14px;
           border-radius: 10px;
           border: solid 1px #e8e8e8;
-          background-color: #fff;
-          display: flex;
-          justify-content: space-between;
-        }
-
-        .nickname-text-box,
-        .birth-text-box,
-        .gender-text-box { 
           display: flex;
           flex-direction: row;
           align-items: center;
         }
 
-        .essential-mark {
-          font-size: 1.5em;
-          font-weight: bold;
-          color: red;
-          margin-right: 3px;
-        }
-
-        .text-nickname {
-          width: 45px;
-          height: 30px;
-          font-weight: bold;
-          font-size: 1.5em;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        #input-nickname {
-          width: 430px;
+        .content-nickname input {
+          width: 440px;
           height: 30px;
           border-style: none;
-          font-size: 1.5em;
+          font-size: 1.4em;
           padding: 5px;
+          margin-left: 2px;
+          margin-right: 5px;
         }
 
-        .button-dup-check {
+        .content-nickname button {
           width: 70px;
+          height: 28px;
           background-color: #08555f;
           color: white;
-          border: 0;
-          outline: 0;
-          cursor: pointer;
+          border: none;
           border-radius: 5px;
+          outline: none;
+          cursor: pointer;
         }
 
-        .birth {
-          width: 583px;
-          height: 40px;
-          margin: 44.5px 5.5px 27px;
+        .content-birth {
+          width: 100%;
+          margin: 40px 0;
           padding: 5px 10px 5px 14px;
           display: flex;
           justify-content: space-between;
           align-items: center;
         }
 
-        .text-birth {
-          font-weight: bold;
-          font-size: 1.5em;
-        }
-
-        .dropdown-birth {
+        .content-birth > div {
           display: flex;
           flex-direction: row:
           justify-content: space-between;
@@ -392,47 +349,38 @@ const PersonalInfo = () => {
 
         .dropdown-year {
           width: 180px;
-          padding: 9px 11.8px 10.3px 27px;
+          padding: 10px 10px;
           margin: 5px;
           border-radius: 10px;
           border: solid 1px #e8e8e8;
           font-weight: bold;
         }
 
-        .dropdown-month {
+        .dropdown-month, .dropdown-day {
           width: 120px;
-          padding: 9px 12.8px 10.3px 15px;
+          padding: 10px 10px;
           margin: 5px;
           border-radius: 10px;
           border: solid 1px #e8e8e8;
           font-weight: bold;
         }
 
-        .dropdown-day {
-          width: 120px;
-          padding: 9px 12.8px 10.3px 15px;
-          margin: 5px;
-          border-radius: 10px;
-          border: solid 1px #e8e8e8;
-          font-weight: bold;
-        }
-
-        .gender {
-          width: 583px;
-          height: 40px;
-          margin: 44.5px 5.5px 27px;
+        .content-gender {
+          width: 100%;
+          margin: 40px 0;
           padding: 5px 10px 5px 14px;
           display: flex;
           justify-content: space-between;
           align-items: center;
         }
 
-        .text-gender {
-          font-weight: bold;
-          font-size: 1.5em;
+        .content-gender > div:nth-child(1) {
+          display: flex;
+          flex-direction: row:
+          justify-content: space-between;
         }
 
-        .radio-gender {
+        .content-gender > div:nth-child(2) {
           width: 150px;
           display: flex;
           flex-direction: row;
@@ -447,8 +395,8 @@ const PersonalInfo = () => {
           align-items: center;
         }
 
-        .text-male,
-        .text-female {
+        .male label,
+        .female label {
           width: 30px;
           font-size: 1.5em;
           font-weight: bold;
@@ -480,51 +428,42 @@ const PersonalInfo = () => {
           background: #08555f;
         }
 
-        .profile {
-          width: 583px;
+        .content-profile {
+          width: 100%;
           height: 40px;
-          margin: 44.5px 5.5px 27px;
+          margin: 40px 0;
           padding: 5px 10px 5px 14px;
           border-radius: 10px;
           border: solid 1px #e8e8e8;
-          background-color: #fff;
           display: flex;
-          justify-content: space-between;
-        }
-
-        .text-profile {
-          width: 45px;
-          height: 30px;
-          font-weight: bold;
-          font-size: 1.5em;
-          display: flex;
+          flex-direction: row;
           align-items: center;
-          justify-content: center;
         }
 
-        .upload-name {
-          width: 430px;
+        .content-profile input {
+          width: 450px;
           height: 30px;
           border-style: none;
           font-size: 1.4em;
           padding: 5px;
+          margin-left: 2px;
+          margin-right: 5px;
         }
 
-        .profile label {
+        .content-profile label {
           width: 70px;
+          height: 28px;
           background-color: #08555f;
           color: white;
-          font-size: 1.3em;
-          border: 0;
-          outline: 0;
-          cursor: pointer;
           border-radius: 5px;
           display: flex;
           align-items: center;
           justify-content: center;
+          font-size: 1.3em;
+          cursor: pointer;
         }
 
-        .profile input[type="file"] {
+        .content-profile input[type="file"] {
           position: absolute;
           width: 0;
           height: 0;
@@ -543,11 +482,11 @@ const PersonalInfo = () => {
           color: white;
           font-size: 1.5rem;
           margin-top: 25px;
-          border: 0;
-          outline: 0;
-          cursor: pointer;
-          border-radius: 10px;
           margin-bottom: 30px;
+          border: none;
+          border-radius: 10px;
+          outline: none;
+          cursor: pointer;
         }
       `}</style>
     </>
