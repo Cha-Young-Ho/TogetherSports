@@ -1,3 +1,5 @@
+import Calendar from "../calendar/calendar";
+
 const RoomModal = ({ open, close }) => {
   return (
     <>
@@ -40,7 +42,12 @@ const RoomModal = ({ open, close }) => {
                     </div>
                   </div>
 
-                  <div className="calendar"></div>
+                  <div className="calendar">
+                    <Calendar
+                      clickDateOptionFunction={`2022-04-22`}
+                      moveDateButtonOptionFunction={true}
+                    />
+                  </div>
 
                   <div className="location">
                     <p className="location-info">위치 정보</p>
@@ -299,7 +306,7 @@ const RoomModal = ({ open, close }) => {
           height: 40px;
           border: none;
           border-radius: 25px;
-          color: white;
+
           font-size: 15px;
           font-weight: 200px;
           cursor: pointer;
@@ -307,10 +314,12 @@ const RoomModal = ({ open, close }) => {
 
         .left-button {
           background-color: #00555f;
+          color: white;
         }
 
         .right-button {
           background-color: #d8d8d8;
+          color: black;
         }
 
         @keyframes modal-show {
