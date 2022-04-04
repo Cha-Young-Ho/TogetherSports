@@ -90,8 +90,6 @@ const RoomTagInfo = () => {
           <div className="content-info">
             <p>방에 대한 정보를 입력해주세요!</p>
             <textarea
-              rows="450"
-              cols="130"
               value={roomContent}
               onChange={(e) => setRoomContent(e.target.value)}
             ></textarea>

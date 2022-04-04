@@ -1,6 +1,60 @@
+import { useState, useEffect } from "react";
 import Calendar from "../calendar/calendar";
 
 const RoomModal = ({ open, close }) => {
+  const [mapLoaded, setMapLoaded] = useState(false); // 지도 로드 동기화
+
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAOMAP_APPKEY}&autoload=false&libraries=services`;
+    document.head.appendChild(script);
+    setMapLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (open && mapLoaded) {
+      kakao.maps.load(() => {
+        const container = document.getElementById("map"),
+          options = {
+            center: new kakao.maps.LatLng(
+              37.56682420062817,
+              126.97864093976689
+            ),
+            level: 4,
+          };
+
+        const map = new kakao.maps.Map(container, options); // 지도 생성
+        const geocoder = new kakao.maps.services.Geocoder(); // 주소-좌표 변환 객체 생성
+
+        // 주소로 좌표를 검색
+        geocoder.addressSearch(
+          "서울 중구 세종대로 110",
+          function (result, status) {
+            if (status === kakao.maps.services.Status.OK) {
+              const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+
+              // 위치에 마커 표시
+              const marker = new kakao.maps.Marker({
+                map: map,
+                position: coords,
+              });
+
+              // 인포윈도우로 장소에 대한 설명을 표시
+              const infowindow = new kakao.maps.InfoWindow({
+                content:
+                  '<div style="width:150px;text-align:center;padding:6px 0;">만남의 장소</div>',
+              });
+              infowindow.open(map, marker);
+
+              // 지도의 중심을 결과값으로 받은 위치로 이동
+              map.setCenter(coords);
+            }
+          }
+        );
+      });
+    }
+  }, [open]);
+
   return (
     <>
       <div className={open ? "openModal modal" : "modal"}>
@@ -53,7 +107,7 @@ const RoomModal = ({ open, close }) => {
                     <p className="location-info">위치 정보</p>
                     <div className="line"></div>
                     <p className="address-info">서울 강동구 올림픽로 223-1</p>
-                    <div className="map"></div>
+                    <div id="map"></div>
                   </div>
                 </div>
 
@@ -63,7 +117,7 @@ const RoomModal = ({ open, close }) => {
                   <div className="room-info">
                     <p>방 설명 및 안내</p>
                     <div className="line"></div>
-                    <input></input>
+                    <textarea readOnly></textarea>
                   </div>
 
                   <div className="buttons">
@@ -222,7 +276,7 @@ const RoomModal = ({ open, close }) => {
 
         .location {
           width: 100%;
-          height: 260px;
+          height: 265px;
           border-radius: 10px;
           box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
           display: flex;
@@ -247,7 +301,7 @@ const RoomModal = ({ open, close }) => {
           border: solid 0.3px #707070;
         }
 
-        .map {
+        #map {
           width: 100%;
           height: 170px;
           border-radius: 10px;
@@ -286,13 +340,14 @@ const RoomModal = ({ open, close }) => {
           border: solid 0.3px #707070;
         }
 
-        .room-info input {
+        .room-info textarea {
           width: 680px;
           height: 160px;
           padding: 10px;
           border-radius: 10px;
           border: solid 1px #e8e8e8;
           background-color: #f2f2f2;
+          resize: none;
         }
 
         .buttons {

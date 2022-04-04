@@ -180,7 +180,11 @@ const Calendar = (props) => {
           )}
         </div>
         <WeekWrapper />
-        <div className="calendar-body">
+        <div
+          className={
+            clickDateOption ? `calendar-body dateOption` : `calendar-body`
+          }
+        >
           <div className="week-of-month-ko"></div>
           <div className="days-grid">
             {clickDateOption ? (
@@ -327,6 +331,11 @@ const Calendar = (props) => {
           width: 100%;
           height: 100%;
           background-color: white;
+        }
+
+        .dateOption {
+          border-bottom-left-radius: 12px;
+          border-bottom-right-radius: 12px;
         }
 
         .days-grid {
