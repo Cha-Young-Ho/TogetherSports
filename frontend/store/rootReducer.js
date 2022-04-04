@@ -1,5 +1,5 @@
 import { combineReducers, createStore } from "redux";
-import { createWrapper, HYDRATE } from "next-redux-wrapper";
+import { createWrapper } from "next-redux-wrapper";
 import { composeWithDevTools } from "redux-devtools-extension";
 
 //회원가입 초기값
@@ -22,7 +22,10 @@ const myInfoInitialState = {
   userNickname: "",
   userBirth: "yyyy-mm-dd",
   gender: "",
-  userProfileImagePath: "",
+  userProfileImage: {
+    userProfileExtension: "",
+    imageSource: "",
+  },
   activeAreas: [],
   interests: [],
   mannerPoint: "",
@@ -49,7 +52,6 @@ const createRoomInitialState = {
 // 오타 방지용
 const PERSONALINFO = "PERSONALINFO";
 const INTERESTS = "INTERESTS";
-const AUTHDATA = "AUTHDATA";
 const SAVENICKNAME = "SAVENICKNAME";
 const SAVEMYINFO = "SAVEMYINFO";
 const ROOMSETTING = "ROOMSETTING";

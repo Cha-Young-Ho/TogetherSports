@@ -1,151 +1,150 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import SetRoomImages from "../rooms/setRoomImages";
+import { getRoomInfo, postUpdateRoom } from "../../api/rooms";
+import failResponse from "../../api/failResponse";
 
-const ModifyRoomModal = ({ open, close }) => {
-  // 방 설명
+const ModifyRoomModal = ({ open, close, sequenceId }) => {
+  // 방 제목, 설명, 인원
+  const [roomTitle, setRoomTitle] = useState("");
   const [roomContent, setRoomContent] = useState("");
+  const [limitPeopleCount, setLimitPeopleCount] = useState("");
 
-  // 방 이미지
-  const [image, setImage] = useState("");
-  const [imagesrc, setImagesrc] = useState("");
+  // post 하기위한 정보들
+  const [roomArea, setRoomArea] = useState({});
+  const [exercise, setExercise] = useState("");
+  const [tag, setTag] = useState("");
+  const [startAppointmentDate, setStartAppointmentDate] = useState("");
+  const [endAppointmentDate, setEndAppointmentDate] = useState("");
+
+  // 서버로 보내기 위한 방 이미지 정보(확장자, 원본주소)
   const [roomImage, setRoomImage] = useState([]);
+  const getData = (imageData) => {
+    setRoomImage(imageData);
+  };
+
+  const setData = () => {
+    return roomImage;
+  };
+
+  // 화면에 표시되는 프리뷰 이미지
   const [imagePreview, setImagePreview] = useState([]);
+  const getPreview = (previewData) => {
+    setImagePreview(previewData);
+  };
 
-  // 방 태그
-  const [tag, setTag] = useState([]);
+  const setPreview = () => {
+    return imagePreview;
+  };
 
-  // 이미지 source 인코딩
-  const encodeFileToBase64 = async (file) => {
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      const baseURL = "";
-      reader.readAsDataURL(file); // 파일을 base64 text로 전환
+  // 완료 버튼 클릭 시
+  const clickDoneBtn = () => {
+    if (roomTitle === "" || limitPeopleCount === "") {
+      alert("입력이 올바르지 않은 정보가 있습니다");
+      e.preventDefault();
+      return;
+    }
 
-      reader.onload = () => {
-        baseURL = reader.result;
-        const sliceIndex = baseURL.indexOf(",");
-        setImagesrc((imagesrc = baseURL.substr(sliceIndex + 1)));
-        setImagePreview((prev) => [...prev, (imagePreview = baseURL)]);
-        resolve(baseURL);
-      };
+    postUpdateRoom(
+      roomTitle,
+      roomContent,
+      roomArea,
+      exercise,
+      tag,
+      startAppointmentDate,
+      endAppointmentDate,
+      roomImage
+    ).then((res) => {
+      if (res.status.code === 5000) {
+        console.log(res.status.message);
+        alert("수정되었습니다.");
+
+        //수정 성공 후 실시간으로 방 정보 변경되어야 함
+        //아마도 소켓?
+        close();
+      }
     });
   };
 
-  // 이미지 확장자 index 반환 함수
-  const getExtension = (profilename) => {
-    if (profilename.indexOf("png") !== -1) {
-      return profilename.indexOf("png");
-    } else if (profilename.indexOf("jpg") !== -1) {
-      return profilename.indexOf("jpg");
-    }
-    if (profilename.indexOf("jpeg") !== -1) {
-      return profilename.indexOf("jpeg");
-    }
+  // 제목 인풋 변경사항
+  const changeTitle = (e) => {
+    setRoomTitle(e.target.value);
   };
 
-  // 이미지가 선택 함수
-  const onClickImage = (e) => {
-    const file = e.target.files[0];
-    const index = getExtension(file.name);
-    const imageFileRealName = file.name.substring(0, index - 1);
-    const imageFileExtension = file.type.split("/")[1];
+  // 인원 수 변경사항
+  const changePplCnt = (e) => {
+    e.target.value = e.target.value.replace(/[^0-9]/g, "");
+    setLimitPeopleCount(e.target.value);
+  };
 
-    if (roomImage.length < 5) {
-      setImage(file.name);
-      encodeFileToBase64(file).then(() => {
-        setRoomImage([
-          ...roomImage,
-          {
-            roomImageRealName: imageFileRealName,
-            roomImageExtension: imageFileExtension,
-            imageSource: imagesrc,
-          },
-        ]);
+  // 방 설명 변경사항
+  const changeContent = (e) => {
+    setRoomContent(e.target.value);
+  };
+
+  // 방에 대한 정보 조회
+  useEffect(() => {
+    if (open) {
+      getRoomInfo(sequenceId).then((res) => {
+        if (res.status.code === 5000) {
+          console.log(res.status.message);
+
+          //초기값 받아오기
+          setRoomTitle(res.content.roomTitle);
+          setRoomContent(res.content.roomContent);
+          setRoomArea(res.content.roomArea);
+          setExercise(res.content.exercise);
+          setTag(res.content.tag);
+          setStartAppointmentDate(res.content.startAppointmentDate);
+          setEndAppointmentDate(res.content.endAppointmentDate);
+          setImagePreview(
+            (imagePreview = res.content.roomImage.imageSource.map(preview))
+          );
+          setLimitPeopleCount(res.content.limitPeopleCount);
+        } else {
+          failResponse(res.status.code);
+        }
       });
-    } else {
-      e.preventDefault();
-      alert("이미지는 최대 5개까지 설정할 수 있습니다!");
     }
-  };
+  }, [open]);
 
-  // 이미지 삭제 함수
-  const deleteImage = (e) => {
-    const selectedImageIndex = e.target.classList[1];
-    const imageIndex = selectedImageIndex.slice(4);
-    const selectedImg = document.querySelector(`.img-${imageIndex}`);
-
-    // input 비우기
-    setImage((image = ""));
-
-    // 프리뷰 삭제
-    setImagePreview((prev) =>
-      prev.filter((el) => {
-        return el !== selectedImg.src;
-      })
-    );
-
-    // 서버에게 전달할 객체배열 안에서 데이터 삭제
-    const sliceIndex = selectedImg.src.indexOf(",");
-    const src = selectedImg.src.substr(sliceIndex + 1);
-    setRoomImage((prev) =>
-      prev.filter((el) => {
-        return el.imageSource !== src;
-      })
-    );
-  };
   return (
     <>
       <div className={open ? "openModal modal" : "modal"}>
         <div className="box-container">
           <h1>방 정보 수정</h1>
           <div className="picture-wrapper">
-            <div className="images">
-              <p>사진추가</p>
-              <input readOnly className="image-name" value={image} />
-              <label htmlFor="filename">
-                <div>파일찾기</div>
-              </label>
-              <input
-                type="file"
-                id="filename"
-                accept=".jpg, .jpeg, .png"
-                onChange={onClickImage}
-              />
-            </div>
-            <div className="previews">
-              {imagePreview.map((preview, index) => {
-                return (
-                  <div className="preview" key={index}>
-                    <div>
-                      <img
-                        src={preview}
-                        alt="preview"
-                        className={`img-${index}`}
-                      />
-                    </div>
-                    <button className={`btn-${index}`} onClick={deleteImage}>
-                      X
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
+            <SetRoomImages
+              getData={getData}
+              setPreview={setPreview}
+              getPreview={getPreview}
+              setData={setData}
+            />
           </div>
-          <div className="pic-preview-wrapper"></div>
           <div className="roomTitle-wrapper">
             <p>방 제목</p>
-            <input type="text"></input>
+            <input
+              type="text"
+              placeholder={roomTitle}
+              onChange={changeTitle}
+            ></input>
           </div>
           <div className="peopleCount-wrapper">
             <p>인원 수 조절</p>
-            <input type="text"></input>
+            <input
+              type="text"
+              placeholder={limitPeopleCount}
+              onChange={changePplCnt}
+            ></input>
             <p>명</p>
           </div>
           <div className="roomNotice-wrapper">
             <p>방 설명 작성</p>
-            <textarea></textarea>
+            <textarea onChange={changeContent}>{roomContent}</textarea>
           </div>
           <div className="button-wrapper">
-            <button className="done-btn">완료</button>
+            <button className="done-btn" onClick={clickDoneBtn}>
+              완료
+            </button>
             <button className="cancel-btn" onClick={close}>
               취소
             </button>
@@ -180,7 +179,7 @@ const ModifyRoomModal = ({ open, close }) => {
 
         .box-container {
           width: 700px;
-          height: 620px;
+          height: 650px;
           border-radius: 10px;
           box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
           background-color: #fff;
@@ -200,68 +199,11 @@ const ModifyRoomModal = ({ open, close }) => {
 
         .picture-wrapper {
           width: 80%;
-          height: 100px;
+          height: 220px;
           display: flex;
           align-items: center;
           margin-top: 25px;
           flex-direction: column;
-        }
-
-        .images {
-          width: 550px;
-          height: 40px;
-          padding: 5px 10px 5px 14px;
-          margin-bottom: 20px;
-          border: solid 1px #e8e8e8;
-          border-radius: 10px;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-        }
-
-        .images p {
-          font-size: 1.5em;
-          font-weight: bold;
-        }
-
-        .image-name {
-          width: 380px;
-          height: 30px;
-          border-style: none;
-          font-size: 1.4em;
-          padding: 5px;
-        }
-
-        .picture-wrapper label {
-          width: 70px;
-          height: 28px;
-          background-color: #08555f;
-          color: white;
-          font-size: 1.3em;
-          border: 0;
-          outline: 0;
-          cursor: pointer;
-          border-radius: 5px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .picture-wrapper input[type="file"] {
-          position: absolute;
-          width: 0;
-          height: 0;
-          padding: 0;
-          border: 0;
-          overflow: hidden;
-        }
-
-        .pic-preview-wrapper {
-          width: 80%;
-          height: 80px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
         }
 
         .roomTitle-wrapper {
@@ -348,51 +290,6 @@ const ModifyRoomModal = ({ open, close }) => {
           background-color: #d8d8d8;
           font-size: 1.5rem;
           font-weight: bold;
-        }
-
-        .previews {
-          display: flex;
-          flex-direction: row;
-          justify-content: space-between;
-          align-items: center;
-        }
-
-        .preview {
-          display: table;
-          text-align: center;
-        }
-
-        .preview div {
-          width: 90px;
-          height: 90px;
-          margin: 0 10px;
-          border: none;
-          border-radius: 10px;
-          background-color: #d8d8d8;
-          overflow: hidden;
-          display: table-cell;
-          vertical-align: middle;
-        }
-
-        .preview img {
-          max-width: 90px;
-          max-height: 90px;
-        }
-
-        .preview button {
-          position: relative;
-          bottom: 10px;
-          right: 10px;
-          width: 20px;
-          height: 20px;
-          border: none;
-          border-radius: 50%;
-          opacity: 0.8;
-          background-color: #f2f2f2;
-          font-weight: bold;
-          font-size: 1.2em;
-          color: white;
-          cursor: pointer;
         }
 
         @keyframes modal-show {

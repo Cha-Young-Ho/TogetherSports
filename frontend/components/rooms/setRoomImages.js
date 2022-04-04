@@ -10,11 +10,28 @@ const SetRoomImages = (props) => {
   const [imagePreview, setImagePreview] = useState([]);
 
   useEffect(() => {
+    if (props.setData) {
+      setRoomImage(props.setData());
+    }
+
+    if (props.setPreview) {
+      setImagePreview(props.setPreview());
+    }
+  }, []);
+
+  useEffect(() => {
     if (props.getData) {
       props.getData(roomImage);
       return;
     }
   }, [roomImage]);
+
+  useEffect(() => {
+    if (props.getPreview) {
+      props.getPreview(imagePreview);
+      return;
+    }
+  }, [imagePreview]);
 
   // 이미지 source 인코딩
   const encodeFileToBase64 = async (file) => {
