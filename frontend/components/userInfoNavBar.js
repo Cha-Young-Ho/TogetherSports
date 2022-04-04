@@ -1,7 +1,7 @@
 const UserInfoNavBar = ({ personal_atv, interest_atv, activearea }) => {
   return (
     <>
-      <h1>회원가입</h1>
+      <h1>추가 정보 입력</h1>
       <div className="title">
         <div>
           <div>
