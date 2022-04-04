@@ -6,18 +6,32 @@ const Calendar = (props) => {
   // 선택된 날
   const [curSelectedDate, setCurSelectedDate] = useState("");
 
+  // 옵션
+  const [clickDateOption, setClickDateOption] = useState(false);
+  const [moveDateButtonOption, setMoveDateButtonOption] = useState(false);
+
   useEffect(() => {
     if (props.setDateFunction) {
-      console.log(props.setDateFunction);
       props.setDateFunction(curSelectedDate);
-      return;
     }
 
     if (props.modalDateFunction) {
       props.modalDateFunction(curSelectedDate);
-      return;
     }
   }, [curSelectedDate]);
+
+  useEffect(() => {
+    if (props.clickDateOptionFunction) {
+      setClickDateOption(true);
+
+      // startAppointmentDate의 yyyy-MM-dd에서 dd 예외 처리해야함
+      setCurSelectedDate(props.clickDateOptionFunction);
+    }
+
+    if (props.moveDateButtonOptionFunction) {
+      setMoveDateButtonOption(true);
+    }
+  }, []);
 
   //이번 년도, 이번 달
   const [curYear, setCurYear] = useState(moment().year());
@@ -141,60 +155,123 @@ const Calendar = (props) => {
     <>
       <div className="calendar-container">
         <div className="header">
-          <button
-            className="left-button"
-            onClick={checkPreCalendar}
-          >{`<`}</button>
-          <div className="year-month-text">{`${curYear}.${curMonth + 1}`}</div>
-          <div className="right-button" onClick={checkNextCalendar}>{`>`}</div>
+          {moveDateButtonOption ? (
+            <>
+              <div></div>
+              <div className="year-month-text">{`${curYear}.${
+                curMonth + 1
+              }`}</div>
+              <div></div>
+            </>
+          ) : (
+            <>
+              <button
+                className="left-button"
+                onClick={checkPreCalendar}
+              >{`<`}</button>
+              <div className="year-month-text">{`${curYear}.${
+                curMonth + 1
+              }`}</div>
+              <div
+                className="right-button"
+                onClick={checkNextCalendar}
+              >{`>`}</div>
+            </>
+          )}
         </div>
         <WeekWrapper />
         <div className="calendar-body">
           <div className="week-of-month-ko"></div>
           <div className="days-grid">
-            {preCalendarDays.map((date, index) => (
-              <button
-                key={`dates-${date}-${index}`}
-                className={`special-days-in-grid left`}
-                onClick={clickSelectDate}
-              >
-                {date}
-              </button>
-            ))}
-            {curCalendarDays.map((date, index) => {
-              if (curSelectedDate === date) {
-                return (
+            {clickDateOption ? (
+              <>
+                {preCalendarDays.map((date, index) => (
                   <button
                     key={`dates-${date}-${index}`}
-                    className={`days-in-grid clicked`}
-                    onClick={clickSelectDate}
+                    className={`special-days-notOption left`}
                   >
-                    {date.substring(8)}
+                    {date}
                   </button>
-                );
-              } else {
-                return (
+                ))}
+                {curCalendarDays.map((date, index) => {
+                  if (curSelectedDate === date) {
+                    return (
+                      <button
+                        key={`dates-${date}-${index}`}
+                        className={`days-notOption clicked`}
+                      >
+                        {date.substring(8)}
+                      </button>
+                    );
+                  } else {
+                    return (
+                      <button
+                        key={`dates-${date}-${index}`}
+                        className={`days-notOption ${curYear}-${curMonth + 1}-${
+                          index + 1
+                        }`}
+                      >
+                        {date.substring(8)}
+                      </button>
+                    );
+                  }
+                })}
+                {nextCalendarDays.map((date, index) => (
                   <button
                     key={`dates-${date}-${index}`}
-                    className={`days-in-grid ${curYear}-${curMonth + 1}-${
-                      index + 1
-                    }`}
+                    className={`special-days-notOption right`}
+                  >
+                    {date}
+                  </button>
+                ))}
+              </>
+            ) : (
+              <>
+                {preCalendarDays.map((date, index) => (
+                  <button
+                    key={`dates-${date}-${index}`}
+                    className={`special-days-in-grid left`}
                     onClick={clickSelectDate}
                   >
-                    {date.substring(8)}
+                    {date}
                   </button>
-                );
-              }
-            })}
-            {nextCalendarDays.map((date, index) => (
-              <button
-                key={`dates-${date}-${index}`}
-                className={`special-days-in-grid right`}
-                onClick={clickSelectDate}
-              >
-                {date}
-              </button>
-            ))}
+                ))}
+                {curCalendarDays.map((date, index) => {
+                  if (curSelectedDate === date) {
+                    return (
+                      <button
+                        key={`dates-${date}-${index}`}
+                        className={`days-in-grid clicked`}
+                        onClick={clickSelectDate}
+                      >
+                        {date.substring(8)}
+                      </button>
+                    );
+                  } else {
+                    return (
+                      <button
+                        key={`dates-${date}-${index}`}
+                        className={`days-in-grid ${curYear}-${curMonth + 1}-${
+                          index + 1
+                        }`}
+                        onClick={clickSelectDate}
+                      >
+                        {date.substring(8)}
+                      </button>
+                    );
+                  }
+                })}
+                {nextCalendarDays.map((date, index) => (
+                  <button
+                    key={`dates-${date}-${index}`}
+                    className={`special-days-in-grid right`}
+                    onClick={clickSelectDate}
+                  >
+                    {date}
+                  </button>
+                ))}
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -248,19 +325,21 @@ const Calendar = (props) => {
 
         .calendar-body {
           width: 100%;
+          height: 100%;
           background-color: white;
         }
 
         .days-grid {
           width: 100%;
+          height: 100%;
           margin: 0px auto;
           display: grid;
-          grid-template-rows: repeat(6, 40px);
+          grid-template-rows: repeat(6, 16%);
           grid-template-columns: repeat(7, 1fr);
         }
 
-        .days-in-grid {
-          cursor: pointer;
+        .days-in-grid,
+        .days-notOption {
           outline: none;
           border: none;
           background-color: white;
@@ -269,20 +348,25 @@ const Calendar = (props) => {
           margin: 3px 12px;
         }
 
-        .days-in-grid:hover {
-          background-color: #2b7a5f;
-          border-radius: 100px;
-          color: white;
-        }
-
-        .special-days-in-grid {
-          cursor: pointer;
+        .special-days-in-grid,
+        .special-days-notOption {
           outline: none;
           border: none;
           background-color: white;
           color: lightgrey;
           font-weight: bold;
           margin: 3px 12px;
+        }
+
+        .special-days-in-grid,
+        .days-in-grid {
+          cursor: pointer;
+        }
+
+        .days-in-grid:hover {
+          background-color: #2b7a5f;
+          border-radius: 100px;
+          color: white;
         }
 
         .special-days-in-grid:hover {
