@@ -16,7 +16,7 @@ public class UserOfOtherInfo {
     private Gender gender;
     private List<String> activeAreas;
     private List<String> interests;
-    private String userProfileImage;
+    private String userProfileImagePath;
 
 }
 
