@@ -1,8 +1,11 @@
 package com.togethersports.tosproejct.account;
 
+import com.togethersports.tosproejct.area.ActiveArea;
 import com.togethersports.tosproejct.security.oauth2.model.OAuth2Provider;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -22,4 +25,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
     Optional<User> findByEmailAndProvider(String email, OAuth2Provider provider);
     boolean existsByNickname(String nickname);
+
 }
