@@ -1,9 +1,9 @@
 package com.togethersports.tosproejct.common.controller;
 
-import com.togethersports.tosproejct.account.code.UserCode;
-import com.togethersports.tosproejct.account.exception.NicknameDuplicationException;
-import com.togethersports.tosproejct.account.exception.NotEnteredInformationException;
-import com.togethersports.tosproejct.account.exception.UserNotFoundException;
+import com.togethersports.tosproejct.user.code.UserCode;
+import com.togethersports.tosproejct.user.exception.NicknameDuplicationException;
+import com.togethersports.tosproejct.user.exception.NotEnteredInformationException;
+import com.togethersports.tosproejct.user.exception.UserNotFoundException;
 import com.togethersports.tosproejct.common.code.CommonCode;
 import com.togethersports.tosproejct.common.dto.FieldValidationError;
 import com.togethersports.tosproejct.common.dto.Response;

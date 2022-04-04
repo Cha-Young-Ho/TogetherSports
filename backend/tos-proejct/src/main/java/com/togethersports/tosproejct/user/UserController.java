@@ -1,8 +1,7 @@
-package com.togethersports.tosproejct.account;
+package com.togethersports.tosproejct.user;
 
-import com.togethersports.tosproejct.account.dto.*;
-import com.togethersports.tosproejct.account.exception.NicknameDuplicationException;
-import com.togethersports.tosproejct.area.ActiveArea;
+import com.togethersports.tosproejct.user.dto.*;
+import com.togethersports.tosproejct.user.exception.NicknameDuplicationException;
 import com.togethersports.tosproejct.common.code.CommonCode;
 import com.togethersports.tosproejct.common.dto.Response;
 import com.togethersports.tosproejct.security.annotation.CurrentUser;
@@ -11,8 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * <h1>UserController</h1>

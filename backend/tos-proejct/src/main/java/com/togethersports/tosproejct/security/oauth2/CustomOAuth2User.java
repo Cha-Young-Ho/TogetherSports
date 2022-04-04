@@ -1,6 +1,6 @@
 package com.togethersports.tosproejct.security.oauth2;
 
-import com.togethersports.tosproejct.account.User;
+import com.togethersports.tosproejct.user.User;
 import com.togethersports.tosproejct.security.oauth2.model.OAuth2UserInfo;
 import lombok.Getter;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

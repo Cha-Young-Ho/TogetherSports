@@ -1,7 +1,7 @@
 package com.togethersports.tosproejct.security.jwt.util;
 
 
-import com.togethersports.tosproejct.account.User;
+import com.togethersports.tosproejct.user.User;
 import com.togethersports.tosproejct.security.Role;
 import com.togethersports.tosproejct.security.jwt.JwtProperties;
 
@@ -10,7 +10,6 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.Calendar;

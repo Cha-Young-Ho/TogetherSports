@@ -1,6 +1,6 @@
 package com.togethersports.tosproejct.security.oauth2.handler;
 
-import com.togethersports.tosproejct.account.User;
+import com.togethersports.tosproejct.user.User;
 import com.togethersports.tosproejct.security.jwt.RefreshTokenService;
 import com.togethersports.tosproejct.security.jwt.dto.TokenOfLogin;
 import com.togethersports.tosproejct.security.jwt.util.JwtTokenFactory;

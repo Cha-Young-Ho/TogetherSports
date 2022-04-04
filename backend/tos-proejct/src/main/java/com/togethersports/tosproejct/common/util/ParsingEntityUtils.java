@@ -1,6 +1,5 @@
 package com.togethersports.tosproejct.common.util;
 
-import com.togethersports.tosproejct.account.User;
 import com.togethersports.tosproejct.area.ActiveArea;
 import com.togethersports.tosproejct.interest.Interest;
 import org.springframework.stereotype.Component;
