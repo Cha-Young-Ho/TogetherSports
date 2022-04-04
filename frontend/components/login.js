@@ -14,26 +14,18 @@ const Login = () => {
     window.location.href = "http://localhost:8080/oauth2/authorization/google";
   };
 
-  /* 최초 회원가입 여부 isFirst 처리 필요 */
-
   return (
     <>
-      <div className="login-wrapper">
-        <div className="login-container">
-          <div className="bg-container">
+      <div className="container">
+        <div>
+          <div>
             <div className="login-box">
-              <div className="login-logo"></div>
-              <div className="login-button">
+              <div className="logo"></div>
+              <div className="buttons">
+                <button className="button-naver" onClick={naverLogin}></button>
+                <button className="button-kakao" onClick={kakaoLogin}></button>
                 <button
-                  className="login-button-naver"
-                  onClick={naverLogin}
-                ></button>
-                <button
-                  className="login-button-kakao"
-                  onClick={kakaoLogin}
-                ></button>
-                <button
-                  className="login-button-google"
+                  className="button-google"
                   onClick={googleLogin}
                 ></button>
               </div>
@@ -43,14 +35,14 @@ const Login = () => {
       </div>
 
       <style jsx>{`
-        .login-wrapper {
+        .container {
           width: 100%;
           display: flex;
           justify-content: center;
           align-items: center;
         }
 
-        .login-container {
+        .container > div {
           width: 100%;
           max-width: 1920px;
           height: 1080px;
@@ -65,7 +57,7 @@ const Login = () => {
           background-position: center center;
         }
 
-        .bg-container {
+        .container > div > div {
           width: 90%;
           height: 100%;
           display: flex;
@@ -85,7 +77,7 @@ const Login = () => {
           z-index: 2;
         }
 
-        .login-logo {
+        .logo {
           width: 130px;
           height: 150px;
           margin-bottom: 30px;
@@ -98,7 +90,7 @@ const Login = () => {
           background-repeat: no-repeat;
         }
 
-        .login-button button {
+        .buttons button {
           width: 400px;
           height: 60px;
           border: none;
@@ -108,21 +100,21 @@ const Login = () => {
           flex-direction: column;
         }
 
-        .login-button-naver {
+        .button-naver {
           cursor: pointer;
           background-image: url("/naver-login.png");
           background-size: cover;
           background-repeat: no-repeat;
         }
 
-        .login-button-kakao {
+        .button-kakao {
           cursor: pointer;
           background-image: url("/kakao-login.png");
           background-size: cover;
           background-repeat: no-repeat;
         }
 
-        .login-button-google {
+        .button-google {
           -webkit-box-shadow: 0px 0px 20px 0px rgba(117, 110, 117, 0.15);
           -moz-box-shadow: 0px 0px 20px 0px rgba(117, 110, 117, 0.15);
           box-shadow: 0px 0px 20px 0px rgba(117, 110, 117, 0.25);

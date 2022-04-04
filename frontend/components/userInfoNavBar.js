@@ -1,14 +1,14 @@
 const UserInfoNavBar = ({ personal_atv, interest_atv, activearea }) => {
   return (
     <>
-      <h1>회원가입</h1>
-      <div className="title">
+      <h1>추가 정보 입력</h1>
+      <div className="container">
         <div>
           <div>
             <img
               src={`/personalinfo-${personal_atv}.png`}
               alt="인적사항"
-              className="title-circle-personalinfo"
+              className="personalinfo"
             ></img>
           </div>
           <p>인적사항</p>
@@ -18,7 +18,7 @@ const UserInfoNavBar = ({ personal_atv, interest_atv, activearea }) => {
             <img
               src={`/interests-${interest_atv}.png`}
               alt="관심종목"
-              className="title-circle-interest"
+              className="interests"
             ></img>
           </div>
           <p>관심종목</p>
@@ -28,7 +28,7 @@ const UserInfoNavBar = ({ personal_atv, interest_atv, activearea }) => {
             <img
               src={`/activearea-${activearea}.png`}
               alt="활동지역"
-              className="title-circle-activearea"
+              className="activeareas"
             ></img>
           </div>
           <p>활동지역</p>
@@ -53,16 +53,16 @@ const UserInfoNavBar = ({ personal_atv, interest_atv, activearea }) => {
           margin: 5px 0;
         }
 
-        .title {
+        .container {
           width: 500px;
           display: flex;
           justify-content: space-around;
           margin-bottom: 20px;
         }
 
-        .title-circle-personalinfo,
-        .title-circle-interest,
-        .title-circle-activearea {
+        .personalinfo,
+        .interests,
+        .activeareas {
           border-radius: 50px;
           width: 90px;
           height: 90px;
