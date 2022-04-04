@@ -170,17 +170,6 @@ public class UserService {
 
     }
 
-    public UserOfMyInfoSummary getMyInfoSummary(Long id){
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("해당 사용자를 찾을 수 없습니다."));
-
-        return UserOfMyInfoSummary.builder()
-                .userProfileImage(user.getUserProfileImage())
-                .userNickname(user.getNickname())
-                .build();
-    }
-
-
     public void checkIsFirst(User user){
         if(user.isFirst()){
             throw new NotEnteredInformationException("추가 정보를 입력하지 않은 계정입니다.");

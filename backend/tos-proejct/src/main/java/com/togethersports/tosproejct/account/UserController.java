@@ -2,6 +2,7 @@ package com.togethersports.tosproejct.account;
 
 import com.togethersports.tosproejct.account.dto.*;
 import com.togethersports.tosproejct.account.exception.NicknameDuplicationException;
+import com.togethersports.tosproejct.area.ActiveArea;
 import com.togethersports.tosproejct.common.code.CommonCode;
 import com.togethersports.tosproejct.common.dto.Response;
 import com.togethersports.tosproejct.security.annotation.CurrentUser;
@@ -10,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * <h1>UserController</h1>
@@ -72,13 +75,4 @@ public class UserController {
         return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, myInfo));
     }
 
-    //내 정보 조회 간소화
-    @GetMapping("/api/nav")
-    public ResponseEntity<Response> getMyInfoMin(@CurrentUser User user){
-
-        UserOfMyInfoSummary userOfMyInfoSummary = userService.getMyInfoSummary(user.getId());
-
-        return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, userOfMyInfoSummary));
-
-    }
 }

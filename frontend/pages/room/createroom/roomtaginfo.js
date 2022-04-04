@@ -8,7 +8,6 @@ import SetRoomImages from "../../../components/rooms/setRoomImages";
 
 /* 수정 필요 */
 // 1. 완료 버튼 클릭 시, 새로 만들어진 방으로 이동
-// 2. SetRoomImages 컴포넌트에서 roomImage 데이터 가져오기 (진행중)
 
 const RoomTagInfo = () => {
   const roomInfo = useSelector((state) => state.createRoomReducer);
