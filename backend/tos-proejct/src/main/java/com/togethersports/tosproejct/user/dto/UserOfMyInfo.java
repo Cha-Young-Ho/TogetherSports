@@ -1,6 +1,6 @@
-package com.togethersports.tosproejct.account.dto;
+package com.togethersports.tosproejct.user.dto;
 
-import com.togethersports.tosproejct.account.Gender;
+import com.togethersports.tosproejct.user.Gender;
 import com.togethersports.tosproejct.security.oauth2.model.OAuth2Provider;
 import lombok.Builder;
 import lombok.Getter;

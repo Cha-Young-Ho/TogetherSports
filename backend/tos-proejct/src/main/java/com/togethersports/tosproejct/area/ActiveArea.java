@@ -1,6 +1,6 @@
 package com.togethersports.tosproejct.area;
 
-import com.togethersports.tosproejct.account.User;
+import com.togethersports.tosproejct.user.User;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

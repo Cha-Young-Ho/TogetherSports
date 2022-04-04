@@ -1,11 +1,8 @@
-package com.togethersports.tosproejct.account;
+package com.togethersports.tosproejct.user;
 
-import com.togethersports.tosproejct.area.ActiveArea;
 import com.togethersports.tosproejct.security.oauth2.model.OAuth2Provider;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
-import java.util.List;
 import java.util.Optional;
 
 /**

@@ -1,6 +1,6 @@
-package com.togethersports.tosproejct.account.dto;
+package com.togethersports.tosproejct.user.dto;
 
-import com.togethersports.tosproejct.account.Gender;
+import com.togethersports.tosproejct.user.Gender;
 import lombok.*;
 
 import java.util.List;

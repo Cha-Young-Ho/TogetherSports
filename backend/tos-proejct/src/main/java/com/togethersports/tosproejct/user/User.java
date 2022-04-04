@@ -1,6 +1,7 @@
-package com.togethersports.tosproejct.account;
+package com.togethersports.tosproejct.user;
 
-import com.togethersports.tosproejct.account.dto.UserOfModifyInfo;
+import com.togethersports.tosproejct.room.Room;
+import com.togethersports.tosproejct.user.dto.UserOfModifyInfo;
 import com.togethersports.tosproejct.area.ActiveArea;
 import com.togethersports.tosproejct.interest.Interest;
 import com.togethersports.tosproejct.security.Role;
@@ -75,6 +76,12 @@ public class User {
 
     @Column(name = "MANNER_POINT", columnDefinition = "int default 10")
     private int mannerPoint;
+
+    @OneToMany(mappedBy = "host")
+    private List<Room> hostingRooms;
+
+    @OneToMany(mappedBy = "createUser")
+    private List<Room> madeRooms;
 
     // 계정 엔티티를 생성자 및 빌더로 직접 접근해서 생성하는 것은 불가능 반드시 특정 메소드 사용하도록 강제
     @Builder(access = AccessLevel.PRIVATE)
