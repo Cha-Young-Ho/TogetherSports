@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
+import { getMyInfo } from "../../api/members";
 
 const Saving = () => {
   const router = useRouter();
