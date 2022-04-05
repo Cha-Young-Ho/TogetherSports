@@ -2,6 +2,7 @@ import { useState } from "react";
 import ModifyRoomModal from "../modals/modifyRoomModal";
 
 const FilteredRooms = () => {
+  // 방 수정 임시
   const [modifyModalOpen, setModifyModalOpen] = useState(false);
 
   const openModifyModal = () => {

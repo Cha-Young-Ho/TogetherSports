@@ -49,6 +49,18 @@ const createRoomInitialState = {
   roomImages: [],
 };
 
+// 방 필터용 데이터 초기값
+const roomFilteringDataInitialState = {
+  creatorNickName: "",
+  roomTitle: "",
+  roomContent: "",
+  area: "",
+  exercise: [],
+  tag: ["", "", "", ""],
+  startAppointmentDate: "yyyy-MM-ddThh:mm",
+  endAppointmentDate: "yyyy-MM-ddThh:mm",
+};
+
 // 오타 방지용
 const PERSONALINFO = "PERSONALINFO";
 const INTERESTS = "INTERESTS";
@@ -56,6 +68,8 @@ const SAVENICKNAME = "SAVENICKNAME";
 const SAVEMYINFO = "SAVEMYINFO";
 const ROOMSETTING = "ROOMSETTING";
 const ROOMSCHEDULE = "ROOMSCHEDULE";
+const FILTERINGTITLE = "FILTERINGTITLE";
+const ROOMEXERCISES = "ROOMEXERCISES";
 
 // 유저 회원가입 정보 reducer
 const userRequestReducer = (state = signupInitialState, action) => {
@@ -110,7 +124,7 @@ const myInfoReducer = (state = myInfoInitialState, action) => {
   }
 };
 
-// 닉네임 저장 reducer
+// 닉네임 저장 reducer [[[[지울예정]]]]
 const saveNicknameReducer = (state = saveNicknameInitialState, action) => {
   switch (action.type) {
     case SAVENICKNAME:
@@ -147,12 +161,36 @@ const createRoomReducer = (state = createRoomInitialState, action) => {
   }
 };
 
+// 방 필터용 데이터
+const roomFilteringDataReducer = (
+  state = roomFilteringDataInitialState,
+  action
+) => {
+  switch (action.type) {
+    case FILTERINGTITLE:
+      return {
+        ...state,
+        roomTitle: action.payload.roomTitle,
+      };
+    case ROOMEXERCISES:
+      return {
+        ...state,
+        exercise: Object.entries(action.payload.exercise)
+          .filter((el) => el[1] === true)
+          .map((el) => el[0]),
+      };
+    default:
+      return state;
+  }
+};
+
 // rootReducer로 모든 reducer Combine
 const rootReducer = combineReducers({
   userRequestReducer,
   saveNicknameReducer,
   myInfoReducer,
   createRoomReducer,
+  roomFilteringDataReducer,
 });
 
 const makeStore = () => createStore(rootReducer, composeWithDevTools());

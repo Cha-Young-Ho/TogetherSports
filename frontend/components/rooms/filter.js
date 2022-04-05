@@ -2,8 +2,13 @@ import { useState } from "react";
 import CalendarModal from "../modals/calendarModal";
 import SelectExercise from "./selectExercise";
 import AddAreaModal from "../modals/addAreaModal";
+import { useSelector } from "react-redux";
 
 const Filter = () => {
+  const roomfilteringData = useSelector(
+    (state) => state.roomFilteringDataReducer
+  );
+
   // 모달 관리 state
   const [calendarModalOpen, setCalendarModalOpen] = useState(false);
   const [areaModalOpen, setAreaModalOpen] = useState(false);
@@ -38,6 +43,10 @@ const Filter = () => {
   // calendarModal의 시기 받아오기 위한 함수
   const setFilterDate = (date) => {
     setCurFilteringDate((curFilteringDate = date));
+  };
+
+  const clickDoFilteringButton = () => {
+    //axios 요청
   };
 
   return (
@@ -116,7 +125,12 @@ const Filter = () => {
           <SelectExercise />
           <div className="buttons-wrapper">
             <button className="button-reset">초기화</button>
-            <button className="button-application">적용</button>
+            <button
+              className="button-application"
+              onClick={clickDoFilteringButton}
+            >
+              적용
+            </button>
           </div>
         </div>
       </div>
