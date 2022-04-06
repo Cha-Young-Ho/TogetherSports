@@ -6,6 +6,7 @@ import { getRoomInfo } from "../../api/rooms";
 const RoomModal = ({ open, close }) => {
   const [mapLoaded, setMapLoaded] = useState(false); // 지도 로드 동기화
 
+  /* response content 담을 변수들 */
   const [creatorNickName, setCreatorNickName] = useState(""); // 방장 닉네임
   const [roomTitle, setRoomTitle] = useState(""); // 방 제목
   const [roomContent, setRoomContent] = useState(""); // 방 설명
@@ -17,7 +18,7 @@ const RoomModal = ({ open, close }) => {
   const [startAppointmentDate, setStartAppointmentDate] = useState(""); // 시작 일시
   const [endAppointmentDate, setEndAppointmentDate] = useState(""); // 종료 일시
   const [viewCount, setViewCount] = useState(""); // 조회수
-  const [roomImages, setRoomImages] = useState([]); // 방 이미지
+  const [roomImagePath, setRoomImagePath] = useState([]); // 방 이미지
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -50,7 +51,7 @@ const RoomModal = ({ open, close }) => {
             (endAppointmentDate = res.content.endAppointmentDate)
           );
           setViewCount((viewCount = res.content.viewCount));
-          setRoomImages((roomImages = res.content.roomImages));
+          setRoomImagePath((roomImagePath = res.content.roomImagePath));
         } else {
           FailResponse(res.status.code);
         }
@@ -139,14 +140,23 @@ const RoomModal = ({ open, close }) => {
                     </div>
                     <div className="option-time">
                       <p className="small-p">시간</p>
-                      <p className="big-p">10시 30분 ~</p>
-                      <p className="big-p">14시 30분</p>
+                      <p className="big-p">{`${startAppointmentDate.substr(
+                        11,
+                        2
+                      )}시 ${startAppointmentDate.substr(-2)}분 ~`}</p>
+                      <p className="big-p">{`${endAppointmentDate.substr(
+                        11,
+                        2
+                      )}시 ${endAppointmentDate.substr(-2)}분`}</p>
                     </div>
                   </div>
 
                   <div className="calendar">
                     <Calendar
-                      clickDateOptionFunction={`2022-04-22`}
+                      clickDateOptionFunction={`${startAppointmentDate.substr(
+                        0,
+                        10
+                      )}`}
                       moveDateButtonOptionFunction={true}
                     />
                   </div>
@@ -160,7 +170,11 @@ const RoomModal = ({ open, close }) => {
                 </div>
 
                 <div className="right-section">
-                  <div className="image"></div>
+                  <div className="image">
+                    <div>
+                      <img src="signup-bg.png" />
+                    </div>
+                  </div>
 
                   <div className="room-info">
                     <p>방 설명 및 안내</p>
@@ -370,7 +384,19 @@ const RoomModal = ({ open, close }) => {
         .image {
           width: 680px;
           height: 350px;
-          border: solid 1px #e8e8e8;
+          display: table;
+          text-align: center;
+        }
+
+        .image div {
+          display: table-cell;
+          vertical-align: middle;
+        }
+
+        .image img {
+          max-width: 680px;
+          height: 350px;
+          border-radius: 10px;
         }
 
         .room-info > p {
