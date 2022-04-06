@@ -25,30 +25,66 @@ const getRoomInfo = async (roomSequenceId) => {
 
 // 방 목록 페이지 조회
 const getRoomList = async (
-  creatorNickName,
+  creatorNickname,
   roomTitle,
   roomContent,
   area,
   exercise,
   tag,
-  appointmentDate
+  startAppointmentDate,
+  endAppointmentDate
 ) => {
-  const promise = axios.get("http://localhost:8080/api/room", {
-    headers: {
-      "Content-type": "application/json; charset=UTF-8",
-      Accept: "*/*",
-      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-    },
-    params: {
-      creatorNickName: creatorNickName,
-      roomTitle: roomTitle,
-      roomContent: roomContent,
-      area: area,
-      exercise: exercise,
-      tag: tag,
-      appointmentDate: appointmentDate,
-    },
-  });
+  const creatorNickname =
+    creatorNickname === "" ? "" : `creatorNickname=${creatorNickname}&`;
+  const roomTitle = roomTitle === "" ? "" : `roomTitle=${roomTitle}&`;
+  const roomContent = roomContent === "" ? "" : `roomContent=${roomContent}&`;
+  const area = area === "" ? "" : `area=${area}&`;
+  const exercise = exercise.map((el) => "exercise=" + el + "&").join("");
+  const tag = tag.map((el) => "tag=" + el + "&").join("");
+  const startAppointmentDate =
+    startAppointmentDate === "yyyy-MM-ddThh:mm"
+      ? ""
+      : `startAppointmentDate=${startAppointmentDate}&`;
+  const endAppointmentDate =
+    endAppointmentDate === "yyyy-MM-ddThh:mm"
+      ? ""
+      : `endAppointmentDate=${endAppointmentDate}&`;
+
+  const totalQueryString =
+    creatorNickname +
+    roomTitle +
+    roomContent +
+    area +
+    exercise +
+    tag +
+    startAppointmentDate +
+    endAppointmentDate;
+
+  if (totalQueryString[totalQueryString.length - 1] === "&")
+    totalQueryString = totalQueryString.slice(0, -1);
+
+  console.log(totalQueryString);
+
+  const promise = axios.get(
+    "http://localhost:8080/api/room" + totalQueryString,
+    {
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        Accept: "*/*",
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+      params: {
+        creatorNickname: creatorNickname,
+        roomTitle: roomTitle,
+        roomContent: roomContent,
+        area: area,
+        exercise: exercise,
+        tag: tag,
+        startAppointmentDate: startAppointmentDate,
+        endAppointmentDate: endAppointmentDate,
+      },
+    }
+  );
   const dataPromise = promise.then((res) => res.data);
 
   return dataPromise;

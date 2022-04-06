@@ -5,9 +5,9 @@ const SearchBar = () => {
 
   const inputSearchBar = (e) => {
     dispatch({
-      type: "FILTERINGTITLE",
+      type: "SAVESEARCHTITLE",
       payload: {
-        roomTitle: e.target.value,
+        searchTitle: e.target.value,
       },
     });
   };

@@ -1,6 +1,5 @@
 import SearchBar from "../../components/rooms/searchBar";
 import RoomFilter from "../../components/rooms/filter";
-import SelectExercise from "../../components/rooms/selectExercise";
 import FilteredRooms from "../../components/rooms/filteredRooms";
 
 const Roomlist = () => {

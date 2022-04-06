@@ -61,6 +61,11 @@ const roomFilteringDataInitialState = {
   endAppointmentDate: "yyyy-MM-ddThh:mm",
 };
 
+// 방 검색용 데이터 초기값
+const saveSearchBarInitialState = {
+  searchTitle: "",
+};
+
 // 오타 방지용
 const PERSONALINFO = "PERSONALINFO";
 const INTERESTS = "INTERESTS";
@@ -184,6 +189,19 @@ const roomFilteringDataReducer = (
   }
 };
 
+// searchBar의 검색어 저장
+const saveSearchBarReducer = (state = saveSearchBarInitialState, action) => {
+  switch (action.type) {
+    case SAVESEARCHTITLE:
+      return {
+        ...state,
+        searchTitle: action.payload.searchTitle,
+      };
+    default:
+      return state;
+  }
+};
+
 // rootReducer로 모든 reducer Combine
 const rootReducer = combineReducers({
   userRequestReducer,
@@ -191,6 +209,7 @@ const rootReducer = combineReducers({
   myInfoReducer,
   createRoomReducer,
   roomFilteringDataReducer,
+  saveSearchBarReducer,
 });
 
 const makeStore = () => createStore(rootReducer, composeWithDevTools());

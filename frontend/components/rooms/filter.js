@@ -5,7 +5,9 @@ import AddAreaModal from "../modals/addAreaModal";
 import { useSelector } from "react-redux";
 
 const Filter = () => {
-  const roomfilteringData = useSelector(
+  const searchBarData = useSelector((state) => state.saveSearchBarReducer);
+
+  const roomFilteringData = useSelector(
     (state) => state.roomFilteringDataReducer
   );
 
