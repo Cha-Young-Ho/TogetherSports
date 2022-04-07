@@ -27,5 +27,9 @@ public class Tag {
     @ManyToOne
     @JoinColumn(name = "id")
     private Room room;
+
+    public void updateRoom(Room room){
+        this.room = room;
+    }
 }
 

@@ -46,7 +46,6 @@ public class ActiveArea {
 
     /**
      * 신규 활동 지역 엔티티를 생성한다. <br>
-     * @param user 반드시 id 값을 가지는 user 가 들어와야 한다.
      * @param address 활동 지역 주소명
      * @return activeArea 활동 지역 엔티티
      */

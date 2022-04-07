@@ -2,6 +2,7 @@ package com.togethersports.tosproejct.common.util;
 
 import com.togethersports.tosproejct.area.ActiveArea;
 import com.togethersports.tosproejct.interest.Interest;
+import com.togethersports.tosproejct.tag.Tag;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -55,6 +56,18 @@ public class ParsingEntityUtils {
 
         for(ActiveArea activeArea : activeAreaList){
             strList.add(activeArea.getAddress());
+        }
+
+        return strList;
+    }
+
+    public List<Tag> parsingStringToTagEntity(List<String> tagList){
+        List<Tag> strList = new ArrayList<>();
+
+        for(String tag : tagList){
+            strList.add(Tag.builder()
+                    .tag(tag)
+                    .build());
         }
 
         return strList;
