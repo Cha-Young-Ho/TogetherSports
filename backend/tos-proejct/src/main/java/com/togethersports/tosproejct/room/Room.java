@@ -2,12 +2,11 @@ package com.togethersports.tosproejct.room;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.togethersports.tosproejct.image.RoomImage;
+import com.togethersports.tosproejct.room.dto.RoomOfCreate;
 import com.togethersports.tosproejct.tag.Tag;
 import com.togethersports.tosproejct.user.User;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -24,8 +23,6 @@ import java.util.List;
 
 @Getter
 @Entity
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
 public class Room {
 
@@ -90,5 +87,29 @@ public class Room {
     //태그
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
     private List<Tag> tag;
+
+    @Builder(access = AccessLevel.PRIVATE)
+    private Room(RoomOfCreate roomOfCreate, User user){
+        this.roomContent = roomOfCreate.getRoomContent();
+        this.roomTitle = roomOfCreate.getRoomTitle();
+        this.exercise = roomOfCreate.getExercise();
+        this.endAppointmentDate = roomOfCreate.getEndAppointmentDate();
+        this.startAppointmentDate = roomOfCreate.getStartAppointmentDate();
+        this.limitPeopleCount = roomOfCreate.getLimitPeopleCount();
+        this.host = user;
+        this.presentPeopleCount = 1;
+        this.createUser = user;
+        this.roomArea = roomOfCreate.getRoomArea();
+
+
+    }
+
+    public static Room of(RoomOfCreate roomOfCreate, User user){
+
+        return Room.builder()
+                .roomOfCreate(roomOfCreate)
+                .user(user)
+                .build();
+    }
 
 }

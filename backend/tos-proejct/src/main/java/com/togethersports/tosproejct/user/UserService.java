@@ -66,8 +66,7 @@ public class UserService {
                 parsingEntityUtils.parsingStringToInterestsEntity(initialInfo.getInterests());
 
 
-        if(initialInfo.getUserProfileImage().getImageSource() != null
-        || initialInfo.getUserProfileImage().getImageSource().equals("정보 없음")) {
+        if(initialInfo.getUserProfileImage().getImageSource() != null) {
             // 프로필 이미지 저장
             encodedImageSource = initialInfo.getUserProfileImage().getImageSource();
             byte[] imageSource = base64Decoder.decode(encodedImageSource);

@@ -23,7 +23,7 @@ import java.util.List;
  * <p>신규 계정을 생성하려면 {@link #createUser(Long, String, String, OAuth2Provider)} 참조</p>
  * <p>기존 계정 정보를 계정 엔티티로 변환하려면 {@link #convertUser(Long, String, Role)} 참조</p>
  * @author seunjeon
- * @author younghocha
+ * @author younghoCha
  */
 @DynamicInsert // insert 시, null 값은 insert를 하지 않음
 @Getter
@@ -166,4 +166,5 @@ public class User {
         this.userProfileImage = userProfileImage;
         this.nickname = userOfModifyInfo.getUserNickname();
     }
+
 }
