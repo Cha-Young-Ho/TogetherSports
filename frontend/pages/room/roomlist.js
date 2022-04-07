@@ -8,7 +8,7 @@ const Roomlist = () => {
       <div className="root-wrapper">
         <SearchBar />
         <RoomFilter />
-        <FilteredRooms />
+        {/* <FilteredRooms /> */}
       </div>
       <style jsx>{`
         .root-wrapper {

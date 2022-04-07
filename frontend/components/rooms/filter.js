@@ -2,14 +2,11 @@ import { useState } from "react";
 import CalendarModal from "../modals/calendarModal";
 import SelectExercise from "./selectExercise";
 import AddAreaModal from "../modals/addAreaModal";
-import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import FilteredRooms from "./filteredRooms";
 
 const Filter = () => {
-  const searchBarData = useSelector((state) => state.saveSearchBarReducer);
-
-  const roomFilteringData = useSelector(
-    (state) => state.roomFilteringDataReducer
-  );
+  const dispatch = useDispatch();
 
   // 모달 관리 state
   const [calendarModalOpen, setCalendarModalOpen] = useState(false);
@@ -48,7 +45,12 @@ const Filter = () => {
   };
 
   const clickDoFilteringButton = () => {
-    //axios 요청
+    dispatch({
+      type: "FILTERBUTTONCLICK",
+      payload: {
+        det: "true",
+      },
+    });
   };
 
   return (
@@ -136,6 +138,8 @@ const Filter = () => {
           </div>
         </div>
       </div>
+      <FilteredRooms />
+
       <style jsx>{`
         .filter-wrapper {
           width: 100%;

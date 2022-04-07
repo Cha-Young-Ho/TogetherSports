@@ -1,11 +1,19 @@
 import { useEffect, useState } from "react";
 import ModifyRoomModal from "../modals/modifyRoomModal";
 import { getRoomList } from "../../api/rooms";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-const FilteredRooms = () => {
+const FilteredRooms = (props) => {
+  const dispatch = useDispatch();
+
+  const searchBarData = useSelector((state) => state.saveSearchBarReducer);
+
   const roomFilteringData = useSelector(
     (state) => state.roomFilteringDataReducer
+  );
+
+  const changeDectection = useSelector(
+    (state) => state.filteringButtonClickDetectionReducer
   );
   // 방 수정 임시
   const [modifyModalOpen, setModifyModalOpen] = useState(false);
@@ -36,6 +44,44 @@ const FilteredRooms = () => {
       }
     });
   }, []);
+
+  useEffect(() => {
+    if (changeDectection.det === "true") {
+      console.log("검색 실행");
+
+      // 먼저 검색어에 대한 정보를 받아오고,
+      dispatch({
+        type: "FILTERINGTITLE",
+        payload: {
+          roomTitle: searchBarData.searchTitle,
+        },
+      });
+
+      console.log(searchBarData.searchTitle, roomFilteringData.roomTitle);
+      // 그 정보를 토대로 필터를 서버에게 전송
+      getRoomList(
+        roomFilteringData.creatorNickname,
+        roomFilteringData.roomTitle,
+        roomFilteringData.roomContent,
+        roomFilteringData.area,
+        roomFilteringData.exercise,
+        roomFilteringData.tag,
+        roomFilteringData.startAppointmentDate,
+        roomFilteringData.endAppointmentDate
+      ).then((res) => {
+        if (res.status.code === 5000) {
+          setEachRoomInfo(res.content.rooms);
+        }
+      });
+
+      dispatch({
+        type: "FILTERBUTTONCLICK",
+        payload: {
+          det: "false",
+        },
+      });
+    }
+  }, [changeDectection.det]);
 
   return (
     <>

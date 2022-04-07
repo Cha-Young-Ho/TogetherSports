@@ -34,18 +34,18 @@ const getRoomList = async (
   startAppointmentDate,
   endAppointmentDate
 ) => {
-  const creatorNickname =
+  creatorNickname =
     creatorNickname === "" ? "" : `creatorNickname=${creatorNickname}&`;
-  const roomTitle = roomTitle === "" ? "" : `roomTitle=${roomTitle}&`;
-  const roomContent = roomContent === "" ? "" : `roomContent=${roomContent}&`;
-  const area = area === "" ? "" : `area=${area}&`;
-  const exercise = exercise.map((el) => "exercise=" + el + "&").join("");
-  const tag = tag.map((el) => "tag=" + el + "&").join("");
-  const startAppointmentDate =
+  roomTitle = roomTitle === "" ? "" : `roomTitle=${roomTitle}&`;
+  roomContent = roomContent === "" ? "" : `roomContent=${roomContent}&`;
+  area = area === "" ? "" : `area=${area}&`;
+  exercise = exercise.map((el) => "exercise=" + el + "&").join("");
+  tag = tag.map((el) => "tag=" + el + "&").join("");
+  startAppointmentDate =
     startAppointmentDate === "yyyy-MM-ddThh:mm"
       ? ""
       : `startAppointmentDate=${startAppointmentDate}&`;
-  const endAppointmentDate =
+  endAppointmentDate =
     endAppointmentDate === "yyyy-MM-ddThh:mm"
       ? ""
       : `endAppointmentDate=${endAppointmentDate}&`;

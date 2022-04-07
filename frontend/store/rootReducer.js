@@ -51,12 +51,12 @@ const createRoomInitialState = {
 
 // 방 필터용 데이터 초기값
 const roomFilteringDataInitialState = {
-  creatorNickName: "",
+  creatorNickname: "",
   roomTitle: "",
   roomContent: "",
   area: "",
   exercise: [],
-  tag: ["", "", "", ""],
+  tag: [],
   startAppointmentDate: "yyyy-MM-ddThh:mm",
   endAppointmentDate: "yyyy-MM-ddThh:mm",
 };
@@ -64,6 +64,11 @@ const roomFilteringDataInitialState = {
 // 방 검색용 데이터 초기값
 const saveSearchBarInitialState = {
   searchTitle: "",
+};
+
+// 필터 적용 클릭 감지용 초기값
+const clickDetectionInitialState = {
+  det: "false",
 };
 
 // 오타 방지용
@@ -75,6 +80,8 @@ const ROOMSETTING = "ROOMSETTING";
 const ROOMSCHEDULE = "ROOMSCHEDULE";
 const FILTERINGTITLE = "FILTERINGTITLE";
 const ROOMEXERCISES = "ROOMEXERCISES";
+const SAVESEARCHTITLE = "SAVESEARCHTITLE";
+const FILTERBUTTONCLICK = "FILTERBUTTONCLICK";
 
 // 유저 회원가입 정보 reducer
 const userRequestReducer = (state = signupInitialState, action) => {
@@ -202,6 +209,18 @@ const saveSearchBarReducer = (state = saveSearchBarInitialState, action) => {
   }
 };
 
+const filteringButtonClickDetectionReducer = (
+  state = clickDetectionInitialState,
+  action
+) => {
+  switch (action.type) {
+    case FILTERBUTTONCLICK:
+      return { ...state, det: action.payload.det };
+    default:
+      return state;
+  }
+};
+
 // rootReducer로 모든 reducer Combine
 const rootReducer = combineReducers({
   userRequestReducer,
@@ -210,6 +229,7 @@ const rootReducer = combineReducers({
   createRoomReducer,
   roomFilteringDataReducer,
   saveSearchBarReducer,
+  filteringButtonClickDetectionReducer,
 });
 
 const makeStore = () => createStore(rootReducer, composeWithDevTools());
