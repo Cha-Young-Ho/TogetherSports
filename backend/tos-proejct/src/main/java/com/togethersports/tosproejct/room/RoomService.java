@@ -1,10 +1,11 @@
 package com.togethersports.tosproejct.room;
 
-import com.togethersports.tosproejct.common.file.util.Base64Decoder;
-import com.togethersports.tosproejct.common.file.util.NameGenerator;
 import com.togethersports.tosproejct.common.util.ParsingEntityUtils;
 import com.togethersports.tosproejct.image.RoomImageService;
+import com.togethersports.tosproejct.room.dto.ImageOfRoomInfo;
 import com.togethersports.tosproejct.room.dto.RoomOfCreate;
+import com.togethersports.tosproejct.room.dto.RoomOfInfo;
+import com.togethersports.tosproejct.room.exception.NotFoundRoomException;
 import com.togethersports.tosproejct.tag.Tag;
 import com.togethersports.tosproejct.tag.TagService;
 import com.togethersports.tosproejct.user.User;
@@ -64,16 +65,29 @@ public class RoomService {
         //tag 저장
         tagService.saveTagFromRoomCreation(tagList, roomEntity);
 
-        log.info("roomEntity = {}", roomEntity.getCreateUser().getEmail());
-        log.info("roomEntity22 = {}", roomEntity.getRoomArea());
-
         // -- Image --
         // image 로컬에 저장
         roomImageService.createRoomImageFromCreateRoom(roomOfCreate.getImages(), roomEntity);
+    }
 
+    //방 설명 페이지 조회
+    public RoomOfInfo getRoomInfo(Long roomId){
 
+        Room roomEntity = roomRepository.findById(roomId)
+                .orElseThrow(() -> new NotFoundRoomException("해당 방을 찾을 수 없습니다."));
 
+        //List<RoomImage> -> List<ImageOfRoomInfo>
+        List<ImageOfRoomInfo> imageOfRoomInfos =
+                parsingEntityUtils.parsingRoomImageToRoomInfoImage(roomEntity.getRoomImages());
 
+        //List<Tag> -> List<String>
+        List<String> tag =
+                parsingEntityUtils.parsingTagEntityToString(roomEntity.getTag());
+        //조회수 증가
+        roomEntity.plusViewCount();
+
+        return RoomOfInfo.of(roomEntity, imageOfRoomInfos, tag);
 
     }
+
 }

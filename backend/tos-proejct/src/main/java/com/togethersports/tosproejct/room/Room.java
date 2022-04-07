@@ -55,6 +55,10 @@ public class Room {
     @Column(name = "PRESENT_PEOPLE_COUNT")
     private int presentPeopleCount;
 
+    //조회수
+    @Column(name ="VIEW_COUNT")
+    private int viewCount;
+
     //방 시작 시간
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm", timezone = "Asia/Seoul")
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
@@ -100,7 +104,7 @@ public class Room {
         this.presentPeopleCount = 1;
         this.createUser = user;
         this.roomArea = roomOfCreate.getRoomArea();
-
+        this.viewCount = 0;
 
     }
 
@@ -110,6 +114,10 @@ public class Room {
                 .roomOfCreate(roomOfCreate)
                 .user(user)
                 .build();
+    }
+
+    public void plusViewCount(){
+        this.viewCount = viewCount + 1;
     }
 
 }
