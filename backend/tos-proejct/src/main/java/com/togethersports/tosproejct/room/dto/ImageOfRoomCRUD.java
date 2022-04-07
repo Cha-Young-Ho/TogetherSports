@@ -4,15 +4,15 @@ import lombok.Builder;
 import lombok.Getter;
 
 /**
- * <h1>ImageOfRoomCreate</h1>
+ * <h1>ImageOfRoomCRUD</h1>
  * <p>
- *     방 생성 관련 방 이미지 DTO
+ *     방 생성, 수정 관련 방 이미지 DTO
  * </p>
  * @author younghocha
  */
 @Getter
 @Builder
-public class ImageOfRoomCreate {
+public class ImageOfRoomCRUD {
     private int order;
     private String roomImageExtension;
     private String imageSource;

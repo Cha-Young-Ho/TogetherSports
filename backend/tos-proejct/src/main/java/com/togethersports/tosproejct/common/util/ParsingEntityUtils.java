@@ -1,7 +1,9 @@
 package com.togethersports.tosproejct.common.util;
 
 import com.togethersports.tosproejct.area.ActiveArea;
+import com.togethersports.tosproejct.image.RoomImage;
 import com.togethersports.tosproejct.interest.Interest;
+import com.togethersports.tosproejct.room.dto.ImageOfRoomInfo;
 import com.togethersports.tosproejct.tag.Tag;
 import org.springframework.stereotype.Component;
 
@@ -61,15 +63,40 @@ public class ParsingEntityUtils {
         return strList;
     }
 
-    public List<Tag> parsingStringToTagEntity(List<String> tagList){
-        List<Tag> strList = new ArrayList<>();
+    public List<Tag> parsingStringToTagEntity(List<String> strList){
+        List<Tag> tagList = new ArrayList<>();
 
-        for(String tag : tagList){
-            strList.add(Tag.builder()
+        for(String tag : strList){
+            tagList.add(Tag.builder()
                     .tag(tag)
                     .build());
         }
 
+        return tagList;
+    }
+
+    public List<String> parsingTagEntityToString(List<Tag> tagList){
+        List<String> strList = new ArrayList<>();
+
+        for (Tag tag : tagList){
+            strList.add(tag.getTag());
+        }
+
         return strList;
+
+    }
+
+    public List<ImageOfRoomInfo> parsingRoomImageToRoomInfoImage(List<RoomImage> roomEntityImageList){
+        List<ImageOfRoomInfo> imageOfRoomInfoList = new ArrayList<>();
+        for (RoomImage roomImage : roomEntityImageList){
+            imageOfRoomInfoList.add(
+                    ImageOfRoomInfo.builder()
+                            .imagePath(roomImage.getImagePath())
+                            .order(roomImage.getOrder()).
+                            build()
+            );
+        }
+
+        return imageOfRoomInfoList;
     }
 }

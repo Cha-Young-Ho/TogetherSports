@@ -3,10 +3,10 @@ package com.togethersports.tosproejct.room;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.togethersports.tosproejct.image.RoomImage;
 import com.togethersports.tosproejct.room.dto.RoomOfCreate;
+import com.togethersports.tosproejct.room.dto.RoomOfUpdate;
 import com.togethersports.tosproejct.tag.Tag;
 import com.togethersports.tosproejct.user.User;
 import lombok.*;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -55,6 +55,10 @@ public class Room {
     @Column(name = "PRESENT_PEOPLE_COUNT")
     private int presentPeopleCount;
 
+    //조회수
+    @Column(name ="VIEW_COUNT")
+    private int viewCount;
+
     //방 시작 시간
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm", timezone = "Asia/Seoul")
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
@@ -72,11 +76,11 @@ public class Room {
 //    private List<User> participant;
 
     //방장
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "HOST_ID")
     private User host;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CREATE_USER_ID")
     private User createUser;
 
@@ -100,7 +104,7 @@ public class Room {
         this.presentPeopleCount = 1;
         this.createUser = user;
         this.roomArea = roomOfCreate.getRoomArea();
-
+        this.viewCount = 0;
 
     }
 
@@ -110,6 +114,19 @@ public class Room {
                 .roomOfCreate(roomOfCreate)
                 .user(user)
                 .build();
+    }
+
+    public void plusViewCount(){
+        this.viewCount = viewCount + 1;
+    }
+
+    public void updateRoom(RoomOfUpdate roomOfUpdate){
+        this.roomArea = roomOfUpdate.getRoomArea();
+        this.limitPeopleCount = roomOfUpdate.getLimitPeopleCount();
+        this.startAppointmentDate = roomOfUpdate.getStartAppointmentDate();
+        this.endAppointmentDate = roomOfUpdate.getEndAppointmentDate();
+        this.roomTitle = roomOfUpdate.getRoomTitle();
+        this.roomContent = roomOfUpdate.getRoomContent();
     }
 
 }
