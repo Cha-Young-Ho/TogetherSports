@@ -5,6 +5,7 @@ import com.togethersports.tosproejct.common.code.CommonCode;
 import com.togethersports.tosproejct.common.dto.Response;
 import com.togethersports.tosproejct.room.dto.RoomOfCreate;
 import com.togethersports.tosproejct.room.dto.RoomOfInfo;
+import com.togethersports.tosproejct.room.dto.RoomOfUpdate;
 import com.togethersports.tosproejct.security.annotation.CurrentUser;
 import com.togethersports.tosproejct.user.User;
 import lombok.RequiredArgsConstructor;
@@ -35,5 +36,14 @@ public class RoomController {
         RoomOfInfo roomOfInfo = roomService.getRoomInfo(roomId);
 
         return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, roomOfInfo));
+    }
+
+    @PutMapping("api/room")
+    public ResponseEntity<Response> modifyRoomInfo(@RequestBody RoomOfUpdate roomOfUpdate){
+
+        roomService.modifyRoomInfo(roomOfUpdate);
+
+        return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, null));
+
     }
 }

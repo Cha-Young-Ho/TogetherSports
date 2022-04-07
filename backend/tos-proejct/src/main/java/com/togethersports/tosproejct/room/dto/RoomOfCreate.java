@@ -43,7 +43,7 @@ public class RoomOfCreate {
 
 
     @NotNull(message = "이미지를 1개 이상 입력해야 합니다.")
-    private List<ImageOfRoomCreate> images;
+    private List<ImageOfRoomCRUD> images;
 
 
     @NotNull(message = "태그를 1개 이상 입력해야 합니다.")
