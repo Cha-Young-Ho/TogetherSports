@@ -1,2 +1,6 @@
-package com.togethersports.tosproejct.image;public interface RoomImageRepository {
+package com.togethersports.tosproejct.image;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface RoomImageRepository extends JpaRepository<RoomImage , Long> {
 }

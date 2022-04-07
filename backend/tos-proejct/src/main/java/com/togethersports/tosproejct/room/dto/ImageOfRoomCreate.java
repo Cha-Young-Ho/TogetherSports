@@ -1,7 +1,5 @@
 package com.togethersports.tosproejct.room.dto;
 
-import com.togethersports.tosproejct.security.Role;
-import com.togethersports.tosproejct.security.oauth2.model.OAuth2Provider;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -15,8 +13,8 @@ import lombok.Getter;
 @Getter
 @Builder
 public class ImageOfRoomCreate {
-
-    private String roomImageExtention;
-    private String ImageSource;
+    private int order;
+    private String roomImageExtension;
+    private String imageSource;
 
 }
