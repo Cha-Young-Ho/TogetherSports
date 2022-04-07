@@ -5,20 +5,27 @@ import { getRoomInfo } from "../../api/rooms";
 /* props에 roomSequenceId 추가 필요 -> getRoomInfo 에 parameter 추가 필요 */
 const RoomModal = ({ open, close }) => {
   const [mapLoaded, setMapLoaded] = useState(false); // 지도 로드 동기화
+  const [imageCurrentNo, setImageCurrentNo] = useState(0);
 
   /* response content 담을 변수들 */
-  const [creatorNickName, setCreatorNickName] = useState(""); // 방장 닉네임
-  const [roomTitle, setRoomTitle] = useState(""); // 방 제목
-  const [roomContent, setRoomContent] = useState(""); // 방 설명
-  const [area, setArea] = useState(""); // 위치
-  const [limitPeopleCount, setLimitPeopleCount] = useState(""); // 모집인원
-  const [participantCount, setParticipantCount] = useState(""); // 현재 참여인원
-  const [exercise, setExercise] = useState(""); // 종목
-  const [tag, setTag] = useState([]); // 태그
-  const [startAppointmentDate, setStartAppointmentDate] = useState(""); // 시작 일시
-  const [endAppointmentDate, setEndAppointmentDate] = useState(""); // 종료 일시
+  const [creatorNickName, setCreatorNickName] = useState("고니"); // 방장 닉네임
+  const [roomTitle, setRoomTitle] = useState("아프지마 도토"); // 방 제목
+  const [roomContent, setRoomContent] = useState("도토 잠보"); // 방 설명
+  const [area, setArea] = useState("대구시 달서구 월배로 11길 33"); // 위치
+  const [limitPeopleCount, setLimitPeopleCount] = useState("5"); // 모집인원
+  const [participantCount, setParticipantCount] = useState("3"); // 현재 참여인원
+  const [exercise, setExercise] = useState("축구"); // 종목
+  const [tag, setTag] = useState(["10대", "초보만"]); // 태그
+  const [startAppointmentDate, setStartAppointmentDate] =
+    useState("2022-04-22T22:22"); // 시작 일시
+  const [endAppointmentDate, setEndAppointmentDate] =
+    useState("2022-04-22T22:22"); // 종료 일시
   const [viewCount, setViewCount] = useState(""); // 조회수
-  const [roomImagePath, setRoomImagePath] = useState([]); // 방 이미지
+  const [roomImagePath, setRoomImagePath] = useState([
+    "logo-sign.png",
+    "signup-bg.png",
+    "naver-login.png",
+  ]); // 방 이미지
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -30,32 +37,32 @@ const RoomModal = ({ open, close }) => {
   useEffect(() => {
     if (open && mapLoaded) {
       // 방 정보 받아오기
-      getRoomInfo().then((res) => {
-        if (res.status.code === 5000) {
-          setCreatorNickName((creatorNickName = res.content.creatorNickName));
-          setRoomTitle((roomTitle = res.content.roomTitle));
-          setRoomContent((roomContent = res.content.roomContent));
-          setArea((area = res.content.area));
-          setLimitPeopleCount(
-            (limitPeopleCount = res.content.limitPeopleCount)
-          );
-          setParticipantCount(
-            (participantCount = res.content.participantCount)
-          );
-          setExercise((exercise = res.content.exercise));
-          setTag((tag = res.content.tag));
-          setStartAppointmentDate(
-            (startAppointmentDate = res.content.startAppointmentDate)
-          );
-          setEndAppointmentDate(
-            (endAppointmentDate = res.content.endAppointmentDate)
-          );
-          setViewCount((viewCount = res.content.viewCount));
-          setRoomImagePath((roomImagePath = res.content.roomImagePath));
-        } else {
-          FailResponse(res.status.code);
-        }
-      });
+      // getRoomInfo().then((res) => {
+      //   if (res.status.code === 5000) {
+      //     setCreatorNickName((creatorNickName = res.content.creatorNickName));
+      //     setRoomTitle((roomTitle = res.content.roomTitle));
+      //     setRoomContent((roomContent = res.content.roomContent));
+      //     setArea((area = res.content.area));
+      //     setLimitPeopleCount(
+      //       (limitPeopleCount = res.content.limitPeopleCount)
+      //     );
+      //     setParticipantCount(
+      //       (participantCount = res.content.participantCount)
+      //     );
+      //     setExercise((exercise = res.content.exercise));
+      //     setTag((tag = res.content.tag));
+      //     setStartAppointmentDate(
+      //       (startAppointmentDate = res.content.startAppointmentDate)
+      //     );
+      //     setEndAppointmentDate(
+      //       (endAppointmentDate = res.content.endAppointmentDate)
+      //     );
+      //     setViewCount((viewCount = res.content.viewCount));
+      //     setRoomImagePath((roomImagePath = res.content.roomImagePath));
+      //   } else {
+      //     FailResponse(res.status.code);
+      //   }
+      // });
 
       // 위치 정보 받아오기
       kakao.maps.load(() => {
@@ -96,6 +103,13 @@ const RoomModal = ({ open, close }) => {
       });
     }
   }, [open]);
+
+  const onChangeImage = (index) => {
+    if (roomImagePath.length <= index) index = 0;
+    if (index < 0) index = roomImagePath.length - 1;
+
+    setImageCurrentNo((imageCurrentNo = index));
+  };
 
   const enterRoom = () => {
     // 방에 참가
@@ -170,10 +184,26 @@ const RoomModal = ({ open, close }) => {
                 </div>
 
                 <div className="right-section">
-                  <div className="image">
-                    <div>
-                      <img src="signup-bg.png" />
+                  <div className="image-box">
+                    <button className="button-prev">{`＜`}</button>
+                    <div
+                      className="slide-list"
+                      style={{
+                        transform: `translate3d(
+                ${imageCurrentNo * -500}px, 0px, 0px`,
+                      }}
+                    >
+                      {roomImagePath.map((image, index) => {
+                        return (
+                          <div className="slide-content" key={index}>
+                            <picture>
+                              <img src={image} />
+                            </picture>
+                          </div>
+                        );
+                      })}
                     </div>
+                    <button className="button-next">{`＞`}</button>
                   </div>
 
                   <div className="room-info">
@@ -381,22 +411,61 @@ const RoomModal = ({ open, close }) => {
           margin-left: 30px;
         }
 
-        .image {
+        .image-box {
           width: 680px;
           height: 350px;
+          margin: auto;
+          overflow-x: hidden;
+          position: relative;
+        }
+
+        .slide-list {
+          width: 2800px;
+          transition: all 300ms ease 0s;
+          overflow: hidden;
+        }
+
+        .slide-content {
           display: table;
+          float: left;
+          width: 500px;
+          height: 300px;
+        }
+
+        picture {
+          display: table-cell;
+          vertical-align: middle;
           text-align: center;
         }
 
-        .image div {
-          display: table-cell;
-          vertical-align: middle;
+        picture img {
+          width: 100%;
+          height: auto;
         }
 
-        .image img {
-          max-width: 680px;
-          height: 350px;
-          border-radius: 10px;
+        .button-prev {
+          position: absolute;
+          top: 170px;
+          left: 1px;
+          border: none;
+          background: none;
+          font-size: 2em;
+          cursor: pointer;
+        }
+
+        .button-next {
+          position: absolute;
+          top: 170px;
+          left: 650px;
+          border: none;
+          background: none;
+          font-size: 2em;
+          cursor: pointer;
+        }
+
+        .button-prev:hover,
+        .button-next:hover {
+          color: gray;
         }
 
         .room-info > p {
