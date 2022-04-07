@@ -25,7 +25,7 @@ public class Tag {
 
     //등록된 방
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "ROOM_ID")
     private Room room;
 
     public void updateRoom(Room room){

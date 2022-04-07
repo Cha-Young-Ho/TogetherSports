@@ -1,7 +1,7 @@
 package com.togethersports.tosproejct.image;
 
 import com.togethersports.tosproejct.room.Room;
-import com.togethersports.tosproejct.room.dto.ImageOfRoomCreate;
+import com.togethersports.tosproejct.room.dto.ImageOfRoomCRUD;
 import lombok.*;
 
 import javax.persistence.*;
@@ -42,20 +42,20 @@ public class RoomImage {
     protected RoomImage(){}
 
     @Builder(access = AccessLevel.PRIVATE)
-    private RoomImage(ImageOfRoomCreate imageOfRoomCreate, Room room, String imagePath){
-        this.roomImageExtension = imageOfRoomCreate.getRoomImageExtension();
+    private RoomImage(ImageOfRoomCRUD imageOfRoomCRUD, Room room, String imagePath){
+        this.roomImageExtension = imageOfRoomCRUD.getRoomImageExtension();
         this.room = room;
         this.imagePath = imagePath;
-        this.order = imageOfRoomCreate.getOrder();
+        this.order = imageOfRoomCRUD.getOrder();
     }
 
     //방 샏성 시, 엔티티 생성 메소드
-    public static RoomImage of(ImageOfRoomCreate imageOfRoomCreate, Room room, String imagePath){
+    public static RoomImage of(ImageOfRoomCRUD imageOfRoomCRUD, Room room, String imagePath){
 
         return RoomImage.builder()
                 .imagePath(imagePath)
                 .room(room)
-                .imageOfRoomCreate(imageOfRoomCreate)
+                .imageOfRoomCRUD(imageOfRoomCRUD)
                 .build();
     }
 }
