@@ -29,7 +29,7 @@ public class UserOfInitInfo {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate userBirth;
 
-    private UserProfileImage userProfileImage;
+
 
     @NotNull
     private Gender gender;
@@ -42,12 +42,5 @@ public class UserOfInitInfo {
     @Size(min = 1, max = 5, message = "1~5개 사이의 운동 종목을 선택해야합니다.")
     private List<String> interests; // 관심 운동 종목
 
-    @Setter
-    @Getter
-    public static class UserProfileImage {
-        private String userProfileRealName;
-        private String userProfileExtension;
-        private String imageSource;
-    }
 
 }
