@@ -1,7 +1,7 @@
 package com.togethersports.tosproejct.user.dto;
 
-import com.togethersports.tosproejct.user.Gender;
 import com.togethersports.tosproejct.security.oauth2.model.OAuth2Provider;
+import com.togethersports.tosproejct.user.Gender;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -23,6 +23,7 @@ public class UserOfMyInfo {
     private LocalDate userBirth;
     private OAuth2Provider oAuth2Provider;
     private boolean isFirst;
+    private boolean isInformationRequired;
 
 
 }
