@@ -9,6 +9,7 @@ import com.togethersports.tosproejct.security.oauth2.model.OAuth2Provider;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
@@ -25,7 +26,6 @@ import java.util.List;
  * @author seunjeon
  * @author younghoCha
  */
-@DynamicInsert // insert 시, null 값은 insert를 하지 않음
 @Getter
 @Entity
 public class User {
@@ -56,7 +56,7 @@ public class User {
 
     //fixme yml에서 파일 끌고와야함
     //설정 안할 시 기본 이미지 등록
-    @Column(name = "USER_PROFILE_IMAGE_PATH", columnDefinition = "varchar(255) default '/Users/seunjeon/Workspace/samples/defaultImage.png'")
+    @Column(name = "USER_PROFILE_IMAGE_PATH")
     private String userProfileImage; // 프로필 이미지 저장 경로
 
     @Column(name = "USER_GENDER")
@@ -83,6 +83,9 @@ public class User {
     @OneToMany(mappedBy = "createUser")
     private List<Room> madeRooms;
 
+    @Column(name = "INFORMATION_REQUIRED")
+    private boolean isInformationRequired;
+
     // 계정 엔티티를 생성자 및 빌더로 직접 접근해서 생성하는 것은 불가능 반드시 특정 메소드 사용하도록 강제
     @Builder(access = AccessLevel.PRIVATE)
     private User(Long id, Long oauth2Id, String email, String nickname, OAuth2Provider provider, Role role, boolean isFirst) {
@@ -93,6 +96,7 @@ public class User {
         this.provider = provider;
         this.role = role;
         this.isFirst = isFirst;
+        this.isInformationRequired = true;
     }
     protected User() {}
 
@@ -149,6 +153,8 @@ public class User {
         this.isFirst = false;
         this.activeAreas = activeAreas;
         this.interests = interests;
+        this.isInformationRequired = false;
+
     }
     public void initUser(Gender gender, LocalDate userBirth, List<ActiveArea> activeAreas, List<Interest> interests) {
         this.gender = gender;
@@ -156,6 +162,8 @@ public class User {
         this.isFirst = false;
         this.activeAreas = activeAreas;
         this.interests = interests;
+        this.isInformationRequired = false;
+
     }
 
     public void updateUser(UserOfModifyInfo userOfModifyInfo, List<ActiveArea> activeAreas, List<Interest> interests, String userProfileImage){
@@ -165,6 +173,12 @@ public class User {
         this.activeAreas = activeAreas;
         this.userProfileImage = userProfileImage;
         this.nickname = userOfModifyInfo.getUserNickname();
+        this.isInformationRequired = false;
+        this.isFirst = false;
+    }
+
+    public void updateIsFirst(){
+        this.isFirst = false;
     }
 
 }
