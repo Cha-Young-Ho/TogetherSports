@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Calendar from "../calendar/calendar";
 import { getRoomInfo } from "../../api/rooms";
+import ImageSlide from "../imageSlide";
 
 /* props에 roomSequenceId 추가 필요 -> getRoomInfo 에 parameter 추가 필요 */
 const RoomModal = ({ open, close }) => {
@@ -104,13 +105,6 @@ const RoomModal = ({ open, close }) => {
     }
   }, [open]);
 
-  const onChangeImage = (index) => {
-    if (roomImagePath.length <= index) index = 0;
-    if (index < 0) index = roomImagePath.length - 1;
-
-    setImageCurrentNo((imageCurrentNo = index));
-  };
-
   const enterRoom = () => {
     // 방에 참가
   };
@@ -184,26 +178,8 @@ const RoomModal = ({ open, close }) => {
                 </div>
 
                 <div className="right-section">
-                  <div className="image-box">
-                    <button className="button-prev">{`＜`}</button>
-                    <div
-                      className="slide-list"
-                      style={{
-                        transform: `translate3d(
-                ${imageCurrentNo * -500}px, 0px, 0px`,
-                      }}
-                    >
-                      {roomImagePath.map((image, index) => {
-                        return (
-                          <div className="slide-content" key={index}>
-                            <picture>
-                              <img src={image} />
-                            </picture>
-                          </div>
-                        );
-                      })}
-                    </div>
-                    <button className="button-next">{`＞`}</button>
+                  <div className="image">
+                    <ImageSlide imageArr={roomImagePath} />
                   </div>
 
                   <div className="room-info">
@@ -411,61 +387,12 @@ const RoomModal = ({ open, close }) => {
           margin-left: 30px;
         }
 
-        .image-box {
+        .image {
           width: 680px;
           height: 350px;
           margin: auto;
           overflow-x: hidden;
           position: relative;
-        }
-
-        .slide-list {
-          width: 2800px;
-          transition: all 300ms ease 0s;
-          overflow: hidden;
-        }
-
-        .slide-content {
-          display: table;
-          float: left;
-          width: 500px;
-          height: 300px;
-        }
-
-        picture {
-          display: table-cell;
-          vertical-align: middle;
-          text-align: center;
-        }
-
-        picture img {
-          width: 100%;
-          height: auto;
-        }
-
-        .button-prev {
-          position: absolute;
-          top: 170px;
-          left: 1px;
-          border: none;
-          background: none;
-          font-size: 2em;
-          cursor: pointer;
-        }
-
-        .button-next {
-          position: absolute;
-          top: 170px;
-          left: 650px;
-          border: none;
-          background: none;
-          font-size: 2em;
-          cursor: pointer;
-        }
-
-        .button-prev:hover,
-        .button-next:hover {
-          color: gray;
         }
 
         .room-info > p {
