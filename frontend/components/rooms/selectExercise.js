@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 const SelectExercise = () => {
@@ -32,14 +32,16 @@ const SelectExercise = () => {
       ...prev,
       [e.target.innerText]: !interest[e.target.innerText],
     }));
+  };
 
+  useEffect(() => {
     dispatch({
       type: "ROOMEXERCISES",
       payload: {
         exercise: interest,
       },
     });
-  };
+  }, [interest]);
 
   return (
     <>

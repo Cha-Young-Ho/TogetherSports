@@ -42,11 +42,11 @@ const getRoomList = async (
   exercise = exercise.map((el) => "exercise=" + el + "&").join("");
   tag = tag.map((el) => "tag=" + el + "&").join("");
   startAppointmentDate =
-    startAppointmentDate === "yyyy-MM-ddThh:mm"
+    startAppointmentDate === ""
       ? ""
       : `startAppointmentDate=${startAppointmentDate}&`;
   endAppointmentDate =
-    endAppointmentDate === "yyyy-MM-ddThh:mm"
+    endAppointmentDate === ""
       ? ""
       : `endAppointmentDate=${endAppointmentDate}&`;
 

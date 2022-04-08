@@ -3,10 +3,8 @@ import ModifyRoomModal from "../modals/modifyRoomModal";
 import { getRoomList } from "../../api/rooms";
 import { useDispatch, useSelector } from "react-redux";
 
-const FilteredRooms = (props) => {
+const FilteredRooms = () => {
   const dispatch = useDispatch();
-
-  const searchBarData = useSelector((state) => state.saveSearchBarReducer);
 
   const roomFilteringData = useSelector(
     (state) => state.roomFilteringDataReducer
@@ -47,17 +45,6 @@ const FilteredRooms = (props) => {
 
   useEffect(() => {
     if (changeDectection.det === "true") {
-      console.log("검색 실행");
-
-      // 먼저 검색어에 대한 정보를 받아오고,
-      dispatch({
-        type: "FILTERINGTITLE",
-        payload: {
-          roomTitle: searchBarData.searchTitle,
-        },
-      });
-
-      console.log(searchBarData.searchTitle, roomFilteringData.roomTitle);
       // 그 정보를 토대로 필터를 서버에게 전송
       getRoomList(
         roomFilteringData.creatorNickname,

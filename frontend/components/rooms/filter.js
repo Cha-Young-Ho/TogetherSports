@@ -1,9 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CalendarModal from "../modals/calendarModal";
 import SelectExercise from "./selectExercise";
 import AddAreaModal from "../modals/addAreaModal";
 import { useDispatch } from "react-redux";
-import FilteredRooms from "./filteredRooms";
 
 const Filter = () => {
   const dispatch = useDispatch();
@@ -41,8 +40,21 @@ const Filter = () => {
 
   // calendarModal의 시기 받아오기 위한 함수
   const setFilterDate = (date) => {
-    setCurFilteringDate((curFilteringDate = date));
+    setCurFilteringDate(
+      (curFilteringDate =
+        date.length === 9 ? date.slice(0, 8) + "0" + date[8] : date)
+    );
   };
+
+  useEffect(() => {
+    console.log(curFilteringDate);
+    dispatch({
+      type: "SETDATE",
+      payload: {
+        date: curFilteringDate,
+      },
+    });
+  }, [curFilteringDate]);
 
   const clickDoFilteringButton = () => {
     dispatch({
@@ -138,7 +150,6 @@ const Filter = () => {
           </div>
         </div>
       </div>
-      <FilteredRooms />
 
       <style jsx>{`
         .filter-wrapper {

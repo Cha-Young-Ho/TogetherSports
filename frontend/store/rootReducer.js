@@ -57,13 +57,10 @@ const roomFilteringDataInitialState = {
   area: "",
   exercise: [],
   tag: [],
-  startAppointmentDate: "yyyy-MM-ddThh:mm",
-  endAppointmentDate: "yyyy-MM-ddThh:mm",
-};
-
-// 방 검색용 데이터 초기값
-const saveSearchBarInitialState = {
-  searchTitle: "",
+  startAppointmentDate: "",
+  endAppointmentDate: "",
+  date: "",
+  time: "",
 };
 
 // 필터 적용 클릭 감지용 초기값
@@ -80,16 +77,12 @@ const ROOMSETTING = "ROOMSETTING";
 const ROOMSCHEDULE = "ROOMSCHEDULE";
 const FILTERINGTITLE = "FILTERINGTITLE";
 const ROOMEXERCISES = "ROOMEXERCISES";
-const SAVESEARCHTITLE = "SAVESEARCHTITLE";
 const FILTERBUTTONCLICK = "FILTERBUTTONCLICK";
+const SETDATE = "SETDATE";
 
 // 유저 회원가입 정보 reducer
 const userRequestReducer = (state = signupInitialState, action) => {
   switch (action.type) {
-    //case HYDRATE:
-    // Attention! This will overwrite client state! Real apps should use proper reconciliation.
-    //  console.log("hydrate");
-    //  return { ...state, ...action.payload };
     case PERSONALINFO:
       return {
         ...state,
@@ -191,18 +184,10 @@ const roomFilteringDataReducer = (
           .filter((el) => el[1] === true)
           .map((el) => el[0]),
       };
-    default:
-      return state;
-  }
-};
-
-// searchBar의 검색어 저장
-const saveSearchBarReducer = (state = saveSearchBarInitialState, action) => {
-  switch (action.type) {
-    case SAVESEARCHTITLE:
+    case SETDATE:
       return {
         ...state,
-        searchTitle: action.payload.searchTitle,
+        date: action.payload.date,
       };
     default:
       return state;
@@ -228,7 +213,6 @@ const rootReducer = combineReducers({
   myInfoReducer,
   createRoomReducer,
   roomFilteringDataReducer,
-  saveSearchBarReducer,
   filteringButtonClickDetectionReducer,
 });
 
