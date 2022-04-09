@@ -43,7 +43,7 @@ public class RoomService {
 
         //추가 정보 입력했는지 확인
         if(userEntity.getNickname() == null){
-            new NotEnteredInformationException();
+            throw new NotEnteredInformationException();
         }
 
         /*
@@ -68,7 +68,7 @@ public class RoomService {
 
         // -- Image --
         // image 로컬에 저장
-        roomImageService.registerRoomImage(roomOfCreate.getImages(), roomEntity);
+        roomImageService.registerRoomImage(roomOfCreate.getRoomImages(), roomEntity);
     }
 
     //방 설명 페이지 조회
@@ -106,7 +106,7 @@ public class RoomService {
 
         //-- Image --
         // Image Service 에서 모든 DB값 삭제 후, 넘어온 값들로 새롭게 매핑 및 저장
-        roomImageService.updateRoomImage(roomOfUpdate.getImages(), roomEntity);
+        roomImageService.updateRoomImage(roomOfUpdate.getRoomImages(), roomEntity);
 
         //-- update Room Entity --
         roomEntity.updateRoom(roomOfUpdate);

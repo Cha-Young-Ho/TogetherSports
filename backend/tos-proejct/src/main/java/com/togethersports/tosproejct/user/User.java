@@ -105,16 +105,15 @@ public class User {
      * 신규 사용자를 추가할 때 사용한다.
      * @param oauth2Id OAuth2 로그인 후 받은 해당 OAuth2 계정 식별자
      * @param email OAuth2 로그인 후 받은 해당 OAuth2 프로필 정보상의 이메일
-     * @param nickname OAuth2 로그인 후 받은 해당 OAuth2 프로필 정보상의 닉네임
      * @param provider OAuth2 사업자
      * @return account - 신규 계정 엔티티, 권한은 일반 사용자 권한, 추가 정보 입력 여부 미입력으로 자동 설정
      * @author seunjeon
+     * @author younghoCha
      */
-    public static User createUser(Long oauth2Id, String email, String nickname, OAuth2Provider provider) {
+    public static User createUser(Long oauth2Id, String email, OAuth2Provider provider) {
         return User.builder()
                 .oauth2Id(oauth2Id)
                 .email(email)
-                .nickname(nickname)
                 .provider(provider)
                 .role(Role.ROLE_USER)
                 .isFirst(true)

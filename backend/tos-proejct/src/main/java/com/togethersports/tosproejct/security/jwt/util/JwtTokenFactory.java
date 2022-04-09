@@ -25,7 +25,7 @@ import java.util.Map;
  * <p>{@link #createRefreshToken()} 리프레쉬 토큰 생성</p>
  *
  * @author seunjeon
- * @author yunghocha
+ * @author younghocha
  */
 
 @RequiredArgsConstructor
