@@ -30,7 +30,7 @@ public class RoomOfInfo {
     private int limitPeopleCount;
 
     //현재 참여자 수
-    private int presentPeopleCount;
+    private int participantCount;
 
     //방 시작 시간
     private LocalDateTime startAppointmentDate;
@@ -68,7 +68,7 @@ public class RoomOfInfo {
         this.exercise = roomEntity.getExercise();
         this.id = roomEntity.getId();
         this.limitPeopleCount = roomEntity.getLimitPeopleCount();
-        this.presentPeopleCount = roomEntity.getPresentPeopleCount();
+        this.participantCount = roomEntity.getParticipantCount();
         this.roomImages = roomImages;
         this.roomTitle = roomEntity.getRoomTitle();
         this.roomContent = roomEntity.getRoomContent();

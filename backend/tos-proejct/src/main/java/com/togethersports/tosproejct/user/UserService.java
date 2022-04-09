@@ -64,13 +64,16 @@ public class UserService {
 
     /**
      * 다른 회원 정보 조회 메소드
-     * @param userEmail : 전달받은 user email
+     * @param otherUserId : 전달받은 user id
      * @return USerOfOtherInfo : 다른 회원 정보에 대한 DTO
      */
-    public UserOfOtherInfo getOtherInfo(String userEmail){
+    public UserOfOtherInfo getOtherInfo(Long otherUserId){
         //유저 엔티티
-        User userEntity = userRepository.findByEmail(userEmail)
+        User userEntity = userRepository.findById(otherUserId)
                 .orElseThrow(() -> new UserNotFoundException("해당 사용자를 찾을 수 없습니다."));
+
+        //다른 회원이 정보를 입력했는지 여부
+        checkInformation(userEntity);
 
         //다른 회원 정보 조회 DTO 리턴
         return UserOfOtherInfo.builder()
@@ -129,11 +132,12 @@ public class UserService {
                .gender(user.getGender())
                .interests(parsedInterestList)
                .isInformationRequired(user.isInformationRequired())
+               .userNickname(user.getNickname())
                .build();
 
     }
 
-    public void checkIsFirst(User user){
+    public void checkInformation(User user){
         if(user.isFirst()){
             throw new NotEnteredInformationException("추가 정보를 입력하지 않은 계정입니다.");
         }

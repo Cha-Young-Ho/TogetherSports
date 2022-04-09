@@ -42,8 +42,8 @@ public class UserController {
     }
 
     @GetMapping("/api/user/{id}")
-    public ResponseEntity<Response> otherInfo(@PathVariable String userEmail){
-        UserOfOtherInfo userOfOtherInfo = userService.getOtherInfo(userEmail);
+    public ResponseEntity<Response> otherInfo(@PathVariable Long id){
+        UserOfOtherInfo userOfOtherInfo = userService.getOtherInfo(id);
 
         return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, userOfOtherInfo));
 
