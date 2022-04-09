@@ -65,6 +65,25 @@ const Filter = () => {
     });
   };
 
+  const onChangeStartTime = (e) => {
+    console.log(e.target.value);
+    dispatch({
+      type: "SETSTARTTIME",
+      payload: {
+        startTime: e.target.value,
+      },
+    });
+  };
+
+  const onChangeEndTime = (e) => {
+    dispatch({
+      type: "SETENDTIME",
+      payload: {
+        endTime: e.target.value,
+      },
+    });
+  };
+
   return (
     <>
       <div className="filter-wrapper">
@@ -106,9 +125,9 @@ const Filter = () => {
               밤
             </button>
             <p>직접입력</p>
-            <input type="number"></input>
+            <input type="number" onChange={onChangeStartTime}></input>
             <span>시 - </span>
-            <input type="number"></input>
+            <input type="number" onChange={onChangeEndTime}></input>
             <span>시</span>
           </div>
           <div className="categories">

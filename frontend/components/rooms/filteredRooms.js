@@ -45,6 +45,27 @@ const FilteredRooms = () => {
 
   useEffect(() => {
     if (changeDectection.det === "true") {
+      if (
+        roomFilteringData.startTime !== "" &&
+        roomFilteringData.endTime !== "" &&
+        roomFilteringData.date === ""
+      ) {
+        alert("날짜를 선택해 주세요");
+        return;
+      }
+
+      if (roomFilteringData.startTime === "") {
+        roomFilteringData.startAppointmentDate =
+          roomFilteringData.date + "T00:00";
+      } else {
+        roomFilteringData.startAppointmentDate =
+          roomFilteringData.date + "T" + roomFilteringData.startTime;
+      }
+      if (roomFilteringData.endTime === "") {
+        roomFilteringData.endAppointmentDate =
+          roomFilteringData.date + "T23:59";
+      }
+
       // 그 정보를 토대로 필터를 서버에게 전송
       getRoomList(
         roomFilteringData.creatorNickname,

@@ -60,12 +60,13 @@ const roomFilteringDataInitialState = {
   startAppointmentDate: "",
   endAppointmentDate: "",
   date: "",
-  time: "",
+  startTime: "",
+  endTime: "",
 };
 
 // 필터 적용 클릭 감지용 초기값
 const clickDetectionInitialState = {
-  det: "false",
+  detection: "false",
 };
 
 // 오타 방지용
@@ -79,6 +80,8 @@ const FILTERINGTITLE = "FILTERINGTITLE";
 const ROOMEXERCISES = "ROOMEXERCISES";
 const FILTERBUTTONCLICK = "FILTERBUTTONCLICK";
 const SETDATE = "SETDATE";
+const SETSTARTTIME = "SETSTARTTIME";
+const SETENDTIME = "SETENDTIME";
 
 // 유저 회원가입 정보 reducer
 const userRequestReducer = (state = signupInitialState, action) => {
@@ -188,6 +191,16 @@ const roomFilteringDataReducer = (
       return {
         ...state,
         date: action.payload.date,
+      };
+    case SETSTARTTIME:
+      return {
+        ...state,
+        startTime: action.payload.date,
+      };
+    case SETENDTIME:
+      return {
+        ...state,
+        endTime: action.payload.date,
       };
     default:
       return state;
