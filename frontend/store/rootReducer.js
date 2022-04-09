@@ -2,7 +2,7 @@ import { combineReducers, createStore } from "redux";
 import { createWrapper } from "next-redux-wrapper";
 import { composeWithDevTools } from "redux-devtools-extension";
 
-//회원가입 초기값
+// 회원정보추가입력 초기값
 const signupInitialState = {
   userNickname: "",
   userBirth: "",
@@ -22,10 +22,7 @@ const myInfoInitialState = {
   userNickname: "",
   userBirth: "yyyy-mm-dd",
   gender: "",
-  userProfileImage: {
-    userProfileExtension: "",
-    imageSource: "",
-  },
+  userProfileImagePath: "",
   activeAreas: [],
   interests: [],
   mannerPoint: "",
@@ -57,7 +54,7 @@ const SAVEMYINFO = "SAVEMYINFO";
 const ROOMSETTING = "ROOMSETTING";
 const ROOMSCHEDULE = "ROOMSCHEDULE";
 
-// 유저 회원가입 정보 reducer
+// 유저 회원정보추가입력 정보 reducer
 const userRequestReducer = (state = signupInitialState, action) => {
   switch (action.type) {
     //case HYDRATE:
@@ -98,9 +95,7 @@ const myInfoReducer = (state = myInfoInitialState, action) => {
         userNickname: action.payload.userNickname,
         userBirth: action.payload.userBirth,
         gender: action.payload.gender,
-        userProfileImage: {
-          imageSource: action.payload.imageSource,
-        },
+        userProfileImagePath: action.payload.userProfileImagePath,
         activeAreas: action.payload.activeAreas.map((el) => el),
         interests: action.payload.interests.map((el) => el),
         mannerPoint: action.payload.mannerPoint,
@@ -131,6 +126,7 @@ const createRoomReducer = (state = createRoomInitialState, action) => {
         roomTitle: action.payload.roomTitle,
         exercise: action.payload.exercise,
         limitPeopleCount: action.payload.limitPeopleCount,
+        /* 수정 가능성 */
         roomArea: {
           area: action.payload.roomArea.area,
           areaDetail: action.payload.roomArea.areaDetail,
