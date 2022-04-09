@@ -6,27 +6,24 @@ import ImageSlide from "../imageSlide";
 /* props에 roomSequenceId 추가 필요 -> getRoomInfo 에 parameter 추가 필요 */
 const RoomModal = ({ open, close }) => {
   const [mapLoaded, setMapLoaded] = useState(false); // 지도 로드 동기화
-  const [imageCurrentNo, setImageCurrentNo] = useState(0);
 
   /* response content 담을 변수들 */
-  const [creatorNickName, setCreatorNickName] = useState("고니"); // 방장 닉네임
-  const [roomTitle, setRoomTitle] = useState("아프지마 도토"); // 방 제목
-  const [roomContent, setRoomContent] = useState("도토 잠보"); // 방 설명
-  const [area, setArea] = useState("대구시 달서구 월배로 11길 33"); // 위치
-  const [limitPeopleCount, setLimitPeopleCount] = useState("5"); // 모집인원
-  const [participantCount, setParticipantCount] = useState("3"); // 현재 참여인원
-  const [exercise, setExercise] = useState("축구"); // 종목
-  const [tag, setTag] = useState(["10대", "초보만"]); // 태그
-  const [startAppointmentDate, setStartAppointmentDate] =
-    useState("2022-04-22T22:22"); // 시작 일시
-  const [endAppointmentDate, setEndAppointmentDate] =
-    useState("2022-04-22T22:22"); // 종료 일시
+  const [creatorNickName, setCreatorNickName] = useState(""); // 방장 닉네임
+  const [roomTitle, setRoomTitle] = useState(""); // 방 제목
+  const [roomContent, setRoomContent] = useState(""); // 방 설명
+  const [area, setArea] = useState(""); // 위치
+  const [limitPeopleCount, setLimitPeopleCount] = useState(""); // 모집인원
+  const [participantCount, setParticipantCount] = useState(""); // 현재 참여인원
+  const [exercise, setExercise] = useState(""); // 종목
+  const [tag, setTag] = useState([]); // 태그
+  const [startAppointmentDate, setStartAppointmentDate] = useState(""); // 시작 일시
+  const [endAppointmentDate, setEndAppointmentDate] = useState(""); // 종료 일시
   const [viewCount, setViewCount] = useState(""); // 조회수
   const [roomImagePath, setRoomImagePath] = useState([
     "logo-sign.png",
     "signup-bg.png",
     "naver-login.png",
-  ]); // 방 이미지
+  ]); // 방 이미지 test
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -38,32 +35,32 @@ const RoomModal = ({ open, close }) => {
   useEffect(() => {
     if (open && mapLoaded) {
       // 방 정보 받아오기
-      // getRoomInfo().then((res) => {
-      //   if (res.status.code === 5000) {
-      //     setCreatorNickName((creatorNickName = res.content.creatorNickName));
-      //     setRoomTitle((roomTitle = res.content.roomTitle));
-      //     setRoomContent((roomContent = res.content.roomContent));
-      //     setArea((area = res.content.area));
-      //     setLimitPeopleCount(
-      //       (limitPeopleCount = res.content.limitPeopleCount)
-      //     );
-      //     setParticipantCount(
-      //       (participantCount = res.content.participantCount)
-      //     );
-      //     setExercise((exercise = res.content.exercise));
-      //     setTag((tag = res.content.tag));
-      //     setStartAppointmentDate(
-      //       (startAppointmentDate = res.content.startAppointmentDate)
-      //     );
-      //     setEndAppointmentDate(
-      //       (endAppointmentDate = res.content.endAppointmentDate)
-      //     );
-      //     setViewCount((viewCount = res.content.viewCount));
-      //     setRoomImagePath((roomImagePath = res.content.roomImagePath));
-      //   } else {
-      //     FailResponse(res.status.code);
-      //   }
-      // });
+      getRoomInfo().then((res) => {
+        if (res.status.code === 5000) {
+          setCreatorNickName((creatorNickName = res.content.creatorNickName));
+          setRoomTitle((roomTitle = res.content.roomTitle));
+          setRoomContent((roomContent = res.content.roomContent));
+          setArea((area = res.content.area));
+          setLimitPeopleCount(
+            (limitPeopleCount = res.content.limitPeopleCount)
+          );
+          setParticipantCount(
+            (participantCount = res.content.participantCount)
+          );
+          setExercise((exercise = res.content.exercise));
+          setTag((tag = res.content.tag));
+          setStartAppointmentDate(
+            (startAppointmentDate = res.content.startAppointmentDate)
+          );
+          setEndAppointmentDate(
+            (endAppointmentDate = res.content.endAppointmentDate)
+          );
+          setViewCount((viewCount = res.content.viewCount));
+          setRoomImagePath((roomImagePath = res.content.roomImagePath));
+        } else {
+          FailResponse(res.status.code);
+        }
+      });
 
       // 위치 정보 받아오기
       kakao.maps.load(() => {
@@ -390,9 +387,6 @@ const RoomModal = ({ open, close }) => {
         .image {
           width: 680px;
           height: 350px;
-          margin: auto;
-          overflow-x: hidden;
-          position: relative;
         }
 
         .room-info > p {
