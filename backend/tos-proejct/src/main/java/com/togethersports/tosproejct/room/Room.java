@@ -53,7 +53,7 @@ public class Room {
 
     //현재 참여자 수
     @Column(name = "PRESENT_PEOPLE_COUNT")
-    private int presentPeopleCount;
+    private int participantCount;
 
     //조회수
     @Column(name ="VIEW_COUNT")
@@ -101,10 +101,11 @@ public class Room {
         this.startAppointmentDate = roomOfCreate.getStartAppointmentDate();
         this.limitPeopleCount = roomOfCreate.getLimitPeopleCount();
         this.host = user;
-        this.presentPeopleCount = 1;
+        this.participantCount = 1;
         this.createUser = user;
         this.roomArea = roomOfCreate.getRoomArea();
         this.viewCount = 0;
+        this.createUser = user;
 
     }
 

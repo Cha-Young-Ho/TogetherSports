@@ -64,7 +64,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             User newUser = User.
                     createUser(userInfo.getOAuth2Id(),
                             userInfo.getEmail(),
-                            userInfo.getNickname(),
                             userInfo.getOAuth2Provider());
             accountRepository.save(newUser);
             User user = newUser;
