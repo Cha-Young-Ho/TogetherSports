@@ -1,69 +1,75 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const ImageSlide = ({ imageArr }) => {
   const img1 = imageArr[0];
   const img2 = imageArr[1];
   const img3 = imageArr[2];
+  const [slideIndex, setSlideIndex] = useState(1);
 
-  let slideIndex = 1;
   useEffect(() => {
     showSlides(slideIndex);
   });
 
-  function plusSlides(n) {
-    showSlides((slideIndex += n));
-  }
+  const onChangeImage = (index) => {
+    showSlides((slideIndex += index));
+  };
 
-  function showSlides(n) {
+  const showSlides = (index) => {
     let i;
-    let slides = document.getElementsByClassName("mySlides");
+    let slides = document.getElementsByClassName("slide");
 
-    if (n > slides.length) {
-      slideIndex = 1;
-    }
-    if (n < 1) {
-      slideIndex = slides.length;
-    }
+    if (index > slides.length) setSlideIndex((slideIndex = 1));
+    if (index < 1) setSlideIndex((slideIndex = slides.length));
 
+    // console.log(slideIndex);
     for (i = 0; i < slides.length; i++) {
       slides[i].style.display = "none";
     }
-
     slides[slideIndex - 1].style.display = "block";
-  }
+  };
 
   return (
     <>
       <div className="slideshow-container">
-        <div className="mySlides fade">
+        <div className="slide fade">
           <div className="number-text">1 / 3</div>
           <img src={img1} style={{ width: "100%" }} />
         </div>
-        <div className="mySlides fade">
+
+        <div className="slide fade">
           <div className="number-text">2 / 3</div>
           <img src={img2} style={{ width: "100%" }} />
         </div>
-        <div className="mySlides fade">
+
+        <div className="slide fade">
           <div className="number-text">3 / 3</div>
           <img src={img3} style={{ width: "100%" }} />
         </div>
 
-        <a className="prev" onClick={plusSlides(-1)}>
+        <a className="prev" onClick={() => onChangeImage(-1)}>
           &#10094;
         </a>
-        <a className="next" onClick={plusSlides(1)}>
+        <a className="next" onClick={() => onChangeImage(1)}>
           &#10095;
         </a>
       </div>
 
       <style jsx>{`
+        * {
+          box-sizing: border-box;
+        }
+
+        img {
+          vertical-align: middle;
+        }
+
         .slideshow-container {
           max-width: 680px;
           position: relative;
           margin: auto;
         }
 
-        .mySlides {
+        .slide {
           display: none;
         }
 
@@ -83,6 +89,10 @@ const ImageSlide = ({ imageArr }) => {
           user-select: none;
         }
 
+        .prev {
+          left: 0;
+        }
+
         .next {
           right: 0;
           border-radius: 3px 0 0 3px;
@@ -93,10 +103,10 @@ const ImageSlide = ({ imageArr }) => {
           background-color: rgba(0, 0, 0, 0.8);
         }
 
-        .numbertext {
-          color: #f2f2f2;
-          font-size: 12px;
-          padding: 8px 12px;
+        .number-text {
+          color: gray;
+          font-size: 1em;
+          padding: 10px 10px;
           position: absolute;
           top: 0;
         }
