@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
 
+/* 수정 필요 */
+// 1. 크기에 따라 변하는 UI 수정하기
+// 2. 컴포넌트화
+
 const ImageSlide = ({ imageArr }) => {
   const img1 = imageArr[0];
   const img2 = imageArr[1];
@@ -21,7 +25,6 @@ const ImageSlide = ({ imageArr }) => {
     if (index > slides.length) setSlideIndex((slideIndex = 1));
     if (index < 1) setSlideIndex((slideIndex = slides.length));
 
-    // console.log(slideIndex);
     for (i = 0; i < slides.length; i++) {
       slides[i].style.display = "none";
     }
@@ -46,69 +49,74 @@ const ImageSlide = ({ imageArr }) => {
           <img src={img3} style={{ width: "100%" }} />
         </div>
 
-        <a className="prev" onClick={() => onChangeImage(-1)}>
-          &#10094;
-        </a>
-        <a className="next" onClick={() => onChangeImage(1)}>
-          &#10095;
-        </a>
+        <div className="buttons">
+          <button className="prev-button" onClick={() => onChangeImage(-1)}>
+            &#10094;
+          </button>
+          <button className="next-button" onClick={() => onChangeImage(1)}>
+            &#10095;
+          </button>
+        </div>
       </div>
 
       <style jsx>{`
-        * {
-          box-sizing: border-box;
-        }
-
-        img {
-          vertical-align: middle;
-        }
-
         .slideshow-container {
-          max-width: 680px;
           position: relative;
-          margin: auto;
+          width: 100%;
+          height: 100%;
         }
 
         .slide {
           display: none;
         }
 
-        .prev,
-        .next {
-          cursor: pointer;
-          position: absolute;
-          top: 50%;
-          width: auto;
-          margin-top: -22px;
-          padding: 16px;
-          color: white;
-          font-weight: bold;
-          font-size: 18px;
-          transition: 0.6s ease;
-          border-radius: 0 3px 3px 0;
-          user-select: none;
-        }
-
-        .prev {
-          left: 0;
-        }
-
-        .next {
-          right: 0;
-          border-radius: 3px 0 0 3px;
-        }
-
-        .prev:hover,
-        .next:hover {
-          background-color: rgba(0, 0, 0, 0.8);
-        }
-
         .number-text {
-          color: gray;
+          color: black;
           font-size: 1em;
+          font-weight: bold;
           padding: 10px 10px;
           position: absolute;
           top: 0;
+        }
+
+        .buttons {
+          position: absolute;
+          top: 50%;
+          display: flex;
+          justify-content: space-between;
+          width: 100%;
+        }
+
+        .prev-button,
+        .next-button {
+          cursor: pointer;
+          width: 40px;
+          height: 40px;
+          color: white;
+          font-weight: bold;
+          font-size: 1.5em;
+          transition: 0.6s ease;
+          user-select: none;
+          border: none;
+          opacity: 0.8;
+          background-color: #e5e5e5;
+          border-radius: 50%;
+          margin-top: -25px;
+        }
+
+        .prev-button {
+          left: 0;
+          margin-left: 15px;
+        }
+
+        .next-button {
+          right: 0;
+          margin-right: 15px;
+        }
+
+        .prev-button:hover,
+        .next-button:hover {
+          background-color: rgba(0, 0, 0, 0.8);
         }
 
         .fade {
