@@ -82,6 +82,7 @@ const FILTERBUTTONCLICK = "FILTERBUTTONCLICK";
 const SETDATE = "SETDATE";
 const SETSTARTTIME = "SETSTARTTIME";
 const SETENDTIME = "SETENDTIME";
+const SETAPPOINTMENTDATE = "SETAPPOINTMENTDATE";
 
 // 유저 회원가입 정보 reducer
 const userRequestReducer = (state = signupInitialState, action) => {
@@ -195,12 +196,18 @@ const roomFilteringDataReducer = (
     case SETSTARTTIME:
       return {
         ...state,
-        startTime: action.payload.date,
+        startTime: action.payload.startTime,
       };
     case SETENDTIME:
       return {
         ...state,
-        endTime: action.payload.date,
+        endTime: action.payload.endTime,
+      };
+    case SETAPPOINTMENTDATE:
+      return {
+        ...state,
+        startAppointmentDate: action.payload.startAppointmentDate,
+        endAppointmentDate: action.payload.endAppointmentDate,
       };
     default:
       return state;
@@ -213,7 +220,7 @@ const filteringButtonClickDetectionReducer = (
 ) => {
   switch (action.type) {
     case FILTERBUTTONCLICK:
-      return { ...state, det: action.payload.det };
+      return { ...state, detection: action.payload.detection };
     default:
       return state;
   }

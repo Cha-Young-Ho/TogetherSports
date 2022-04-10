@@ -63,25 +63,15 @@ const getRoomList = async (
   if (totalQueryString[totalQueryString.length - 1] === "&")
     totalQueryString = totalQueryString.slice(0, -1);
 
-  console.log(totalQueryString);
+  console.log("방 필터 최종 쿼리스트링 = " + totalQueryString);
 
   const promise = axios.get(
-    "http://localhost:8080/api/room" + totalQueryString,
+    "http://localhost:8080/api/room?" + totalQueryString,
     {
       headers: {
         "Content-type": "application/json; charset=UTF-8",
         Accept: "*/*",
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-      },
-      params: {
-        creatorNickname: creatorNickname,
-        roomTitle: roomTitle,
-        roomContent: roomContent,
-        area: area,
-        exercise: exercise,
-        tag: tag,
-        startAppointmentDate: startAppointmentDate,
-        endAppointmentDate: endAppointmentDate,
       },
     }
   );

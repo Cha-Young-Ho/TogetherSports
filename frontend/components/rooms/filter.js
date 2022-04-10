@@ -10,6 +10,13 @@ const Filter = () => {
   // 모달 관리 state
   const [calendarModalOpen, setCalendarModalOpen] = useState(false);
   const [areaModalOpen, setAreaModalOpen] = useState(false);
+  // 시기
+  const [curFilteringDate, setCurFilteringDate] = useState("");
+  // 시간
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+  // 입장가능인원
+  const [enterAccessPeople, setEnterAccessPeople] = useState("");
 
   const openCalendarModal = () => {
     setCalendarModalOpen(true);
@@ -35,9 +42,6 @@ const Filter = () => {
     }
   };
 
-  // 시기
-  const [curFilteringDate, setCurFilteringDate] = useState("");
-
   // calendarModal의 시기 받아오기 위한 함수
   const setFilterDate = (date) => {
     setCurFilteringDate(
@@ -46,27 +50,46 @@ const Filter = () => {
     );
   };
 
-  useEffect(() => {
-    console.log(curFilteringDate);
-    dispatch({
-      type: "SETDATE",
-      payload: {
-        date: curFilteringDate,
-      },
-    });
-  }, [curFilteringDate]);
-
   const clickDoFilteringButton = () => {
+    console.log("Execute Filtering...");
     dispatch({
       type: "FILTERBUTTONCLICK",
       payload: {
-        det: "true",
+        detection: "true",
       },
     });
   };
 
+  const clickResetFilterButton = () => {
+    console.log("Reset Filters...");
+
+    setStartTime("");
+    setEndTime("");
+    setEnterAccessPeople("");
+
+    dispatch({
+      type: "SETSTARTTIME",
+      payload: {
+        startTime: "",
+      },
+      type: "SETENDTIME",
+      payload: {
+        endTime: "",
+      },
+      type: "SETAPPOINTMENTDATE",
+      payload: {
+        startAppointmentDate: "",
+        endAppointmentDate: "",
+      },
+      //입장가능인원 필요
+    });
+
+    setCurFilteringDate("");
+  };
+
   const onChangeStartTime = (e) => {
-    console.log(e.target.value);
+    e.target.value = e.target.value.replace(/[^0-9]/g, "");
+    setStartTime(e.target.value);
     dispatch({
       type: "SETSTARTTIME",
       payload: {
@@ -76,6 +99,8 @@ const Filter = () => {
   };
 
   const onChangeEndTime = (e) => {
+    e.target.value = e.target.value.replace(/[^0-9]/g, "");
+    setEndTime(e.target.value);
     dispatch({
       type: "SETENDTIME",
       payload: {
@@ -83,6 +108,21 @@ const Filter = () => {
       },
     });
   };
+
+  const onChangeEnterNumber = (e) => {
+    e.target.value = e.target.value.replace(/[^0-9]/g, "");
+    setEnterAccessPeople(e.target.value);
+    //디스패치 필요
+  };
+
+  useEffect(() => {
+    dispatch({
+      type: "SETDATE",
+      payload: {
+        date: curFilteringDate,
+      },
+    });
+  }, [curFilteringDate]);
 
   return (
     <>
@@ -125,9 +165,17 @@ const Filter = () => {
               밤
             </button>
             <p>직접입력</p>
-            <input type="number" onChange={onChangeStartTime}></input>
+            <input
+              className="inputTypes"
+              value={startTime}
+              onChange={onChangeStartTime}
+            ></input>
             <span>시 - </span>
-            <input type="number" onChange={onChangeEndTime}></input>
+            <input
+              className="inputTypes"
+              value={endTime}
+              onChange={onChangeEndTime}
+            ></input>
             <span>시</span>
           </div>
           <div className="categories">
@@ -141,7 +189,7 @@ const Filter = () => {
             </div>
             <p>년</p>
             <div className="date-showBox">
-              {curFilteringDate.substring(6, 7)}
+              {curFilteringDate.substring(5, 7)}
             </div>
             <p>월</p>
             <div className="date-showBox">{curFilteringDate.substring(8)}</div>
@@ -154,12 +202,18 @@ const Filter = () => {
           </div>
           <div className="last-categories">
             <p>입장가능인원</p>
-            <input type="number"></input>
+            <input
+              className="inputTypes"
+              value={enterAccessPeople}
+              onChange={onChangeEnterNumber}
+            ></input>
             <p> 명 이상</p>
           </div>
           <SelectExercise />
           <div className="buttons-wrapper">
-            <button className="button-reset">초기화</button>
+            <button className="button-reset" onClick={clickResetFilterButton}>
+              초기화
+            </button>
             <button
               className="button-application"
               onClick={clickDoFilteringButton}
@@ -208,7 +262,7 @@ const Filter = () => {
           border: none;
         }
 
-        input[type="number"] {
+        .inputTypes {
           width: 50px;
           height: 20px;
           border-radius: 11px;
