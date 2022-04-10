@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -28,7 +29,10 @@ import java.util.List;
  */
 @Getter
 @Entity
-public class User {
+public class User implements Serializable {
+
+    private static final long serialVersionUID = 6866208578606279365L;
+
     @Id
     @GeneratedValue
     @Column(name = "USER_ID")

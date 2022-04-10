@@ -8,6 +8,9 @@ import com.togethersports.tosproejct.common.file.util.NameGenerator;
 import com.togethersports.tosproejct.common.util.ParsingEntityUtils;
 import com.togethersports.tosproejct.interest.Interest;
 import com.togethersports.tosproejct.interest.InterestRepository;
+import com.togethersports.tosproejct.security.acl.CreationStrategy;
+import com.togethersports.tosproejct.security.acl.Permission;
+import com.togethersports.tosproejct.security.annotation.AclCreate;
 import com.togethersports.tosproejct.user.dto.UserOfModifyInfo;
 import com.togethersports.tosproejct.user.dto.UserOfMyInfo;
 import com.togethersports.tosproejct.user.dto.UserOfOtherInfo;
@@ -110,7 +113,6 @@ public class UserService {
                 .concat(userOfModifyInfo.getUserProfileImage().getUserProfileExtension());
         String imagePath = storageService.store(imageSource, fileName);
         findUser.updateUser(userOfModifyInfo, activeAreas, interests, imagePath);
-
     }
 
     public UserOfMyInfo getMyInfo(Long id){
