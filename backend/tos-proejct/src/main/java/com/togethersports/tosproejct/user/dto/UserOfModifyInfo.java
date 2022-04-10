@@ -11,8 +11,8 @@ import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.List;
 
+@Setter
 @Getter
-@Builder
 public class UserOfModifyInfo {
 
     @NotNull
