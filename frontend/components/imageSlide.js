@@ -1,114 +1,132 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const ImageSlide = ({ imageArr }) => {
-  const img1 = imageArr[0];
-  const img2 = imageArr[1];
-  const img3 = imageArr[2];
+  const [slideIndex, setSlideIndex] = useState(1);
 
-  let slideIndex = 1;
   useEffect(() => {
     showSlides(slideIndex);
   });
 
-  function plusSlides(n) {
-    showSlides((slideIndex += n));
-  }
+  const onChangeImage = (index) => {
+    showSlides((slideIndex += index));
+  };
 
-  function showSlides(n) {
-    let i;
-    let slides = document.getElementsByClassName("mySlides");
+  const showSlides = (index) => {
+    const slides = document.getElementsByClassName("slide");
 
-    if (n > slides.length) {
-      slideIndex = 1;
-    }
-    if (n < 1) {
-      slideIndex = slides.length;
-    }
+    if (index > slides.length) setSlideIndex((slideIndex = 1));
+    if (index < 1) setSlideIndex((slideIndex = slides.length));
 
-    for (i = 0; i < slides.length; i++) {
+    for (let i = 0; i < slides.length; i++) {
       slides[i].style.display = "none";
     }
-
-    slides[slideIndex - 1].style.display = "block";
-  }
+    slides[slideIndex - 1].style.display = "table";
+  };
 
   return (
     <>
       <div className="slideshow-container">
-        <div className="mySlides fade">
-          <div className="number-text">1 / 3</div>
-          <img src={img1} style={{ width: "100%" }} />
-        </div>
-        <div className="mySlides fade">
-          <div className="number-text">2 / 3</div>
-          <img src={img2} style={{ width: "100%" }} />
-        </div>
-        <div className="mySlides fade">
-          <div className="number-text">3 / 3</div>
-          <img src={img3} style={{ width: "100%" }} />
-        </div>
+        {imageArr.map((image, index) => {
+          return (
+            <div className="slide fade" key={index}>
+              <div className="number-text">{`${index} / ${imageArr.length}`}</div>
+              <div className="image-container">
+                <img src={image} />
+              </div>
+            </div>
+          );
+        })}
 
-        <a className="prev" onClick={plusSlides(-1)}>
-          &#10094;
-        </a>
-        <a className="next" onClick={plusSlides(1)}>
-          &#10095;
-        </a>
+        <div className="buttons">
+          <button className="prev-button" onClick={() => onChangeImage(-1)}>
+            &#10094;
+          </button>
+          <button className="next-button" onClick={() => onChangeImage(1)}>
+            &#10095;
+          </button>
+        </div>
       </div>
 
       <style jsx>{`
         .slideshow-container {
-          max-width: 680px;
           position: relative;
-          margin: auto;
         }
 
-        .mySlides {
+        .slide {
           display: none;
+          width: 100%;
+          height: 100%;
+          text-align: center;
         }
 
-        .prev,
-        .next {
-          cursor: pointer;
-          position: absolute;
-          top: 50%;
-          width: auto;
-          margin-top: -22px;
-          padding: 16px;
-          color: white;
-          font-weight: bold;
-          font-size: 18px;
-          transition: 0.6s ease;
-          border-radius: 0 3px 3px 0;
+        .image-container {
+          display: table-cell;
+          vertical-align: middle;
+        }
+
+        img {
+          max-width: 100%;
+          max-height: 100%;
           user-select: none;
         }
 
-        .next {
-          right: 0;
-          border-radius: 3px 0 0 3px;
-        }
-
-        .prev:hover,
-        .next:hover {
-          background-color: rgba(0, 0, 0, 0.8);
-        }
-
-        .numbertext {
-          color: #f2f2f2;
-          font-size: 12px;
-          padding: 8px 12px;
+        .number-text {
+          color: black;
+          font-size: 1em;
+          font-weight: bold;
+          padding: 10px 10px;
           position: absolute;
           top: 0;
         }
 
+        .buttons {
+          position: absolute;
+          top: 50%;
+          display: flex;
+          justify-content: space-between;
+          width: 100%;
+        }
+
+        .prev-button,
+        .next-button {
+          cursor: pointer;
+          width: 40px;
+          height: 40px;
+          color: white;
+          font-weight: bold;
+          font-size: 1.5em;
+          transition: 0.5s ease;
+          user-select: none;
+          border: none;
+          opacity: 0.8;
+          background-color: #e5e5e5;
+          border-radius: 50%;
+          margin-top: -25px;
+        }
+
+        .prev-button {
+          left: 0;
+          margin-left: 15px;
+        }
+
+        .next-button {
+          right: 0;
+          margin-right: 15px;
+        }
+
+        .prev-button:hover,
+        .next-button:hover {
+          background-color: rgba(0, 0, 0, 1);
+        }
+
         .fade {
           animation-name: fade;
-          animation-duration: 1.5s;
+          animation-duration: 0.5s;
         }
 
         @keyframes fade {
           from {
-            opacity: 0.4;
+            opacity: 0.5;
           }
           to {
             opacity: 1;

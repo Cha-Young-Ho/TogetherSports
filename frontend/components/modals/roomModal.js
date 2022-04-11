@@ -182,7 +182,7 @@ const RoomModal = ({ open, close }) => {
                   <div className="room-info">
                     <p>방 설명 및 안내</p>
                     <div className="line"></div>
-                    <textarea readOnly>{roomContent}</textarea>
+                    <textarea readOnly value={roomContent}></textarea>
                   </div>
 
                   <div className="buttons">
