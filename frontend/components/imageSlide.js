@@ -29,7 +29,9 @@ const ImageSlide = ({ imageArr }) => {
         {imageArr.map((image, index) => {
           return (
             <div className="slide fade" key={index}>
-              <div className="number-text">{`${index} / ${imageArr.length}`}</div>
+              <div className="number-text">{`${index + 1} / ${
+                imageArr.length
+              }`}</div>
               <div className="image-container">
                 <img src={image} />
               </div>
@@ -50,6 +52,8 @@ const ImageSlide = ({ imageArr }) => {
       <style jsx>{`
         .slideshow-container {
           position: relative;
+          width: 100%;
+          height: 100%;
         }
 
         .slide {
