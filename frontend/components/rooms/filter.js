@@ -3,51 +3,94 @@ import CalendarModal from "../modals/calendarModal";
 import SelectExercise from "./selectExercise";
 import AddAreaModal from "../modals/addAreaModal";
 import { useDispatch } from "react-redux";
+import moment from "moment";
 
 const Filter = () => {
   const dispatch = useDispatch();
 
   // 모달 관리 state
-  const [calendarModalOpen, setCalendarModalOpen] = useState(false);
+  const [startCalendarModalOpen, setStartCalendarModalOpen] = useState(false);
+  const [endCalendarModalOpen, setEndCalendarModalOpen] = useState(false);
   const [areaModalOpen, setAreaModalOpen] = useState(false);
   // 시기
-  const [curFilteringDate, setCurFilteringDate] = useState("");
+  const [curStartFilteringDate, setCurStartFilteringDate] = useState("");
+  const [curEndFilteringDate, setCurEndFilteringDate] = useState("");
   // 시간
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   // 입장가능인원
   const [enterAccessPeople, setEnterAccessPeople] = useState("");
 
-  const openCalendarModal = () => {
-    setCalendarModalOpen(true);
+  const openStartCalendarModal = () => {
+    setStartCalendarModalOpen(true);
   };
-  const closeCalendarModal = () => {
-    setCalendarModalOpen(false);
+  const closeStartCalendarModal = () => {
+    setStartCalendarModalOpen(false);
+  };
+
+  const openEndCalendarModal = () => {
+    setEndCalendarModalOpen(true);
+  };
+  const closeEndCalendarModal = () => {
+    setEndCalendarModalOpen(false);
   };
 
   const openAreaModal = () => {
     setAreaModalOpen(true);
   };
-
   const closeAreaModal = () => {
     setAreaModalOpen(false);
   };
 
-  // 시간 (태그로 된 선택)
-  const clickTimezone = (e) => {
-    if (e.target.classList[2] === "clicked") {
-      e.target.classList.remove("clicked");
-    } else {
-      e.target.classList.add("clicked");
-    }
-  };
-
   // calendarModal의 시기 받아오기 위한 함수
-  const setFilterDate = (date) => {
-    setCurFilteringDate(
-      (curFilteringDate =
+  const setStartFilterDate = (date) => {
+    if (
+      (curEndFilteringDate !== "") &
+      !moment(
+        date.length === 9 ? date.slice(0, 8) + "0" + date[8] : date
+      ).isSameOrBefore(curEndFilteringDate)
+    ) {
+      alert("현재 시작일이 마감일보다 느립니다. 다시 선택해 주세요.");
+      return;
+    }
+
+    setCurStartFilteringDate(
+      (curStartFilteringDate =
         date.length === 9 ? date.slice(0, 8) + "0" + date[8] : date)
     );
+
+    dispatch({
+      type: "SETSTARTDATE",
+      payload: {
+        startDate: curStartFilteringDate,
+      },
+    });
+    return;
+  };
+
+  const setEndFilterDate = (date) => {
+    if (
+      (curStartFilteringDate !== "") &
+      !moment(curStartFilteringDate).isSameOrBefore(
+        date.length === 9 ? date.slice(0, 8) + "0" + date[8] : date
+      )
+    ) {
+      alert("현재 마감일이 시작일보다 빠릅니다. 다시 선택해 주세요.");
+      return;
+    }
+
+    setCurEndFilteringDate(
+      (curStartFilteringDate =
+        date.length === 9 ? date.slice(0, 8) + "0" + date[8] : date)
+    );
+
+    dispatch({
+      type: "SETENDDATE",
+      payload: {
+        endDate: curEndFilteringDate,
+      },
+    });
+    return;
   };
 
   const clickDoFilteringButton = () => {
@@ -66,6 +109,8 @@ const Filter = () => {
     setStartTime("");
     setEndTime("");
     setEnterAccessPeople("");
+    setCurStartFilteringDate("");
+    setCurEndFilteringDate("");
 
     dispatch({
       type: "SETSTARTTIME",
@@ -81,10 +126,15 @@ const Filter = () => {
         startAppointmentDate: "",
         endAppointmentDate: "",
       },
-      //입장가능인원 필요
+      type: "SETSTARTDATE",
+      payload: {
+        startDate: "",
+      },
+      type: "SETENDDATE",
+      payload: {
+        endDate: "",
+      },
     });
-
-    setCurFilteringDate("");
   };
 
   const onChangeStartTime = (e) => {
@@ -117,12 +167,21 @@ const Filter = () => {
 
   useEffect(() => {
     dispatch({
-      type: "SETDATE",
+      type: "SETSTARTDATE",
       payload: {
-        date: curFilteringDate,
+        startDate: curStartFilteringDate,
       },
     });
-  }, [curFilteringDate]);
+  }, [curStartFilteringDate]);
+
+  useEffect(() => {
+    dispatch({
+      type: "SETENDDATE",
+      payload: {
+        endDate: curEndFilteringDate,
+      },
+    });
+  }, [curEndFilteringDate]);
 
   return (
     <>
@@ -145,59 +204,65 @@ const Filter = () => {
             ></AddAreaModal>
           </div>
           <div className="categories">
-            <p>시간</p>
-            <button className="selectButton" onClick={clickTimezone}>
-              새벽
-            </button>
-            <button className="selectButton" onClick={clickTimezone}>
-              오전
-            </button>
-            <button className="selectButton" onClick={clickTimezone}>
-              점심
-            </button>
-            <button className="selectButton" onClick={clickTimezone}>
-              오후
-            </button>
-            <button className="selectButton" onClick={clickTimezone}>
-              저녁
-            </button>
-            <button className="selectButton" onClick={clickTimezone}>
-              밤
-            </button>
+            <p>시작일</p>
+            <button
+              className="modalCalendar"
+              onClick={openStartCalendarModal}
+            ></button>
+            <div className="date-showBox">
+              {curStartFilteringDate.substring(0, 4)}
+            </div>
+            <p>년</p>
+            <div className="date-showBox">
+              {curStartFilteringDate.substring(5, 7)}
+            </div>
+            <p>월</p>
+            <div className="date-showBox">
+              {curStartFilteringDate.substring(8)}
+            </div>
+            <p>일</p>
             <p>직접입력</p>
             <input
               className="inputTypes"
               value={startTime}
               onChange={onChangeStartTime}
             ></input>
-            <span>시 - </span>
+            <span>시</span>
+            <CalendarModal
+              setStartFilterDate={setStartFilterDate}
+              openStart={startCalendarModalOpen}
+              closeStart={closeStartCalendarModal}
+            ></CalendarModal>
+          </div>
+          <div className="categories">
+            <p>마감일</p>
+            <button
+              className="modalCalendar"
+              onClick={openEndCalendarModal}
+            ></button>
+            <div className="date-showBox">
+              {curEndFilteringDate.substring(0, 4)}
+            </div>
+            <p>년</p>
+            <div className="date-showBox">
+              {curEndFilteringDate.substring(5, 7)}
+            </div>
+            <p>월</p>
+            <div className="date-showBox">
+              {curEndFilteringDate.substring(8)}
+            </div>
+            <p>일</p>
+            <p>직접입력</p>
             <input
               className="inputTypes"
               value={endTime}
               onChange={onChangeEndTime}
             ></input>
             <span>시</span>
-          </div>
-          <div className="categories">
-            <p>시기</p>
-            <button
-              className="modalCalendar"
-              onClick={openCalendarModal}
-            ></button>
-            <div className="date-showBox">
-              {curFilteringDate.substring(0, 4)}
-            </div>
-            <p>년</p>
-            <div className="date-showBox">
-              {curFilteringDate.substring(5, 7)}
-            </div>
-            <p>월</p>
-            <div className="date-showBox">{curFilteringDate.substring(8)}</div>
-            <p>일</p>
             <CalendarModal
-              setFilterDate={setFilterDate}
-              open={calendarModalOpen}
-              close={closeCalendarModal}
+              setEndFilterDate={setEndFilterDate}
+              openEnd={endCalendarModalOpen}
+              closeEnd={closeEndCalendarModal}
             ></CalendarModal>
           </div>
           <div className="last-categories">
@@ -312,17 +377,6 @@ const Filter = () => {
           justify-content: center;
           align-items: center;
           font-size: 1.3rem;
-        }
-
-        .selectButton {
-          width: 60px;
-          height: 20px;
-          border-radius: 11px;
-          background-color: #f4f4f4;
-          text-align: center;
-          border: none;
-          margin-right: 15px;
-          cursor: pointer;
         }
 
         .clicked {

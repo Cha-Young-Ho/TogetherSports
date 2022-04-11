@@ -59,7 +59,8 @@ const roomFilteringDataInitialState = {
   tag: [],
   startAppointmentDate: "",
   endAppointmentDate: "",
-  date: "",
+  startDate: "",
+  endDate: "",
   startTime: "",
   endTime: "",
 };
@@ -79,7 +80,8 @@ const ROOMSCHEDULE = "ROOMSCHEDULE";
 const FILTERINGTITLE = "FILTERINGTITLE";
 const ROOMEXERCISES = "ROOMEXERCISES";
 const FILTERBUTTONCLICK = "FILTERBUTTONCLICK";
-const SETDATE = "SETDATE";
+const SETSTARTDATE = "SETSTARTDATE";
+const SETENDDATE = "SETENDDATE";
 const SETSTARTTIME = "SETSTARTTIME";
 const SETENDTIME = "SETENDTIME";
 const SETAPPOINTMENTDATE = "SETAPPOINTMENTDATE";
@@ -188,10 +190,15 @@ const roomFilteringDataReducer = (
           .filter((el) => el[1] === true)
           .map((el) => el[0]),
       };
-    case SETDATE:
+    case SETSTARTDATE:
       return {
         ...state,
-        date: action.payload.date,
+        startDate: action.payload.startDate,
+      };
+    case SETENDDATE:
+      return {
+        ...state,
+        endDate: action.payload.endDate,
       };
     case SETSTARTTIME:
       return {

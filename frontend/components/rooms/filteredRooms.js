@@ -54,42 +54,52 @@ const FilteredRooms = () => {
 
   useEffect(() => {
     if (changeDectection.detection === "true") {
-      /* 시간 0-24시, start는 end보다 크거나 같아야 함
-      입장가능인원은 굳이 상관 없을 듯 */
+      /* 시간 예외처리 수정 필요합니다.
+      1. startdate나 enddate가 비었을때 각 time은 빌 수 없음
+      2. date가 있을때 각 time이 비었다면 00:00시와 23:59로보냄 */
+      console.log(roomFilteringData.startDate, roomFilteringData.startTime);
+      if (
+        roomFilteringData.startDate === "" &&
+        roomFilteringData.startTime !== ""
+      ) {
+        alert("시간을 입력 시 날짜도 입력하여야 합니다.");
+        requestFilteringToFalse();
+        return;
+      } else if (
+        roomFilteringData.endDate === "" &&
+        roomFilteringData.endTime !== ""
+      ) {
+        alert("시간을 입력 시 날짜도 입력하여야 합니다.");
+        requestFilteringToFalse();
+        return;
+      }
 
-      if (roomFilteringData.date === "") {
-        if (
-          roomFilteringData.startTime !== "" ||
-          roomFilteringData.endTime !== ""
-        ) {
-          alert("시기를 선택해 주세요.");
-          requestFilteringToFalse();
-          return;
-        }
-      } else {
-        console.log(roomFilteringData.startTime);
-        if (roomFilteringData.startTime === "") {
-          roomFilteringData.startAppointmentDate =
-            roomFilteringData.date + "T00:00";
-        } else {
-          console.log(roomFilteringData.startTime);
-          roomFilteringData.startAppointmentDate =
-            roomFilteringData.date +
-            "T" +
-            String(roomFilteringData.startTime).padStart(2, 0) +
-            ":00";
-        }
+      if (roomFilteringData.startTime !== "") {
+        roomFilteringData.startAppointmentDate =
+          roomFilteringData.startDate +
+          "T" +
+          String(roomFilteringData.startTime).padStart(2, 0) +
+          ":00";
+      } else if (
+        roomFilteringData.startTime === "" &&
+        roomFilteringData.endAppointmentDate !== ""
+      ) {
+        roomFilteringData.startAppointmentDate =
+          roomFilteringData.endAppointmentDate.slice(0, 10) + "T00:00";
+      }
 
-        if (roomFilteringData.endTime === "") {
-          roomFilteringData.endAppointmentDate =
-            roomFilteringData.date + "T23:59";
-        } else {
-          roomFilteringData.endAppointmentDate =
-            roomFilteringData.date +
-            "T" +
-            String(roomFilteringData.endTime).padStart(2, 0) +
-            ":00";
-        }
+      if (roomFilteringData.endTime !== "") {
+        roomFilteringData.endAppointmentDate =
+          roomFilteringData.endDate +
+          "T" +
+          String(roomFilteringData.endTime).padStart(2, 0) +
+          ":00";
+      } else if (
+        roomFilteringData.endTime === "" &&
+        roomFilteringData.startAppointmentDate !== ""
+      ) {
+        roomFilteringData.endAppointmentDate =
+          roomFilteringData.startAppointmentDate.slice(0, 10) + "T00:00";
       }
 
       // 그 정보를 토대로 필터를 서버에게 전송
