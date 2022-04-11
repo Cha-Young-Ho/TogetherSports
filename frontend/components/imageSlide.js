@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 
 /* 수정 필요 */
-// 1. 크기에 따라 변하는 UI 수정하기
-// 2. 컴포넌트화
+// 1. 컴포넌트화
 
 const ImageSlide = ({ imageArr }) => {
   const img1 = imageArr[0];
@@ -19,16 +18,15 @@ const ImageSlide = ({ imageArr }) => {
   };
 
   const showSlides = (index) => {
-    let i;
     let slides = document.getElementsByClassName("slide");
 
     if (index > slides.length) setSlideIndex((slideIndex = 1));
     if (index < 1) setSlideIndex((slideIndex = slides.length));
 
-    for (i = 0; i < slides.length; i++) {
+    for (let i = 0; i < slides.length; i++) {
       slides[i].style.display = "none";
     }
-    slides[slideIndex - 1].style.display = "block";
+    slides[slideIndex - 1].style.display = "table";
   };
 
   return (
@@ -36,17 +34,23 @@ const ImageSlide = ({ imageArr }) => {
       <div className="slideshow-container">
         <div className="slide fade">
           <div className="number-text">1 / 3</div>
-          <img src={img1} style={{ width: "100%" }} />
+          <div className="image">
+            <img src={img1} />
+          </div>
         </div>
 
         <div className="slide fade">
           <div className="number-text">2 / 3</div>
-          <img src={img2} style={{ width: "100%" }} />
+          <div className="image">
+            <img src={img2} />
+          </div>
         </div>
 
         <div className="slide fade">
           <div className="number-text">3 / 3</div>
-          <img src={img3} style={{ width: "100%" }} />
+          <div className="image">
+            <img src={img3} />
+          </div>
         </div>
 
         <div className="buttons">
@@ -68,6 +72,20 @@ const ImageSlide = ({ imageArr }) => {
 
         .slide {
           display: none;
+          width: 100%;
+          height: 100%;
+          text-align: center;
+        }
+
+        .image {
+          display: table-cell;
+          vertical-align: middle;
+        }
+
+        img {
+          max-width: 100%;
+          max-height: 100%;
+          user-select: none;
         }
 
         .number-text {
