@@ -1,12 +1,6 @@
 import { useEffect, useState } from "react";
 
-/* 수정 필요 */
-// 1. 컴포넌트화
-
 const ImageSlide = ({ imageArr }) => {
-  const img1 = imageArr[0];
-  const img2 = imageArr[1];
-  const img3 = imageArr[2];
   const [slideIndex, setSlideIndex] = useState(1);
 
   useEffect(() => {
@@ -18,7 +12,7 @@ const ImageSlide = ({ imageArr }) => {
   };
 
   const showSlides = (index) => {
-    let slides = document.getElementsByClassName("slide");
+    const slides = document.getElementsByClassName("slide");
 
     if (index > slides.length) setSlideIndex((slideIndex = 1));
     if (index < 1) setSlideIndex((slideIndex = slides.length));
@@ -32,26 +26,16 @@ const ImageSlide = ({ imageArr }) => {
   return (
     <>
       <div className="slideshow-container">
-        <div className="slide fade">
-          <div className="number-text">1 / 3</div>
-          <div className="image">
-            <img src={img1} />
-          </div>
-        </div>
-
-        <div className="slide fade">
-          <div className="number-text">2 / 3</div>
-          <div className="image">
-            <img src={img2} />
-          </div>
-        </div>
-
-        <div className="slide fade">
-          <div className="number-text">3 / 3</div>
-          <div className="image">
-            <img src={img3} />
-          </div>
-        </div>
+        {imageArr.map((image, index) => {
+          return (
+            <div className="slide fade" key={index}>
+              <div className="number-text">{`${index} / ${imageArr.length}`}</div>
+              <div className="image-container">
+                <img src={image} />
+              </div>
+            </div>
+          );
+        })}
 
         <div className="buttons">
           <button className="prev-button" onClick={() => onChangeImage(-1)}>
@@ -66,8 +50,6 @@ const ImageSlide = ({ imageArr }) => {
       <style jsx>{`
         .slideshow-container {
           position: relative;
-          width: 100%;
-          height: 100%;
         }
 
         .slide {
@@ -77,7 +59,7 @@ const ImageSlide = ({ imageArr }) => {
           text-align: center;
         }
 
-        .image {
+        .image-container {
           display: table-cell;
           vertical-align: middle;
         }
@@ -113,7 +95,7 @@ const ImageSlide = ({ imageArr }) => {
           color: white;
           font-weight: bold;
           font-size: 1.5em;
-          transition: 0.6s ease;
+          transition: 0.5s ease;
           user-select: none;
           border: none;
           opacity: 0.8;
@@ -134,17 +116,17 @@ const ImageSlide = ({ imageArr }) => {
 
         .prev-button:hover,
         .next-button:hover {
-          background-color: rgba(0, 0, 0, 0.8);
+          background-color: rgba(0, 0, 0, 1);
         }
 
         .fade {
           animation-name: fade;
-          animation-duration: 1.5s;
+          animation-duration: 0.5s;
         }
 
         @keyframes fade {
           from {
-            opacity: 0.4;
+            opacity: 0.5;
           }
           to {
             opacity: 1;
