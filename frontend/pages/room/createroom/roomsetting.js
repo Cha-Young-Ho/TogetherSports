@@ -129,8 +129,8 @@ const RoomSetting = () => {
       roomTitle === "" ||
       exercise === "" ||
       limitPeopleCount === "" ||
-      roomArea.area === "정보 없음" ||
-      roomArea.areaDetail === "정보 없음"
+      roomArea.area === "" ||
+      roomArea.areaDetail === ""
     ) {
       e.preventDefault();
       alert("빈칸을 모두 설정해주세요!");
@@ -148,8 +148,7 @@ const RoomSetting = () => {
         roomTitle: roomTitle,
         exercise: exercise,
         limitPeopleCount: limitPeopleCount,
-        area: roomArea.area,
-        areaDetail: roomArea.areaDetail,
+        roomArea: roomArea.areaDetail,
       },
     });
   };
@@ -170,6 +169,7 @@ const RoomSetting = () => {
               value={roomTitle}
               onChange={(e) => setRoomTitle(e.target.value)}
               type="text"
+              minLength="1"
               maxLength="20"
             />
           </div>

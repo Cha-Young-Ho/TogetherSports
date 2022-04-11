@@ -37,7 +37,7 @@ const saveNicknameInitialState = {
 const createRoomInitialState = {
   roomTitle: "",
   roomContent: "",
-  roomArea: {},
+  roomArea: "",
   limitPeopleCount: "",
   exercise: "",
   tag: [],
@@ -126,11 +126,7 @@ const createRoomReducer = (state = createRoomInitialState, action) => {
         roomTitle: action.payload.roomTitle,
         exercise: action.payload.exercise,
         limitPeopleCount: action.payload.limitPeopleCount,
-        /* 수정 가능성 */
-        roomArea: {
-          area: action.payload.roomArea.area,
-          areaDetail: action.payload.roomArea.areaDetail,
-        },
+        roomArea: action.payload.roomArea,
       };
     case ROOMSCHEDULE:
       return {
