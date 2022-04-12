@@ -25,17 +25,17 @@ const getRoomInfo = async (roomSequenceId) => {
 
 // 방 목록 페이지 조회
 const getRoomList = async (
-  creatorNickname,
   roomTitle,
   roomContent,
   area,
   exercise,
   tag,
   startAppointmentDate,
-  endAppointmentDate
+  endAppointmentDate,
+  containTimeClosing,
+  containNoAdmittance,
+  requiredPeopleCount
 ) => {
-  creatorNickname =
-    creatorNickname === "" ? "" : `creatorNickname=${creatorNickname}&`;
   roomTitle = roomTitle === "" ? "" : `roomTitle=${roomTitle}&`;
   roomContent = roomContent === "" ? "" : `roomContent=${roomContent}&`;
   area = area === "" ? "" : `area=${area}&`;
@@ -49,16 +49,24 @@ const getRoomList = async (
     endAppointmentDate === ""
       ? ""
       : `endAppointmentDate=${endAppointmentDate}&`;
+  containTimeClosing = `containTimeClosing=${containTimeClosing}&`;
+  containNoAdmittance = `containNoAdmittance=${containNoAdmittance}&`;
+  requiredPeopleCount =
+    requiredPeopleCount === ""
+      ? ""
+      : `requiredPeopleCount=${requiredPeopleCount}&`;
 
   const totalQueryString =
-    creatorNickname +
     roomTitle +
     roomContent +
     area +
     exercise +
     tag +
     startAppointmentDate +
-    endAppointmentDate;
+    endAppointmentDate +
+    containTimeClosing +
+    containNoAdmittance +
+    requiredPeopleCount;
 
   if (totalQueryString[totalQueryString.length - 1] === "&")
     totalQueryString = totalQueryString.slice(0, -1);

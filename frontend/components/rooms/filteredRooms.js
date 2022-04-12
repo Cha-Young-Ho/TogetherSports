@@ -37,14 +37,16 @@ const FilteredRooms = () => {
   // 첫 화면 렌더 시 아무런 필터 없이 요청
   useEffect(() => {
     getRoomList(
-      roomFilteringData.creatorNickname,
       roomFilteringData.roomTitle,
       roomFilteringData.roomContent,
       roomFilteringData.area,
       roomFilteringData.exercise,
       roomFilteringData.tag,
       roomFilteringData.startAppointmentDate,
-      roomFilteringData.endAppointmentDate
+      roomFilteringData.endAppointmentDate,
+      roomFilteringData.containTimeClosing,
+      roomFilteringData.containNoAdmittance,
+      roomFilteringData.requiredPeopleCount
     ).then((res) => {
       if (res.status.code === 5000) {
         setEachRoomInfo(res.content.rooms);
@@ -57,7 +59,6 @@ const FilteredRooms = () => {
       /* 시간 예외처리 수정 필요합니다.
       1. startdate나 enddate가 비었을때 각 time은 빌 수 없음
       2. date가 있을때 각 time이 비었다면 00:00시와 23:59로보냄 */
-      console.log(roomFilteringData.startDate, roomFilteringData.startTime);
       if (
         roomFilteringData.startDate === "" &&
         roomFilteringData.startTime !== ""
@@ -74,44 +75,53 @@ const FilteredRooms = () => {
         return;
       }
 
-      if (roomFilteringData.startTime !== "") {
+      // 시작일자는 있고, 마감일자는 없을때
+      if (
+        roomFilteringData.startDate !== "" &&
+        roomFilteringData.endDate === ""
+      ) {
+        roomFilteringData.startAppointmentDate =
+          roomFilteringData.startDate +
+          (roomFilteringData.startTime === ""
+            ? "T00:00"
+            : "T" + String(roomFilteringData.startTime).padStart(2, 0) + ":00");
+      } else if (
+        roomFilteringData.startDate === "" &&
+        roomFilteringData.endDate !== ""
+      ) {
+        roomFilteringData.endAppointmentDate =
+          roomFilteringData.endDate +
+          (roomFilteringData.endTime === ""
+            ? "T00:00"
+            : "T" + String(roomFilteringData.endTime).padStart(2, 0) + ":00");
+      } else if (
+        roomFilteringData.startDate !== "" &&
+        roomFilteringData.endDate !== ""
+      ) {
         roomFilteringData.startAppointmentDate =
           roomFilteringData.startDate +
           "T" +
           String(roomFilteringData.startTime).padStart(2, 0) +
           ":00";
-      } else if (
-        roomFilteringData.startTime === "" &&
-        roomFilteringData.endAppointmentDate !== ""
-      ) {
-        roomFilteringData.startAppointmentDate =
-          roomFilteringData.endAppointmentDate.slice(0, 10) + "T00:00";
-      }
-
-      if (roomFilteringData.endTime !== "") {
         roomFilteringData.endAppointmentDate =
           roomFilteringData.endDate +
           "T" +
           String(roomFilteringData.endTime).padStart(2, 0) +
           ":00";
-      } else if (
-        roomFilteringData.endTime === "" &&
-        roomFilteringData.startAppointmentDate !== ""
-      ) {
-        roomFilteringData.endAppointmentDate =
-          roomFilteringData.startAppointmentDate.slice(0, 10) + "T00:00";
       }
 
       // 그 정보를 토대로 필터를 서버에게 전송
       getRoomList(
-        roomFilteringData.creatorNickname,
         roomFilteringData.roomTitle,
         roomFilteringData.roomContent,
         roomFilteringData.area,
         roomFilteringData.exercise,
         roomFilteringData.tag,
         roomFilteringData.startAppointmentDate,
-        roomFilteringData.endAppointmentDate
+        roomFilteringData.endAppointmentDate,
+        roomFilteringData.containTimeClosing,
+        roomFilteringData.containNoAdmittance,
+        roomFilteringData.requiredPeopleCount
       ).then((res) => {
         if (res.status.code === 5000) {
           setEachRoomInfo(res.content.rooms);

@@ -51,7 +51,6 @@ const createRoomInitialState = {
 
 // 방 필터용 데이터 초기값
 const roomFilteringDataInitialState = {
-  creatorNickname: "",
   roomTitle: "",
   roomContent: "",
   area: "",
@@ -59,6 +58,9 @@ const roomFilteringDataInitialState = {
   tag: [],
   startAppointmentDate: "",
   endAppointmentDate: "",
+  containTimeClosing: "false",
+  containNoAdmittance: "false",
+  requiredPeopleCount: "",
   startDate: "",
   endDate: "",
   startTime: "",
@@ -85,6 +87,10 @@ const SETENDDATE = "SETENDDATE";
 const SETSTARTTIME = "SETSTARTTIME";
 const SETENDTIME = "SETENDTIME";
 const SETAPPOINTMENTDATE = "SETAPPOINTMENTDATE";
+const SETCONTAINTIMECLOSING = "SETCONTAINTIMECLOSING";
+const SETCONTAINNOADMITTANCE = "SETCONTAINNOADMITTANCE";
+const SETREQUIREDPPLCOUNT = "SETREQUIREDPPLCOUNT";
+const RESETALLDATAS = "RESETALLDATAS";
 
 // 유저 회원가입 정보 reducer
 const userRequestReducer = (state = signupInitialState, action) => {
@@ -216,6 +222,23 @@ const roomFilteringDataReducer = (
         startAppointmentDate: action.payload.startAppointmentDate,
         endAppointmentDate: action.payload.endAppointmentDate,
       };
+    case SETCONTAINTIMECLOSING:
+      return {
+        ...state,
+        containTimeClosing: action.payload.containTimeClosing,
+      };
+    case SETCONTAINNOADMITTANCE:
+      return {
+        ...state,
+        containNoAdmittance: action.payload.containNoAdmittance,
+      };
+    case SETREQUIREDPPLCOUNT:
+      return {
+        ...state,
+        requiredPeopleCount: action.payload.requiredPeopleCount,
+      };
+    case RESETALLDATAS:
+      return roomFilteringDataInitialState;
     default:
       return state;
   }

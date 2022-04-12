@@ -12,6 +12,11 @@ const Filter = () => {
   const [startCalendarModalOpen, setStartCalendarModalOpen] = useState(false);
   const [endCalendarModalOpen, setEndCalendarModalOpen] = useState(false);
   const [areaModalOpen, setAreaModalOpen] = useState(false);
+
+  // ~방 보기 checkbox
+  const [containTimeClosing, setContainTimeClosing] = useState(false);
+  const [containNoAdmittance, setContainNoAdmittance] = useState(false);
+
   // 시기
   const [curStartFilteringDate, setCurStartFilteringDate] = useState("");
   const [curEndFilteringDate, setCurEndFilteringDate] = useState("");
@@ -95,6 +100,20 @@ const Filter = () => {
 
   const clickDoFilteringButton = () => {
     console.log("Execute Filtering...");
+
+    if (
+      moment(curStartFilteringDate).isSame(curEndFilteringDate) &&
+      startTime > endTime
+    ) {
+      alert("시간을 다시 확인해 주세요.");
+      return;
+    }
+
+    if (startTime > 23 || endTime > 23) {
+      alert("0-23의 시간만 입력할 수 있습니다.");
+      return;
+    }
+
     dispatch({
       type: "FILTERBUTTONCLICK",
       payload: {
@@ -113,27 +132,7 @@ const Filter = () => {
     setCurEndFilteringDate("");
 
     dispatch({
-      type: "SETSTARTTIME",
-      payload: {
-        startTime: "",
-      },
-      type: "SETENDTIME",
-      payload: {
-        endTime: "",
-      },
-      type: "SETAPPOINTMENTDATE",
-      payload: {
-        startAppointmentDate: "",
-        endAppointmentDate: "",
-      },
-      type: "SETSTARTDATE",
-      payload: {
-        startDate: "",
-      },
-      type: "SETENDDATE",
-      payload: {
-        endDate: "",
-      },
+      type: "RESETALLDATAS",
     });
   };
 
@@ -162,7 +161,13 @@ const Filter = () => {
   const onChangeEnterNumber = (e) => {
     e.target.value = e.target.value.replace(/[^0-9]/g, "");
     setEnterAccessPeople(e.target.value);
-    //디스패치 필요
+
+    dispatch({
+      type: "SETREQUIREDPPLCOUNT",
+      payload: {
+        requiredPeopleCount: e.target.value,
+      },
+    });
   };
 
   useEffect(() => {
@@ -183,14 +188,42 @@ const Filter = () => {
     });
   }, [curEndFilteringDate]);
 
+  useEffect(() => {
+    dispatch({
+      type: "SETCONTAINTIMECLOSING",
+      payload: {
+        containTimeClosing: containTimeClosing,
+      },
+    });
+  }, [containTimeClosing]);
+
+  useEffect(() => {
+    dispatch({
+      type: "SETCONTAINNOADMITTANCE",
+      payload: {
+        containNoAdmittance: containNoAdmittance,
+      },
+    });
+  }, [containNoAdmittance]);
+
   return (
     <>
       <div className="filter-wrapper">
         <div className="centerLine">
           <div className="checkbox-wrapper">
-            <input type="checkbox" id="enter"></input>
+            <input
+              type="checkbox"
+              id="enter"
+              checked={containTimeClosing}
+              onChange={() => setContainTimeClosing(!containTimeClosing)}
+            ></input>
             <label htmlFor="enter">입장 마감된 방 보기</label>
-            <input type="checkbox" id="time"></input>
+            <input
+              type="checkbox"
+              id="time"
+              checked={containNoAdmittance}
+              onChange={() => setContainNoAdmittance(!containNoAdmittance)}
+            ></input>
             <label htmlFor="time">시간 마감된 방 보기</label>
           </div>
           <div className="categories">
