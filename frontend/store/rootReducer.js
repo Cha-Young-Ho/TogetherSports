@@ -46,6 +46,29 @@ const createRoomInitialState = {
   roomImages: [],
 };
 
+// 방 필터용 데이터 초기값
+const roomFilteringDataInitialState = {
+  roomTitle: "",
+  roomContent: "",
+  area: "",
+  exercise: [],
+  tag: [],
+  startAppointmentDate: "",
+  endAppointmentDate: "",
+  containTimeClosing: "false",
+  containNoAdmittance: "false",
+  requiredPeopleCount: "",
+  startDate: "",
+  endDate: "",
+  startTime: "",
+  endTime: "",
+};
+
+// 필터 적용 클릭 감지용 초기값
+const clickDetectionInitialState = {
+  detection: "false",
+};
+
 // 오타 방지용
 const PERSONALINFO = "PERSONALINFO";
 const INTERESTS = "INTERESTS";
@@ -53,14 +76,22 @@ const SAVENICKNAME = "SAVENICKNAME";
 const SAVEMYINFO = "SAVEMYINFO";
 const ROOMSETTING = "ROOMSETTING";
 const ROOMSCHEDULE = "ROOMSCHEDULE";
+const FILTERINGTITLE = "FILTERINGTITLE";
+const ROOMEXERCISES = "ROOMEXERCISES";
+const FILTERBUTTONCLICK = "FILTERBUTTONCLICK";
+const SETSTARTDATE = "SETSTARTDATE";
+const SETENDDATE = "SETENDDATE";
+const SETSTARTTIME = "SETSTARTTIME";
+const SETENDTIME = "SETENDTIME";
+const SETAPPOINTMENTDATE = "SETAPPOINTMENTDATE";
+const SETCONTAINTIMECLOSING = "SETCONTAINTIMECLOSING";
+const SETCONTAINNOADMITTANCE = "SETCONTAINNOADMITTANCE";
+const SETREQUIREDPPLCOUNT = "SETREQUIREDPPLCOUNT";
+const RESETALLDATAS = "RESETALLDATAS";
 
 // 유저 회원정보추가입력 정보 reducer
 const userRequestReducer = (state = signupInitialState, action) => {
   switch (action.type) {
-    //case HYDRATE:
-    // Attention! This will overwrite client state! Real apps should use proper reconciliation.
-    //  console.log("hydrate");
-    //  return { ...state, ...action.payload };
     case PERSONALINFO:
       return {
         ...state,
@@ -105,7 +136,7 @@ const myInfoReducer = (state = myInfoInitialState, action) => {
   }
 };
 
-// 닉네임 저장 reducer
+// 닉네임 저장 reducer [[[[지울예정]]]]
 const saveNicknameReducer = (state = saveNicknameInitialState, action) => {
   switch (action.type) {
     case SAVENICKNAME:
@@ -139,12 +170,92 @@ const createRoomReducer = (state = createRoomInitialState, action) => {
   }
 };
 
+// 방 필터용 데이터
+const roomFilteringDataReducer = (
+  state = roomFilteringDataInitialState,
+  action
+) => {
+  switch (action.type) {
+    case FILTERINGTITLE:
+      return {
+        ...state,
+        roomTitle: action.payload.roomTitle,
+      };
+    case ROOMEXERCISES:
+      return {
+        ...state,
+        exercise: Object.entries(action.payload.exercise)
+          .filter((el) => el[1] === true)
+          .map((el) => el[0]),
+      };
+    case SETSTARTDATE:
+      return {
+        ...state,
+        startDate: action.payload.startDate,
+      };
+    case SETENDDATE:
+      return {
+        ...state,
+        endDate: action.payload.endDate,
+      };
+    case SETSTARTTIME:
+      return {
+        ...state,
+        startTime: action.payload.startTime,
+      };
+    case SETENDTIME:
+      return {
+        ...state,
+        endTime: action.payload.endTime,
+      };
+    case SETAPPOINTMENTDATE:
+      return {
+        ...state,
+        startAppointmentDate: action.payload.startAppointmentDate,
+        endAppointmentDate: action.payload.endAppointmentDate,
+      };
+    case SETCONTAINTIMECLOSING:
+      return {
+        ...state,
+        containTimeClosing: action.payload.containTimeClosing,
+      };
+    case SETCONTAINNOADMITTANCE:
+      return {
+        ...state,
+        containNoAdmittance: action.payload.containNoAdmittance,
+      };
+    case SETREQUIREDPPLCOUNT:
+      return {
+        ...state,
+        requiredPeopleCount: action.payload.requiredPeopleCount,
+      };
+    case RESETALLDATAS:
+      return roomFilteringDataInitialState;
+    default:
+      return state;
+  }
+};
+
+const filteringButtonClickDetectionReducer = (
+  state = clickDetectionInitialState,
+  action
+) => {
+  switch (action.type) {
+    case FILTERBUTTONCLICK:
+      return { ...state, detection: action.payload.detection };
+    default:
+      return state;
+  }
+};
+
 // rootReducer로 모든 reducer Combine
 const rootReducer = combineReducers({
   userRequestReducer,
   saveNicknameReducer,
   myInfoReducer,
   createRoomReducer,
+  roomFilteringDataReducer,
+  filteringButtonClickDetectionReducer,
 });
 
 const makeStore = () => createStore(rootReducer, composeWithDevTools());

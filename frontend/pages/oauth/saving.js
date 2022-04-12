@@ -17,7 +17,7 @@ const Saving = () => {
     setAccessToken((accessToken = urlParams.get("access_token")));
     setRefreshToken((refreshToken = urlParams.get("refresh_token")));
 
-    // + is_first = true 면 서버에 provider, email, name 요청 후 받고 리덕스에 저장
+    // + is_first = true 관련 알고리즘 정리필요
     // 그 후 추가정보 페이지로 이동시킴
   }, []);
 
