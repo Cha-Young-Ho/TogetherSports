@@ -3,6 +3,7 @@ package com.togethersports.tosproejct.room;
 
 import com.togethersports.tosproejct.common.code.CommonCode;
 import com.togethersports.tosproejct.common.dto.Response;
+import com.togethersports.tosproejct.room.dto.FieldsOfRoomList;
 import com.togethersports.tosproejct.room.dto.RoomOfCreate;
 import com.togethersports.tosproejct.room.dto.RoomOfInfo;
 import com.togethersports.tosproejct.room.dto.RoomOfUpdate;
@@ -10,6 +11,7 @@ import com.togethersports.tosproejct.security.annotation.CurrentUser;
 import com.togethersports.tosproejct.user.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -44,6 +46,19 @@ public class RoomController {
         roomService.modifyRoomInfo(roomOfUpdate);
 
         return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, null));
+
+    }
+
+    @GetMapping("/api/room")
+    public void getRoomList(FieldsOfRoomList fieldsOfRoomList, Pageable pageable){
+        log.info("interests = {}", fieldsOfRoomList.getInterest());
+        log.info("partici count = {}", fieldsOfRoomList.getParticipantCount());
+        log.info("area = {}", fieldsOfRoomList.getArea());
+        log.info("keyword = {}", fieldsOfRoomList.getKeyWord());
+        log.info("limit = {}", fieldsOfRoomList.getTime());
+        log.info("page = {}", pageable.getPageNumber());
+        log.info("page size = {}", pageable.getPageSize());
+        log.info("page sort = {}", pageable.getSort());
 
     }
 }

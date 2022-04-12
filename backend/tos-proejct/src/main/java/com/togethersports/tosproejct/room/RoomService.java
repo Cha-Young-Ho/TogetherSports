@@ -26,13 +26,11 @@ import java.util.List;
 @Service
 public class RoomService {
 
-
     private final TagService tagService;
     private final ParsingEntityUtils parsingEntityUtils;
     private final RoomRepository roomRepository;
     private final UserRepository userRepository;
     private final RoomImageService roomImageService;
-
 
     //방 생성
     public void createRoom(User user, RoomOfCreate roomOfCreate){
