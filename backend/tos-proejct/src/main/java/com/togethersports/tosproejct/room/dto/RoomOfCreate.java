@@ -24,13 +24,10 @@ public class RoomOfCreate {
 
 
     @NotNull
-    @Size(min = 1, max = 30, message = "최소 5글자 및 최대 30글자의 제목을 입력해야합니다.")
+    @Size(min = 1, max = 20, message = "최소 5글자 및 최대 20글자의 제목을 입력해야합니다.")
     @NotBlank
     private String roomTitle;
 
-    @NotBlank
-    @NotNull
-    @Size(min = 5, message = "최소 5글자의 본문을 작성해야 합니다.")
     private String roomContent;
 
     @NotBlank
@@ -47,6 +44,7 @@ public class RoomOfCreate {
 
 
     @NotNull(message = "태그를 1개 이상 입력해야 합니다.")
+    @Size(min = 1, message = "태그는 최소 1개 이상 최대 5개로 지정할 수 있습니다.")
     private List<String> tag;
 
 
