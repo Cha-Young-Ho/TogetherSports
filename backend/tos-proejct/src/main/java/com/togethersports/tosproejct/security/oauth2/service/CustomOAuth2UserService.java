@@ -1,11 +1,11 @@
 package com.togethersports.tosproejct.security.oauth2.service;
 
-import com.togethersports.tosproejct.user.User;
-import com.togethersports.tosproejct.user.UserRepository;
 import com.togethersports.tosproejct.security.oauth2.CustomOAuth2User;
 import com.togethersports.tosproejct.security.oauth2.model.OAuth2Provider;
 import com.togethersports.tosproejct.security.oauth2.model.OAuth2UserInfo;
 import com.togethersports.tosproejct.security.oauth2.model.OAuth2UserInfoFactory;
+import com.togethersports.tosproejct.user.User;
+import com.togethersports.tosproejct.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -13,6 +13,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Locale;
 import java.util.Map;
@@ -32,6 +33,7 @@ import java.util.Optional;
  * @see DefaultOAuth2UserService
  */
 
+@Transactional
 @RequiredArgsConstructor
 @Service
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
@@ -62,13 +64,14 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             User newUser = User.
                     createUser(userInfo.getOAuth2Id(),
                             userInfo.getEmail(),
-                            userInfo.getNickname(),
                             userInfo.getOAuth2Provider());
             accountRepository.save(newUser);
             User user = newUser;
             return new CustomOAuth2User(userInfo, user);
         }
 
+        User user = accountRepository.findByEmailAndProvider(userInfo.getEmail(), userInfo.getOAuth2Provider()).get();
+        user.updateIsFirst();
             return new CustomOAuth2User(userInfo, findAccount.get());
     }
 }

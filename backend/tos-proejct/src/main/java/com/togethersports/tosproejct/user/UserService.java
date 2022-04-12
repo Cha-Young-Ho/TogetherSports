@@ -1,9 +1,5 @@
 package com.togethersports.tosproejct.user;
 
-import com.togethersports.tosproejct.user.dto.*;
-import com.togethersports.tosproejct.user.exception.NicknameDuplicationException;
-import com.togethersports.tosproejct.user.exception.NotEnteredInformationException;
-import com.togethersports.tosproejct.user.exception.UserNotFoundException;
 import com.togethersports.tosproejct.area.ActiveArea;
 import com.togethersports.tosproejct.area.ActiveAreaRepository;
 import com.togethersports.tosproejct.common.file.service.StorageService;
@@ -12,8 +8,16 @@ import com.togethersports.tosproejct.common.file.util.NameGenerator;
 import com.togethersports.tosproejct.common.util.ParsingEntityUtils;
 import com.togethersports.tosproejct.interest.Interest;
 import com.togethersports.tosproejct.interest.InterestRepository;
+import com.togethersports.tosproejct.security.acl.CreationStrategy;
+import com.togethersports.tosproejct.security.acl.Permission;
+import com.togethersports.tosproejct.security.annotation.AclCreate;
+import com.togethersports.tosproejct.user.dto.UserOfModifyInfo;
+import com.togethersports.tosproejct.user.dto.UserOfMyInfo;
+import com.togethersports.tosproejct.user.dto.UserOfOtherInfo;
+import com.togethersports.tosproejct.user.exception.NicknameDuplicationException;
+import com.togethersports.tosproejct.user.exception.NotEnteredInformationException;
+import com.togethersports.tosproejct.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +37,6 @@ import java.util.List;
  * @author younghoCha
  */
 
-@Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserService {
@@ -46,43 +49,6 @@ public class UserService {
     private final ActiveAreaRepository activeAreaRepository;
     private final InterestRepository interestRepository;
     // 사용자 계정 추가정보 최초 설정
-
-    @Transactional
-    public void initUserInfo(Long id, UserOfInitInfo initialInfo) {
-        List<ActiveArea> activeAreas = null;
-        List<Interest> interests = null;
-        String encodedImageSource = null;
-        String imagePath = null;
-        User findUser = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("사용자가 존재하지 않습니다."));
-
-        // ActiveArea 설정 (활동지역), String List -> ActiveAreas List
-        activeAreas =
-                    parsingEntityUtils.parsingStringToActivesEntity(initialInfo.getActiveAreas());
-
-
-
-        // Interest 설정 (관심종목), String List -> Interests List
-        interests =
-                parsingEntityUtils.parsingStringToInterestsEntity(initialInfo.getInterests());
-
-
-        if(initialInfo.getUserProfileImage().getImageSource() != null
-        || initialInfo.getUserProfileImage().getImageSource().equals("정보 없음")) {
-            // 프로필 이미지 저장
-            encodedImageSource = initialInfo.getUserProfileImage().getImageSource();
-            byte[] imageSource = base64Decoder.decode(encodedImageSource);
-            String extension = initialInfo.getUserProfileImage().getUserProfileExtension();
-            String fileName = nameGenerator.generateRandomName().concat(".").concat(extension);
-            imagePath = storageService.store(imageSource, fileName);
-        }
-        if(imagePath == null){
-            findUser.initUser(initialInfo.getGender(), initialInfo.getUserBirth(), activeAreas, interests);
-            return;
-        }
-
-        // 계정에 변경 사항 적용
-        findUser.initUser(imagePath, initialInfo.getGender(), initialInfo.getUserBirth(), activeAreas, interests);
-    }
 
     /**
      * 이메일 중복 체크를 위한 메소드
@@ -101,13 +67,16 @@ public class UserService {
 
     /**
      * 다른 회원 정보 조회 메소드
-     * @param userEmail : 전달받은 user email
+     * @param otherUserId : 전달받은 user id
      * @return USerOfOtherInfo : 다른 회원 정보에 대한 DTO
      */
-    public UserOfOtherInfo getOtherInfo(String userEmail){
+    public UserOfOtherInfo getOtherInfo(Long otherUserId){
         //유저 엔티티
-        User userEntity = userRepository.findByEmail(userEmail)
+        User userEntity = userRepository.findById(otherUserId)
                 .orElseThrow(() -> new UserNotFoundException("해당 사용자를 찾을 수 없습니다."));
+
+        //다른 회원이 정보를 입력했는지 여부
+        checkInformation(userEntity);
 
         //다른 회원 정보 조회 DTO 리턴
         return UserOfOtherInfo.builder()
@@ -132,25 +101,23 @@ public class UserService {
 
         List<ActiveArea> activeAreas = parsingEntityUtils.parsingStringToActivesEntity(userOfModifyInfo.getActiveAreas());
         List<Interest> interests = parsingEntityUtils.parsingStringToInterestsEntity(userOfModifyInfo.getInterests());
-        if(userOfModifyInfo.getUserProfileImage().equals("정보 없음")){
+        if(userOfModifyInfo.getUserProfileImage().getImageSource().equals("정보 없음")){
 
             findUser.updateUser(userOfModifyInfo, activeAreas, interests, null);
             return;
         }
 
-        String encodedImageSource = userOfModifyInfo.getUserProfileImage();
+        String encodedImageSource = userOfModifyInfo.getUserProfileImage().getImageSource();
         byte[] imageSource = base64Decoder.decode(encodedImageSource);
-        String fileName = nameGenerator.generateRandomName().concat(".").concat("png");
+        String fileName = nameGenerator.generateRandomName().concat(".")
+                .concat(userOfModifyInfo.getUserProfileImage().getUserProfileExtension());
         String imagePath = storageService.store(imageSource, fileName);
         findUser.updateUser(userOfModifyInfo, activeAreas, interests, imagePath);
-
     }
 
     public UserOfMyInfo getMyInfo(Long id){
         User user =  userRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("해당 사용자가 존재하지 않습니다."));
-
-        checkIsFirst(user);
 
         List<String> parsedAreaList = parsingEntityUtils.parsingAreasEntityToString(user.getActiveAreas());
         List<String> parsedInterestList = parsingEntityUtils.parsingInterestsEntityToString(user.getInterests());
@@ -166,11 +133,13 @@ public class UserService {
                .mannerPoint(user.getMannerPoint())
                .gender(user.getGender())
                .interests(parsedInterestList)
+               .isInformationRequired(user.isInformationRequired())
+               .userNickname(user.getNickname())
                .build();
 
     }
 
-    public void checkIsFirst(User user){
+    public void checkInformation(User user){
         if(user.isFirst()){
             throw new NotEnteredInformationException("추가 정보를 입력하지 않은 계정입니다.");
         }

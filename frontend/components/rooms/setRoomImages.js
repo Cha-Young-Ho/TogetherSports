@@ -5,7 +5,7 @@ const SetRoomImages = (props) => {
   const [imageSrc, setImageSrc] = useState("");
   const [roomImage, setRoomImage] = useState([]); //서버로 보낼 데이터
   const [imagePreview, setImagePreview] = useState([]);
-  const [representativeIndex, setRepresentativeIndex] = useState(0);
+  const [thumbnailIndex, setThumbnailIndex] = useState(0);
 
   // 상위 컴포넌트로 이미지 전달
   useEffect(() => {
@@ -64,7 +64,8 @@ const SetRoomImages = (props) => {
         setRoomImage([
           ...roomImage,
           {
-            roomImageExtension: imageFileExtension,
+            name: file.name,
+            // roomImageExtension: imageFileExtension,
             imageSource: imageSrc,
           },
         ]);
@@ -111,14 +112,19 @@ const SetRoomImages = (props) => {
     setRoomImage((roomImage = tempArr));
   };
 
-  const onChangeRepresentativeImage = (e) => {
+  const onChangeThumbnailImage = (e) => {
     const targetIndex = e.target.classList[1].slice(-1);
     const moveValue = Math.abs(targetIndex) * -1;
 
     setInputImageName((inputImageName = "")); // input 비우기
-    setRepresentativeIndex((representativeIndex = Number(targetIndex))); // 대표사진 바꾸기
+    setThumbnailIndex((thumbnailIndex = Number(targetIndex))); // 대표사진 바꾸기
     changeArrayOrder(roomImage, targetIndex, moveValue);
   };
+
+  // test
+  // useEffect(() => {
+  //   console.log(roomImage);
+  // });
 
   return (
     <>
@@ -141,12 +147,12 @@ const SetRoomImages = (props) => {
 
         <div className="previews">
           {imagePreview.map((preview, index) => {
-            if (index === representativeIndex) {
+            if (index === thumbnailIndex) {
               return (
                 <div className="preview" key={index}>
                   <div
                     className={`preview-${index} preview-clicked`}
-                    onClick={onChangeRepresentativeImage}
+                    onClick={onChangeThumbnailImage}
                   >
                     <img src={preview} className={`img-${index}`} />
                   </div>
@@ -160,7 +166,7 @@ const SetRoomImages = (props) => {
                 <div className="preview" key={index}>
                   <div
                     className={`preview-${index} preview-unclicked`}
-                    onClick={onChangeRepresentativeImage}
+                    onClick={onChangeThumbnailImage}
                   >
                     <img src={preview} className={`img-${index}`} />
                   </div>
@@ -278,6 +284,7 @@ const SetRoomImages = (props) => {
         .preview img {
           max-width: 90px;
           max-height: 90px;
+          user-select: none;
         }
 
         .preview button {
@@ -293,6 +300,7 @@ const SetRoomImages = (props) => {
           font-weight: bold;
           font-size: 1.2em;
           color: white;
+          user-select: none;
           cursor: pointer;
         }
       `}</style>

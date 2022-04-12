@@ -1,5 +1,7 @@
 package com.togethersports.tosproejct.common.controller;
 
+import com.togethersports.tosproejct.room.code.RoomCode;
+import com.togethersports.tosproejct.room.exception.NotFoundRoomException;
 import com.togethersports.tosproejct.user.code.UserCode;
 import com.togethersports.tosproejct.user.exception.NicknameDuplicationException;
 import com.togethersports.tosproejct.user.exception.NotEnteredInformationException;
@@ -60,5 +62,11 @@ public class ExceptionControllerAdvice {
 
         return ResponseEntity.ok().body(Response.of(UserCode.NOT_ENTERED_INFORMATION, null));
     }
+
+    @ExceptionHandler(NotFoundRoomException.class)
+    public ResponseEntity<Response> handleNotFoundRoomException(){
+        return ResponseEntity.ok().body(Response.of(RoomCode.NOT_FOUND_ROOM, null));
+    }
+
 
 }

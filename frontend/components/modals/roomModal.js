@@ -1,6 +1,111 @@
+import { useState, useEffect } from "react";
 import Calendar from "../calendar/calendar";
+import { getRoomInfo } from "../../api/rooms";
+import ImageSlide from "../imageSlide";
 
+/* props에 roomSequenceId 추가 필요 -> getRoomInfo 에 parameter 추가 필요 */
 const RoomModal = ({ open, close }) => {
+  const [mapLoaded, setMapLoaded] = useState(false); // 지도 로드 동기화
+
+  /* response content 담을 변수들 */
+  const [creatorNickName, setCreatorNickName] = useState(""); // 방장 닉네임
+  const [roomTitle, setRoomTitle] = useState(""); // 방 제목
+  const [roomContent, setRoomContent] = useState(""); // 방 설명
+  const [area, setArea] = useState(""); // 위치
+  const [limitPeopleCount, setLimitPeopleCount] = useState(""); // 모집인원
+  const [participantCount, setParticipantCount] = useState(""); // 현재 참여인원
+  const [exercise, setExercise] = useState(""); // 종목
+  const [tag, setTag] = useState([]); // 태그
+  const [startAppointmentDate, setStartAppointmentDate] = useState(""); // 시작 일시
+  const [endAppointmentDate, setEndAppointmentDate] = useState(""); // 종료 일시
+  const [viewCount, setViewCount] = useState(""); // 조회수
+  const [roomImagePath, setRoomImagePath] = useState([
+    "logo-sign.png",
+    "signup-bg.png",
+    "naver-login.png",
+  ]); // 방 이미지 test
+
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAOMAP_APPKEY}&autoload=false&libraries=services`;
+    document.head.appendChild(script);
+    setMapLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (open && mapLoaded) {
+      // 방 정보 받아오기
+      getRoomInfo().then((res) => {
+        if (res.status.code === 5000) {
+          setCreatorNickName((creatorNickName = res.content.creatorNickName));
+          setRoomTitle((roomTitle = res.content.roomTitle));
+          setRoomContent((roomContent = res.content.roomContent));
+          setArea((area = res.content.area));
+          setLimitPeopleCount(
+            (limitPeopleCount = res.content.limitPeopleCount)
+          );
+          setParticipantCount(
+            (participantCount = res.content.participantCount)
+          );
+          setExercise((exercise = res.content.exercise));
+          setTag((tag = res.content.tag));
+          setStartAppointmentDate(
+            (startAppointmentDate = res.content.startAppointmentDate)
+          );
+          setEndAppointmentDate(
+            (endAppointmentDate = res.content.endAppointmentDate)
+          );
+          setViewCount((viewCount = res.content.viewCount));
+          setRoomImagePath((roomImagePath = res.content.roomImagePath));
+        } else {
+          FailResponse(res.status.code);
+        }
+      });
+
+      // 위치 정보 받아오기
+      kakao.maps.load(() => {
+        const container = document.getElementById("map"),
+          options = {
+            center: new kakao.maps.LatLng(
+              37.56682420062817,
+              126.97864093976689
+            ),
+            level: 4,
+          };
+
+        const map = new kakao.maps.Map(container, options); // 지도 생성
+        const geocoder = new kakao.maps.services.Geocoder(); // 주소-좌표 변환 객체 생성
+
+        // 주소로 좌표를 검색
+        geocoder.addressSearch(`${area}`, function (result, status) {
+          if (status === kakao.maps.services.Status.OK) {
+            const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+
+            // 위치에 마커 표시
+            const marker = new kakao.maps.Marker({
+              map: map,
+              position: coords,
+            });
+
+            // 인포윈도우로 장소에 대한 설명을 표시
+            const infowindow = new kakao.maps.InfoWindow({
+              content:
+                '<div style="width:150px;text-align:center;padding:6px 0;">만남의 장소</div>',
+            });
+            infowindow.open(map, marker);
+
+            // 지도의 중심을 결과값으로 받은 위치로 이동
+            map.setCenter(coords);
+          }
+        });
+      });
+    }
+  }, [open]);
+
+  const enterRoom = () => {
+    // 방에 참가
+  };
+
   return (
     <>
       <div className={open ? "openModal modal" : "modal"}>
@@ -9,42 +114,54 @@ const RoomModal = ({ open, close }) => {
             <div className="room-modal-body">
               <div className="header">
                 <div className="tags">
-                  <div className="tag">10대</div>
-                  <div className="tag">초보만</div>
-                  <div className="tag">실력무관</div>
-                  <div className="tag">성별무관</div>
+                  {tag.map((tag, index) => {
+                    return (
+                      <div className="tag" key={index}>
+                        {tag}
+                      </div>
+                    );
+                  })}
                 </div>
 
-                <p>{`ID : nickname님의 방`}</p>
+                <p>{`ID : ${creatorNickName}님의 방`}</p>
               </div>
 
               <div className="section">
                 <div className="left-section">
-                  <p>매너축구 하실 멋쟁이 분들 모십니다.</p>
+                  <p>{roomTitle}</p>
 
                   <div className="options">
                     <div className="option">
                       <p className="small-p">참여인원</p>
-                      <p className="big-p">10</p>
+                      <p className="big-p">{participantCount}</p>
                     </div>
                     <div className="option">
                       <p className="small-p">모집인원</p>
-                      <p className="big-p">30</p>
+                      <p className="big-p">{limitPeopleCount}</p>
                     </div>
                     <div className="option">
                       <p className="small-p">종목</p>
-                      <p className="big-p">축구</p>
+                      <p className="big-p">{exercise}</p>
                     </div>
                     <div className="option-time">
                       <p className="small-p">시간</p>
-                      <p className="big-p">10시 30분 ~</p>
-                      <p className="big-p">14시 30분</p>
+                      <p className="big-p">{`${startAppointmentDate.substr(
+                        11,
+                        2
+                      )}시 ${startAppointmentDate.substr(-2)}분 ~`}</p>
+                      <p className="big-p">{`${endAppointmentDate.substr(
+                        11,
+                        2
+                      )}시 ${endAppointmentDate.substr(-2)}분`}</p>
                     </div>
                   </div>
 
                   <div className="calendar">
                     <Calendar
-                      clickDateOptionFunction={`2022-04-22`}
+                      clickDateOptionFunction={`${startAppointmentDate.substr(
+                        0,
+                        10
+                      )}`}
                       moveDateButtonOptionFunction={true}
                     />
                   </div>
@@ -52,22 +169,26 @@ const RoomModal = ({ open, close }) => {
                   <div className="location">
                     <p className="location-info">위치 정보</p>
                     <div className="line"></div>
-                    <p className="address-info">서울 강동구 올림픽로 223-1</p>
-                    <div className="map"></div>
+                    <p className="address-info">{area}</p>
+                    <div id="map"></div>
                   </div>
                 </div>
 
                 <div className="right-section">
-                  <div className="image"></div>
+                  <div className="image">
+                    <ImageSlide imageArr={roomImagePath} />
+                  </div>
 
                   <div className="room-info">
                     <p>방 설명 및 안내</p>
                     <div className="line"></div>
-                    <input></input>
+                    <textarea readOnly value={roomContent}></textarea>
                   </div>
 
                   <div className="buttons">
-                    <button className="left-button">참여</button>
+                    <button className="left-button" onClick={enterRoom}>
+                      참여
+                    </button>
                     <button className="right-button" onClick={close}>
                       닫기
                     </button>
@@ -222,7 +343,7 @@ const RoomModal = ({ open, close }) => {
 
         .location {
           width: 100%;
-          height: 260px;
+          height: 265px;
           border-radius: 10px;
           box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
           display: flex;
@@ -247,7 +368,7 @@ const RoomModal = ({ open, close }) => {
           border: solid 0.3px #707070;
         }
 
-        .map {
+        #map {
           width: 100%;
           height: 170px;
           border-radius: 10px;
@@ -266,7 +387,6 @@ const RoomModal = ({ open, close }) => {
         .image {
           width: 680px;
           height: 350px;
-          border: solid 1px #e8e8e8;
         }
 
         .room-info > p {
@@ -286,13 +406,14 @@ const RoomModal = ({ open, close }) => {
           border: solid 0.3px #707070;
         }
 
-        .room-info input {
+        .room-info textarea {
           width: 680px;
           height: 160px;
           padding: 10px;
           border-radius: 10px;
           border: solid 1px #e8e8e8;
           background-color: #f2f2f2;
+          resize: none;
         }
 
         .buttons {

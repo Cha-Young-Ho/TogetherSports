@@ -1,10 +1,8 @@
 package com.togethersports.tosproejct.image;
 
 import com.togethersports.tosproejct.room.Room;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.togethersports.tosproejct.room.dto.ImageOfRoomCRUD;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -17,14 +15,12 @@ import javax.persistence.*;
  */
 
 @Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 public class RoomImage {
 
     @Id
     @Column(name = "ROOM_IMAGE_ID")
+    @GeneratedValue
     private Long id;
 
     //확장자
@@ -37,6 +33,29 @@ public class RoomImage {
 
     //해당 방
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "ROOM_ID")
     private Room room;
+
+    @Column(name = "IMAGE_ORDER") //ORDER 는 예약어라서 이름 지정이 안됨
+    private int order;
+
+    protected RoomImage(){}
+
+    @Builder(access = AccessLevel.PRIVATE)
+    private RoomImage(ImageOfRoomCRUD imageOfRoomCRUD, Room room, String imagePath){
+        this.roomImageExtension = imageOfRoomCRUD.getRoomImageExtension();
+        this.room = room;
+        this.imagePath = imagePath;
+        this.order = imageOfRoomCRUD.getOrder();
+    }
+
+    //방 샏성 시, 엔티티 생성 메소드
+    public static RoomImage of(ImageOfRoomCRUD imageOfRoomCRUD, Room room, String imagePath){
+
+        return RoomImage.builder()
+                .imagePath(imagePath)
+                .room(room)
+                .imageOfRoomCRUD(imageOfRoomCRUD)
+                .build();
+    }
 }

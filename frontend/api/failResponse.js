@@ -6,25 +6,25 @@ const FailResponse = (codeNumber) => {
     case 1000:
       alert("잘못된 요청입니다.");
       break;
+    case 1001:
+      alert("입력값 검증에 실패하였습니다.");
+      break;
     case 1100:
       alert("유저를 찾을 수 없습니다.");
       break;
     case 1101: // 수정 필요
-      alert("이미 가입된 계정입니다. 로그인을 이용하세요.");
+      alert("이미 가입된 유저입니다.");
       router.replace("/");
       break;
-    case 1102: // 수정 필요
-      alert("가입된 계정이 없습니다. 회원가입을 해주세요.");
-      router.replace("/signup/oauth");
+    case 1102:
+      alert("추가정보가 입력되지 않은 유저입니다.");
+      router.replace("/signup/addinfo/personalinfo");
       break;
     case 1103:
       alert("중복된 닉네임이 있습니다.");
       break;
     case 1104:
       alert("잘못된 데이터가 포함되었습니다.");
-      break;
-    case 1105: // 페이지 이동 여부에 대해선 수정 할 수도 있음
-      alert("회원 정보 추가 입력이 필요합니다.");
       break;
     case 1200:
       alert("해당 방을 찾을 수 없습니다.");
