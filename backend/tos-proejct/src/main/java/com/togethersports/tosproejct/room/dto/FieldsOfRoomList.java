@@ -11,25 +11,19 @@ import java.util.List;
 @Builder
 public class FieldsOfRoomList {
 
-    // 필터를 적용했는지 확인하는 필드
-    private boolean filter;
-
     // 종목
-    private List<String> interest;
+    private List<String> exercise;
 
     // 지역
-    private String area;
-
-    // 시간
-    private List<String> time;
+    private List<String> area;
 
     // 사용자 지정 시작 시간
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private LocalDateTime customTimeStart;
+    private LocalDateTime startAppointmentDate;
 
     // 사용자 지정 끝 시간
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private LocalDateTime customTimeEnd;
+    private LocalDateTime endAppointmentDate;
 
     // 검색 키워드
     private String keyWord;
@@ -40,3 +34,5 @@ public class FieldsOfRoomList {
     // 페이지
     private int page;
 }
+
+//http://localhost:8080/api/room?exercise=축구,농구,골프&startAppointmentDate=2021-01-03T12:11&endAppointmentDate=2021-02-04T12:30&page=0&size=20&sort=id,DESC

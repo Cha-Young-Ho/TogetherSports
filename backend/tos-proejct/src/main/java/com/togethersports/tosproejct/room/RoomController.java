@@ -50,15 +50,10 @@ public class RoomController {
     }
 
     @GetMapping("/api/room")
-    public void getRoomList(FieldsOfRoomList fieldsOfRoomList, Pageable pageable){
-        log.info("interests = {}", fieldsOfRoomList.getInterest());
-        log.info("partici count = {}", fieldsOfRoomList.getParticipantCount());
-        log.info("area = {}", fieldsOfRoomList.getArea());
-        log.info("keyword = {}", fieldsOfRoomList.getKeyWord());
-        log.info("limit = {}", fieldsOfRoomList.getTime());
-        log.info("page = {}", pageable.getPageNumber());
-        log.info("page size = {}", pageable.getPageSize());
-        log.info("page sort = {}", pageable.getSort());
+    public ResponseEntity<Response> getRoomList(FieldsOfRoomList fieldsOfRoomList, Pageable pageable){
+
+
+        return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, roomService.roomFiled(fieldsOfRoomList, pageable)));
 
     }
 }

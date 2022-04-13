@@ -2,10 +2,7 @@ package com.togethersports.tosproejct.room;
 
 import com.togethersports.tosproejct.common.util.ParsingEntityUtils;
 import com.togethersports.tosproejct.image.RoomImageService;
-import com.togethersports.tosproejct.room.dto.ImageOfRoomInfo;
-import com.togethersports.tosproejct.room.dto.RoomOfCreate;
-import com.togethersports.tosproejct.room.dto.RoomOfInfo;
-import com.togethersports.tosproejct.room.dto.RoomOfUpdate;
+import com.togethersports.tosproejct.room.dto.*;
 import com.togethersports.tosproejct.room.exception.NotFoundRoomException;
 import com.togethersports.tosproejct.tag.Tag;
 import com.togethersports.tosproejct.tag.TagService;
@@ -14,6 +11,8 @@ import com.togethersports.tosproejct.user.UserRepository;
 import com.togethersports.tosproejct.user.exception.NotEnteredInformationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -111,4 +110,9 @@ public class RoomService {
 
     }
 
+    public Page<Room> roomFiled(FieldsOfRoomList fieldsOfRoomList, Pageable pageable){
+        Page<Room> list = roomRepository.searchAll(fieldsOfRoomList, pageable);
+
+        return list;
+    }
 }

@@ -23,8 +23,10 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
 
         List<Room> result = queryFactory
                 .selectFrom(room)
-                .where(eqInterests(fieldsOfRoomList.getInterest()),
-                        inKeyWord(fieldsOfRoomList.getKeyWord())
+                .where(eqInterests(fieldsOfRoomList.getExercise()),
+                    eqArea(fieldsOfRoomList.getArea()),
+                    betweenTime(fieldsOfRoomList.getStartAppointmentDate(), fieldsOfRoomList.getEndAppointmentDate()),
+
 
                 )
                 .offset(pageable.getOffset())
@@ -78,6 +80,8 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
 
         return room.startAppointmentDate.goe(start).and(room.endAppointmentDate.loe(end));
     }
+
+    private BooleanExpression
 
 //    private BooleanExpression participateCount(int participantCount){
 //
