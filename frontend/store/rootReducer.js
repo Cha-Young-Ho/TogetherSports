@@ -26,6 +26,7 @@ const myInfoInitialState = {
   activeAreas: [],
   interests: [],
   mannerPoint: "",
+  isInformationRequired: "",
 };
 
 // 닉네임 저장 초기값
@@ -130,6 +131,7 @@ const myInfoReducer = (state = myInfoInitialState, action) => {
         activeAreas: action.payload.activeAreas.map((el) => el),
         interests: action.payload.interests.map((el) => el),
         mannerPoint: action.payload.mannerPoint,
+        isInformationRequired: action.payload.isInformationRequired,
       };
     default:
       return state;
