@@ -35,10 +35,17 @@ public class AclConfig {
     @Autowired
     private CacheManager cacheManager;
 
-    // 도메인 객체의 주체의 acl 객체의 접근 권한 설정 빈
+    // 사용자 권한 별 acl 객체에 대한 접근 권한 설정
+    // 첫번째 - acl 소유권 변경 권한
+    // 두번째 - 감사 세부정보 수정 권한
+    // 세번째 - ace 등의 변경 권한
     @Bean
     public AclAuthorizationStrategy aclAuthorizationStrategy() {
-        return new AclAuthorizationStrategyImpl(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        return new AclAuthorizationStrategyImpl(
+                new SimpleGrantedAuthority("ROLE_USER"),
+                new SimpleGrantedAuthority("ROLE_ADMIN"),
+                new SimpleGrantedAuthority("ROLE_USER")
+        );
     }
 
     // acl 권한 확인 전략 설정 빈
