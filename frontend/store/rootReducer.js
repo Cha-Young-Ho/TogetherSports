@@ -19,10 +19,10 @@ const signupInitialState = {
 const myInfoInitialState = {
   userEmail: "",
   userName: "",
-  userNickname: "",
+  userNickname: "익명",
   userBirth: "yyyy-mm-dd",
   gender: "",
-  userProfileImagePath: "",
+  userProfileImagePath: "/base_profileImage.jpg",
   activeAreas: [],
   interests: [],
   mannerPoint: "",
