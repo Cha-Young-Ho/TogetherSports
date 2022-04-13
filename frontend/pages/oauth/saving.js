@@ -8,6 +8,7 @@ const Saving = () => {
   const dispatch = useDispatch();
   const [accessToken, setAccessToken] = useState();
   const [refreshToken, setRefreshToken] = useState();
+  const [isFirst, setIsFirst] = useState();
 
   useEffect(() => {
     const url = window.location.search;
@@ -16,15 +17,18 @@ const Saving = () => {
 
     setAccessToken((accessToken = urlParams.get("access_token")));
     setRefreshToken((refreshToken = urlParams.get("refresh_token")));
-
-    // + is_first = true 관련 알고리즘 정리필요
-    // 그 후 추가정보 페이지로 이동시킴
+    setIsFirst(urlParams.get("is_first"));
   }, []);
 
   useEffect(() => {
     if (accessToken && refreshToken) {
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
+
+      if (isFirst) {
+        router.replace("/signup/addinfo/personalinfo");
+        return;
+      }
 
       getMyInfo().then((res) => {
         if (res.status.code === 5000) {

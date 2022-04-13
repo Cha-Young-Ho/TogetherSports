@@ -7,12 +7,13 @@ import Modal from "./modals/userInfoModal";
 import RoomModal from "./modals/roomModal";
 import { getMyInfo } from "../api/members";
 import { useSelector } from "react-redux";
+import FixedRequestAlarm from "./fixedRequestAlarm";
 
 const NavigationBar = () => {
   // 로그인 상태 임을 판별하는 변수
   const [loginData, setLoginData] = useState(false);
 
-  // 로그인 시 저장되는
+  // 로그인 시 저장되는 데이터
   const myinfo = useSelector((state) => state.myInfoReducer);
 
   // 유저 프로필 클릭 시 뜨는 팝업 창 관리 state
@@ -34,36 +35,38 @@ const NavigationBar = () => {
     setRoomModalOpen(false);
   };
 
-  //서버로 로그인 요청
-  // useEffect(() => {
-  //   if (myinfo.userEmail === "") {
-  //     getMyInfo().then((res) => {
-  //       if (res.status.code === 5000) {
-  //         console.log(res.status.message);
-  //         dispatch({
-  //           type: "SAVEMYINFO",
-  //           payload: {
-  //             userEmail: res.content.userEmail,
-  //             userName: res.content.userName,
-  //             userNickname: res.content.userNickname,
-  //             userBirth: res.content.userBirth,
-  //             gender: res.content.gender,
-  //             userProfileImagePath: res.content.userProfileImagePath,
-  //             activeAreas: res.content.activeAreas.map((el) => el),
-  //             interests: res.content.interests.map((el) => el),
-  //             mannerPoint: res.content.mannerPoint,
-  //           },
-  //         });
-  //         setLoginData(true);
-  //       } else {
-  //         FailResponse(res.status.code);
-  //         setLoginData(false);
-  //       }
-  //     });
-  //   } else {
-  //     setLoginData(true);
-  //   }
-  // }, []);
+  // 서버로 로그인 요청
+  useEffect(() => {
+    setLoginData(true);
+    if (myinfo.userEmail === "") {
+      getMyInfo().then((res) => {
+        if (res.status.code === 5000) {
+          console.log(res.status.message);
+          dispatch({
+            type: "SAVEMYINFO",
+            payload: {
+              userEmail: res.content.userEmail,
+              userName: res.content.userName,
+              userNickname: res.content.userNickname,
+              userBirth: res.content.userBirth,
+              gender: res.content.gender,
+              userProfileImagePath: res.content.userProfileImagePath,
+              activeAreas: res.content.activeAreas.map((el) => el),
+              interests: res.content.interests.map((el) => el),
+              mannerPoint: res.content.mannerPoint,
+              isInformationRequired: res.content.isInformationRequired,
+            },
+          });
+          setLoginData(true);
+        } else {
+          FailResponse(res.status.code);
+          setLoginData(false);
+        }
+      });
+    } else {
+      setLoginData(true);
+    }
+  }, []);
 
   // 로그아웃 버튼 클릭
   const ClickLogout = () => {
@@ -151,6 +154,7 @@ const NavigationBar = () => {
           </div>
         </div>
       </div>
+      {loginData && !myinfo.isInformationRequired ? <FixedRequestAlarm /> : ""}
 
       <style jsx>{`
         .header {
