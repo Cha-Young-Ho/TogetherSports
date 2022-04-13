@@ -1,4 +1,4 @@
-package com.togethersports.tosproejct.security;
+package com.togethersports.tosproejct.security.config;
 
 import com.togethersports.tosproejct.security.jwt.RefreshTokenService;
 import com.togethersports.tosproejct.security.jwt.entrypoint.JwtAuthenticationEntryPoint;
@@ -127,11 +127,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .expressionHandler(expressionHandler())
                 .antMatchers("/api/a").access("hasRole('ROLE_ADMIN')")
                 .antMatchers("/api/user").authenticated()
+                .antMatchers("/api/room").authenticated()
                 .antMatchers("/api/test").anonymous();
 
         // exception handling
         http.exceptionHandling()
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint);
+
+        http.headers().frameOptions().disable();
     }
 
     // TODO nginx 를 이용한 배포시 포트 변경 필요할 수 있음

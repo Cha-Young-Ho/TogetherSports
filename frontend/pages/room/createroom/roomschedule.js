@@ -73,7 +73,7 @@ const RoomSchedule = () => {
 
     dispatch({
       type: "ROOMSCHEDULE",
-      action: {
+      payload: {
         startAppointmentDate: `${curSelectedDate}T${String(hour).padStart(
           2,
           0
@@ -134,9 +134,9 @@ const RoomSchedule = () => {
           <Link href="/room/createroom/roomsetting">
             <button className="button-prev">이전</button>
           </Link>
-          <Link href="/">
+          <Link href="/room/createroom/roomtaginfo">
             <button className="button-done" onClick={clickNextBtn}>
-              완료
+              다음
             </button>
           </Link>
         </div>

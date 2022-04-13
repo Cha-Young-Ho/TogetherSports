@@ -39,9 +39,9 @@ const RoomTagInfo = () => {
         })
       );
     } else {
-      if (tag.length > 9) {
+      if (tag.length > 4) {
         e.preventDefault();
-        alert("태그는 최대 10개 선택 가능합니다!");
+        alert("태그는 최대 5개 선택 가능합니다!");
       } else {
         e.target.classList.add("tag-clicked");
         setTag((prev) => [...prev, e.target.innerText]);
@@ -51,12 +51,6 @@ const RoomTagInfo = () => {
 
   // 예외 처리 및 서버에 방 생성 요청
   const callCreateRoomRequest = (e) => {
-    if (tag.length === 0) {
-      e.preventDefault();
-      alert("태그는 최소 1개를 선택해주세요!");
-      return;
-    }
-
     postCreateRoom(
       roomInfo.roomTitle,
       roomContent,
@@ -90,8 +84,6 @@ const RoomTagInfo = () => {
           <div className="content-info">
             <p>방에 대한 정보를 입력해주세요!</p>
             <textarea
-              rows="450"
-              cols="130"
               value={roomContent}
               onChange={(e) => setRoomContent(e.target.value)}
             ></textarea>
@@ -100,7 +92,7 @@ const RoomTagInfo = () => {
           <SetRoomImages getData={getRoomImages} />
 
           <div className="content-tag">
-            <p>빠른 태그 추가 (최대 10개)</p>
+            <p>빠른 태그 추가 (최대 5개)</p>
             <div className="tags">
               <div className="tags-age">
                 {tagsAge.map((age, index) => {

@@ -6,14 +6,19 @@ import { FailResponse } from "../api/failResponse";
 import Modal from "./modals/userInfoModal";
 import RoomModal from "./modals/roomModal";
 import { getMyInfo } from "../api/members";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import FixedRequestAlarm from "./fixedRequestAlarm";
 
 const NavigationBar = () => {
+  const dispatch = useDispatch();
+
   // 로그인 상태 임을 판별하는 변수
   const [loginData, setLoginData] = useState(false);
 
-  // 로그인 시 저장되는
-  const myinfo = useSelector((state) => state.myInfoReducer);
+  // 로그인 시 저장되는 데이터
+  const [myinfo, setMyinfo] = useState(
+    useSelector((state) => state.myInfoReducer)
+  );
 
   // 유저 프로필 클릭 시 뜨는 팝업 창 관리 state
   const [modalOpen, setModalOpen] = useState(false);
@@ -34,51 +39,91 @@ const NavigationBar = () => {
     setRoomModalOpen(false);
   };
 
-  //서버로 로그인 요청
-  // useEffect(() => {
-  //   if (myinfo.userEmail === "") {
-  //     getMyInfo().then((res) => {
-  //       if (res.status.code === 5000) {
-  //         console.log(res.status.message);
-  //         dispatch({
-  //           type: "SAVEMYINFO",
-  //           payload: {
-  //             userEmail: res.content.userEmail,
-  //             userName: res.content.userName,
-  //             userNickname: res.content.userNickname,
-  //             userBirth: res.content.userBirth,
-  //             gender: res.content.gender,
-  //             userProfileImagePath: res.content.userProfileImagePath,
-  //             activeAreas: res.content.activeAreas.map((el) => el),
-  //             interests: res.content.interests.map((el) => el),
-  //             mannerPoint: res.content.mannerPoint,
-  //           },
-  //         });
-  //         setLoginData(true);
-  //       } else {
-  //         FailResponse(res.status.code);
-  //         setLoginData(false);
-  //       }
-  //     });
-  //   } else {
-  //     setLoginData(true);
-  //   }
-  // }, []);
+  // 서버로 로그인 요청
+  useEffect(() => {
+    console.log("Request Login Info To Server...");
+    setLoginData(true);
+    if (myinfo.userEmail === "") {
+      getMyInfo()
+        .then((res) => {
+          if (res.status.code === 5000) {
+            console.log("* Success Login Info Request *");
+
+            setMyinfo({
+              userEmail: res.content.userEmail,
+              userName: res.content.userName,
+              userNickname: res.content.userNickname,
+              userBirth: res.content.userBirth,
+              gender: res.content.gender,
+              userProfileImagePath: res.content.userProfileImagePath,
+              activeAreas: res.content.activeAreas.map((el) => el),
+              interests: res.content.interests.map((el) => el),
+              mannerPoint: res.content.mannerPoint,
+              isInformationRequired: res.content.isInformationRequired,
+            });
+
+            dispatch({
+              type: "SAVEMYINFO",
+              payload: {
+                userEmail: res.content.userEmail,
+                userName: res.content.userName,
+                userNickname: res.content.userNickname,
+                userBirth: res.content.userBirth,
+                gender: res.content.gender,
+                userProfileImagePath: res.content.userProfileImagePath,
+                activeAreas: res.content.activeAreas.map((el) => el),
+                interests: res.content.interests.map((el) => el),
+                mannerPoint: res.content.mannerPoint,
+                isInformationRequired: res.content.isInformationRequired,
+              },
+            });
+
+            setLoginData(true);
+
+            console.log("Client got this info = " + myinfo);
+          }
+        })
+        .catch((error) => {
+          FailResponse(error.response.data.status.code);
+          setLoginData(false);
+        });
+    } else {
+      setLoginData(true);
+    }
+  }, []);
 
   // 로그아웃 버튼 클릭
   const ClickLogout = () => {
-    deleteLogout().then((res) => {
-      console.log(res.status.message);
-      if (res.status.code === 5000) {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        setLoginData((loginData = false));
-        console.log("로그아웃 완료");
-      } else {
-        FailResponse(res.status.code);
-      }
-    });
-    console.log("로그아웃 시도");
+    deleteLogout()
+      .then((res) => {
+        console.log(res.status.message);
+        if (res.status.code === 5000) {
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+          setLoginData(false);
+
+          dispatch({
+            type: "SAVEMYINFO",
+            payload: {
+              userEmail: "",
+              userName: "익명",
+              userNickname: "",
+              userBirth: "yyyy-mm-dd",
+              gender: "",
+              userProfileImagePath: "/base_profileImage.jpg",
+              activeAreas: [],
+              interests: [],
+              mannerPoint: "",
+              isInformationRequired: "",
+            },
+          });
+          alert("로그아웃 되었습니다.");
+          return;
+        }
+      })
+      .catch((error) => {
+        FailResponse(error.response.data.status.code);
+      });
   };
 
   return (
@@ -125,7 +170,7 @@ const NavigationBar = () => {
                   <button className="user-box" onClick={openModal}>
                     <img
                       className="ProfileImage"
-                      src={`${myinfo.userProfileImagePath}`}
+                      src={myinfo.userProfileImagePath}
                     ></img>
                     <div className="logOn">
                       {`${myinfo.userNickname}`} 님 반갑습니다!
@@ -151,6 +196,7 @@ const NavigationBar = () => {
           </div>
         </div>
       </div>
+      {loginData && !myinfo.isInformationRequired ? <FixedRequestAlarm /> : ""}
 
       <style jsx>{`
         .header {

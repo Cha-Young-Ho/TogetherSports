@@ -1,53 +1,229 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CalendarModal from "../modals/calendarModal";
 import SelectExercise from "./selectExercise";
 import AddAreaModal from "../modals/addAreaModal";
+import { useDispatch } from "react-redux";
+import moment from "moment";
 
 const Filter = () => {
+  const dispatch = useDispatch();
+
   // 모달 관리 state
-  const [calendarModalOpen, setCalendarModalOpen] = useState(false);
+  const [startCalendarModalOpen, setStartCalendarModalOpen] = useState(false);
+  const [endCalendarModalOpen, setEndCalendarModalOpen] = useState(false);
   const [areaModalOpen, setAreaModalOpen] = useState(false);
 
-  const openCalendarModal = () => {
-    setCalendarModalOpen(true);
+  // ~방 보기 checkbox
+  const [containTimeClosing, setContainTimeClosing] = useState(false);
+  const [containNoAdmittance, setContainNoAdmittance] = useState(false);
+
+  // 시기
+  const [curStartFilteringDate, setCurStartFilteringDate] = useState("");
+  const [curEndFilteringDate, setCurEndFilteringDate] = useState("");
+  // 시간
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+  // 입장가능인원
+  const [enterAccessPeople, setEnterAccessPeople] = useState("");
+
+  const openStartCalendarModal = () => {
+    setStartCalendarModalOpen(true);
   };
-  const closeCalendarModal = () => {
-    setCalendarModalOpen(false);
+  const closeStartCalendarModal = () => {
+    setStartCalendarModalOpen(false);
+  };
+
+  const openEndCalendarModal = () => {
+    setEndCalendarModalOpen(true);
+  };
+  const closeEndCalendarModal = () => {
+    setEndCalendarModalOpen(false);
   };
 
   const openAreaModal = () => {
     setAreaModalOpen(true);
   };
-
   const closeAreaModal = () => {
     setAreaModalOpen(false);
   };
 
-  // 시간 (태그로 된 선택)
-  const clickTimezone = (e) => {
-    if (e.target.classList[2] === "clicked") {
-      e.target.classList.remove("clicked");
-    } else {
-      e.target.classList.add("clicked");
-    }
-  };
-
-  // 시기
-  const [curFilteringDate, setCurFilteringDate] = useState("");
-
   // calendarModal의 시기 받아오기 위한 함수
-  const setFilterDate = (date) => {
-    setCurFilteringDate((curFilteringDate = date));
+  const setStartFilterDate = (date) => {
+    if (
+      (curEndFilteringDate !== "") &
+      !moment(
+        date.length === 9 ? date.slice(0, 8) + "0" + date[8] : date
+      ).isSameOrBefore(curEndFilteringDate)
+    ) {
+      alert("현재 시작일이 마감일보다 느립니다. 다시 선택해 주세요.");
+      return;
+    }
+
+    setCurStartFilteringDate(
+      (curStartFilteringDate =
+        date.length === 9 ? date.slice(0, 8) + "0" + date[8] : date)
+    );
+
+    dispatch({
+      type: "SETSTARTDATE",
+      payload: {
+        startDate: curStartFilteringDate,
+      },
+    });
+    return;
   };
+
+  const setEndFilterDate = (date) => {
+    if (
+      (curStartFilteringDate !== "") &
+      !moment(curStartFilteringDate).isSameOrBefore(
+        date.length === 9 ? date.slice(0, 8) + "0" + date[8] : date
+      )
+    ) {
+      alert("현재 마감일이 시작일보다 빠릅니다. 다시 선택해 주세요.");
+      return;
+    }
+
+    setCurEndFilteringDate(
+      (curStartFilteringDate =
+        date.length === 9 ? date.slice(0, 8) + "0" + date[8] : date)
+    );
+
+    dispatch({
+      type: "SETENDDATE",
+      payload: {
+        endDate: curEndFilteringDate,
+      },
+    });
+    return;
+  };
+
+  const clickDoFilteringButton = () => {
+    console.log("Execute Filtering...");
+
+    if (
+      moment(curStartFilteringDate).isSame(curEndFilteringDate) &&
+      startTime > endTime
+    ) {
+      alert("시간을 다시 확인해 주세요.");
+      return;
+    }
+
+    if (startTime > 23 || endTime > 23) {
+      alert("0-23의 시간만 입력할 수 있습니다.");
+      return;
+    }
+
+    dispatch({
+      type: "FILTERBUTTONCLICK",
+      payload: {
+        detection: "true",
+      },
+    });
+  };
+
+  const clickResetFilterButton = () => {
+    console.log("Reset Filters...");
+
+    setStartTime("");
+    setEndTime("");
+    setEnterAccessPeople("");
+    setCurStartFilteringDate("");
+    setCurEndFilteringDate("");
+
+    dispatch({
+      type: "RESETALLDATAS",
+    });
+  };
+
+  const onChangeStartTime = (e) => {
+    e.target.value = e.target.value.replace(/[^0-9]/g, "");
+    setStartTime(e.target.value);
+    dispatch({
+      type: "SETSTARTTIME",
+      payload: {
+        startTime: e.target.value,
+      },
+    });
+  };
+
+  const onChangeEndTime = (e) => {
+    e.target.value = e.target.value.replace(/[^0-9]/g, "");
+    setEndTime(e.target.value);
+    dispatch({
+      type: "SETENDTIME",
+      payload: {
+        endTime: e.target.value,
+      },
+    });
+  };
+
+  const onChangeEnterNumber = (e) => {
+    e.target.value = e.target.value.replace(/[^0-9]/g, "");
+    setEnterAccessPeople(e.target.value);
+
+    dispatch({
+      type: "SETREQUIREDPPLCOUNT",
+      payload: {
+        requiredPeopleCount: e.target.value,
+      },
+    });
+  };
+
+  useEffect(() => {
+    dispatch({
+      type: "SETSTARTDATE",
+      payload: {
+        startDate: curStartFilteringDate,
+      },
+    });
+  }, [curStartFilteringDate]);
+
+  useEffect(() => {
+    dispatch({
+      type: "SETENDDATE",
+      payload: {
+        endDate: curEndFilteringDate,
+      },
+    });
+  }, [curEndFilteringDate]);
+
+  useEffect(() => {
+    dispatch({
+      type: "SETCONTAINTIMECLOSING",
+      payload: {
+        containTimeClosing: containTimeClosing,
+      },
+    });
+  }, [containTimeClosing]);
+
+  useEffect(() => {
+    dispatch({
+      type: "SETCONTAINNOADMITTANCE",
+      payload: {
+        containNoAdmittance: containNoAdmittance,
+      },
+    });
+  }, [containNoAdmittance]);
 
   return (
     <>
       <div className="filter-wrapper">
         <div className="centerLine">
           <div className="checkbox-wrapper">
-            <input type="checkbox" id="enter"></input>
+            <input
+              type="checkbox"
+              id="enter"
+              checked={containTimeClosing}
+              onChange={() => setContainTimeClosing(!containTimeClosing)}
+            ></input>
             <label htmlFor="enter">입장 마감된 방 보기</label>
-            <input type="checkbox" id="time"></input>
+            <input
+              type="checkbox"
+              id="time"
+              checked={containNoAdmittance}
+              onChange={() => setContainNoAdmittance(!containNoAdmittance)}
+            ></input>
             <label htmlFor="time">시간 마감된 방 보기</label>
           </div>
           <div className="categories">
@@ -61,65 +237,91 @@ const Filter = () => {
             ></AddAreaModal>
           </div>
           <div className="categories">
-            <p>시간</p>
-            <button className="selectButton" onClick={clickTimezone}>
-              새벽
-            </button>
-            <button className="selectButton" onClick={clickTimezone}>
-              오전
-            </button>
-            <button className="selectButton" onClick={clickTimezone}>
-              점심
-            </button>
-            <button className="selectButton" onClick={clickTimezone}>
-              오후
-            </button>
-            <button className="selectButton" onClick={clickTimezone}>
-              저녁
-            </button>
-            <button className="selectButton" onClick={clickTimezone}>
-              밤
-            </button>
-            <p>직접입력</p>
-            <input type="number"></input>
-            <span>시 - </span>
-            <input type="number"></input>
-            <span>시</span>
-          </div>
-          <div className="categories">
-            <p>시기</p>
+            <p>시작일</p>
             <button
               className="modalCalendar"
-              onClick={openCalendarModal}
+              onClick={openStartCalendarModal}
             ></button>
             <div className="date-showBox">
-              {curFilteringDate.substring(0, 4)}
+              {curStartFilteringDate.substring(0, 4)}
             </div>
             <p>년</p>
             <div className="date-showBox">
-              {curFilteringDate.substring(6, 7)}
+              {curStartFilteringDate.substring(5, 7)}
             </div>
             <p>월</p>
-            <div className="date-showBox">{curFilteringDate.substring(8)}</div>
+            <div className="date-showBox">
+              {curStartFilteringDate.substring(8)}
+            </div>
             <p>일</p>
+            <p>직접입력</p>
+            <input
+              className="inputTypes"
+              value={startTime}
+              onChange={onChangeStartTime}
+            ></input>
+            <span>시</span>
             <CalendarModal
-              setFilterDate={setFilterDate}
-              open={calendarModalOpen}
-              close={closeCalendarModal}
+              setStartFilterDate={setStartFilterDate}
+              openStart={startCalendarModalOpen}
+              closeStart={closeStartCalendarModal}
+            ></CalendarModal>
+          </div>
+          <div className="categories">
+            <p>마감일</p>
+            <button
+              className="modalCalendar"
+              onClick={openEndCalendarModal}
+            ></button>
+            <div className="date-showBox">
+              {curEndFilteringDate.substring(0, 4)}
+            </div>
+            <p>년</p>
+            <div className="date-showBox">
+              {curEndFilteringDate.substring(5, 7)}
+            </div>
+            <p>월</p>
+            <div className="date-showBox">
+              {curEndFilteringDate.substring(8)}
+            </div>
+            <p>일</p>
+            <p>직접입력</p>
+            <input
+              className="inputTypes"
+              value={endTime}
+              onChange={onChangeEndTime}
+            ></input>
+            <span>시</span>
+            <CalendarModal
+              setEndFilterDate={setEndFilterDate}
+              openEnd={endCalendarModalOpen}
+              closeEnd={closeEndCalendarModal}
             ></CalendarModal>
           </div>
           <div className="last-categories">
             <p>입장가능인원</p>
-            <input type="number"></input>
+            <input
+              className="inputTypes"
+              value={enterAccessPeople}
+              onChange={onChangeEnterNumber}
+            ></input>
             <p> 명 이상</p>
           </div>
           <SelectExercise />
           <div className="buttons-wrapper">
-            <button className="button-reset">초기화</button>
-            <button className="button-application">적용</button>
+            <button className="button-reset" onClick={clickResetFilterButton}>
+              초기화
+            </button>
+            <button
+              className="button-application"
+              onClick={clickDoFilteringButton}
+            >
+              적용
+            </button>
           </div>
         </div>
       </div>
+
       <style jsx>{`
         .filter-wrapper {
           width: 100%;
@@ -158,7 +360,7 @@ const Filter = () => {
           border: none;
         }
 
-        input[type="number"] {
+        .inputTypes {
           width: 50px;
           height: 20px;
           border-radius: 11px;
@@ -208,17 +410,6 @@ const Filter = () => {
           justify-content: center;
           align-items: center;
           font-size: 1.3rem;
-        }
-
-        .selectButton {
-          width: 60px;
-          height: 20px;
-          border-radius: 11px;
-          background-color: #f4f4f4;
-          text-align: center;
-          border: none;
-          margin-right: 15px;
-          cursor: pointer;
         }
 
         .clicked {

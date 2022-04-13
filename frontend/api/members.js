@@ -6,46 +6,6 @@ import axios from "axios";
 
 // GET
 
-// 회원 유무 확인
-const getUserInfoCheck = async (email, name, provi) => {
-  //http://localhost:8080/test
-
-  const promise = axios.get("http://localhost:8080/api/user/check", {
-    headers: {
-      "Content-type": "application/json; charset=UTF-8",
-      Accept: "*/*",
-    },
-    params: {
-      userEmail: email,
-      userName: name,
-      provider: provi,
-    },
-  });
-  const dataPromise = promise.then((res) => res.data);
-
-  return dataPromise;
-};
-
-// 로그인 (삭제 예정)
-const getUserLogin = async (email, name, provi) => {
-  //http://localhost:8080/test
-
-  const promise = axios.get("http://localhost:8080/api/login", {
-    headers: {
-      "Content-type": "application/json; charset=UTF-8",
-      Accept: "*/*",
-    },
-    params: {
-      userEmail: email,
-      userName: name,
-      provider: provi,
-    },
-  });
-  const dataPromise = promise.then((res) => res.data);
-
-  return dataPromise;
-};
-
 // 닉네임 중복확인
 const getNicknameDuplicationCheck = async (nickname) => {
   const promise = axios.get(
@@ -122,8 +82,11 @@ const postUserRequest = async (
       interests: interests, //--> 5개까지
     },
     {
-      "Content-type": "application/json; charset=UTF-8",
-      Accept: "*/*",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        Accept: "*/*",
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
     }
   );
   const dataPromise = promise.then((res) => res.data);
@@ -139,8 +102,10 @@ const deleteLogout = async () => {
       refreshToken: localStorage.getItem("refreshToken"),
     },
     {
-      "Content-type": "application/json; charset=UTF-8",
-      Accept: "*/*",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        Accept: "*/*",
+      },
     }
   );
   const dataPromise = promise.then((res) => res.data);
@@ -177,9 +142,11 @@ const putUpdateUserInfo = async (
       interests: interests, //--> 5개까지
     },
     {
-      "Content-type": "application/json; charset=UTF-8",
-      Accept: "*/*",
-      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        Accept: "*/*",
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
     }
   );
   const dataPromise = promise.then((res) => res.data);
@@ -190,9 +157,7 @@ const putUpdateUserInfo = async (
 // DELETE
 
 export {
-  getUserInfoCheck,
   getNicknameDuplicationCheck,
-  getUserLogin,
   getMyInfo,
   getOtherInfo,
   postUserRequest,

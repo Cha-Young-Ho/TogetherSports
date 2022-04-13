@@ -9,9 +9,11 @@ import com.togethersports.tosproejct.security.oauth2.model.OAuth2Provider;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -23,12 +25,12 @@ import java.util.List;
  * <p>신규 계정을 생성하려면 {@link #createUser(Long, String, String, OAuth2Provider)} 참조</p>
  * <p>기존 계정 정보를 계정 엔티티로 변환하려면 {@link #convertUser(Long, String, Role)} 참조</p>
  * @author seunjeon
- * @author younghocha
+ * @author younghoCha
  */
-@DynamicInsert // insert 시, null 값은 insert를 하지 않음
 @Getter
 @Entity
 public class User {
+
     @Id
     @GeneratedValue
     @Column(name = "USER_ID")
@@ -56,7 +58,7 @@ public class User {
 
     //fixme yml에서 파일 끌고와야함
     //설정 안할 시 기본 이미지 등록
-    @Column(name = "USER_PROFILE_IMAGE_PATH", columnDefinition = "varchar(255) default '/Users/seunjeon/Workspace/samples/defaultImage.png'")
+    @Column(name = "USER_PROFILE_IMAGE_PATH")
     private String userProfileImage; // 프로필 이미지 저장 경로
 
     @Column(name = "USER_GENDER")
@@ -83,6 +85,9 @@ public class User {
     @OneToMany(mappedBy = "createUser")
     private List<Room> madeRooms;
 
+    @Column(name = "INFORMATION_REQUIRED")
+    private boolean isInformationRequired;
+
     // 계정 엔티티를 생성자 및 빌더로 직접 접근해서 생성하는 것은 불가능 반드시 특정 메소드 사용하도록 강제
     @Builder(access = AccessLevel.PRIVATE)
     private User(Long id, Long oauth2Id, String email, String nickname, OAuth2Provider provider, Role role, boolean isFirst) {
@@ -93,6 +98,7 @@ public class User {
         this.provider = provider;
         this.role = role;
         this.isFirst = isFirst;
+        this.isInformationRequired = true;
     }
     protected User() {}
 
@@ -101,16 +107,15 @@ public class User {
      * 신규 사용자를 추가할 때 사용한다.
      * @param oauth2Id OAuth2 로그인 후 받은 해당 OAuth2 계정 식별자
      * @param email OAuth2 로그인 후 받은 해당 OAuth2 프로필 정보상의 이메일
-     * @param nickname OAuth2 로그인 후 받은 해당 OAuth2 프로필 정보상의 닉네임
      * @param provider OAuth2 사업자
      * @return account - 신규 계정 엔티티, 권한은 일반 사용자 권한, 추가 정보 입력 여부 미입력으로 자동 설정
      * @author seunjeon
+     * @author younghoCha
      */
-    public static User createUser(Long oauth2Id, String email, String nickname, OAuth2Provider provider) {
+    public static User createUser(Long oauth2Id, String email, OAuth2Provider provider) {
         return User.builder()
                 .oauth2Id(oauth2Id)
                 .email(email)
-                .nickname(nickname)
                 .provider(provider)
                 .role(Role.ROLE_USER)
                 .isFirst(true)
@@ -149,6 +154,8 @@ public class User {
         this.isFirst = false;
         this.activeAreas = activeAreas;
         this.interests = interests;
+        this.isInformationRequired = false;
+
     }
     public void initUser(Gender gender, LocalDate userBirth, List<ActiveArea> activeAreas, List<Interest> interests) {
         this.gender = gender;
@@ -156,6 +163,8 @@ public class User {
         this.isFirst = false;
         this.activeAreas = activeAreas;
         this.interests = interests;
+        this.isInformationRequired = false;
+
     }
 
     public void updateUser(UserOfModifyInfo userOfModifyInfo, List<ActiveArea> activeAreas, List<Interest> interests, String userProfileImage){
@@ -165,5 +174,12 @@ public class User {
         this.activeAreas = activeAreas;
         this.userProfileImage = userProfileImage;
         this.nickname = userOfModifyInfo.getUserNickname();
+        this.isInformationRequired = false;
+        this.isFirst = false;
     }
+
+    public void updateIsFirst(){
+        this.isFirst = false;
+    }
+
 }

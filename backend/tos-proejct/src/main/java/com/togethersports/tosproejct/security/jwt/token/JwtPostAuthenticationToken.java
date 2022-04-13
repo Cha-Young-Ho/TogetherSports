@@ -1,9 +1,11 @@
 package com.togethersports.tosproejct.security.jwt.token;
 
+import com.togethersports.tosproejct.security.jwt.model.UserContext;
 import com.togethersports.tosproejct.user.User;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.security.Principal;
 import java.util.List;
 
 /**
@@ -23,9 +25,10 @@ public class JwtPostAuthenticationToken extends AbstractAuthenticationToken {
 
     /**
      * 인증 시도 사용자의 계정 정보를 바탕으로 인증 후 객체를 생성한다.
-     * @param user jwt token 의 값을 기반으로 하는 계정 엔티티
+     * @param userContext jwt token 의 값을 기반으로 하는 계정 엔티티를 감싸고 있는 컨텍스트 객체
      */
     public JwtPostAuthenticationToken(User user) {
+//        super(List.of(new SimpleGrantedAuthority(userContext.getUser().getRole().name())));
         super(List.of(new SimpleGrantedAuthority(user.getRole().name())));
         this.user = user;
         this.setAuthenticated(true);
@@ -42,4 +45,6 @@ public class JwtPostAuthenticationToken extends AbstractAuthenticationToken {
     public Object getPrincipal() {
         return user;
     }
+
+
 }

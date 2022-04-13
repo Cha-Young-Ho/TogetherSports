@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Calendar from "../calendar/calendar";
 
-const CalendarModal = ({ open, close, setFilterDate }) => {
+const CalendarModal = (props) => {
   const [curSelectedDate, setCurSelectedDate] = useState("");
 
   // calendar의 현재 선택된 날 받아오기 위한 함수
@@ -16,20 +16,34 @@ const CalendarModal = ({ open, close, setFilterDate }) => {
       return;
     }
 
-    setFilterDate(curSelectedDate);
-    close();
+    if (props.setStartFilterDate) {
+      props.setStartFilterDate(curSelectedDate);
+    } else if (props.setEndFilterDate) {
+      props.setEndFilterDate(curSelectedDate);
+    }
+
+    props.closeStart ? props.closeStart() : props.closeEnd();
   };
 
   return (
     <>
-      <div className={open ? "openModal modal" : "modal"}>
+      <div
+        className={
+          props.openStart || props.openEnd ? "openModal modal" : "modal"
+        }
+      >
         <div className="calendarModal">
-          {open ? <Calendar modalDateFunction={setSelectedDate} /> : null}
+          {props.openStart || props.openEnd ? (
+            <Calendar modalDateFunction={setSelectedDate} />
+          ) : null}
           <div className="button-wrapper">
             <button className="select-button" onClick={clickSelect}>
               선택
             </button>
-            <button className="exit-button" onClick={close}>
+            <button
+              className="exit-button"
+              onClick={props.closeStart ? props.closeStart : props.closeEnd}
+            >
               취소
             </button>
           </div>

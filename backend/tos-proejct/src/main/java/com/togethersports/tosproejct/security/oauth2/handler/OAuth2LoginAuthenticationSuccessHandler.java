@@ -1,13 +1,12 @@
 package com.togethersports.tosproejct.security.oauth2.handler;
 
-import com.togethersports.tosproejct.user.User;
 import com.togethersports.tosproejct.security.jwt.RefreshTokenService;
 import com.togethersports.tosproejct.security.jwt.dto.TokenOfLogin;
 import com.togethersports.tosproejct.security.jwt.util.JwtTokenFactory;
 import com.togethersports.tosproejct.security.oauth2.CustomOAuth2User;
 import com.togethersports.tosproejct.security.util.ClientIpUtils;
+import com.togethersports.tosproejct.user.User;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -19,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@Slf4j
+
 @RequiredArgsConstructor
 @Component
 public class OAuth2LoginAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
@@ -40,6 +39,7 @@ public class OAuth2LoginAuthenticationSuccessHandler implements AuthenticationSu
 
         // 추가정보 기입 여부
         boolean first = loggedInUser.isFirst();
+
 
         // 로그인 시, 발급되는 엑세스토큰, 리프레시토큰 dto 생성
         TokenOfLogin tokenOfLogin = jwtTokenFactory.createTokens(loggedInUser);
