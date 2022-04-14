@@ -19,7 +19,13 @@ const RoomModal = ({ open, close, roomSequenceId }) => {
   const [startAppointmentDate, setStartAppointmentDate] = useState("");
   const [endAppointmentDate, setEndAppointmentDate] = useState("");
   const [viewCount, setViewCount] = useState("");
-  const [roomImagePath, setRoomImagePath] = useState([]);
+  const [roomImagePath, setRoomImagePath] = useState([
+    {
+      // test를 위한 임시 데이터
+      order: -1,
+      imagePath: "logo-sign.png",
+    },
+  ]);
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -119,7 +125,10 @@ const RoomModal = ({ open, close, roomSequenceId }) => {
                   })}
                 </div>
 
-                <p>{`ID : ${creatorNickName}님의 방`}</p>
+                <div>
+                  <div className="viewCount">{`조회수 : ${viewCount}`}</div>
+                  <div className="nickName">{`ID : ${creatorNickName}님의 방`}</div>
+                </div>
               </div>
 
               <div className="section">
@@ -250,9 +259,41 @@ const RoomModal = ({ open, close, roomSequenceId }) => {
         }
 
         .tag {
-          width: 70px;
           height: 25px;
+          padding: 0 10px;
           margin-right: 10px;
+          border: solid 1px #f4f4f4;
+          border-radius: 6px;
+          background-color: #efefef;
+          font-weight: bold;
+          font-size: 0.9em;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .header > div:nth-child(2) {
+          display: flex;
+          flex-direction: row;
+        }
+
+        .viewCount {
+          height: 25px;
+          padding: 0 10px;
+          margin-right: 10px;
+          border: solid 1px #f4f4f4;
+          border-radius: 6px;
+          background-color: #efefef;
+          font-weight: bold;
+          font-size: 0.9em;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .nickName {
+          height: 25px;
+          padding: 0 10px;
           border: solid 1px #f4f4f4;
           border-radius: 6px;
           background-color: #efefef;
