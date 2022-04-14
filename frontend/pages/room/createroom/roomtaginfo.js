@@ -77,7 +77,7 @@ const RoomTagInfo = () => {
       ).then((res) => {
         console.log(res.status.message);
         if (res.status.code === 5000) {
-          alert("방을 성공적으로 생성하였습니다.");
+          alert("방을 성공적으로 생성하였습니다!");
         } else {
           FailResponse(res.status.code);
         }
