@@ -23,13 +23,12 @@ const UserModification = () => {
   const [gender, setGender] = useState(userInfo.gender);
 
   // 프로필
-  const [profile, setProfile] = useState("");
-  const [extension, setExtension] = useState(
-    userInfo.userProfileImage.userProfileExtension
+  const setProfileTemp = userInfo.userProfileImagePath.split("/");
+  const [profile, setProfile] = useState(
+    setProfileTemp[setProfileTemp.length - 1]
   );
-  const [imagesrc, setImagesrc] = useState(
-    userInfo.userProfileImage.imageSource
-  );
+  const [extension, setExtension] = useState("");
+  const [imagesrc, setImagesrc] = useState("");
 
   // 관심종목
   const [interests, setInterests] = useState({});

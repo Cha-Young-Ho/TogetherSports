@@ -3,27 +3,23 @@ import Calendar from "../calendar/calendar";
 import { getRoomInfo } from "../../api/rooms";
 import ImageSlide from "../imageSlide";
 
-/* props에 roomSequenceId 추가 필요 -> getRoomInfo 에 parameter 추가 필요 */
-const RoomModal = ({ open, close }) => {
+/* roomList에서 받은 각 room들의 roomId를 props로 받기 */
+const RoomModal = ({ open, close, roomSequenceId }) => {
   const [mapLoaded, setMapLoaded] = useState(false); // 지도 로드 동기화
 
   /* response content 담을 변수들 */
-  const [creatorNickName, setCreatorNickName] = useState(""); // 방장 닉네임
-  const [roomTitle, setRoomTitle] = useState(""); // 방 제목
-  const [roomContent, setRoomContent] = useState(""); // 방 설명
-  const [area, setArea] = useState(""); // 위치
-  const [limitPeopleCount, setLimitPeopleCount] = useState(""); // 모집인원
-  const [participantCount, setParticipantCount] = useState(""); // 현재 참여인원
-  const [exercise, setExercise] = useState(""); // 종목
-  const [tag, setTag] = useState([]); // 태그
-  const [startAppointmentDate, setStartAppointmentDate] = useState(""); // 시작 일시
-  const [endAppointmentDate, setEndAppointmentDate] = useState(""); // 종료 일시
-  const [viewCount, setViewCount] = useState(""); // 조회수
-  const [roomImagePath, setRoomImagePath] = useState([
-    "logo-sign.png",
-    "signup-bg.png",
-    "naver-login.png",
-  ]); // 방 이미지 test
+  const [creatorNickName, setCreatorNickName] = useState("");
+  const [roomTitle, setRoomTitle] = useState("");
+  const [roomContent, setRoomContent] = useState("");
+  const [area, setArea] = useState("");
+  const [limitPeopleCount, setLimitPeopleCount] = useState("");
+  const [participantCount, setParticipantCount] = useState("");
+  const [exercise, setExercise] = useState("");
+  const [tag, setTag] = useState([]);
+  const [startAppointmentDate, setStartAppointmentDate] = useState("");
+  const [endAppointmentDate, setEndAppointmentDate] = useState("");
+  const [viewCount, setViewCount] = useState("");
+  const [roomImagePath, setRoomImagePath] = useState([]);
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -35,7 +31,7 @@ const RoomModal = ({ open, close }) => {
   useEffect(() => {
     if (open && mapLoaded) {
       // 방 정보 받아오기
-      getRoomInfo().then((res) => {
+      getRoomInfo(roomSequenceId).then((res) => {
         if (res.status.code === 5000) {
           setCreatorNickName((creatorNickName = res.content.creatorNickName));
           setRoomTitle((roomTitle = res.content.roomTitle));
