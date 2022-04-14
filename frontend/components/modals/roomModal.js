@@ -23,7 +23,7 @@ const RoomModal = ({ open, close }) => {
     "logo-sign.png",
     "signup-bg.png",
     "naver-login.png",
-  ]); // 방 이미지 test
+  ]); // 방 이미지 test용 임시 데이터
 
   useEffect(() => {
     const script = document.createElement("script");
