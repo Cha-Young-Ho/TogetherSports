@@ -7,13 +7,20 @@ const FixedRequestAlarm = () => {
   return (
     <>
       {!miniMode ? (
-        <div className="request-wrapper">
-          <button className="simplification" onClick={() => setMiniMode(true)}>
-            &times;
-          </button>
-          <Link href="/signup/addinfo/personalinfo">
-            <button className="btn-signup">가입하기</button>
-          </Link>
+        <div className="transparent-bg">
+          <div className="request-wrapper">
+            <div className="warning">!</div>
+            <button
+              className="simplification"
+              onClick={() => setMiniMode(true)}
+            >
+              &times;
+            </button>
+            <p>회원추가 정보를 입력하지 않았어요!</p>
+            <Link href="/signup/addinfo/personalinfo">
+              <button className="btn-signup">입력하기</button>
+            </Link>
+          </div>
         </div>
       ) : (
         <button className="miniButton" onClick={() => setMiniMode(false)}>
@@ -22,16 +29,49 @@ const FixedRequestAlarm = () => {
       )}
 
       <style jsx>{`
-        .request-wrapper {
+        .transparent-bg {
           width: 200px;
           height: 200px;
           position: fixed;
           left: 20px;
           bottom: 20px;
+          z-index: 10;
+        }
+
+        .request-wrapper {
+          width: 200px;
+          height: 160px;
+          position: absolute;
+          top: 40px;
           background-color: rgba(255, 255, 255, 0.9);
           box-shadow: 0px 0px 93px -42px rgba(0, 0, 0, 0.75);
           border-radius: 20px;
-          z-index: 10;
+        }
+
+        .warning {
+          position: absolute;
+          display: flex;
+          justify-content: 
+          top: -10px;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          background-color: #00555f;
+          color: white;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: 1.6rem;
+        }
+
+        .request-wrapper p{
+          font-size: 1.2rem;
+          height: 80%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
 
         .simplification {
@@ -50,13 +90,15 @@ const FixedRequestAlarm = () => {
         .btn-signup {
           position: absolute;
           bottom: 0;
-          width: 100%;
-          height: 30px;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 150px;
+          height: 40px;
           border: none;
-          border-bottom-left-radius: 20px;
-          border-bottom-right-radius: 20px;
+          border-radius: 20px;
           cursor: pointer;
-          background-color: tomato;
+          color: white;
+          background-color: #00555f;
         }
 
         .miniButton {
