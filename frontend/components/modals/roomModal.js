@@ -19,11 +19,7 @@ const RoomModal = ({ open, close, roomSequenceId }) => {
   const [startAppointmentDate, setStartAppointmentDate] = useState("");
   const [endAppointmentDate, setEndAppointmentDate] = useState("");
   const [viewCount, setViewCount] = useState("");
-  const [roomImagePath, setRoomImagePath] = useState([
-    "logo-sign.png",
-    "signup-bg.png",
-    "naver-login.png",
-  ]); // 방 이미지 test용 임시 데이터
+  const [roomImagePath, setRoomImagePath] = useState([]);
 
   useEffect(() => {
     const script = document.createElement("script");
