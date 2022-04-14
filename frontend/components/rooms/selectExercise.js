@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const SelectExercise = () => {
   const dispatch = useDispatch();
+  const resetDetection = useSelector(
+    (state) => state.filteringButtonClickDetectionReducer
+  );
 
   const interestArray = [
     "축구",
@@ -19,7 +22,7 @@ const SelectExercise = () => {
     "기타종목",
   ];
 
-  const [interest, setInterest] = useState(interestArray);
+  const [interest, setInterest] = useState({});
 
   const clickExercises = (e) => {
     if (e.target.classList[2] === "clicked") {
@@ -42,6 +45,34 @@ const SelectExercise = () => {
       },
     });
   }, [interest]);
+
+  useEffect(() => {
+    if (resetDetection.reset === "true") {
+      dispatch({
+        type: "ROOMEXERCISES",
+        payload: {
+          exercise: [],
+        },
+      });
+
+      dispatch({
+        type: "RESETBUTTONCLICK",
+        payload: {
+          reset: "false",
+        },
+      });
+
+      [...document.getElementsByClassName("exercise")].map((exer) => {
+        if (exer.classList[2] === "clicked") {
+          return exer.classList.remove("clicked");
+        }
+
+        return exer;
+      });
+
+      setInterest({});
+    }
+  }, [resetDetection.reset]);
 
   return (
     <>
