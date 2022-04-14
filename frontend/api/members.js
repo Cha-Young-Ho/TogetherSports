@@ -82,8 +82,11 @@ const postUserRequest = async (
       interests: interests, //--> 5개까지
     },
     {
-      "Content-type": "application/json; charset=UTF-8",
-      Accept: "*/*",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        Accept: "*/*",
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
     }
   );
   const dataPromise = promise.then((res) => res.data);
@@ -99,8 +102,10 @@ const deleteLogout = async () => {
       refreshToken: localStorage.getItem("refreshToken"),
     },
     {
-      "Content-type": "application/json; charset=UTF-8",
-      Accept: "*/*",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        Accept: "*/*",
+      },
     }
   );
   const dataPromise = promise.then((res) => res.data);
@@ -137,9 +142,11 @@ const putUpdateUserInfo = async (
       interests: interests, //--> 5개까지
     },
     {
-      "Content-type": "application/json; charset=UTF-8",
-      Accept: "*/*",
-      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        Accept: "*/*",
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
     }
   );
   const dataPromise = promise.then((res) => res.data);
