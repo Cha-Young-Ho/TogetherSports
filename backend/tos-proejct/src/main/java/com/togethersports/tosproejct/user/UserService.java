@@ -100,7 +100,7 @@ public class UserService {
         List<Interest> interests = parsingEntityUtils.parsingStringToInterestsEntity(userOfModifyInfo.getInterests());
         if(userOfModifyInfo.getUserProfileImage().getImageSource().equals("정보 없음")){
 
-            findUser.updateUser(userOfModifyInfo, activeAreas, interests, null);
+            findUser.updateUser(userOfModifyInfo, activeAreas, interests, "http://localhost:8080/Users/chayeongho/Desktop/스크린샷 2022-04-13 오후 6.51.46.png");
             return;
         }
 
@@ -121,12 +121,10 @@ public class UserService {
 
        return UserOfMyInfo.builder()
                .id(user.getId())
-               .isFirst(user.isFirst())
                .userBirth(user.getUserBirth())
                .activeAreas(parsedAreaList)
-               .userProfileImage(user.getUserProfileImage())
+               .userProfileImagePath(user.getUserProfileImage())
                .userEmail(user.getEmail())
-               .oAuth2Provider(user.getProvider())
                .mannerPoint(user.getMannerPoint())
                .gender(user.getGender())
                .interests(parsedInterestList)
