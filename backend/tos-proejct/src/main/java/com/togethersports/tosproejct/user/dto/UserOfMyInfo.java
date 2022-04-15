@@ -1,5 +1,6 @@
 package com.togethersports.tosproejct.user.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.togethersports.tosproejct.security.oauth2.model.OAuth2Provider;
 import com.togethersports.tosproejct.user.Gender;
@@ -20,11 +21,9 @@ public class UserOfMyInfo {
     private Long id;
     private List<String> activeAreas;
     private List<String> interests;
-    private String userProfileImage;
+    private String userProfileImagePath;
     private LocalDate userBirth;
-    private OAuth2Provider oAuth2Provider;
-    @JsonProperty(value = "isFirst")
-    private boolean isFirst;
+
     @JsonProperty(value = "isInformationRequired")
     private boolean isInformationRequired;
 

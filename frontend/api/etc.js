@@ -43,8 +43,10 @@ const postRefreshToken = async (refreshToken) => {
       refreshToken: refreshToken,
     },
     {
-      "Content-type": "application/json; charset=UTF-8",
-      Accept: "*/*",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        Accept: "*/*",
+      },
     }
   );
   const dataPromise = promise.then((res) => res.data);

@@ -51,27 +51,38 @@ const RoomTagInfo = () => {
 
   // 예외 처리 및 서버에 방 생성 요청
   const callCreateRoomRequest = (e) => {
-    // test
-    e.preventDefault();
-    console.log("최종:", roomImages);
-    // postCreateRoom(
-    //   roomInfo.roomTitle,
-    //   roomContent,
-    //   roomInfo.roomArea,
-    //   roomInfo.limitPeopleCount,
-    //   roomInfo.exercise,
-    //   tag,
-    //   roomInfo.startAppointmentDate,
-    //   roomInfo.endAppointmentDate,
-    //   roomImages
-    // ).then((res) => {
-    //   console.log(res.status.message);
-    //   if (res.status.code === 5000) {
-    //     alert("방을 성공적으로 생성하였습니다.");
-    //   } else {
-    //     FailResponse(res.status.code);
-    //   }
-    // });
+    // 필수입력정보들이 입력되지 않으면
+    if (
+      roomInfo.roomTitle === "" ||
+      roomInfo.roomArea === "" ||
+      roomInfo.limitPeopleCount === "" ||
+      roomInfo.exercise === "" ||
+      roomInfo.startAppointmentDate === "" ||
+      roomInfo.endAppointmentDate === ""
+    ) {
+      e.preventDefault();
+      alert("입력되지 않은 정보가 있습니다.");
+      return;
+    } else {
+      postCreateRoom(
+        roomInfo.roomTitle,
+        roomContent,
+        roomInfo.roomArea,
+        roomInfo.limitPeopleCount,
+        roomInfo.exercise,
+        tag,
+        roomInfo.startAppointmentDate,
+        roomInfo.endAppointmentDate,
+        roomImages
+      ).then((res) => {
+        console.log(res.status.message);
+        if (res.status.code === 5000) {
+          alert("방을 성공적으로 생성하였습니다!");
+        } else {
+          FailResponse(res.status.code);
+        }
+      });
+    }
   };
 
   return (

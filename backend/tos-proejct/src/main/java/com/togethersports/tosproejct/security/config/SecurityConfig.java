@@ -127,7 +127,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .expressionHandler(expressionHandler())
                 .antMatchers("/api/a").access("hasRole('ROLE_ADMIN')")
                 .antMatchers("/api/user").authenticated()
-                .antMatchers("/api/room").authenticated()
+                .antMatchers("/api/room").permitAll()
                 .antMatchers("/api/test").anonymous();
 
         // exception handling

@@ -130,9 +130,18 @@ const Filter = () => {
     setEnterAccessPeople("");
     setCurStartFilteringDate("");
     setCurEndFilteringDate("");
+    setContainTimeClosing(false);
+    setContainNoAdmittance(false);
 
     dispatch({
       type: "RESETALLDATAS",
+    });
+
+    dispatch({
+      type: "RESETBUTTONCLICK",
+      payload: {
+        reset: "true",
+      },
     });
   };
 

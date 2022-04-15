@@ -1,6 +1,7 @@
 package com.togethersports.tosproejct.room;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.togethersports.tosproejct.image.RoomImage;
 import com.togethersports.tosproejct.room.dto.RoomOfCreate;
 import com.togethersports.tosproejct.room.dto.RoomOfUpdate;
@@ -76,19 +77,23 @@ public class Room {
 //    private List<User> participant;
 
     //방장
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "HOST_ID")
     private User host;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CREATE_USER_ID")
     private User createUser;
 
     //방 이미지
+    @JsonIgnore
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
     private List<RoomImage> roomImages;
 
     //태그
+    @JsonIgnore
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
     private List<Tag> tag;
 

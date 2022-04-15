@@ -1,9 +1,15 @@
-import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const SearchBar = () => {
   const dispatch = useDispatch();
+  const [roomTitle, setRoomTitle] = useState("");
+  const resetDetection = useSelector(
+    (state) => state.filteringButtonClickDetectionReducer
+  );
 
   const inputSearchBar = (e) => {
+    setRoomTitle(e.target.value);
     dispatch({
       type: "FILTERINGTITLE",
       payload: {
@@ -12,13 +18,36 @@ const SearchBar = () => {
     });
   };
 
+  useEffect(() => {
+    if (resetDetection.reset === "true") {
+      dispatch({
+        type: "FILTERINGTITLE",
+        payload: {
+          roomTitle: "",
+        },
+      });
+
+      dispatch({
+        type: "RESETBUTTONCLICK",
+        payload: {
+          reset: "false",
+        },
+      });
+      setRoomTitle("");
+    }
+  }, [resetDetection.reset]);
+
   return (
     <>
       <div className="search-wrapper">
         <div className="bar-in-search">
           <div className="dropdown-in-searchBar">방 이름</div>
           <div className="split"></div>
-          <input className="input-searchRoom" onChange={inputSearchBar}></input>
+          <input
+            className="input-searchRoom"
+            value={roomTitle}
+            onChange={inputSearchBar}
+          ></input>
         </div>
       </div>
       <style jsx>{`

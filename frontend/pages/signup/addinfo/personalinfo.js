@@ -28,8 +28,8 @@ const PersonalInfo = () => {
 
   // 닉네임 중복확인
   const checkNicknameDuplication = () => {
-    if (nickname.length < 2) {
-      alert("닉네임은 최소 2글자 이상 입력해주세요.");
+    if (nickname.length < 2 || nickname.length > 8) {
+      alert("닉네임은 2글자 이상 ~ 8글자 이내로 입력해주세요.");
     } else {
       getNicknameDuplicationCheck(nickname).then((res) => {
         console.log(res.status.message);
