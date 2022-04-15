@@ -10,6 +10,11 @@ import java.util.List;
 @Getter
 @Builder
 public class FieldsOfRoomList {
+    // 방 제목
+    private String roomTitle;
+
+    // 방 내용
+    private String roomContent;
 
     // 종목
     private List<String> exercise;
@@ -33,6 +38,12 @@ public class FieldsOfRoomList {
 
     // 페이지
     private int page;
+
+    // 입장마감된 방 보기 여부
+    private boolean containNoAdmittance;
+    // 시간마감된 방 보기 여부
+    private boolean containTimeClosing;
+
 }
 
-//http://localhost:8080/api/room?exercise=축구,농구,골프&startAppointmentDate=2021-01-03T12:11&endAppointmentDate=2021-02-04T12:30&page=0&size=20&sort=id,DESC
+

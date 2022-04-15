@@ -8,9 +8,6 @@ import com.togethersports.tosproejct.common.file.util.NameGenerator;
 import com.togethersports.tosproejct.common.util.ParsingEntityUtils;
 import com.togethersports.tosproejct.interest.Interest;
 import com.togethersports.tosproejct.interest.InterestRepository;
-import com.togethersports.tosproejct.security.acl.CreationStrategy;
-import com.togethersports.tosproejct.security.acl.Permission;
-import com.togethersports.tosproejct.security.annotation.AclCreate;
 import com.togethersports.tosproejct.user.dto.UserOfModifyInfo;
 import com.togethersports.tosproejct.user.dto.UserOfMyInfo;
 import com.togethersports.tosproejct.user.dto.UserOfOtherInfo;
@@ -101,7 +98,7 @@ public class UserService {
 
         List<ActiveArea> activeAreas = parsingEntityUtils.parsingStringToActivesEntity(userOfModifyInfo.getActiveAreas());
         List<Interest> interests = parsingEntityUtils.parsingStringToInterestsEntity(userOfModifyInfo.getInterests());
-        if(userOfModifyInfo.getUserProfileImage().getImageSource() == null){
+        if(userOfModifyInfo.getUserProfileImage().getImageSource().equals("정보 없음")){
 
             findUser.updateUser(userOfModifyInfo, activeAreas, interests, "http://localhost:8080/Users/chayeongho/Desktop/스크린샷 2022-04-13 오후 6.51.46.png");
             return;
