@@ -30,10 +30,10 @@ public class UserController {
     private final UserService userService;
 
     // 닉네임 중복확인
-    @GetMapping("/api/duplication")
-    public ResponseEntity<Response> nicknameDuplicationCheck(@RequestParam String nickname){
+    @GetMapping("/api/user/duplication/nickname")
+    public ResponseEntity<Response> nicknameDuplicationCheck(@RequestParam String userNickname){
 
-        if(userService.nicknameDuplicationCheck(nickname)){
+        if(userService.nicknameDuplicationCheck(userNickname)){
             // 존재하지 않을 경우
             return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, null));
         }

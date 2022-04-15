@@ -21,7 +21,7 @@ public class UserOfMyInfo {
     private Long id;
     private List<String> activeAreas;
     private List<String> interests;
-    private String userProfileImage;
+    private String userProfileImagePath;
     private LocalDate userBirth;
     private OAuth2Provider oAuth2Provider;
 
