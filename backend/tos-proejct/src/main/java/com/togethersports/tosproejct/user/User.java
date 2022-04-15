@@ -29,9 +29,7 @@ import java.util.List;
  */
 @Getter
 @Entity
-public class User implements Serializable {
-
-    private static final long serialVersionUID = 6866208578606279365L;
+public class User {
 
     @Id
     @GeneratedValue

@@ -139,7 +139,10 @@ const ModifyRoomModal = ({ open, close, sequenceId }) => {
           </div>
           <div className="roomNotice-wrapper">
             <p>방 설명 작성</p>
-            <textarea onChange={changeContent}>{roomContent}</textarea>
+            <textarea
+              onChange={changeContent}
+              defaultValue={roomContent}
+            ></textarea>
           </div>
           <div className="button-wrapper">
             <button className="done-btn" onClick={clickDoneBtn}>

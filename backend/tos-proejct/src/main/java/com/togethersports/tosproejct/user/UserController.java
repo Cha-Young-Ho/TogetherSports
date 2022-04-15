@@ -2,14 +2,19 @@ package com.togethersports.tosproejct.user;
 
 import com.togethersports.tosproejct.common.code.CommonCode;
 import com.togethersports.tosproejct.common.dto.Response;
-import com.togethersports.tosproejct.security.annotation.AclCreate;
 import com.togethersports.tosproejct.security.annotation.CurrentUser;
 import com.togethersports.tosproejct.user.dto.UserOfModifyInfo;
 import com.togethersports.tosproejct.user.dto.UserOfMyInfo;
 import com.togethersports.tosproejct.user.dto.UserOfOtherInfo;
 import com.togethersports.tosproejct.user.exception.NicknameDuplicationException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.acls.domain.SpringCacheBasedAclCache;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,11 +63,11 @@ public class UserController {
         return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, null));
     }
     //내 정보 조회
+
     @GetMapping("/api/user")
     public ResponseEntity<Response> getMyInfo(@CurrentUser User user){
         UserOfMyInfo myInfo = userService.getMyInfo(user.getId());
 
         return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, myInfo));
     }
-
 }

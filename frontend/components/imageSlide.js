@@ -26,16 +26,20 @@ const ImageSlide = ({ imageArr }) => {
   return (
     <>
       <div className="slideshow-container">
-        {imageArr.map((image, index) => {
-          return (
-            <div className="slide fade" key={index}>
-              <div className="number-text">{`${index} / ${imageArr.length}`}</div>
-              <div className="image-container">
-                <img src={image} />
+        {imageArr
+          .sort((a, b) => a.order - b.order)
+          .map((image, index) => {
+            return (
+              <div className="slide fade" key={index}>
+                <div className="number-text">{`${index + 1} / ${
+                  imageArr.length
+                }`}</div>
+                <div className="image-container">
+                  <img src={image.imagePath} />
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
 
         <div className="buttons">
           <button className="prev-button" onClick={() => onChangeImage(-1)}>
@@ -50,6 +54,8 @@ const ImageSlide = ({ imageArr }) => {
       <style jsx>{`
         .slideshow-container {
           position: relative;
+          width: 100%;
+          height: 100%;
         }
 
         .slide {

@@ -1,6 +1,6 @@
 POST http://localhost:8080/api/user
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaXNzIjoidG9nZXRoZXItc3BvcnRzIiwiZXhwIjoxNjQ5NTkwMDA4LCJyb2xlIjoiUk9MRV9VU0VSIiwiZW1haWwiOiJqZW9uc2V1bjAwMDBAZ21haWwuY29tIn0.QslzYxROX7onm7AZoDuYPgC1Wcr3Agz4L1xK6TVbMi8
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaXNzIjoidG9nZXRoZXItc3BvcnRzIiwiZXhwIjoxNjQ5NzgzMjI2LCJyb2xlIjoiUk9MRV9VU0VSIiwiZW1haWwiOiJ3anN0cGRuczIwMTFAbmF2ZXIuY29tIn0._-9csViuC1VzvMv2Uy0O2zmffcmVx9zCW9Mmn38Yarc
 
 {
   "userNickname": "j",
@@ -15,3 +15,5 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaXNzIjoidG9nZXRoZXItc
 }
 
 ###
+GET http://localhost:8080/api/user
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaXNzIjoidG9nZXRoZXItc3BvcnRzIiwiZXhwIjoxNjQ5NzgzMjI2LCJyb2xlIjoiUk9MRV9VU0VSIiwiZW1haWwiOiJ3anN0cGRuczIwMTFAbmF2ZXIuY29tIn0._-9csViuC1VzvMv2Uy0O2zmffcmVx9zCW9Mmn38Yarc

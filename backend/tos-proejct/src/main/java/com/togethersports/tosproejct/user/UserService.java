@@ -8,6 +8,8 @@ import com.togethersports.tosproejct.common.file.util.NameGenerator;
 import com.togethersports.tosproejct.common.util.ParsingEntityUtils;
 import com.togethersports.tosproejct.interest.Interest;
 import com.togethersports.tosproejct.interest.InterestRepository;
+import com.togethersports.tosproejct.security.acl.AclPermission;
+import com.togethersports.tosproejct.security.annotation.AclCreate;
 import com.togethersports.tosproejct.user.dto.UserOfModifyInfo;
 import com.togethersports.tosproejct.user.dto.UserOfMyInfo;
 import com.togethersports.tosproejct.user.dto.UserOfOtherInfo;
@@ -15,6 +17,7 @@ import com.togethersports.tosproejct.user.exception.NicknameDuplicationException
 import com.togethersports.tosproejct.user.exception.NotEnteredInformationException;
 import com.togethersports.tosproejct.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,9 +46,6 @@ public class UserService {
     private final Base64Decoder base64Decoder;
     private final NameGenerator nameGenerator;
     private final ParsingEntityUtils parsingEntityUtils;
-    private final ActiveAreaRepository activeAreaRepository;
-    private final InterestRepository interestRepository;
-    // 사용자 계정 추가정보 최초 설정
 
     /**
      * 이메일 중복 체크를 위한 메소드
