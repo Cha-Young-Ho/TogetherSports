@@ -23,11 +23,7 @@ public class UserOfMyInfo {
     private List<String> interests;
     private String userProfileImagePath;
     private LocalDate userBirth;
-    private OAuth2Provider oAuth2Provider;
 
-    @JsonIgnore
-    @JsonProperty(value = "isFirst")
-    private boolean isFirst;
     @JsonProperty(value = "isInformationRequired")
     private boolean isInformationRequired;
 

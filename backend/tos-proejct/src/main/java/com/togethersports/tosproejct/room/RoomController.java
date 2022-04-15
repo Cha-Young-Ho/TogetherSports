@@ -53,7 +53,7 @@ public class RoomController {
     public ResponseEntity<Response> getRoomList(FieldsOfRoomList fieldsOfRoomList, Pageable pageable){
 
 
-        return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, roomService.roomFiled(fieldsOfRoomList, pageable)));
+        return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, roomService.roomFields(fieldsOfRoomList, pageable)));
 
     }
 }

@@ -55,7 +55,7 @@ public class UserController {
                                                  @RequestBody @Validated UserOfModifyInfo userOfOtherInfo){
 
         userService.modifyMyInfo(user.getId(), userOfOtherInfo);
-        return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, userOfOtherInfo));
+        return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, null));
     }
     //내 정보 조회
     @GetMapping("/api/user")

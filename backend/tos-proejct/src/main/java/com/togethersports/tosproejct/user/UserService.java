@@ -124,12 +124,10 @@ public class UserService {
 
        return UserOfMyInfo.builder()
                .id(user.getId())
-               .isFirst(user.isFirst())
                .userBirth(user.getUserBirth())
                .activeAreas(parsedAreaList)
                .userProfileImagePath(user.getUserProfileImage())
                .userEmail(user.getEmail())
-               .oAuth2Provider(user.getProvider())
                .mannerPoint(user.getMannerPoint())
                .gender(user.getGender())
                .interests(parsedInterestList)

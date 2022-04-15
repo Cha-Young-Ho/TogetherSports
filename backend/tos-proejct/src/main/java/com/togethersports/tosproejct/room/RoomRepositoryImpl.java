@@ -2,17 +2,24 @@ package com.togethersports.tosproejct.room;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.togethersports.tosproejct.room.dto.FieldsOfRoomList;
+
+import com.togethersports.tosproejct.room.dto.RoomOfList;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.togethersports.tosproejct.room.QRoom.room;
 
+@Slf4j
 @RequiredArgsConstructor
 public class RoomRepositoryImpl implements RoomRepositoryCustom{
 
@@ -21,11 +28,14 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
     @Override
     public Page<Room> searchAll(FieldsOfRoomList fieldsOfRoomList, Pageable pageable) {
 
+        log.info("partici pant = {}", room.participantCount.getMetadata().getElement().toString());
+        log.info("1 = {}", room.participantCount.getMetadata().hashCode());
+        log.info("2 = {}", room.participantCount.getClass().toString());
+        log.info("3 = {}", room.participantCount.getMetadata().getParent());
         List<Room> result = queryFactory
                 .selectFrom(room)
                 .where(eqInterests(fieldsOfRoomList.getExercise()),
-                    eqArea(fieldsOfRoomList.getArea()),
-                    betweenTime(fieldsOfRoomList.getStartAppointmentDate(), fieldsOfRoomList.getEndAppointmentDate()),
+                    eqArea(fieldsOfRoomList.getArea())
 
 
                 )
@@ -39,7 +49,7 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
     //지역 필터링
     private BooleanBuilder eqArea(List<String> areas){
 
-        if(areas.isEmpty()){
+        if(areas == null){
             return null;
         }
 
@@ -54,7 +64,7 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
 
     //종목 필터링(복수)
     private BooleanBuilder eqInterests(List<String> interests){
-        if(interests.isEmpty()){
+        if(interests == null){
             return null;
         }
 
@@ -81,11 +91,16 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
         return room.startAppointmentDate.goe(start).and(room.endAppointmentDate.loe(end));
     }
 
-    private BooleanExpression
+//    private BooleanExpression
 
-//    private BooleanExpression participateCount(int participantCount){
-//
-//    }
+    private BooleanExpression participateCount(Integer participantCount){
+
+        if(participantCount == null){
+            return null;
+        }
+       
+        return room.limitPeopleCount.lt((Integer)room.participantCount.getMetadata().getElement() + participantCount);
+    }
 
     //시간 대
 
@@ -96,4 +111,11 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
     // customTimeStart=2021-01-03T12:11&customTimeEnd=2021-02-04T12:30&
     // filter=true&participantCount=0&page=0&size=20&sort=id,DESC
 
+    //저도 querydsl 쓰면서 레코드에서 날짜가져와서 "다음날" 계산해야되는문제 있었는데 온갖삽질하다가
+
+Expressions.dateTemplate(
+    LocalDate::class.java,"ADDDATE({0},{1})", date, Expressions.asNumber(1)
+            )
+
 }
+
