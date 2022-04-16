@@ -15,7 +15,7 @@ const FilteredRooms = () => {
   );
   // 방 수정 임시
   const [modifyModalOpen, setModifyModalOpen] = useState(false);
-  const [eachRoomInfo, setEachRoomInfo] = useState([]);
+  const [eachRoomInfo, setEachRoomInfo] = useState([1, 2, 3, 1, 2, 3]);
 
   const openModifyModal = () => {
     setModifyModalOpen(true);
@@ -135,39 +135,41 @@ const FilteredRooms = () => {
   return (
     <>
       <div className="filteredRooms-wrapper">
-        <div>
-          <div className="centerLine">
-            <div>
-              <button className="buttons" onClick={openModifyModal}>
-                최신순
-              </button>
-              <button className="buttons">시간순</button>
-              <button className="buttons">참여자순</button>
-              <ModifyRoomModal
-                open={modifyModalOpen}
-                close={closeModifyModal}
-                sequenceId={"test"}
-              ></ModifyRoomModal>
-            </div>
-            <div className="rooms-wrapper">
-              <div className="rooms-grid">
-                {eachRoomInfo.map((datas, index) => {
-                  return (
-                    <div key={index} className="room-container">
-                      <div className="thumbnailLine">
-                        <div className="tags">태그</div>
-                        <div className="participants">
-                          <p>3/10</p>
-                        </div>
+        <div className="centerLine">
+          <div>
+            <button className="buttons" onClick={openModifyModal}>
+              최신순
+            </button>
+            <button className="buttons">시간순</button>
+            <button className="buttons">참여자순</button>
+            <ModifyRoomModal
+              open={modifyModalOpen}
+              close={closeModifyModal}
+              sequenceId={"test"}
+            ></ModifyRoomModal>
+          </div>
+          <div className="rooms-wrapper">
+            <div className="rooms-grid">
+              {eachRoomInfo.map((datas, index) => {
+                return (
+                  <div key={index} className="room-container">
+                    <div className="thumbs-box">
+                      <img src="/base_profileImage.jpg"></img>
+                      <div className="tags">
+                        <p>태그</p>
+                        <p>태그2</p>
                       </div>
-                      <div className="bodyLine">
-                        <h1>타이틀</h1>
-                        <p>yyyy-mm-dd x요일 hh:mm 모임</p>
+                      <div className="participants">
+                        <p>3 / 10</p>
                       </div>
                     </div>
-                  );
-                })}
-              </div>
+                    <div className="bodyLine">
+                      <h1>타이틀</h1>
+                      <p>yyyy-mm-dd x요일 hh:mm 모임</p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -185,8 +187,6 @@ const FilteredRooms = () => {
         .centerLine {
           width: 1200px;
           height: 100%;
-          display: flex;
-          flex-direction: column;
           padding-top: 15px;
         }
 
@@ -217,13 +217,12 @@ const FilteredRooms = () => {
 
         .room-container {
           width: 250px;
-          height: 250px;
           border-radius: 10px;
           cursor: pointer;
           box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
         }
 
-        .thumbnailLine {
+        .thumbs-box {
           width: 100%;
           height: 170px;
           display: flex;
@@ -234,25 +233,50 @@ const FilteredRooms = () => {
           border-top-right-radius: 10px;
         }
 
+        .thumbs-box img {
+          width: 100%;
+          height: 100%;
+        }
+
         .tags {
-          font-size: 1.5rem;
+          position: relative;
+          bottom: 170px;
           margin: 10px;
+          display: flex;
+        }
+
+        .tags p {
+          margin-left: 10px;
+          padding: 5px;
+          border: solid 1px rgb(54, 202, 239);
+          color: rgb(54, 202, 239);
+          font-size: 0.9rem;
+          border-radius: 24px;
+          background-color: rgba(0, 0, 0, 0.6);
         }
 
         .participants {
+          position: relative;
+          bottom: 100px;
           margin: 10px;
-          text-align: right;
+          display: flex;
+          justify-content: right;
         }
 
         .participants p {
-          color: #fff;
+          color: white;
           font-size: 1.5rem;
+          border: solid 0.5px white;
+          border-radius: 24px;
+          background-color: rgba(0, 0, 0, 0.7);
+          padding: 5px;
         }
 
         .bodyLine {
           width: 100%;
           height: 80px;
           display: flex;
+          border-top: solid 0.5px #d8d8d8;
           flex-direction: column;
           justify-content: space-between;
         }
