@@ -18,9 +18,9 @@ public class RoomBaseEntity {
     @JsonIgnore
     @CreatedDate
     @Column(updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime createdTime;
 
     @JsonIgnore
     @LastModifiedDate
-    private LocalDateTime updatedAt;
+    private LocalDateTime updatedTime;
 }
