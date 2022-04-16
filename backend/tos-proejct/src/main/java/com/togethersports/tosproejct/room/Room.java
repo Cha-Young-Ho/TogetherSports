@@ -3,6 +3,7 @@ package com.togethersports.tosproejct.room;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.togethersports.tosproejct.image.RoomImage;
+import com.togethersports.tosproejct.room.auditing.RoomBaseEntity;
 import com.togethersports.tosproejct.room.dto.RoomOfCreate;
 import com.togethersports.tosproejct.room.dto.RoomOfUpdate;
 import com.togethersports.tosproejct.tag.Tag;
@@ -25,7 +26,7 @@ import java.util.List;
 @Getter
 @Entity
 @NoArgsConstructor
-public class Room {
+public class Room extends RoomBaseEntity {
 
     @Id
     @GeneratedValue
