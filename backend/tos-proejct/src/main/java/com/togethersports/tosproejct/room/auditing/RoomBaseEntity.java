@@ -1,5 +1,6 @@
 package com.togethersports.tosproejct.room.auditing;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -14,11 +15,12 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 @Getter
 public class RoomBaseEntity {
+    @JsonIgnore
     @CreatedDate
-    @Column(name = "CREATE_TIME", updatable = false)
+    @Column(updatable = false)
     private LocalDateTime createdAt;
 
+    @JsonIgnore
     @LastModifiedDate
-    @Column(name = "UPDATE_TIME")
     private LocalDateTime updatedAt;
 }
