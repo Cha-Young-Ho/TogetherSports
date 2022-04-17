@@ -8,6 +8,7 @@ const RoomModal = ({ open, close, roomID }) => {
   const [mapLoaded, setMapLoaded] = useState(false); // 지도 로드 동기화
 
   /* response content 담을 변수들 */
+  const [roomId, setRoomId] = useState(""); // 참여페이지로 넘어가기 위한 roomId
   const [creatorNickName, setCreatorNickName] = useState("");
   const [roomTitle, setRoomTitle] = useState("");
   const [roomContent, setRoomContent] = useState("");
@@ -40,6 +41,7 @@ const RoomModal = ({ open, close, roomID }) => {
       // 방 정보 받아오기
       getRoomInfo(roomID).then((res) => {
         if (res.status.code === 5000) {
+          setRoomId((roomId = res.content.roomId));
           setCreatorNickName((creatorNickName = res.content.creatorNickName));
           setRoomTitle((roomTitle = res.content.roomTitle));
           setRoomContent((roomContent = res.content.roomContent));
