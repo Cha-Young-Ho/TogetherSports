@@ -4,7 +4,7 @@ import { getRoomInfo } from "../../api/rooms";
 import ImageSlide from "../imageSlide";
 
 /* roomList에서 받은 각 room들의 roomId를 props로 받기 */
-const RoomModal = ({ open, close, roomSequenceId }) => {
+const RoomModal = ({ open, close, roomID }) => {
   const [mapLoaded, setMapLoaded] = useState(false); // 지도 로드 동기화
 
   /* response content 담을 변수들 */
@@ -37,8 +37,9 @@ const RoomModal = ({ open, close, roomSequenceId }) => {
 
   useEffect(() => {
     if (open && mapLoaded) {
+      console.log(roomID);
       // 방 정보 받아오기
-      getRoomInfo(roomSequenceId).then((res) => {
+      getRoomInfo(roomID).then((res) => {
         if (res.status.code === 5000) {
           setRoomId((roomId = res.content.roomId));
           setCreatorNickName((creatorNickName = res.content.creatorNickName));
