@@ -153,6 +153,7 @@ const saveNicknameReducer = (state = saveNicknameInitialState, action) => {
   }
 };
 
+// 방 생성 reducer
 const createRoomReducer = (state = createRoomInitialState, action) => {
   switch (action.type) {
     case ROOMSETTING:

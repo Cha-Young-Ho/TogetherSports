@@ -1,29 +1,10 @@
-import { useEffect, useState } from "react";
-
-/* 수정 필요 */
-// 1. 대표사진 배열 내 index 오류 / 삭제 시 같은 이미지 삭제 되는 점 / 연속으로 같은 사진은 적용안되는 점 => 오류 수정하기
-// 2. order 필드 추가하기
-// 3. 방 이미지를 받는 모든 곳에 order 추가하기
-
-/* 연습장 */
-// imagePreview => 순서 바뀌지 않음. thumbnailIndex의 번호가 바뀌면 roomImage 배열에 영향이 가야 함.
-
-// roomImage 내에서 index 위치를 바꾸지말고 그대로 두고 order를 추가해서 order의 수만 바꾸면됨
-// 1. 대표이미지 변경하면 해당 order를 0으로 바꾸기 (나머지 order들은 오름차순으로 바꾸게 해야함)
-// 2. 삭제하는 경우에는 roomImage에 해당 order보다 큰 수가있다면 그 수들은 다 -1 해주기
-// 3. 대표사진 index로 설정되게 하는거 다르게 생각해보기 -> order가 0인 걸로 바꾸기
-// 위 방법은 대표사진이 바뀔 때 다른 order의 값을 제어할 수 없어서 불가능..
-
-// roomImage에 그냥 원래대로 하고 맨 마지막에 서버에 줄때만 order = index로 붙여서 보내기
-// 1. 대표사진 index로 설정되게 하는거 그렇게 하면 안되고 다른방법 생각해서 고치기
-// 2. 삭제 시 같은 이미지 삭제 되는 점 / 연속으로 같은 사진은 적용안되는 점 => 오류 수정하기
-// 3. roomtaginfo에서 완료버튼 누를때 index값인 order 추가해서 보내기
+import { useEffect, useState, useSelector } from "react";
 
 const SetRoomImages = (props) => {
   const [inputImageName, setInputImageName] = useState(""); // input에 표시할 이미지 이름
   const [imageSrc, setImageSrc] = useState(""); // 이미지 소스
   const [roomImage, setRoomImage] = useState([]); // 서버로 보낼 데이터
-  const [imagePreview, setImagePreview] = useState([]); // 프리뷰 순서를 담을 배열
+  const [imagePreview, setImagePreview] = useState([]); // 프리뷰를 담을 배열
   const [thumbnailIndex, setThumbnailIndex] = useState(0); // 대표사진을 설정할 인덱스
 
   // 상위 컴포넌트로 이미지 전달
@@ -38,11 +19,18 @@ const SetRoomImages = (props) => {
   }, []);
 
   useEffect(() => {
-    if (props.getData) {
-      props.getData(roomImage);
+    if (props.getImageData) {
+      props.getImageData(roomImage);
       return;
     }
   }, [roomImage]);
+
+  useEffect(() => {
+    if (props.getThumbnailData) {
+      props.getThumbnailData(thumbnailIndex);
+      return;
+    }
+  }, [thumbnailIndex]);
 
   useEffect(() => {
     if (props.getPreview) {
@@ -54,6 +42,7 @@ const SetRoomImages = (props) => {
   // 이미지 선택 함수
   const onClickImage = (e) => {
     const file = e.target.files[0];
+
     if (file === undefined) {
       e.preventDefault();
       return;
@@ -63,10 +52,10 @@ const SetRoomImages = (props) => {
     if (roomImage.length < 5) {
       setInputImageName(file.name); // input에 이미지 이름 설정하기
       encodeFileToBase64(file).then(() => {
+        // 인코딩 이후에 추가
         setRoomImage([
           ...roomImage,
           {
-            name: file.name, // test 위해 추가
             roomImageExtension: imageFileExtension,
             imageSource: imageSrc,
           },
@@ -97,61 +86,42 @@ const SetRoomImages = (props) => {
 
   // 이미지 삭제 함수
   const deleteImage = (e) => {
-    const selectedImageIndex = e.target.classList[1];
-    const imageIndex = selectedImageIndex.slice(4);
-    const selectedImg = document.querySelector(`.img-${imageIndex}`);
+    const imageIndex = Number(e.target.classList[1].slice(4)); // 삭제할 이미지의 index
 
     // input 비우기
     setInputImageName((inputImageName = ""));
 
+    deleteImageData(imageIndex).then(() => {
+      if (imageIndex === thumbnailIndex || imageIndex >= roomImage.length)
+        setThumbnailIndex(0);
+      else if (thumbnailIndex === roomImage.length - 1)
+        setThumbnailIndex(thumbnailIndex - 1);
+    });
+  };
+
+  const deleteImageData = async (imageIndex) => {
     // 프리뷰에서 삭제
     setImagePreview((prev) =>
-      prev.filter((el) => {
-        return el !== selectedImg.src;
+      prev.filter((el, index) => {
+        return index !== imageIndex;
       })
     );
 
     // 서버에게 전달할 객체배열 안에서 데이터 삭제
-    const sliceIndex = selectedImg.src.indexOf(",");
-    const src = selectedImg.src.substr(sliceIndex + 1);
     setRoomImage((prev) =>
-      prev.filter((el) => {
-        return el.imageSource !== src;
+      prev.filter((el, index) => {
+        return index !== imageIndex;
       })
     );
   };
 
   // 대표사진 변경 함수
-  // !!!! 지금 문제점 !!!! => roomimage에껀 인덱스값 잘 바뀌는데 imagepreview에 인덱스가 안바뀌는게 문제가돼서 나중에 꼬이는것임
   const onChangeThumbnailImage = (e) => {
-    console.log(e.target);
-    const targetIndex = Number(e.target.classList[1].slice(-1)); // 변경할 대표사진의 imagePreview에서의 index => 값 잘들어옴
-    const thumbnail = roomImage.splice(targetIndex, 1);
-    roomImage.splice(0, 0, thumbnail[0]);
+    const targetIndex = Number(e.target.classList[1].slice(-1)); // 대표사진으로 바꿀 index
 
     setInputImageName((inputImageName = "")); // input 비우기
     setThumbnailIndex((thumbnailIndex = targetIndex)); // 대표사진 바꾸기
-    setRoomImage(roomImage);
-
-    // const moveValue = Math.abs(targetIndex) * -1;
-    // changeArrayOrder(roomImage, targetIndex, moveValue);
   };
-
-  // 대표사진을 위해 배열의 index 변경
-  // const changeArrayOrder = (arr, targetIndex, moveValue) => {
-  //   const newPositionIndex = targetIndex + moveValue; // 이동할 index
-  //   if (newPositionIndex < 0 || newPositionIndex >= arr.length) return;
-  //   const tempArr = JSON.parse(JSON.stringify(arr));
-  //   const target = tempArr.splice(targetIndex, 1)[0];
-  //   tempArr.splice(newPositionIndex, 0, target);
-  //   setRoomImage((roomImage = tempArr));
-  // };
-
-  // test
-  // useEffect(() => {
-  //   console.log("roomimage:", roomImage);
-  //   console.log("iimagepreview:", imagePreview);
-  // });
 
   return (
     <>
