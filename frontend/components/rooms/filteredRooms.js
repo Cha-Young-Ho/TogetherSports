@@ -2,8 +2,19 @@ import { useEffect, useState } from "react";
 import ModifyRoomModal from "../modals/modifyRoomModal";
 import { getRoomList } from "../../api/rooms";
 import { useDispatch, useSelector } from "react-redux";
+import RoomModal from "../modals/roomModal";
 
 const FilteredRooms = () => {
+  // 방 수정 임시
+  const [modifyModalOpen, setModifyModalOpen] = useState(false);
+  const openModifyModal = () => {
+    setModifyModalOpen(true);
+  };
+
+  const closeModifyModal = () => {
+    setModifyModalOpen(false);
+  };
+
   const dispatch = useDispatch();
 
   const roomFilteringData = useSelector(
@@ -13,16 +24,39 @@ const FilteredRooms = () => {
   const changeDectection = useSelector(
     (state) => state.filteringButtonClickDetectionReducer
   );
-  // 방 수정 임시
-  const [modifyModalOpen, setModifyModalOpen] = useState(false);
-  const [eachRoomInfo, setEachRoomInfo] = useState([1, 2, 3, 1, 2, 3]);
 
-  const openModifyModal = () => {
-    setModifyModalOpen(true);
+  // 방 설명 페이지 모달
+  const [roomExplainModalOpen, setRoomExplainModalOpen] = useState(false);
+  const [roomID, setRoomID] = useState();
+
+  // 현재 임시 데이터
+  const [eachRoomInfo, setEachRoomInfo] = useState([
+    // {
+    //   roomId: "121",
+    //   roomTitle: "축구 한판 뛰실분?",
+    //   limitPeopleCount: "22",
+    //   paricipantCount: "1",
+    //   tag: ["20대만", "고수만"],
+    //   startAppointmentDate: "2022-04-18T19:00",
+    //   roomImagePath: "",
+    // },
+    // {
+    //   roomId: "123",
+    //   roomTitle: "야구 한판 뛰실분?",
+    //   limitPeopleCount: "30",
+    //   paricipantCount: "1",
+    //   tag: ["20대만", "초보만"],
+    //   startAppointmentDate: "2022-04-19T22:30",
+    //   roomImagePath: "",
+    // },
+  ]);
+
+  const openRoomExplainModal = () => {
+    setRoomExplainModalOpen(true);
   };
 
-  const closeModifyModal = () => {
-    setModifyModalOpen(false);
+  const closeRoomExplainModal = () => {
+    setRoomExplainModalOpen(false);
   };
 
   const requestFilteringToFalse = () => {
@@ -152,25 +186,49 @@ const FilteredRooms = () => {
             <div className="rooms-grid">
               {eachRoomInfo.map((datas, index) => {
                 return (
-                  <div key={index} className="room-container">
+                  <div
+                    key={index}
+                    className="room-container"
+                    onClick={() => {
+                      setRoomID(datas.roomId);
+                      openRoomExplainModal();
+                    }}
+                  >
                     <div className="thumbs-box">
-                      <img src="/base_profileImage.jpg"></img>
+                      <img
+                        src={
+                          datas.roomImagePath === ""
+                            ? "/base_profileImage.jpg"
+                            : `localhost:8080/${datas.roomImagePath}`
+                        }
+                      ></img>
                       <div className="tags">
-                        <p>태그</p>
-                        <p>태그2</p>
+                        {datas.tag.map((tag, index) => {
+                          return <p key={index}>{tag}</p>;
+                        })}
                       </div>
                       <div className="participants">
-                        <p>3 / 10</p>
+                        <p>{`${datas.paricipantCount} / ${datas.limitPeopleCount}`}</p>
                       </div>
                     </div>
                     <div className="bodyLine">
-                      <h1>타이틀</h1>
-                      <p>yyyy-mm-dd x요일 hh:mm 모임</p>
+                      <h1>{`${datas.roomTitle}`}</h1>
+                      <p>
+                        {`${datas.startAppointmentDate.slice(
+                          0,
+                          10
+                        )} x요일 ${datas.startAppointmentDate.slice(11)} 모임`}
+                      </p>
                     </div>
                   </div>
                 );
               })}
             </div>
+            <RoomModal
+              open={roomExplainModalOpen}
+              close={closeRoomExplainModal}
+              roomID={roomID}
+            ></RoomModal>
           </div>
         </div>
       </div>
@@ -213,6 +271,7 @@ const FilteredRooms = () => {
           grid-template-rows: auto;
           place-items: center;
           row-gap: 30px;
+          margin-bottom: 100px;
         }
 
         .room-container {
@@ -225,9 +284,6 @@ const FilteredRooms = () => {
         .thumbs-box {
           width: 100%;
           height: 170px;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
           background-color: #53927d;
           border-top-left-radius: 10px;
           border-top-right-radius: 10px;
@@ -236,6 +292,7 @@ const FilteredRooms = () => {
         .thumbs-box img {
           width: 100%;
           height: 100%;
+          object-fit: cover;
         }
 
         .tags {
@@ -248,16 +305,16 @@ const FilteredRooms = () => {
         .tags p {
           margin-left: 10px;
           padding: 5px;
-          border: solid 1px rgb(54, 202, 239);
-          color: rgb(54, 202, 239);
+          border: solid 1px #f0376f;
+          color: #f0376f;
           font-size: 0.9rem;
           border-radius: 24px;
-          background-color: rgba(0, 0, 0, 0.6);
+          background-color: rgba(0, 0, 0, 0.7);
         }
 
         .participants {
           position: relative;
-          bottom: 100px;
+          bottom: 90px;
           margin: 10px;
           display: flex;
           justify-content: right;
@@ -265,7 +322,7 @@ const FilteredRooms = () => {
 
         .participants p {
           color: white;
-          font-size: 1.5rem;
+          font-size: 1rem;
           border: solid 0.5px white;
           border-radius: 24px;
           background-color: rgba(0, 0, 0, 0.7);
