@@ -90,7 +90,9 @@ const RoomTagInfo = () => {
       e.preventDefault();
       alert("입력되지 않은 정보가 있습니다.");
       return;
-    } else {
+    }
+    // 정상적으로 다 입력돼있으면 방 생성 요청
+    else {
       postCreateRoom(
         roomInfo.roomTitle,
         roomContent,
