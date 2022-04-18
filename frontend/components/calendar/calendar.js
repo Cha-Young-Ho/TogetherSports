@@ -331,6 +331,8 @@ const Calendar = (props) => {
           width: 100%;
           height: 100%;
           background-color: white;
+          border-bottom-left-radius: 12px;
+          border-bottom-right-radius: 12px;
         }
 
         .dateOption {
