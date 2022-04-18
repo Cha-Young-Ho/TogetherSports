@@ -152,8 +152,8 @@ const NavigationBar = () => {
               <Link href="/room/roomlist">
                 <div className="tag">방 목록</div>
               </Link>
-              <Link href="/">
-                <div className="tag">방 개설</div>
+              <Link href="/myroom">
+                <div className="tag">마이룸</div>
               </Link>
             </div>
           </div>
