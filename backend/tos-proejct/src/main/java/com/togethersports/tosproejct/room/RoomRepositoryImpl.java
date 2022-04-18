@@ -8,6 +8,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.togethersports.tosproejct.room.dto.FieldsOfRoomList;
 import com.togethersports.tosproejct.tag.QTag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -17,7 +18,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.togethersports.tosproejct.room.QRoom.room;
+import static com.togethersports.tosproejct.tag.QTag.tag1;
 
+@Slf4j
 @RequiredArgsConstructor
 public class RoomRepositoryImpl implements RoomRepositoryCustom{
 
@@ -25,8 +28,10 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
 
     @Override
     public Page<Room> searchAll(FieldsOfRoomList fieldsOfRoomList, Pageable pageable) {
+
         List<Room> result = queryFactory
                 .selectFrom(room)
+                .leftJoin(room.tags, tag1)
                 .where(eqInterests(
                     fieldsOfRoomList.getExercise()),
                     eqArea(fieldsOfRoomList.getArea()),
@@ -39,6 +44,7 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
                 .limit(pageable.getPageSize())
                 .orderBy(sortRoomList(pageable))
                 .fetch();
+
 
         return new PageImpl<>(result);
 

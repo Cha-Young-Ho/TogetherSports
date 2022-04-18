@@ -94,9 +94,8 @@ public class Room extends RoomBaseEntity {
     private List<RoomImage> roomImages;
 
     //태그
-    @JsonIgnore
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
-    private List<Tag> tag;
+    private List<Tag> tags;
 
     @Builder(access = AccessLevel.PRIVATE)
     private Room(RoomOfCreate roomOfCreate, User user){
