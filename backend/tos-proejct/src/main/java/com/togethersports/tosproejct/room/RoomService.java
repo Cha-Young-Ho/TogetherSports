@@ -80,7 +80,7 @@ public class RoomService {
 
         //List<Tag> -> List<String>
         List<String> tag =
-                parsingEntityUtils.parsingTagEntityToString(roomEntity.getTag());
+                parsingEntityUtils.parsingTagEntityToString(roomEntity.getTags());
         //조회수 증가
         roomEntity.plusViewCount();
 
