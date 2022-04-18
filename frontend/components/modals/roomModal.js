@@ -339,37 +339,41 @@ const RoomModal = ({ open, close, roomID }) => {
         }
 
         .option {
-          width: 70px;
           height: 70px;
-          margin-right: 20px;
-          padding: 10px;
+          margin-right: 10px;
+          padding: 10px 15px;
           border-radius: 10px;
           box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
           display: flex;
           flex-direction: column;
           justify-content: center;
+          align-items: center;
         }
 
         .option-time {
-          width: 120px;
           height: 70px;
-          margin-right: 20px;
-          padding: 10px;
+          padding: 10px 15px;
           border-radius: 10px;
           box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
         }
 
-        .small-p {
+        .option > p:nth-child(1),
+        .option-time > p:nth-child(1) {
           font-size: 0.9em;
           margin-bottom: 4px;
         }
 
-        .big-p {
+        .option > p:nth-child(2) {
           font-weight: bold;
-          font-size: 1.8em;
+          font-size: 1.7em;
         }
 
-        .option-time .big-p {
+        .option-time > p:nth-child(2),
+        .option-time > p:nth-child(3) {
           font-weight: bold;
           font-size: 1em;
         }
@@ -467,7 +471,7 @@ const RoomModal = ({ open, close, roomID }) => {
           height: 40px;
           border: none;
           border-radius: 25px;
-
+          color: white;
           font-size: 15px;
           font-weight: 200px;
           cursor: pointer;
@@ -475,12 +479,10 @@ const RoomModal = ({ open, close, roomID }) => {
 
         .left-button {
           background-color: #00555f;
-          color: white;
         }
 
         .right-button {
           background-color: #d8d8d8;
-          color: black;
         }
 
         @keyframes modal-show {
