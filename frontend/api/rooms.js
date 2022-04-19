@@ -116,9 +116,11 @@ const postCreateRoom = async (
       roomImages: roomImages,
     },
     {
-      "Content-type": "application/json; charset=UTF-8",
-      Accept: "*/*",
-      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        Accept: "*/*",
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
     }
   );
   const dataPromise = promise.then((res) => res.data);
@@ -152,9 +154,11 @@ const postUpdateRoom = async (
       roomImage: roomImage,
     },
     {
-      "Content-type": "application/json; charset=UTF-8",
-      Accept: "*/*",
-      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        Accept: "*/*",
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
     }
   );
   const dataPromise = promise.then((res) => res.data);

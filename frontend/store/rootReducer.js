@@ -19,13 +19,14 @@ const signupInitialState = {
 const myInfoInitialState = {
   userEmail: "",
   userName: "",
-  userNickname: "",
+  userNickname: "익명",
   userBirth: "yyyy-mm-dd",
   gender: "",
-  userProfileImagePath: "",
+  userProfileImagePath: "/base_profileImage.jpg",
   activeAreas: [],
   interests: [],
   mannerPoint: "",
+  isInformationRequired: "",
 };
 
 // 닉네임 저장 초기값
@@ -64,9 +65,10 @@ const roomFilteringDataInitialState = {
   endTime: "",
 };
 
-// 필터 적용 클릭 감지용 초기값
+// 필터 적용 및 초기화 클릭 감지용 초기값
 const clickDetectionInitialState = {
   detection: "false",
+  reset: "false",
 };
 
 // 오타 방지용
@@ -79,6 +81,7 @@ const ROOMSCHEDULE = "ROOMSCHEDULE";
 const FILTERINGTITLE = "FILTERINGTITLE";
 const ROOMEXERCISES = "ROOMEXERCISES";
 const FILTERBUTTONCLICK = "FILTERBUTTONCLICK";
+const RESETBUTTONCLICK = "RESETBUTTONCLICK";
 const SETSTARTDATE = "SETSTARTDATE";
 const SETENDDATE = "SETENDDATE";
 const SETSTARTTIME = "SETSTARTTIME";
@@ -130,6 +133,7 @@ const myInfoReducer = (state = myInfoInitialState, action) => {
         activeAreas: action.payload.activeAreas.map((el) => el),
         interests: action.payload.interests.map((el) => el),
         mannerPoint: action.payload.mannerPoint,
+        isInformationRequired: action.payload.isInformationRequired,
       };
     default:
       return state;
@@ -149,6 +153,7 @@ const saveNicknameReducer = (state = saveNicknameInitialState, action) => {
   }
 };
 
+// 방 생성 reducer
 const createRoomReducer = (state = createRoomInitialState, action) => {
   switch (action.type) {
     case ROOMSETTING:
@@ -243,6 +248,8 @@ const filteringButtonClickDetectionReducer = (
   switch (action.type) {
     case FILTERBUTTONCLICK:
       return { ...state, detection: action.payload.detection };
+    case RESETBUTTONCLICK:
+      return { ...state, reset: action.payload.reset };
     default:
       return state;
   }

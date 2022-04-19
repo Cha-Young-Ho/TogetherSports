@@ -146,6 +146,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/a").access("hasRole('ROLE_ADMIN')")
                 .antMatchers("/api/user").authenticated()
                 .antMatchers("/api/room").authenticated();
+                .antMatchers("/api/room").permitAll()
+                .antMatchers("/api/test").anonymous();
 
         http.headers().frameOptions().disable();
     }
