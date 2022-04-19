@@ -38,6 +38,7 @@ import java.lang.annotation.*;
  *      }
  * </pre>
  * <p>어노테이션 사용 방법은 동일하지만 정해진 메소드 규격을 벗어나지 않도록 주의해야한다.</p>
+ * <p>사용자 인증이 완료되어 시큐리티 컨텍스트에 인증 객체(익명은 안됨)가 존재할 때에만 사용해야 한다.</p>
  * @author seunjeon
  * @see AclPermission
  * @see com.togethersports.tosproejct.security.acl.AclAspect

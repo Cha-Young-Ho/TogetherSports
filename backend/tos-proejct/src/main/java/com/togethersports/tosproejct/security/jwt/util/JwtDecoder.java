@@ -45,7 +45,6 @@ public class JwtDecoder {
             String key = properties.getAccessTokenSigningKey();
             Jws<Claims> jwt = Jwts.parserBuilder()
                     .setSigningKey(Keys.hmacShaKeyFor(key.getBytes()))
-                    .requireIssuer(properties.getIssuer())
                     .build()
                     .parseClaimsJws(token);
             Claims jwtBody = jwt.getBody();

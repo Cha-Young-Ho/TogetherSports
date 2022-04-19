@@ -1,6 +1,8 @@
 package com.togethersports.tosproejct.security.jwt.provider;
 
+import com.togethersports.tosproejct.security.jwt.JwtProperties;
 import com.togethersports.tosproejct.security.jwt.model.UserContext;
+import com.togethersports.tosproejct.security.jwt.service.JwtService;
 import com.togethersports.tosproejct.user.User;
 import com.togethersports.tosproejct.security.jwt.exception.JwtExpiredTokenException;
 import com.togethersports.tosproejct.security.jwt.exception.JwtModulatedTokenException;
@@ -8,6 +10,7 @@ import com.togethersports.tosproejct.security.jwt.token.JwtPostAuthenticationTok
 import com.togethersports.tosproejct.security.jwt.token.JwtPreAuthenticationToken;
 import com.togethersports.tosproejct.security.jwt.token.TokenType;
 import com.togethersports.tosproejct.security.jwt.util.JwtDecoder;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.MissingClaimException;
@@ -29,18 +32,24 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtAuthenticationProvider implements AuthenticationProvider {
 
-    private final JwtDecoder jwtDecoder;
+    private final JwtService<User> jwtService;
+    private final JwtProperties jwtProperties;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
         String token = (String) authentication.getPrincipal();
         try {
-            User verifiedUser = jwtDecoder.verifyAccessToken(token, TokenType.ACCESS_TOKEN);
-//            UserContext context = new UserContext(verifiedUser);
-            return new JwtPostAuthenticationToken(verifiedUser);
+            Claims claims = jwtService.verifyToken(token, jwtProperties.getAccessTokenSigningKey());
+
+            User verifiedUser = jwtService.convertUserModel(claims);
+            UserContext context = new UserContext(verifiedUser);
+
+            return new JwtPostAuthenticationToken(context);
+
         } catch (SignatureException | MalformedJwtException | MissingClaimException ex) {
             throw new JwtModulatedTokenException("변조된 JWT 토큰입니다.");
+
         } catch (ExpiredJwtException ex) {
             throw new JwtExpiredTokenException("만료된 JWT 토큰입니다.");
         }
