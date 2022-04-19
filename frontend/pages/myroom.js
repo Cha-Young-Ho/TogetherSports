@@ -5,6 +5,8 @@ const MyRoom = () => {
   const [hostRooms, setHostRooms] = useState(null);
   const [joinedRooms, setJoinedRooms] = useState(null);
 
+  console.log(hostRooms);
+
   return (
     <>
       <div className="myroom-wrapper">
