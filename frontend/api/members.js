@@ -58,7 +58,7 @@ const getOtherInfo = async (nickname) => {
 
 // POST
 
-//회원가입 요청
+// 회원가입 요청 및 회원정보 수정
 const postUserRequest = async (
   userNickname,
   userBirth,
@@ -113,47 +113,6 @@ const deleteLogout = async () => {
   return dataPromise;
 };
 
-// PUT
-
-// 회원 정보 수정
-const putUpdateUserInfo = async (
-  userEmail,
-  userName,
-  userNickname,
-  userBirth,
-  activeAreas,
-  gender,
-  userProfileImage,
-  provider,
-  interests
-) => {
-  const promise = axios.put(
-    "http://localhost:8080/api/user",
-    {
-      userEmail: userEmail,
-      userName: userName,
-      userNickname: userNickname,
-      userBirth: userBirth,
-      mannerPoint: 10,
-      activeAreas: activeAreas,
-      gender: gender,
-      userProfileImage: userProfileImage,
-      provider: provider,
-      interests: interests, //--> 5개까지
-    },
-    {
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-        Accept: "*/*",
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-      },
-    }
-  );
-  const dataPromise = promise.then((res) => res.data);
-
-  return dataPromise;
-};
-
 // DELETE
 
 export {
@@ -161,6 +120,5 @@ export {
   getMyInfo,
   getOtherInfo,
   postUserRequest,
-  putUpdateUserInfo,
   deleteLogout,
 };
