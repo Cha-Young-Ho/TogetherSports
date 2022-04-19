@@ -103,14 +103,17 @@ const RoomTagInfo = () => {
         roomInfo.startAppointmentDate,
         roomInfo.endAppointmentDate,
         roomImages
-      ).then((res) => {
-        console.log(res.status.message);
-        if (res.status.code === 5000) {
-          alert("방을 성공적으로 생성하였습니다!");
-        } else {
-          FailResponse(res.status.code);
-        }
-      });
+      )
+        .then((res) => {
+          console.log(res.status.message);
+          if (res.status.code === 5000) {
+            alert("방을 성공적으로 생성하였습니다!");
+          }
+        })
+        .catch((error) => {
+          FailResponse(error.response.data.status.code);
+          return;
+        });
     }
   };
 
