@@ -5,13 +5,8 @@ import com.togethersports.tosproejct.common.code.CommonCode;
 import com.togethersports.tosproejct.common.dto.Response;
 import com.togethersports.tosproejct.security.jwt.JwtErrorCode;
 import com.togethersports.tosproejct.security.jwt.JwtProperties;
-import com.togethersports.tosproejct.security.jwt.RefreshTokenService;
-import com.togethersports.tosproejct.security.jwt.dto.TokenOfLogin;
+import com.togethersports.tosproejct.security.jwt.service.RefreshTokenService;
 import com.togethersports.tosproejct.security.jwt.util.JwtDecoder;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.MissingClaimException;
-import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +53,7 @@ public class CustomLogoutHandler implements LogoutHandler {
             // refresh 값이 있을 경우 필요한 헤더 추출
             String refreshToken = map.get("refreshToken");
             // refresh 제거
-            refreshTokenService.removeRefreshTokenByToken(refreshToken);
+//            refreshTokenService.removeRefreshTokenByToken(refreshToken);
 
 
             return;

@@ -10,6 +10,7 @@ import com.togethersports.tosproejct.interest.Interest;
 import com.togethersports.tosproejct.interest.InterestRepository;
 import com.togethersports.tosproejct.security.acl.AclPermission;
 import com.togethersports.tosproejct.security.annotation.AclCreate;
+import com.togethersports.tosproejct.security.oauth2.model.OAuth2Provider;
 import com.togethersports.tosproejct.user.dto.UserOfModifyInfo;
 import com.togethersports.tosproejct.user.dto.UserOfMyInfo;
 import com.togethersports.tosproejct.user.dto.UserOfOtherInfo;
@@ -46,6 +47,27 @@ public class UserService {
     private final Base64Decoder base64Decoder;
     private final NameGenerator nameGenerator;
     private final ParsingEntityUtils parsingEntityUtils;
+
+    /**
+     * 신규 계정을 등록한다.
+     * @param user 새로 등록할 계정 엔티티
+     * @return id 등록된 계정 식별자
+     */
+    public Long createUser(User user) {
+        return userRepository.save(user).getId();
+    }
+
+    /**
+     * 사용자 계정와 OAuth2 제공자 정보로 계정을 조회한다.
+     * @param email 조회 대상 계정 이메일
+     * @param provider 조회 대상 계정 OAuth2 제공자
+     * @return 조회된 계정 엔티티
+     * @throws UserNotFoundException 해당 계정이 없는 경우
+     */
+    public User findUser(String email, OAuth2Provider provider) {
+        return userRepository.findByEmailAndProvider(email, provider)
+                .orElseThrow(() -> new UserNotFoundException("계정이 존재하지 않습니다."));
+    }
 
     /**
      * 이메일 중복 체크를 위한 메소드
@@ -135,7 +157,7 @@ public class UserService {
     }
 
     public void checkInformation(User user){
-        if(user.isFirst()){
+        if(user.isInformationRequired()){
             throw new NotEnteredInformationException("추가 정보를 입력하지 않은 계정입니다.");
         }
     }

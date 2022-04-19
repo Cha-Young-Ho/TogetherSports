@@ -2,8 +2,7 @@ package com.togethersports.tosproejct.security.jwt.util;
 
 import com.togethersports.tosproejct.user.User;
 import com.togethersports.tosproejct.security.jwt.JwtProperties;
-import com.togethersports.tosproejct.security.jwt.dto.TokenOfLogin;
-import com.togethersports.tosproejct.security.jwt.token.RefreshToken;
+import com.togethersports.tosproejct.security.jwt.model.RefreshToken;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
@@ -58,23 +57,6 @@ public class JwtTokenFactory {
         return createAccessToken(user);
     }
 
-    // 엑세스 토큰과 리프레시 토큰을 생성한다.
-    public TokenOfLogin createTokens(User user) {
-
-
-        //엑세스 토큰 생성
-        String accessToken = createAccessToken(user);
-
-        //리프레시 토큰 생성
-        String refreshToken = createRefreshToken();
-
-
-        return TokenOfLogin.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
-    }
-
     /**
      * 액세스 토큰을 생성한다. 토큰 만료기간 및 공통되는 값은 application-jwt.yml 의 값을 이용한다.
      *
@@ -94,7 +76,6 @@ public class JwtTokenFactory {
 
         return Jwts.builder()
                 .setSubject(String.valueOf(user.getId()))
-                .setIssuer(properties.getIssuer())
                 .setExpiration(Date.from(now.plus(properties.getAccessTokenExpirationTime(), ChronoUnit.MINUTES)))
                 .addClaims(payload)
                 .signWith(Keys.hmacShaKeyFor(properties.getAccessTokenSigningKey().getBytes()))
@@ -120,13 +101,10 @@ public class JwtTokenFactory {
         Instant now = Instant.now();
 
         // jwt access token claims setting
-        Map<String, Object> payload = Map.of("email", refreshToken.getAccountEmail()
-                , "user", refreshToken.getAccountId()
-                , "role", refreshToken.getRole());
+        Map<String, Object> payload = Map.of("email", refreshToken.getToken());
 
         return Jwts.builder()
                 .setSubject(String.valueOf(refreshToken.getId()))
-                .setIssuer(properties.getIssuer())
                 .setExpiration(Date.from(now.plus(properties.getAccessTokenExpirationTime(), ChronoUnit.MINUTES)))
                 .addClaims(payload)
                 .signWith(Keys.hmacShaKeyFor(properties.getAccessTokenSigningKey().getBytes()))

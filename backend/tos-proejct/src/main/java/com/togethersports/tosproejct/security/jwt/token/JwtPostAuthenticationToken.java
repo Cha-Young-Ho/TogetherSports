@@ -21,16 +21,15 @@ import java.util.List;
  */
 public class JwtPostAuthenticationToken extends AbstractAuthenticationToken {
 
-    private User user;
+    private final UserContext userContext;
 
     /**
      * 인증 시도 사용자의 계정 정보를 바탕으로 인증 후 객체를 생성한다.
      * @param userContext jwt token 의 값을 기반으로 하는 계정 엔티티를 감싸고 있는 컨텍스트 객체
      */
-    public JwtPostAuthenticationToken(User user) {
-//        super(List.of(new SimpleGrantedAuthority(userContext.getUser().getRole().name())));
-        super(List.of(new SimpleGrantedAuthority(user.getRole().name())));
-        this.user = user;
+    public JwtPostAuthenticationToken(UserContext userContext) {
+        super(List.of(new SimpleGrantedAuthority(userContext.getUser().getRole().name())));
+        this.userContext = userContext;
         this.setAuthenticated(true);
     }
 
@@ -43,7 +42,7 @@ public class JwtPostAuthenticationToken extends AbstractAuthenticationToken {
     // 로그인 된 사용자 계정 정보 반환
     @Override
     public Object getPrincipal() {
-        return user;
+        return userContext;
     }
 
 

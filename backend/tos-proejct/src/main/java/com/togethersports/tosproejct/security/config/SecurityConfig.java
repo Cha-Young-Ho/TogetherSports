@@ -1,15 +1,20 @@
 package com.togethersports.tosproejct.security.config;
 
-import com.togethersports.tosproejct.security.jwt.RefreshTokenService;
-import com.togethersports.tosproejct.security.jwt.entrypoint.JwtAuthenticationEntryPoint;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.togethersports.tosproejct.security.jwt.JwtProperties;
+import com.togethersports.tosproejct.security.jwt.handler.JwtTokenRenewalExceptionHandler;
+import com.togethersports.tosproejct.security.jwt.service.JwtService;
+import com.togethersports.tosproejct.security.jwt.service.RefreshTokenService;
 import com.togethersports.tosproejct.security.jwt.filter.JwtAuthenticationFilter;
 import com.togethersports.tosproejct.security.jwt.filter.JwtRefreshFilter;
 import com.togethersports.tosproejct.security.jwt.handler.CustomLogoutHandler;
 import com.togethersports.tosproejct.security.jwt.handler.JwtAuthenticationFailureHandler;
+import com.togethersports.tosproejct.security.jwt.matcher.FilterSkipMatcher;
 import com.togethersports.tosproejct.security.jwt.provider.JwtAuthenticationProvider;
 import com.togethersports.tosproejct.security.jwt.util.JwtTokenFactory;
 import com.togethersports.tosproejct.security.oauth2.handler.OAuth2LoginAuthenticationSuccessHandler;
 import com.togethersports.tosproejct.security.oauth2.service.CustomOAuth2UserService;
+import com.togethersports.tosproejct.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,11 +29,13 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.servlet.Filter;
+import java.util.List;
 
 /**
  * <h1>SecurityConfig</h1>
@@ -38,6 +45,7 @@ import javax.servlet.Filter;
  *     <li>사용자 권한에 따른 URL 보안 설정</li>
  *     <li>security filter 설정 및 필터체인 등록</li>
  * </ul>
+ *
  * @author seunjeon
  * @author yunghocha
  */
@@ -55,13 +63,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private CustomLogoutHandler logoutHandler;
 
+    // jwt beans
+    @Autowired
+    private JwtProperties jwtProperties;
 
-
-    /**
-     *  jwt Beans
-     */
-
-    //Jwt Util
     @Autowired
     private JwtTokenFactory jwtTokenFactory;
 
@@ -69,25 +74,40 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private JwtAuthenticationProvider jwtAuthenticationProvider;
 
     @Autowired
-    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-
-    @Autowired
     private JwtAuthenticationFailureHandler jwtAuthenticationFailureHandler;
 
     @Autowired
     private RefreshTokenService refreshTokenService;
 
+    @Autowired
+    private JwtService<User> jwtService;
 
-    //Jwt Refresh Filter
-    public Filter jwtRefreshFilter() throws Exception{
-        JwtRefreshFilter jwtRefreshFilter = new JwtRefreshFilter(refreshTokenService, jwtTokenFactory);
-        return jwtRefreshFilter;
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private JwtTokenRenewalExceptionHandler jwtTokenRenewalExceptionHandler;
+
+    // jwt 갱신 필터
+    public Filter jwtRefreshFilter() throws Exception {
+        return new JwtRefreshFilter(refreshTokenService,
+                jwtProperties,
+                jwtService,
+                objectMapper,
+                new AntPathRequestMatcher("/api/refresh"),
+                jwtTokenRenewalExceptionHandler);
     }
-    public Filter jwtAuthenticationFilter() throws Exception{
-        JwtAuthenticationFilter filter = new JwtAuthenticationFilter("/api/**");
-        filter.setAuthenticationManager(super.authenticationManager());
-        filter.setAuthenticationFailureHandler(jwtAuthenticationFailureHandler);
-        return filter;
+
+    // jwt 인증 필터
+    public Filter jwtAuthenticationFilter() throws Exception {
+        FilterSkipMatcher filterSkipMatcher = new FilterSkipMatcher(
+                List.of("/api/refresh"),
+                List.of("/api/**")
+        );
+        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(filterSkipMatcher);
+        jwtAuthenticationFilter.setAuthenticationManager(super.authenticationManager());
+        jwtAuthenticationFilter.setAuthenticationFailureHandler(jwtAuthenticationFailureHandler);
+        return jwtAuthenticationFilter;
     }
 
     // authentication manager setting
@@ -115,24 +135,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .successHandler(oAuth2LoginAuthenticationSuccessHandler)
                 .userInfoEndpoint()
                 .userService(customOAuth2UserService);
-        /**
-         * JWT
-         */
+
         // JWT Authentication filter chain configuration
         http.addFilterBefore(jwtAuthenticationFilter(), OAuth2AuthorizationRequestRedirectFilter.class);
         http.addFilterBefore(jwtRefreshFilter(), JwtAuthenticationFilter.class);
-        http.cors();
+
         // URL security
         http.authorizeRequests()
                 .expressionHandler(expressionHandler())
                 .antMatchers("/api/a").access("hasRole('ROLE_ADMIN')")
                 .antMatchers("/api/user").authenticated()
+                .antMatchers("/api/room").authenticated();
                 .antMatchers("/api/room").permitAll()
                 .antMatchers("/api/test").anonymous();
-
-        // exception handling
-        http.exceptionHandling()
-                .authenticationEntryPoint(jwtAuthenticationEntryPoint);
 
         http.headers().frameOptions().disable();
     }
