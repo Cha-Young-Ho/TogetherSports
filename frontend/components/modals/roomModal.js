@@ -9,7 +9,8 @@ const RoomModal = ({ open, close, roomID }) => {
 
   /* response content 담을 변수들 */
   const [roomId, setRoomId] = useState(""); // 참여페이지로 넘어가기 위한 roomId
-  const [creatorNickName, setCreatorNickName] = useState("");
+  const [creatorNickName, setCreatorNickName] = useState(""); // 방 생성자
+  const [host, setHost] = useState(""); // 방장
   const [roomTitle, setRoomTitle] = useState("");
   const [roomContent, setRoomContent] = useState("");
   const [area, setArea] = useState("");
@@ -43,6 +44,7 @@ const RoomModal = ({ open, close, roomID }) => {
         if (res.status.code === 5000) {
           setRoomId((roomId = res.content.roomId));
           setCreatorNickName((creatorNickName = res.content.creatorNickName));
+          setHost((host = res.content.host));
           setRoomTitle((roomTitle = res.content.roomTitle));
           setRoomContent((roomContent = res.content.roomContent));
           setArea((area = res.content.area));
@@ -130,7 +132,7 @@ const RoomModal = ({ open, close, roomID }) => {
 
                 <div>
                   <div className="viewCount">{`조회수 : ${viewCount}`}</div>
-                  <div className="nickName">{`ID : ${creatorNickName}님의 방`}</div>
+                  <div className="nickName">{`ID : ${host}님의 방`}</div>
                 </div>
               </div>
 

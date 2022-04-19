@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
 import ImageSlide from "../../components/imageSlide";
 import Calendar from "../../components/calendar/calendar";
+import ParticipantList from "../../components/rooms/participantList";
+
+/* 수정 필요 */
+// 1. 명세 후에 제대로 다시 하기
+// 2. 조회수에 대한 디자인 필요
 
 const Room = () => {
   const [tag, setTag] = useState([
@@ -10,6 +15,9 @@ const Room = () => {
     "성별 무관",
     "고수만", // 임시 데이터
   ]);
+  const [viewCount, setViewCount] = useState("");
+  const [creatorNickName, setCreatorNickName] = useState("abcdef");
+  const [roomTitle, setRoomTitle] = useState("");
   const [roomImagePath, setRoomImagePath] = useState([
     {
       // test를 위한 임시 데이터
@@ -24,20 +32,73 @@ const Room = () => {
   const [limitPeopleCount, setLimitPeopleCount] = useState("30명");
   const [participantCount, setParticipantCount] = useState("10명");
   const [exercise, setExercise] = useState("축구");
+  const [roomContent, setRoomContent] = useState("");
+  const [area, setArea] = useState("");
+
+  useEffect(() => {
+    const mapScript = document.createElement("script");
+    mapScript.async = true;
+    mapScript.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAOMAP_APPKEY}&autoload=false&libraries=services`;
+    document.head.appendChild(mapScript);
+    mapScript.addEventListener("load", onLoadKakaoMap);
+  }, []);
+
+  const onLoadKakaoMap = () => {
+    kakao.maps.load(() => {
+      const container = document.getElementById("map"),
+        options = {
+          center: new kakao.maps.LatLng(37.56682420062817, 126.97864093976689),
+          level: 4,
+        };
+
+      const map = new kakao.maps.Map(container, options); // 지도 생성
+      const geocoder = new kakao.maps.services.Geocoder(); // 주소-좌표 변환 객체 생성
+
+      // 주소로 좌표를 검색
+      geocoder.addressSearch(`${area}`, function (result, status) {
+        if (status === kakao.maps.services.Status.OK) {
+          const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+
+          // 위치에 마커 표시
+          const marker = new kakao.maps.Marker({
+            map: map,
+            position: coords,
+          });
+
+          // 인포윈도우로 장소에 대한 설명을 표시
+          const infowindow = new kakao.maps.InfoWindow({
+            content:
+              '<div style="width:150px;text-align:center;padding:6px 0;">만남의 장소</div>',
+          });
+          infowindow.open(map, marker);
+
+          // 지도의 중심을 결과값으로 받은 위치로 이동
+          map.setCenter(coords);
+        }
+      });
+    });
+  };
 
   return (
     <>
       <div className="container">
         <div className="main-info">
           <div className="header">
-            <div className="tags">
-              {tag.map((tag, index) => {
-                return (
-                  <div className="tag" key={index}>
-                    {tag}
-                  </div>
-                );
-              })}
+            <div>
+              <div className="tags">
+                {tag.map((tag, index) => {
+                  return (
+                    <div className="tag" key={index}>
+                      {tag}
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div>
+                <div className="viewCount">{`조회수 : ${viewCount}`}</div>
+                <div className="nickName">{`ID : ${creatorNickName}님의 방`}</div>
+              </div>
             </div>
 
             <div className="title">
@@ -96,8 +157,9 @@ const Room = () => {
                 <p>참여자 목록 (10/30)</p>
                 <div className="short-line"></div>
                 <div className="participants">
-                  <div className="participant">방장</div>
-                  <div className="participant">참가자</div>
+                  <ParticipantList userNickName={"엔믹스"} host={"BTS"} />
+                  <ParticipantList userNickName={"아이브"} host={"BTS"} />
+                  <ParticipantList userNickName={"BTS"} host={"BTS"} />
                 </div>
               </div>
             </div>
@@ -163,6 +225,13 @@ const Room = () => {
           margin-bottom: 20px;
         }
 
+        .header > div:nth-child(1) {
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+        }
+
         .tags {
           display: flex;
           flex-direction: row;
@@ -173,6 +242,38 @@ const Room = () => {
           height: 25px;
           padding: 0 10px;
           margin-right: 10px;
+          border: solid 1px #f4f4f4;
+          border-radius: 6px;
+          background-color: #efefef;
+          font-weight: bold;
+          font-size: 1.3em;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .header > div:nth-child(1) > div:nth-child(2) {
+          display: flex;
+          flex-direction: row;
+        }
+
+        .viewCount {
+          height: 25px;
+          padding: 0 10px;
+          margin-right: 10px;
+          border: solid 1px #f4f4f4;
+          border-radius: 6px;
+          background-color: #efefef;
+          font-weight: bold;
+          font-size: 1.3em;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .nickName {
+          height: 25px;
+          padding: 0 10px;
           border: solid 1px #f4f4f4;
           border-radius: 6px;
           background-color: #efefef;
@@ -198,7 +299,7 @@ const Room = () => {
         .button-modify,
         .button-exit {
           width: 125px;
-          height: 40px;
+          height: 35px;
           border: none;
           border-radius: 20px;
           font-weight: bold;
@@ -233,6 +334,7 @@ const Room = () => {
           width: 315px;
           height: 286px;
           border-radius: 10px;
+          box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
         }
 
         .calendar {
@@ -308,15 +410,6 @@ const Room = () => {
 
         .participants {
           width: 90%;
-        }
-
-        .participant {
-          width: 100%;
-          height: 40px;
-          margin: 10px 0;
-          padding: 5px;
-          border-radius: 6px;
-          border: solid 1px #f0f0f0;
         }
 
         .chatting-box {
