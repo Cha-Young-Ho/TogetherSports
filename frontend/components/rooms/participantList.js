@@ -1,14 +1,29 @@
+import { useDispatch } from "react-redux";
+
 /* 참여자 목록을 배열로 받을 것 같음. 그럼 추후 수정 필요 */
-const ParticipantList = ({ userNickName, host }) => {
+const ParticipantList = (props) => {
+  const dispatch = useDispatch();
+
+  const onClickUserInfo = () => {
+    props.participantListOpenModal();
+
+    dispatch({
+      type: "SAVENICKNAME",
+      payload: {
+        userNickname: props.userNickname,
+      },
+    });
+  };
+
   return (
     <>
-      <div className="participant">
+      <button className="participant" onClick={onClickUserInfo}>
         <div className="profile">
           <div></div>
-          <p>{userNickName}</p>
+          <p>{props.userNickname}</p>
         </div>
         <p>방장</p>
-      </div>
+      </button>
       <style jsx>{`
         .participant {
           width: 100%;
