@@ -5,8 +5,9 @@ import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.togethersports.tosproejct.common.util.ParsingEntityUtils;
 import com.togethersports.tosproejct.room.dto.FieldsOfRoomList;
-import com.togethersports.tosproejct.tag.QTag;
+import com.togethersports.tosproejct.room.dto.RoomOfList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -15,19 +16,21 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.togethersports.tosproejct.room.QRoom.room;
 import static com.togethersports.tosproejct.tag.QTag.tag1;
 
-@Slf4j
+
 @RequiredArgsConstructor
 public class RoomRepositoryImpl implements RoomRepositoryCustom{
 
     private final JPAQueryFactory queryFactory;
+    private final ParsingEntityUtils parsingEntityUtils;
 
     @Override
-    public Page<Room> searchAll(FieldsOfRoomList fieldsOfRoomList, Pageable pageable) {
+    public Page<RoomOfList> searchAll(FieldsOfRoomList fieldsOfRoomList, Pageable pageable) {
 
         List<Room> result = queryFactory
                 .selectFrom(room)
@@ -46,7 +49,7 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
                 .fetch();
 
 
-        return new PageImpl<>(result);
+        return afterTreatment(result);
 
     }
     //방 제목 검색
@@ -159,6 +162,23 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
         return new OrderSpecifier(Order.DESC, room.updatedTime);
     }
 
+    /**
+     * List<Tag> -> List<String>으로 교체하기 위한 후처리 메소드
+     * @param entities : 동적 쿼리로 조회된 Room Entity List
+     * @return : 데이터를 조작한 Room DTO List
+     * @Author : younghoCha
+     */
+    private PageImpl afterTreatment(List<Room> entities){
+
+        List<RoomOfList> rooms = new ArrayList<>();
+        for (Room room : entities){
+            List<String> tag = parsingEntityUtils.parsingTagEntityToString(room.getTags());
+            rooms.add(RoomOfList.of(room, tag));
+        }
+
+        return new PageImpl<>(rooms);
+
+    }
 
 
 }

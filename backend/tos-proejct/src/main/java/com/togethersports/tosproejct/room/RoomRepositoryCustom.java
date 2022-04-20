@@ -7,5 +7,5 @@ import org.springframework.data.domain.Pageable;
 
 public interface RoomRepositoryCustom {
 
-    Page<Room> searchAll(FieldsOfRoomList fieldsOfRoomList, Pageable pageable);
+    Page<RoomOfList> searchAll(FieldsOfRoomList fieldsOfRoomList, Pageable pageable);
 }
