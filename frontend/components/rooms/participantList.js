@@ -1,6 +1,9 @@
+
 import { useDispatch } from "react-redux";
 
-/* 참여자 목록을 배열로 받을 것 같음. 그럼 추후 수정 필요 */
+/* 수정 필요 */
+// 1. 참여자 목록을 어떻게 받냐에 따라 수정 필요
+// 2. 참여자 목록 클릭 시, 다른 사람의 프로필 조회로 이동
 const ParticipantList = (props) => {
   const dispatch = useDispatch();
 
