@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 import ImageSlide from "../../components/imageSlide";
 import Calendar from "../../components/calendar/calendar";
 import ParticipantList from "../../components/rooms/participantList";
-import ModifyRoomModal from "../../components/modals/modifyRoomModal";
+import UserInfoModal from "../../components/modals/userInfoModal";
+import { useSelector } from "react-redux";
 
 /* 수정 필요 */
 // 1. 명세 후에 제대로 다시 하기
@@ -53,13 +54,16 @@ const Room = () => {
     setModifyModalOpen(false);
   };
 
-  useEffect(() => {
-    const mapScript = document.createElement("script");
-    mapScript.async = true;
-    mapScript.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAOMAP_APPKEY}&autoload=false&libraries=services`;
-    document.head.appendChild(mapScript);
-    mapScript.addEventListener("load", onLoadKakaoMap);
-  }, []);
+  // 접속자 목록 modal 관련 데이터
+  const [participantListModalOpen, setParticipantListModalOpen] =
+    useState(false);
+
+  const participantListOpenModal = () => {
+    setParticipantListModalOpen(true);
+  };
+  const participantListCloseModal = () => {
+    setParticipantListModalOpen(false);
+  };
 
   const onLoadKakaoMap = () => {
     kakao.maps.load(() => {
@@ -96,6 +100,14 @@ const Room = () => {
       });
     });
   };
+
+  useEffect(() => {
+    const mapScript = document.createElement("script");
+    mapScript.async = true;
+    mapScript.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAOMAP_APPKEY}&autoload=false&libraries=services`;
+    document.head.appendChild(mapScript);
+    mapScript.addEventListener("load", onLoadKakaoMap);
+  }, []);
 
   return (
     <>
@@ -185,10 +197,27 @@ const Room = () => {
                 <p>참여자 목록 (10/30)</p>
                 <div className="short-line"></div>
                 <div className="participants">
-                  <ParticipantList userNickName={"엔믹스"} host={"BTS"} />
-                  <ParticipantList userNickName={"아이브"} host={"BTS"} />
-                  <ParticipantList userNickName={"BTS"} host={"BTS"} />
+                  <ParticipantList
+                    userNickname={"엔믹스"}
+                    host={"BTS"}
+                    participantListOpenModal={participantListOpenModal}
+                  />
+                  <ParticipantList
+                    userNickname={"아이브"}
+                    host={"BTS"}
+                    participantListOpenModal={participantListOpenModal}
+                  />
+                  <ParticipantList
+                    userNickname={"BTS"}
+                    host={"BTS"}
+                    participantListOpenModal={participantListOpenModal}
+                  />
                 </div>
+                <UserInfoModal
+                  open={participantListModalOpen}
+                  close={participantListCloseModal}
+                  info={"other"}
+                />
               </div>
             </div>
 

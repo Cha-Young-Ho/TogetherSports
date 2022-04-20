@@ -1,17 +1,32 @@
+
+import { useDispatch } from "react-redux";
+
 /* 수정 필요 */
 // 1. 참여자 목록을 어떻게 받냐에 따라 수정 필요
 // 2. 참여자 목록 클릭 시, 다른 사람의 프로필 조회로 이동
+const ParticipantList = (props) => {
+  const dispatch = useDispatch();
 
-const ParticipantList = ({ userNickName, host }) => {
+  const onClickUserInfo = () => {
+    props.participantListOpenModal();
+
+    dispatch({
+      type: "SAVENICKNAME",
+      payload: {
+        userNickname: props.userNickname,
+      },
+    });
+  };
+
   return (
     <>
-      <div className="participant">
+      <button className="participant" onClick={onClickUserInfo}>
         <div className="profile">
           <div></div>
-          <p>{userNickName}</p>
+          <p>{props.userNickname}</p>
         </div>
         <p>방장</p>
-      </div>
+      </button>
       <style jsx>{`
         .participant {
           width: 100%;

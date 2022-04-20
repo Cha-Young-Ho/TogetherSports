@@ -140,7 +140,7 @@ const myInfoReducer = (state = myInfoInitialState, action) => {
   }
 };
 
-// 닉네임 저장 reducer [[[[지울예정]]]]
+// 타인 정보 확인 시 필요한 닉네임 저장 reducer
 const saveNicknameReducer = (state = saveNicknameInitialState, action) => {
   switch (action.type) {
     case SAVENICKNAME:
