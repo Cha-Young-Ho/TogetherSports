@@ -110,8 +110,8 @@ public class RoomService {
 
     }
 
-    public Page<Room> roomFields(FieldsOfRoomList fieldsOfRoomList, Pageable pageable){
-        Page<Room> list = roomRepository.searchAll(fieldsOfRoomList, pageable);
+    public Page<RoomOfList> roomFields(FieldsOfRoomList fieldsOfRoomList, Pageable pageable){
+        Page<RoomOfList> list = roomRepository.searchAll(fieldsOfRoomList, pageable);
 
         return list;
     }

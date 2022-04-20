@@ -1,8 +1,8 @@
 package com.togethersports.tosproejct.room.dto;
 
-import com.querydsl.core.annotations.QueryProjection;
-import com.querydsl.core.types.dsl.DateTimePath;
-import com.togethersports.tosproejct.tag.Tag;
+import com.togethersports.tosproejct.room.Room;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -16,24 +16,33 @@ public class RoomOfList {
     private String roomTitle;
     private int limitPeopleCount;
     private int participantCount;
-    private List<Tag> tag;
+    private List<String> tags;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private LocalDateTime START_APPOINTMENT_DATE;
+    private LocalDateTime startAppointmentDate;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private LocalDateTime END_APPOINTMENT_DATE;
+    private LocalDateTime endAppointmentDate;
+
+
 
     public RoomOfList(){
 
     }
 
+    @Builder(access = AccessLevel.PRIVATE)
+    private RoomOfList(Room room, List<String> tags) {
+        this.roomId = room.getId();
+        this.roomTitle = room.getRoomTitle();
+        this.limitPeopleCount = room.getLimitPeopleCount();
+        this.participantCount = room.getParticipantCount();
+        this.tags = tags;
+        this.endAppointmentDate = room.getEndAppointmentDate();
+        this.startAppointmentDate = room.getStartAppointmentDate();
+    }
+    public static RoomOfList of(Room room, List<String> tags){
 
-    public RoomOfList(Long roomId, String roomTitle, Integer limitPeopleCount, Integer participantCount, List<Tag> tag, LocalDateTime startAppointmentDate, LocalDateTime endAppointmentDate) {
-        this.roomId = roomId;
-        this.roomTitle = roomTitle;
-        this.limitPeopleCount = limitPeopleCount;
-        this.participantCount = participantCount;
-        this.tag = tag;
-        this.START_APPOINTMENT_DATE = startAppointmentDate;
-        this.END_APPOINTMENT_DATE = endAppointmentDate;
+        return RoomOfList.builder()
+                .room(room)
+                .tags(tags)
+                .build();
     }
 }
