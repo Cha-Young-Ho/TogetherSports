@@ -1,21 +1,10 @@
 import { useEffect, useState } from "react";
-import ModifyRoomModal from "../modals/modifyRoomModal";
 import { getRoomList } from "../../api/rooms";
 import { useDispatch, useSelector } from "react-redux";
 import RoomModal from "../modals/roomModal";
 import RoomShowingBox from "./roomShowingBox";
 
 const FilteredRooms = () => {
-  // 방 수정 임시
-  const [modifyModalOpen, setModifyModalOpen] = useState(false);
-  const openModifyModal = () => {
-    setModifyModalOpen(true);
-  };
-
-  const closeModifyModal = () => {
-    setModifyModalOpen(false);
-  };
-
   const dispatch = useDispatch();
 
   const roomFilteringData = useSelector(
@@ -172,16 +161,9 @@ const FilteredRooms = () => {
       <div className="filteredRooms-wrapper">
         <div className="centerLine">
           <div>
-            <button className="buttons" onClick={openModifyModal}>
-              최신순
-            </button>
+            <button className="buttons">최신순</button>
             <button className="buttons">시간순</button>
             <button className="buttons">참여자순</button>
-            <ModifyRoomModal
-              open={modifyModalOpen}
-              close={closeModifyModal}
-              sequenceId={"test"}
-            ></ModifyRoomModal>
           </div>
           <div className="rooms-wrapper">
             <div className="rooms-grid">

@@ -1,12 +1,15 @@
+import Link from "next/link";
 import { useState, useEffect } from "react";
 import ImageSlide from "../../components/imageSlide";
 import Calendar from "../../components/calendar/calendar";
 import ParticipantList from "../../components/rooms/participantList";
+import ModifyRoomModal from "../../components/modals/modifyRoomModal";
 
 /* 수정 필요 */
 // 1. 명세 후에 제대로 다시 하기
 // 2. 조회수에 대한 디자인 필요
-// 3. 방장의 경우에만 방 수정하기 버튼이 보이게 하기 -> 방 수정하기 모달 뜨게
+// 3. 방장의 경우에만 방 수정하기 버튼이 보이게 하기
+// 4. 명세 방법에 따라 채팅 컴포넌트화 가능하면 하기
 
 const Room = () => {
   const [tag, setTag] = useState([
@@ -18,7 +21,10 @@ const Room = () => {
   ]);
   const [viewCount, setViewCount] = useState("");
   const [creatorNickName, setCreatorNickName] = useState("abcdef");
-  const [roomTitle, setRoomTitle] = useState("");
+  const [host, setHost] = useState("abcdef");
+  const [roomTitle, setRoomTitle] = useState(
+    "매너축구 하실 멋쟁이 분들 모십니다."
+  );
   const [roomImagePath, setRoomImagePath] = useState([
     {
       // test를 위한 임시 데이터
@@ -32,9 +38,20 @@ const Room = () => {
     useState("2022-04-01T14:30");
   const [limitPeopleCount, setLimitPeopleCount] = useState("30명");
   const [participantCount, setParticipantCount] = useState("10명");
-  const [exercise, setExercise] = useState("배드민턴");
-  const [roomContent, setRoomContent] = useState("");
+  const [exercise, setExercise] = useState("축구");
+  const [roomContent, setRoomContent] = useState(
+    "축구 열심히 하실 분들 모십니다. 😍"
+  );
   const [area, setArea] = useState("서울 송파구 올림픽로 19-2");
+
+  // 방 수정하기
+  const [modifyModalOpen, setModifyModalOpen] = useState(false);
+  const openModifyModal = () => {
+    setModifyModalOpen(true);
+  };
+  const closeModifyModal = () => {
+    setModifyModalOpen(false);
+  };
 
   useEffect(() => {
     const mapScript = document.createElement("script");
@@ -98,15 +115,25 @@ const Room = () => {
 
               <div>
                 <div className="viewCount">{`조회수 : ${viewCount}`}</div>
-                <div className="nickName">{`ID : ${creatorNickName}님의 방`}</div>
+                <div className="nickName">{`ID : ${host}님의 방`}</div>
               </div>
             </div>
 
             <div className="title">
-              <p>매너축구 하실 멋쟁이 분들 모십니다.</p>
+              <p>{roomTitle}</p>
               <div>
-                <button className="button-modify">수정하기</button>
-                <button className="button-exit">나가기</button>
+                <button className="button-modify" onClick={openModifyModal}>
+                  수정하기
+                </button>
+                <Link href="/room/roomlist">
+                  <button className="button-exit">나가기</button>
+                </Link>
+
+                <ModifyRoomModal
+                  open={modifyModalOpen}
+                  close={closeModifyModal}
+                  sequenceId={"test"}
+                ></ModifyRoomModal>
               </div>
             </div>
           </div>
@@ -168,10 +195,13 @@ const Room = () => {
             <div className="right-section">
               <div className="chatting-box">
                 <div className="master">
-                  <p>ID : abcde님의 방</p>
+                  <p>{`ID : ${host}님의 방`}</p>
                 </div>
 
-                <div className="chatting"></div>
+                <div className="chatting">
+                  <div></div>
+                  <div></div>
+                </div>
               </div>
             </div>
           </div>
@@ -180,7 +210,7 @@ const Room = () => {
         <div className="room-info">
           <p>방 설명 및 안내</p>
           <div className="long-line"></div>
-          <div className="info-textarea">방 설명란</div>
+          <div className="info-textarea">{roomContent}</div>
         </div>
 
         <div className="location-info">
