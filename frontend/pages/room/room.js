@@ -4,6 +4,7 @@ import ImageSlide from "../../components/imageSlide";
 import Calendar from "../../components/calendar/calendar";
 import ParticipantList from "../../components/rooms/participantList";
 import UserInfoModal from "../../components/modals/userInfoModal";
+import ModifyRoomModal from "../../components/modals/modifyRoomModal";
 import { useSelector } from "react-redux";
 
 /* 수정 필요 */
@@ -11,6 +12,7 @@ import { useSelector } from "react-redux";
 // 2. 조회수에 대한 디자인 필요
 // 3. 방장의 경우에만 방 수정하기 버튼이 보이게 하기
 // 4. 명세 방법에 따라 채팅 컴포넌트화 가능하면 하기
+// 5. 채팅 보내기 버튼 이미지 받기
 
 const Room = () => {
   const [tag, setTag] = useState([
@@ -198,12 +200,12 @@ const Room = () => {
                 <div className="short-line"></div>
                 <div className="participants">
                   <ParticipantList
-                    userNickname={"엔믹스"}
+                    userNickname={"NMIXX"}
                     host={"BTS"}
                     participantListOpenModal={participantListOpenModal}
                   />
                   <ParticipantList
-                    userNickname={"아이브"}
+                    userNickname={"IVE"}
                     host={"BTS"}
                     participantListOpenModal={participantListOpenModal}
                   />
@@ -228,8 +230,12 @@ const Room = () => {
                 </div>
 
                 <div className="chatting">
-                  <div></div>
-                  <div></div>
+                  <div className="dialog"></div>
+
+                  <div className="dialog-input">
+                    <input />
+                    <button>↑</button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -503,9 +509,51 @@ const Room = () => {
         .chatting {
           width: 100%;
           height: 433px;
+          padding: 15px 15px;
           border-radius: 15px;
           box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
           background-color: white;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .dialog {
+          width: 100%;
+          height: 90%;
+          margin-bottom: 10px;
+          overflow: scroll;
+          overflow-x: hidden;
+        }
+
+        .dialog-input {
+          width: 100%;
+          height: 30px;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .dialog-input input {
+          width: 300px;
+          height: 30px;
+          padding: 0 10px;
+          border: none;
+          border-radius: 15px;
+          background-color: #f4f4f4;
+        }
+
+        .dialog-input button {
+          width: 27px;
+          height: 27px;
+          border: none;
+          border-radius: 50%;
+          padding: 4.4px 6.5px 3.4px 5.9px;
+          background-color: #08555f;
+          color: white;
+          user-select: none;
+          cursor: pointer;
         }
 
         .room-info > p,
