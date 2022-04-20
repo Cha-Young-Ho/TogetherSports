@@ -1,36 +1,61 @@
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { getOtherInfo } from "../../api/members";
+import { FailResponse } from "../../api/failResponse";
 
-const UserInfoModal = ({ open, close }) => {
+const UserInfoModal = (props) => {
   const myInfo = useSelector((state) => state.myInfoReducer);
-  // const dispatch = useDispatch();
+
+  const userNickname = useSelector(
+    (state) => state.saveNicknameReducer.userNickname
+  );
+
   const [imageSrc, setImageSrc] = useState("");
-  const [nickname, setNickname] = useState("");
+  const [nickname, setNickname] = useState(props.userNickname);
   const [mannerPoint, setMannerPoint] = useState("");
   const [interest, setInterest] = useState([]);
 
   useEffect(() => {
-    if (open && myInfo.userNickname === "") {
-      alert("회원 추가 정보가 없어 내 정보를 요청할 수 없습니다.");
-      close();
-      return;
-    }
+    if (props.info === "other") {
+      if (props.open) {
+        getOtherInfo(userNickname)
+          .then((res) => {
+            if (res.status.code === 5000) {
+              setNickname(res.content.userNickname);
+              setMannerPoint(res.content.mannerPoint);
+              setInterest(res.content.interests);
+              setImageSrc(res.content.userProfileImagePath);
+            }
+          })
+          .catch((error) => {
+            FailResponse(error.response.data.status.code);
+            props.close();
+          });
+        return;
+      }
+    } else {
+      if (props.open && myInfo.userNickname === "") {
+        alert("회원 추가 정보가 없어 내 정보를 요청할 수 없습니다.");
+        props.close();
+        return;
+      }
 
-    setImageSrc(myInfo.userProfileImagePath);
-    setNickname(myInfo.userNickname);
-    setMannerPoint(myInfo.mannerPoint);
-    setInterest(myInfo.interests);
-  }, [open]);
+      setImageSrc(myInfo.userProfileImagePath);
+      setNickname(myInfo.userNickname);
+      setMannerPoint(myInfo.mannerPoint);
+      setInterest(myInfo.interests);
+    }
+  }, [props.open]);
 
   return (
     <>
-      <div className={open ? "openModal modal" : "modal"}>
-        {open ? (
+      <div className={props.open ? "openModal modal" : "modal"}>
+        {props.open ? (
           <section>
             <header>
-              {`마이프로필`}
-              <button className="exit-button" onClick={close}>
+              {props.info === "other" ? `${nickname}님의 프로필` : `마이프로필`}
+              <button className="exit-button" onClick={props.close}>
                 &times;
               </button>
             </header>
@@ -47,11 +72,17 @@ const UserInfoModal = ({ open, close }) => {
                   );
                 })}
               </div>
-              <Link href="/usermodification">
-                <button className="next-button" onClick={close}>
-                  회원 정보 수정하기
+              {props.info === "other" ? (
+                <button className="next-button" onClick={props.close}>
+                  나가기
                 </button>
-              </Link>
+              ) : (
+                <Link href="/usermodification">
+                  <button className="next-button" onClick={props.close}>
+                    회원 정보 수정하기
+                  </button>
+                </Link>
+              )}
             </div>
           </section>
         ) : null}
