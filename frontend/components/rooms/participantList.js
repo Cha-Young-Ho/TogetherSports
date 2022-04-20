@@ -1,4 +1,3 @@
-
 import { useDispatch } from "react-redux";
 
 /* 수정 필요 */
@@ -35,6 +34,7 @@ const ParticipantList = (props) => {
           padding: 5px 25px;
           border-radius: 6px;
           border: solid 1px #f0f0f0;
+          background-color: white;
           display: flex;
           flex-direction: row;
           align-items: center;
@@ -43,7 +43,7 @@ const ParticipantList = (props) => {
         }
 
         p {
-          font-size: 1.3em;
+          font-size: 1.1em;
         }
 
         .participant > p {

@@ -4,6 +4,7 @@ import ImageSlide from "../../components/imageSlide";
 import Calendar from "../../components/calendar/calendar";
 import ParticipantList from "../../components/rooms/participantList";
 import UserInfoModal from "../../components/modals/userInfoModal";
+import ModifyRoomModal from "../../components/modals/modifyRoomModal";
 import { useSelector } from "react-redux";
 
 /* 수정 필요 */
@@ -199,12 +200,12 @@ const Room = () => {
                 <div className="short-line"></div>
                 <div className="participants">
                   <ParticipantList
-                    userNickname={"엔믹스"}
+                    userNickname={"NMIXX"}
                     host={"BTS"}
                     participantListOpenModal={participantListOpenModal}
                   />
                   <ParticipantList
-                    userNickname={"아이브"}
+                    userNickname={"IVE"}
                     host={"BTS"}
                     participantListOpenModal={participantListOpenModal}
                   />
