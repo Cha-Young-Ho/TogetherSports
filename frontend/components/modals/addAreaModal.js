@@ -1,7 +1,7 @@
-const AddAreaModal = ({ open, close }) => {
+const AddAreaModal = (props) => {
   return (
     <>
-      <div className={open ? "openModal modal" : "modal"}>
+      <div className={props.open ? "openModal modal" : "modal"}>
         <div className="box-container">
           <div className="header-wrapper">
             <button className="reset-button">초기화</button>
@@ -26,7 +26,7 @@ const AddAreaModal = ({ open, close }) => {
           </div>
           <div className="button-wrapper">
             <button className="done-btn">완료</button>
-            <button className="cancel-btn" onClick={close}>
+            <button className="cancel-btn" onClick={props.close}>
               취소
             </button>
           </div>

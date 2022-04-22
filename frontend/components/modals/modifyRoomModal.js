@@ -3,7 +3,7 @@ import SetRoomImages from "../rooms/setRoomImages";
 import { getRoomInfo, postUpdateRoom } from "../../api/rooms";
 import FailResponse from "../../api/failResponse";
 
-const ModifyRoomModal = ({ open, close, sequenceId }) => {
+const ModifyRoomModal = (props) => {
   // 방 제목, 설명, 인원
   const [roomTitle, setRoomTitle] = useState("");
   const [roomContent, setRoomContent] = useState("");
@@ -114,8 +114,8 @@ const ModifyRoomModal = ({ open, close, sequenceId }) => {
 
   // 방에 대한 정보 조회
   useEffect(() => {
-    if (open) {
-      getRoomInfo(sequenceId)
+    if (props.open) {
+      getRoomInfo(props.sequenceId)
         .then((res) => {
           if (res.status.code === 5000) {
             console.log(res.status.message);
@@ -139,11 +139,11 @@ const ModifyRoomModal = ({ open, close, sequenceId }) => {
           return;
         });
     }
-  }, [open]);
+  }, [props.open]);
 
   return (
     <>
-      <div className={open ? "openModal modal" : "modal"}>
+      <div className={props.open ? "openModal modal" : "modal"}>
         <div className="box-container">
           <h1>방 정보 수정</h1>
           <div className="picture-wrapper">
@@ -189,7 +189,7 @@ const ModifyRoomModal = ({ open, close, sequenceId }) => {
           </div>
 
           <div className="button-wrapper">
-            <button className="cancel-btn" onClick={close}>
+            <button className="cancel-btn" onClick={props.close}>
               수정 취소
             </button>
             <button className="done-btn" onClick={clickDoneBtn}>

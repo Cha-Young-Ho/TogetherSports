@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const ImageSlide = ({ imageArr }) => {
+const ImageSlide = (props) => {
   const [slideIndex, setSlideIndex] = useState(1);
 
   useEffect(() => {
@@ -26,14 +26,14 @@ const ImageSlide = ({ imageArr }) => {
   return (
     <>
       <div className="slideshow-container">
-        {imageArr.length !== 0 ? (
-          imageArr
+        {props.imageArr.length !== 0 ? (
+          props.imageArr
             .sort((a, b) => a.order - b.order)
             .map((image, index) => {
               return (
                 <div className="slide fade" key={index}>
                   <div className="number-text">{`${index + 1} / ${
-                    imageArr.length
+                    props.imageArr.length
                   }`}</div>
                   <div className="image-container">
                     <img src={`/${image.imagePath}`} />

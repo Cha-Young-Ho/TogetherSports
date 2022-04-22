@@ -175,7 +175,7 @@ const PersonalInfo = () => {
         <UserInfoNavBar
           personal_atv={"activation"}
           interest_atv={"deactivation"}
-          activearea={"deactivation"}
+          activearea_atv={"deactivation"}
         />
 
         <div className="contents">

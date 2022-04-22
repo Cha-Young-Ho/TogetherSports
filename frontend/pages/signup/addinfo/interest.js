@@ -67,7 +67,7 @@ const Interest = () => {
         <UserInfoNavBar
           personal_atv={"deactivation"}
           interest_atv={"activation"}
-          activearea={"deactivation"}
+          activearea_atv={"deactivation"}
         />
         <div className="content-showbox">
           <p>관심있는 종목에 맞는 방을 추천 해드립니다!</p>
