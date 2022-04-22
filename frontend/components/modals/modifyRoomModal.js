@@ -17,10 +17,10 @@ const ModifyRoomModal = (props) => {
   const [endAppointmentDate, setEndAppointmentDate] = useState("");
 
   // 서버로 보내기 위한 방 이미지 정보(확장자, 원본주소)
-  const [roomImage, setRoomImage] = useState([]);
+  const [roomImages, setRoomImages] = useState([]);
   const [thumbnailIndex, setThumbnailIndex] = useState(0);
   const getImageData = (imageData) => {
-    setRoomImage(imageData);
+    setRoomImages(imageData);
   };
 
   const getThumbnailIndex = (index) => {
@@ -28,7 +28,7 @@ const ModifyRoomModal = (props) => {
   };
 
   const setData = () => {
-    return roomImage;
+    return roomImages;
   };
 
   // 이미지 배열에 order 추가하기
@@ -47,7 +47,7 @@ const ModifyRoomModal = (props) => {
       arr[i].order = i + 1;
     }
 
-    return setRoomImage((roomImage = thumbnail.concat(arr)));
+    return setRoomImages((roomImages = thumbnail.concat(arr)));
   };
 
   // 화면에 표시되는 프리뷰 이미지
@@ -62,7 +62,7 @@ const ModifyRoomModal = (props) => {
 
   // 완료 버튼 클릭 시
   const clickDoneBtn = () => {
-    addOrder(roomImage, thumbnailIndex);
+    addOrder(roomImages, thumbnailIndex);
 
     if (roomTitle === "" || limitPeopleCount === "") {
       alert("입력이 올바르지 않은 정보가 있습니다");
@@ -78,7 +78,7 @@ const ModifyRoomModal = (props) => {
       tags,
       startAppointmentDate,
       endAppointmentDate,
-      roomImage
+      roomImages
     )
       .then((res) => {
         if (res.status.code === 5000) {
@@ -129,7 +129,7 @@ const ModifyRoomModal = (props) => {
             setStartAppointmentDate(res.content.startAppointmentDate);
             setEndAppointmentDate(res.content.endAppointmentDate);
             setImagePreview(
-              (imagePreview = res.content.roomImage.imageSource.map(preview))
+              (imagePreview = res.content.roomImages.imageSource.map(preview))
             );
             setLimitPeopleCount(res.content.limitPeopleCount);
           }

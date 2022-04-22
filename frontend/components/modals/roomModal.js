@@ -21,7 +21,7 @@ const RoomModal = (props) => {
   const [startAppointmentDate, setStartAppointmentDate] = useState("");
   const [endAppointmentDate, setEndAppointmentDate] = useState("");
   const [viewCount, setViewCount] = useState("");
-  const [roomImagePath, setRoomImagePath] = useState([
+  const [roomImages, setRoomImages] = useState([
     {
       // test를 위한 임시 데이터
       order: -1,
@@ -63,7 +63,7 @@ const RoomModal = (props) => {
             (endAppointmentDate = res.content.endAppointmentDate)
           );
           setViewCount((viewCount = res.content.viewCount));
-          setRoomImagePath((roomImagePath = res.content.roomImagePath));
+          setRoomImages((roomImages = res.content.roomImages));
         } else {
           FailResponse(res.status.code);
         }
@@ -190,7 +190,7 @@ const RoomModal = (props) => {
 
                 <div className="right-section">
                   <div className="image">
-                    <ImageSlide imageArr={roomImagePath} />
+                    <ImageSlide imageArr={roomImages} />
                   </div>
 
                   <div className="room-info">

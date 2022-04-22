@@ -138,7 +138,7 @@ const postUpdateRoom = async (
   tags,
   startAppointmentDate,
   endAppointmentDate,
-  roomImage
+  roomImages
 ) => {
   const promise = axios.put(
     "http://localhost:8080/api/room",
@@ -150,7 +150,7 @@ const postUpdateRoom = async (
       tags: tags,
       startAppointmentDate: startAppointmentDate,
       endAppointmentDate: endAppointmentDate,
-      roomImage: roomImage,
+      roomImages: roomImages,
     },
     {
       headers: {
