@@ -9,7 +9,6 @@ import com.togethersports.tosproejct.common.util.ParsingEntityUtils;
 import com.togethersports.tosproejct.room.dto.FieldsOfRoomList;
 import com.togethersports.tosproejct.room.dto.RoomOfList;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +21,15 @@ import java.util.List;
 import static com.togethersports.tosproejct.room.QRoom.room;
 import static com.togethersports.tosproejct.tag.QTag.tag1;
 
+
+
+/**
+ * <h1>RoomRepositoryImpl</h1>
+ * <p>
+ * 방 필터링(동적쿼리)를 위한 클래스
+ * </p>
+ * @author younghoCha
+ */
 
 @RequiredArgsConstructor
 public class RoomRepositoryImpl implements RoomRepositoryCustom{

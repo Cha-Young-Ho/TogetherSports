@@ -11,6 +11,15 @@ import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
 
+
+/**
+ * <h1>RoomBaseEntity</h1>
+ * <p>
+ * Room 생성 및 수정 시간 BaseEntity
+ * </p>
+ *
+ * @author younghoCha
+ */
 @EntityListeners(AuditingEntityListener.class)
 @MappedSuperclass
 @Getter

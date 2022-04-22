@@ -47,7 +47,7 @@ import java.util.List;
  * </ul>
  *
  * @author seunjeon
- * @author yunghocha
+ * @author younghocha
  */
 @Configuration
 @EnableWebSecurity
@@ -123,7 +123,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.httpBasic().disable();
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
+        http.cors();
         //logout
         http.logout()
                 .logoutUrl("/api/logout")
@@ -145,7 +145,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .expressionHandler(expressionHandler())
                 .antMatchers("/api/a").access("hasRole('ROLE_ADMIN')")
                 .antMatchers("/api/user").authenticated()
-                .antMatchers("/api/room").authenticated();
+                .antMatchers("/api/room").authenticated()
                 .antMatchers("/api/room").permitAll()
                 .antMatchers("/api/test").anonymous();
 
