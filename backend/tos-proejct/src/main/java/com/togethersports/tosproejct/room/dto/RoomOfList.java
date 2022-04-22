@@ -9,6 +9,13 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * <h1>RoomOfList</h1>
+ * <p>
+ * 방 목록 카드 뷰를 위한 기본 내용 DTO
+ * </p>
+ * @author younghoCha
+ */
 @Getter
 public class RoomOfList {
 

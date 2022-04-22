@@ -8,6 +8,13 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * <h1>RoomOfInfo</h1>
+ * <p>
+ * 방 조회를 위한 DTO
+ * </p>
+ * @author younghoCha
+ */
 @Getter
 public class RoomOfInfo {
     private Long id;

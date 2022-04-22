@@ -34,7 +34,7 @@ public class RoomImageService {
                         .order(0)
                         .roomImageExtension("png")
                         .build();
-                RoomImage roomImage = RoomImage.of(defaultImage, room, "ABC");
+                RoomImage roomImage = RoomImage.of(defaultImage, room, "/Users/chayeongho/Pictures/User/User.png");
                 roomImageRepository.save(roomImage);
                 return;
             }
