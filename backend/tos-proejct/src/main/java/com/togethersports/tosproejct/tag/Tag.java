@@ -1,5 +1,6 @@
 package com.togethersports.tosproejct.tag;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.togethersports.tosproejct.room.Room;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,12 +19,14 @@ public class Tag {
     @Id
     @GeneratedValue
     @Column(name = "TAG_ID")
+    @JsonIgnore
     private Long id;
 
     //태그
     private String tag;
 
     //등록된 방
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "ROOM_ID")
     private Room room;

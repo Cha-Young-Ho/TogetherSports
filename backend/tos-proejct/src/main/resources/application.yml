@@ -30,17 +30,3 @@ server:
 spring:
   profiles:
     active: deployment
-
-
-
-
-
-
-
-
-
-
-
-
-
-

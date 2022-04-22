@@ -10,6 +10,7 @@ import com.togethersports.tosproejct.interest.Interest;
 import com.togethersports.tosproejct.interest.InterestRepository;
 import com.togethersports.tosproejct.security.acl.AclPermission;
 import com.togethersports.tosproejct.security.annotation.AclCreate;
+import com.togethersports.tosproejct.security.oauth2.model.OAuth2Provider;
 import com.togethersports.tosproejct.user.dto.UserOfModifyInfo;
 import com.togethersports.tosproejct.user.dto.UserOfMyInfo;
 import com.togethersports.tosproejct.user.dto.UserOfOtherInfo;
@@ -48,6 +49,27 @@ public class UserService {
     private final ParsingEntityUtils parsingEntityUtils;
 
     /**
+     * 신규 계정을 등록한다.
+     * @param user 새로 등록할 계정 엔티티
+     * @return id 등록된 계정 식별자
+     */
+    public Long createUser(User user) {
+        return userRepository.save(user).getId();
+    }
+
+    /**
+     * 사용자 계정와 OAuth2 제공자 정보로 계정을 조회한다.
+     * @param email 조회 대상 계정 이메일
+     * @param provider 조회 대상 계정 OAuth2 제공자
+     * @return 조회된 계정 엔티티
+     * @throws UserNotFoundException 해당 계정이 없는 경우
+     */
+    public User findUser(String email, OAuth2Provider provider) {
+        return userRepository.findByEmailAndProvider(email, provider)
+                .orElseThrow(() -> new UserNotFoundException("계정이 존재하지 않습니다."));
+    }
+
+    /**
      * 이메일 중복 체크를 위한 메소드
      * @param nickname : 입력받은 이메일
      * @return : 존재할경우 false, 존재하지 않을 경우 true
@@ -82,6 +104,7 @@ public class UserService {
                 .interests(parsingEntityUtils.parsingInterestsEntityToString(userEntity.getInterests()))
                 .userNickname(userEntity.getNickname())
                 .mannerPoint(userEntity.getMannerPoint())
+                .userProfileImagePath(userEntity.getUserProfileImage())
                 .build();
 
     }
@@ -100,7 +123,7 @@ public class UserService {
         List<Interest> interests = parsingEntityUtils.parsingStringToInterestsEntity(userOfModifyInfo.getInterests());
         if(userOfModifyInfo.getUserProfileImage().getImageSource().equals("정보 없음")){
 
-            findUser.updateUser(userOfModifyInfo, activeAreas, interests, null);
+            findUser.updateUser(userOfModifyInfo, activeAreas, interests, "http://localhost:8080/Users/chayeongho/Desktop/스크린샷 2022-04-13 오후 6.51.46.png");
             return;
         }
 
@@ -121,12 +144,10 @@ public class UserService {
 
        return UserOfMyInfo.builder()
                .id(user.getId())
-               .isFirst(user.isFirst())
                .userBirth(user.getUserBirth())
                .activeAreas(parsedAreaList)
-               .userProfileImage(user.getUserProfileImage())
+               .userProfileImagePath(user.getUserProfileImage())
                .userEmail(user.getEmail())
-               .oAuth2Provider(user.getProvider())
                .mannerPoint(user.getMannerPoint())
                .gender(user.getGender())
                .interests(parsedInterestList)
@@ -137,7 +158,7 @@ public class UserService {
     }
 
     public void checkInformation(User user){
-        if(user.isFirst()){
+        if(user.isInformationRequired()){
             throw new NotEnteredInformationException("추가 정보를 입력하지 않은 계정입니다.");
         }
     }

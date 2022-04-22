@@ -65,9 +65,10 @@ const roomFilteringDataInitialState = {
   endTime: "",
 };
 
-// 필터 적용 클릭 감지용 초기값
+// 필터 적용 및 초기화 클릭 감지용 초기값
 const clickDetectionInitialState = {
   detection: "false",
+  reset: "false",
 };
 
 // 오타 방지용
@@ -80,6 +81,7 @@ const ROOMSCHEDULE = "ROOMSCHEDULE";
 const FILTERINGTITLE = "FILTERINGTITLE";
 const ROOMEXERCISES = "ROOMEXERCISES";
 const FILTERBUTTONCLICK = "FILTERBUTTONCLICK";
+const RESETBUTTONCLICK = "RESETBUTTONCLICK";
 const SETSTARTDATE = "SETSTARTDATE";
 const SETENDDATE = "SETENDDATE";
 const SETSTARTTIME = "SETSTARTTIME";
@@ -138,7 +140,7 @@ const myInfoReducer = (state = myInfoInitialState, action) => {
   }
 };
 
-// 닉네임 저장 reducer [[[[지울예정]]]]
+// 타인 정보 확인 시 필요한 닉네임 저장 reducer
 const saveNicknameReducer = (state = saveNicknameInitialState, action) => {
   switch (action.type) {
     case SAVENICKNAME:
@@ -151,6 +153,7 @@ const saveNicknameReducer = (state = saveNicknameInitialState, action) => {
   }
 };
 
+// 방 생성 reducer
 const createRoomReducer = (state = createRoomInitialState, action) => {
   switch (action.type) {
     case ROOMSETTING:
@@ -245,6 +248,8 @@ const filteringButtonClickDetectionReducer = (
   switch (action.type) {
     case FILTERBUTTONCLICK:
       return { ...state, detection: action.payload.detection };
+    case RESETBUTTONCLICK:
+      return { ...state, reset: action.payload.reset };
     default:
       return state;
   }

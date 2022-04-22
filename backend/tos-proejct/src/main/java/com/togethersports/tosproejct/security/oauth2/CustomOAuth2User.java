@@ -21,14 +21,22 @@ import java.util.List;
 public class CustomOAuth2User extends DefaultOAuth2User {
 
     private User user;
+    private boolean first; // 최초 로그인 여부
 
     /**
      * OAuth2 사용자 정보, 사용자 계정 기반으로 CustomOAuth2User 객체를 생성할때 사용하는 생성자
      * @param oAuth2UserInfo OAuth2 사용자 정보 객체
      * @param user OAuth2 계정 정보를 기반으로 생성/조회한 사용자 계정 엔티티
      */
-    public CustomOAuth2User(OAuth2UserInfo oAuth2UserInfo, User user) {
+    public CustomOAuth2User(OAuth2UserInfo oAuth2UserInfo, User user, boolean first) {
         super(List.of(new SimpleGrantedAuthority(user.getRole().name())), oAuth2UserInfo.getAttributes(), user.getProvider().getAttributeKey());
         this.user = user;
+        this.first = first;
+    }
+
+    // 시큐리티 컨텍스트 내의 인증 정보를 가져와 하는 작업을 수행할 경우 계정 식별자가 사용되도록 조치
+    @Override
+    public String getName() {
+        return String.valueOf(user.getId());
     }
 }

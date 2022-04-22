@@ -2,3 +2,14 @@ GET http://localhost:8080/api/user
 #Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaXNzIjoidG9nZXRoZXItc3BvcnRzIiwiZXhwIjoxNjQ4NzE1MDY5LCJyb2xlIjoiUk9MRV9VU0VSIiwiZW1haWwiOiJqZW9uc2V1bjAwMDBAZ21haWwuY29tIn0.JMYlBuyVRvmVzsA_6pYPGogPQMdGwAYtWo8h7aJQ4rY
 
 ###
+
+GET http://localhost:8080/api/test
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTAzMjkxNzYsInN1YiI6MSwicm9sZSI6IlJPTEVfVVNFUiIsImVtYWlsIjoiamVvbnNldW4wMDAwQGdtYWlsLmNvbSJ9.NAAEvR7HTN2HSOPd1IklrCx_6fcm5Hq_FGLz5Z2AhCE
+
+###
+POST http://localhost:8080/api/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTE2NDExODB9.FN-HfcjNHbptFag3h-NuEhDZLf7XF9vXK1aHvl2ockc"
+}

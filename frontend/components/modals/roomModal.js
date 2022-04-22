@@ -3,27 +3,31 @@ import Calendar from "../calendar/calendar";
 import { getRoomInfo } from "../../api/rooms";
 import ImageSlide from "../imageSlide";
 
-/* props에 roomSequenceId 추가 필요 -> getRoomInfo 에 parameter 추가 필요 */
-const RoomModal = ({ open, close }) => {
+/* roomList에서 받은 각 room들의 roomId를 props로 받기 */
+const RoomModal = ({ open, close, roomID }) => {
   const [mapLoaded, setMapLoaded] = useState(false); // 지도 로드 동기화
 
   /* response content 담을 변수들 */
-  const [creatorNickName, setCreatorNickName] = useState(""); // 방장 닉네임
-  const [roomTitle, setRoomTitle] = useState(""); // 방 제목
-  const [roomContent, setRoomContent] = useState(""); // 방 설명
-  const [area, setArea] = useState(""); // 위치
-  const [limitPeopleCount, setLimitPeopleCount] = useState(""); // 모집인원
-  const [participantCount, setParticipantCount] = useState(""); // 현재 참여인원
-  const [exercise, setExercise] = useState(""); // 종목
-  const [tag, setTag] = useState([]); // 태그
-  const [startAppointmentDate, setStartAppointmentDate] = useState(""); // 시작 일시
-  const [endAppointmentDate, setEndAppointmentDate] = useState(""); // 종료 일시
-  const [viewCount, setViewCount] = useState(""); // 조회수
+  const [roomId, setRoomId] = useState(""); // 참여페이지로 넘어가기 위한 roomId
+  const [creatorNickName, setCreatorNickName] = useState(""); // 방 생성자
+  const [host, setHost] = useState(""); // 방장
+  const [roomTitle, setRoomTitle] = useState("");
+  const [roomContent, setRoomContent] = useState("");
+  const [area, setArea] = useState("");
+  const [limitPeopleCount, setLimitPeopleCount] = useState("");
+  const [participantCount, setParticipantCount] = useState("");
+  const [exercise, setExercise] = useState("");
+  const [tag, setTag] = useState([]);
+  const [startAppointmentDate, setStartAppointmentDate] = useState("");
+  const [endAppointmentDate, setEndAppointmentDate] = useState("");
+  const [viewCount, setViewCount] = useState("");
   const [roomImagePath, setRoomImagePath] = useState([
-    "logo-sign.png",
-    "signup-bg.png",
-    "naver-login.png",
-  ]); // 방 이미지 test
+    {
+      // test를 위한 임시 데이터
+      order: -1,
+      imagePath: "logo-sign.png",
+    },
+  ]);
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -34,10 +38,13 @@ const RoomModal = ({ open, close }) => {
 
   useEffect(() => {
     if (open && mapLoaded) {
+      console.log(roomID);
       // 방 정보 받아오기
-      getRoomInfo().then((res) => {
+      getRoomInfo(roomID).then((res) => {
         if (res.status.code === 5000) {
+          setRoomId((roomId = res.content.roomId));
           setCreatorNickName((creatorNickName = res.content.creatorNickName));
+          setHost((host = res.content.host));
           setRoomTitle((roomTitle = res.content.roomTitle));
           setRoomContent((roomContent = res.content.roomContent));
           setArea((area = res.content.area));
@@ -123,7 +130,10 @@ const RoomModal = ({ open, close }) => {
                   })}
                 </div>
 
-                <p>{`ID : ${creatorNickName}님의 방`}</p>
+                <div>
+                  <div className="viewCount">{`조회수 : ${viewCount}`}</div>
+                  <div className="nickName">{`ID : ${host}님의 방`}</div>
+                </div>
               </div>
 
               <div className="section">
@@ -254,9 +264,41 @@ const RoomModal = ({ open, close }) => {
         }
 
         .tag {
-          width: 70px;
           height: 25px;
+          padding: 0 10px;
           margin-right: 10px;
+          border: solid 1px #f4f4f4;
+          border-radius: 6px;
+          background-color: #efefef;
+          font-weight: bold;
+          font-size: 0.9em;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .header > div:nth-child(2) {
+          display: flex;
+          flex-direction: row;
+        }
+
+        .viewCount {
+          height: 25px;
+          padding: 0 10px;
+          margin-right: 10px;
+          border: solid 1px #f4f4f4;
+          border-radius: 6px;
+          background-color: #efefef;
+          font-weight: bold;
+          font-size: 0.9em;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .nickName {
+          height: 25px;
+          padding: 0 10px;
           border: solid 1px #f4f4f4;
           border-radius: 6px;
           background-color: #efefef;
@@ -299,37 +341,41 @@ const RoomModal = ({ open, close }) => {
         }
 
         .option {
-          width: 70px;
           height: 70px;
-          margin-right: 20px;
-          padding: 10px;
+          margin-right: 10px;
+          padding: 10px 15px;
           border-radius: 10px;
           box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
           display: flex;
           flex-direction: column;
           justify-content: center;
+          align-items: center;
         }
 
         .option-time {
-          width: 120px;
           height: 70px;
-          margin-right: 20px;
-          padding: 10px;
+          padding: 10px 15px;
           border-radius: 10px;
           box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
         }
 
-        .small-p {
+        .option > p:nth-child(1),
+        .option-time > p:nth-child(1) {
           font-size: 0.9em;
           margin-bottom: 4px;
         }
 
-        .big-p {
+        .option > p:nth-child(2) {
           font-weight: bold;
-          font-size: 1.8em;
+          font-size: 1.7em;
         }
 
-        .option-time .big-p {
+        .option-time > p:nth-child(2),
+        .option-time > p:nth-child(3) {
           font-weight: bold;
           font-size: 1em;
         }
@@ -427,7 +473,7 @@ const RoomModal = ({ open, close }) => {
           height: 40px;
           border: none;
           border-radius: 25px;
-
+          color: white;
           font-size: 15px;
           font-weight: 200px;
           cursor: pointer;
@@ -435,12 +481,10 @@ const RoomModal = ({ open, close }) => {
 
         .left-button {
           background-color: #00555f;
-          color: white;
         }
 
         .right-button {
           background-color: #d8d8d8;
-          color: black;
         }
 
         @keyframes modal-show {

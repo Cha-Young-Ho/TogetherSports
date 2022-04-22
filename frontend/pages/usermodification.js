@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import $ from "jquery";
-import { getNicknameDuplicationCheck, putUpdateUserInfo } from "../api/members";
-import { useSelector } from "react-redux";
+import { getNicknameDuplicationCheck, postUserRequest } from "../api/members";
+import { useDispatch, useSelector } from "react-redux";
 import { FailResponse } from "../api/failResponse";
 
 const UserModification = () => {
+  const dispatch = useDispatch();
+
   // 회원정보 초기값
   const userInfo = useSelector((state) => state.myInfoReducer);
 
@@ -23,13 +25,12 @@ const UserModification = () => {
   const [gender, setGender] = useState(userInfo.gender);
 
   // 프로필
-  const [profile, setProfile] = useState("");
-  const [extension, setExtension] = useState(
-    userInfo.userProfileImage.userProfileExtension
+  const setProfileTemp = userInfo.userProfileImagePath.split("/");
+  const [profile, setProfile] = useState(
+    setProfileTemp[setProfileTemp.length - 1]
   );
-  const [imagesrc, setImagesrc] = useState(
-    userInfo.userProfileImage.imageSource
-  );
+  const [extension, setExtension] = useState("");
+  const [imagesrc, setImagesrc] = useState("");
 
   // 관심종목
   const [interests, setInterests] = useState({});
@@ -343,27 +344,49 @@ const UserModification = () => {
       return false;
     }
 
-    putUpdateUserInfo(
-      userInfo.userEmail,
-      userInfo.userName,
+    // 회원가입 요청 및 회원정보 수정
+    postUserRequest(
       nickname,
       userBirth,
       activeAreas,
       gender,
-      {
-        userProfileExtension: extension,
-        imageSource: imagesrc,
-      },
-      userInfo.provider,
+      extension,
+      imagesrc,
       interests
-    ).then((res) => {
-      if (res.status.code === 5000) {
-        alert("성공적으로 수정 되었습니다.");
-        window.history.back();
-      } else {
-        FailResponse(res.status.code);
-      }
-    });
+    )
+      .then((res) => {
+        if (res.status.code === 5000) {
+          getMyInfo((res) => {
+            if (res.status.code === 5000) {
+              dispatch({
+                type: "SAVEMYINFO",
+                payload: {
+                  userEmail: res.content.userEmail,
+                  userName: res.content.userName,
+                  userNickname: res.content.userNickname,
+                  userBirth: res.content.userBirth,
+                  gender: res.content.gender,
+                  userProfileImagePath: res.content.userProfileImagePath,
+                  activeAreas: res.content.activeAreas.map((el) => el),
+                  interests: res.content.interests.map((el) => el),
+                  mannerPoint: res.content.mannerPoint,
+                  isInformationRequired: res.content.isInformationRequired,
+                },
+              });
+              alert("성공적으로 수정 되었습니다.");
+              window.history.back();
+              return;
+            }
+          }).catch((error) => {
+            FailResponse(error.response.data.status.code);
+            return;
+          });
+        }
+      })
+      .catch((error) => {
+        FailResponse(error.response.data.status.code);
+        return;
+      });
   };
 
   // 초기값 세팅

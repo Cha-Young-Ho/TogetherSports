@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { postCreateRoom } from "../../../api/rooms";
 import { FailResponse } from "../../../api/failResponse";
 import RoomInfoNavBar from "../../../components/roomInfoNavBar";
@@ -17,6 +17,7 @@ const RoomTagInfo = () => {
 
   // 방 이미지
   const [roomImages, setRoomImages] = useState([]);
+  const [thumbnailIndex, setThumbnailIndex] = useState(0);
 
   // 방 태그
   const [tag, setTag] = useState([]);
@@ -24,9 +25,33 @@ const RoomTagInfo = () => {
   const tagsLevel = ["입문만", "초보만", "중수만", "고수만"];
   const tagsGender = ["남자만", "여자만"];
 
-  // setRoomImages 컴포넌트에서 데이터 받기
+  // setRoomImages 컴포넌트에서 데이터(이미지 배열) 받기
   const getRoomImages = (roomImage) => {
     setRoomImages(roomImage);
+  };
+
+  // setRoomImages 컴포넌트에서 데이터(대표사진 인덱스) 받기
+  const getThumbnailIndex = (index) => {
+    setThumbnailIndex(index);
+  };
+
+  // 이미지 배열에 order 추가하기
+  const addOrder = (arr, index) => {
+    const thumbnail = [];
+
+    for (let i = 0; i < arr.length; i++) {
+      if (i === index) {
+        arr[i].order = 0;
+        thumbnail.push(arr[i]);
+        arr.splice(i, 1);
+      }
+    }
+
+    for (let i = 0; i < arr.length; i++) {
+      arr[i].order = i + 1;
+    }
+
+    return setRoomImages((roomImages = thumbnail.concat(arr)));
   };
 
   // 태그 선택 함수
@@ -50,25 +75,46 @@ const RoomTagInfo = () => {
   };
 
   // 예외 처리 및 서버에 방 생성 요청
-  const callCreateRoomRequest = (e) => {
-    postCreateRoom(
-      roomInfo.roomTitle,
-      roomContent,
-      roomInfo.roomArea,
-      roomInfo.limitPeopleCount,
-      roomInfo.exercise,
-      tag,
-      roomInfo.startAppointmentDate,
-      roomInfo.endAppointmentDate,
-      roomImages
-    ).then((res) => {
-      console.log(res.status.message);
-      if (res.status.code === 5000) {
-        alert("방을 성공적으로 생성하였습니다.");
-      } else {
-        FailResponse(res.status.code);
-      }
-    });
+  const createRoom = (e) => {
+    addOrder(roomImages, thumbnailIndex);
+
+    // 필수입력정보들이 입력되지 않으면
+    if (
+      roomInfo.roomTitle === "" ||
+      roomInfo.roomArea === "" ||
+      roomInfo.limitPeopleCount === "" ||
+      roomInfo.exercise === "" ||
+      roomInfo.startAppointmentDate === "" ||
+      roomInfo.endAppointmentDate === ""
+    ) {
+      e.preventDefault();
+      alert("입력되지 않은 정보가 있습니다.");
+      return;
+    }
+    // 정상적으로 다 입력돼있으면 방 생성 요청
+    else {
+      postCreateRoom(
+        roomInfo.roomTitle,
+        roomContent,
+        roomInfo.roomArea,
+        roomInfo.limitPeopleCount,
+        roomInfo.exercise,
+        tag,
+        roomInfo.startAppointmentDate,
+        roomInfo.endAppointmentDate,
+        roomImages
+      )
+        .then((res) => {
+          console.log(res.status.message);
+          if (res.status.code === 5000) {
+            alert("방을 성공적으로 생성하였습니다!");
+          }
+        })
+        .catch((error) => {
+          FailResponse(error.response.data.status.code);
+          return;
+        });
+    }
   };
 
   return (
@@ -89,7 +135,10 @@ const RoomTagInfo = () => {
             ></textarea>
           </div>
 
-          <SetRoomImages getData={getRoomImages} />
+          <SetRoomImages
+            getImageData={getRoomImages}
+            getThumbnailData={getThumbnailIndex}
+          />
 
           <div className="content-tag">
             <p>빠른 태그 추가 (최대 5개)</p>
@@ -137,7 +186,7 @@ const RoomTagInfo = () => {
             <button className="button-prev">이전</button>
           </Link>
           <Link href="/">
-            <button className="button-done" onClick={callCreateRoomRequest}>
+            <button className="button-done" onClick={createRoom}>
               완료
             </button>
           </Link>

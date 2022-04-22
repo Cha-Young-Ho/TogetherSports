@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
  *     JWT 관련 설정값 클래스
  * </p>
  * <ul>
- *     <li>issuer 발행자</li>
- *     <li>signingKey 서명키값</li>
+ *     <li>accessTokenSigningKey 액세스 토큰 서명키값</li>
+ *     <li>refreshTokenSigningKey 리프레쉬 토큰 서명키값</li>
  *     <li>accessTokenExpirationTime 액세스 토큰 만료기간</li>
  *     <li>refreshTokenExpirationTime 리프레쉬 토큰 만료기간</li>
  * </ul>
@@ -23,8 +23,6 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties("jwt")
 public class JwtProperties {
-
-    private String issuer;
 
     //엑세스 토큰 키
     private String accessTokenSigningKey;

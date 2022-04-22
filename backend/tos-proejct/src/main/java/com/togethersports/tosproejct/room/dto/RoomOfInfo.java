@@ -1,8 +1,6 @@
 package com.togethersports.tosproejct.room.dto;
 
-import com.togethersports.tosproejct.image.RoomImage;
 import com.togethersports.tosproejct.room.Room;
-import com.togethersports.tosproejct.user.User;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,6 +8,13 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * <h1>RoomOfInfo</h1>
+ * <p>
+ * 방 조회를 위한 DTO
+ * </p>
+ * @author younghoCha
+ */
 @Getter
 public class RoomOfInfo {
     private Long id;
@@ -46,21 +51,21 @@ public class RoomOfInfo {
     private String host;
 
     //방 생성자
-    private String createUser;
+    private String creatorNickName;
 
     //방 이미지
     private List<ImageOfRoomInfo> roomImages;
 
     //태그
-    private List<String> tag;
+    private List<String> tags;
 
     //조회수
     private int viewCount;
 
     @Builder(access = AccessLevel.PRIVATE)
     private RoomOfInfo(Room roomEntity, List<ImageOfRoomInfo> roomImages, List<String> tag){
-        this.createUser = roomEntity.getCreateUser().getNickname();
-        this.tag = tag;
+        this.creatorNickName = roomEntity.getCreateUser().getNickname();
+        this.tags = tag;
         this.host = roomEntity.getHost().getNickname();
         this.endAppointmentDate = roomEntity.getEndAppointmentDate();
         this.startAppointmentDate = roomEntity.getStartAppointmentDate();

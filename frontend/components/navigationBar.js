@@ -42,7 +42,7 @@ const NavigationBar = () => {
   // 서버로 로그인 요청
   useEffect(() => {
     console.log("Request Login Info To Server...");
-    setLoginData(true);
+    //setLoginData(true);
     if (myinfo.userEmail === "") {
       getMyInfo()
         .then((res) => {
@@ -152,8 +152,8 @@ const NavigationBar = () => {
               <Link href="/room/roomlist">
                 <div className="tag">방 목록</div>
               </Link>
-              <Link href="/">
-                <div className="tag">방 개설</div>
+              <Link href="/myroom">
+                <div className="tag">마이룸</div>
               </Link>
             </div>
           </div>

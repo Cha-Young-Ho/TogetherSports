@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import ModifyRoomModal from "../modals/modifyRoomModal";
 import { getRoomList } from "../../api/rooms";
 import { useDispatch, useSelector } from "react-redux";
+import RoomModal from "../modals/roomModal";
+import RoomShowingBox from "./roomShowingBox";
 
 const FilteredRooms = () => {
   const dispatch = useDispatch();
@@ -13,16 +14,39 @@ const FilteredRooms = () => {
   const changeDectection = useSelector(
     (state) => state.filteringButtonClickDetectionReducer
   );
-  // 방 수정 임시
-  const [modifyModalOpen, setModifyModalOpen] = useState(false);
-  const [eachRoomInfo, setEachRoomInfo] = useState([]);
 
-  const openModifyModal = () => {
-    setModifyModalOpen(true);
+  // 방 설명 페이지 모달
+  const [roomExplainModalOpen, setRoomExplainModalOpen] = useState(false);
+  const [roomID, setRoomID] = useState();
+
+  // 현재 임시 데이터
+  const [eachRoomInfo, setEachRoomInfo] = useState([
+    {
+      roomId: "121",
+      roomTitle: "축구 한판 뛰실분?",
+      limitPeopleCount: "22",
+      paricipantCount: "1",
+      tag: ["20대만", "고수만"],
+      startAppointmentDate: "2022-04-18T19:00",
+      roomImagePath: "",
+    },
+    {
+      roomId: "123",
+      roomTitle: "야구 한판 뛰실분?",
+      limitPeopleCount: "30",
+      paricipantCount: "1",
+      tag: ["20대만", "초보만"],
+      startAppointmentDate: "2022-04-19T22:30",
+      roomImagePath: "",
+    },
+  ]);
+
+  const openRoomExplainModal = () => {
+    setRoomExplainModalOpen(true);
   };
 
-  const closeModifyModal = () => {
-    setModifyModalOpen(false);
+  const closeRoomExplainModal = () => {
+    setRoomExplainModalOpen(false);
   };
 
   const requestFilteringToFalse = () => {
@@ -135,40 +159,29 @@ const FilteredRooms = () => {
   return (
     <>
       <div className="filteredRooms-wrapper">
-        <div>
-          <div className="centerLine">
-            <div>
-              <button className="buttons" onClick={openModifyModal}>
-                최신순
-              </button>
-              <button className="buttons">시간순</button>
-              <button className="buttons">참여자순</button>
-              <ModifyRoomModal
-                open={modifyModalOpen}
-                close={closeModifyModal}
-                sequenceId={"test"}
-              ></ModifyRoomModal>
+        <div className="centerLine">
+          <div>
+            <button className="buttons">최신순</button>
+            <button className="buttons">시간순</button>
+            <button className="buttons">참여자순</button>
+          </div>
+          <div className="rooms-wrapper">
+            <div className="rooms-grid">
+              {eachRoomInfo.map((datas, index) => {
+                return (
+                  <RoomShowingBox
+                    setRoomID={setRoomID}
+                    openRoomExplainModal={openRoomExplainModal}
+                    datas={datas}
+                  />
+                );
+              })}
             </div>
-            <div className="rooms-wrapper">
-              <div className="rooms-grid">
-                {eachRoomInfo.map((datas, index) => {
-                  return (
-                    <div key={index} className="room-container">
-                      <div className="thumbnailLine">
-                        <div className="tags">태그</div>
-                        <div className="participants">
-                          <p>3/10</p>
-                        </div>
-                      </div>
-                      <div className="bodyLine">
-                        <h1>타이틀</h1>
-                        <p>yyyy-mm-dd x요일 hh:mm 모임</p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+            <RoomModal
+              open={roomExplainModalOpen}
+              close={closeRoomExplainModal}
+              roomID={roomID}
+            ></RoomModal>
           </div>
         </div>
       </div>
@@ -185,8 +198,6 @@ const FilteredRooms = () => {
         .centerLine {
           width: 1200px;
           height: 100%;
-          display: flex;
-          flex-direction: column;
           padding-top: 15px;
         }
 
@@ -213,60 +224,7 @@ const FilteredRooms = () => {
           grid-template-rows: auto;
           place-items: center;
           row-gap: 30px;
-        }
-
-        .room-container {
-          width: 250px;
-          height: 250px;
-          border-radius: 10px;
-          cursor: pointer;
-          box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
-        }
-
-        .thumbnailLine {
-          width: 100%;
-          height: 170px;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          background-color: #53927d;
-          border-top-left-radius: 10px;
-          border-top-right-radius: 10px;
-        }
-
-        .tags {
-          font-size: 1.5rem;
-          margin: 10px;
-        }
-
-        .participants {
-          margin: 10px;
-          text-align: right;
-        }
-
-        .participants p {
-          color: #fff;
-          font-size: 1.5rem;
-        }
-
-        .bodyLine {
-          width: 100%;
-          height: 80px;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-        }
-
-        .bodyLine h1 {
-          font-size: 2rem;
-          font-weight: bold;
-          margin: 10px;
-        }
-
-        .bodyLine p {
-          font-weight: 300;
-          margin: 10px;
-          text-align: right;
+          margin-bottom: 100px;
         }
       `}</style>
     </>

@@ -1,9 +1,6 @@
 package com.togethersports.tosproejct.security.jwt.filter;
 
-import com.togethersports.tosproejct.common.file.util.NameGenerator;
-import com.togethersports.tosproejct.security.jwt.exception.AuthorizationHeaderNotFoundException;
 import com.togethersports.tosproejct.security.jwt.token.JwtPreAuthenticationToken;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -29,22 +26,19 @@ import java.util.UUID;
  * </p>
  * @author seunjeon
  */
-@Slf4j
 public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER_PREFIX = "Bearer ";
 
-    public JwtAuthenticationFilter(String request) {
-        super(request);
+    // JWT 인증 필터를 통과할지 여부를 RequestMatcher 를 통해 결정하도록 하기 위해 RequestMatcher 를 받는 생성자
+    public JwtAuthenticationFilter(RequestMatcher requestMatcher) {
+        super(requestMatcher);
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
-        log.info("uri = {}", request.getRequestURI());
-        if(request.getRequestURI().equals("/api/refresh")){
-            return null;
-        }
+
         String authorizationHeader = request.getHeader(AUTHORIZATION_HEADER);
 
         // 인증 헤더가 없는 경우 익명 사용자로 간주 (Anonymous Authentication)

@@ -6,6 +6,8 @@ import com.togethersports.tosproejct.security.oauth2.model.OAuth2UserInfo;
 import com.togethersports.tosproejct.security.oauth2.model.OAuth2UserInfoFactory;
 import com.togethersports.tosproejct.user.User;
 import com.togethersports.tosproejct.user.UserRepository;
+import com.togethersports.tosproejct.user.UserService;
+import com.togethersports.tosproejct.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -32,46 +34,39 @@ import java.util.Optional;
  * @see org.springframework.security.oauth2.client.authentication.OAuth2LoginAuthenticationProvider
  * @see DefaultOAuth2UserService
  */
-
-@Transactional
 @RequiredArgsConstructor
 @Service
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     // Spring Security OAuth2 에서 기본으로 제공하는 OAuth2UserService 를 사용하기 위함
     private final OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
-
-    private final UserRepository accountRepository;
+    private final UserRepository userRepository;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         // OAuth2 서비스 제공자 구분
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
-
         OAuth2Provider provider = OAuth2Provider.valueOf(registrationId.toUpperCase(Locale.ROOT));
 
         // OAuth2 계정 정보 가져오기
-        OAuth2User oAuth2User = delegate.loadUser(userRequest);
-        Map<String, Object> attributes = oAuth2User.getAttributes();
-
-
+        OAuth2User oauth2User = delegate.loadUser(userRequest);
+        Map<String, Object> attributes = oauth2User.getAttributes();
         OAuth2UserInfo userInfo = OAuth2UserInfoFactory.createUserInfo(provider, attributes);
 
-        Optional<User> findAccount = accountRepository.findByEmailAndProvider(userInfo.getEmail(), userInfo.getOAuth2Provider());
+        Optional<User> byEmailAndProvider = userRepository.findByEmailAndProvider(userInfo.getEmail(), userInfo.getOAuth2Provider());
 
-        if (findAccount.isEmpty()) {
-            // 신규 회원일 경우
-            User newUser = User.
-                    createUser(userInfo.getOAuth2Id(),
-                            userInfo.getEmail(),
-                            userInfo.getOAuth2Provider());
-            accountRepository.save(newUser);
-            User user = newUser;
-            return new CustomOAuth2User(userInfo, user);
+        boolean first; // 최초 로그인 여부
+        User user;
+        if (byEmailAndProvider.isEmpty()) {
+            // 신규 회원인 경우
+            user = User.createUser(userInfo.getOAuth2Id(), userInfo.getEmail(), userInfo.getOAuth2Provider());
+            userRepository.save(user);
+            first = true;
+        } else {
+            // 기존 회원인 경우
+            user = byEmailAndProvider.get();
+            first = false;
         }
-
-        User user = accountRepository.findByEmailAndProvider(userInfo.getEmail(), userInfo.getOAuth2Provider()).get();
-        user.updateIsFirst();
-            return new CustomOAuth2User(userInfo, findAccount.get());
+        return new CustomOAuth2User(userInfo, user, first);
     }
 }

@@ -13,23 +13,35 @@ const ActiveArea = () => {
   const [tagAreas, setTagAreas] = useState([]);
 
   // 서버에 회원 추가정보입력 요청
-  const callUserRequest = () => {
-    postUserRequest(
-      userRequestInfo.userNickname,
-      userRequestInfo.userBirth,
-      activeAreas,
-      userRequestInfo.gender,
-      userRequestInfo.userProfileExtension,
-      userRequestInfo.imageSource,
-      userRequestInfo.interests
-    ).then((res) => {
-      console.log(res.status.message);
-      if (res.status.code === 5000) {
-        alert("추가정보입력에 성공했습니다!");
-      } else {
-        FailResponse(res.status.code);
-      }
-    });
+  const callUserRequest = (e) => {
+    if (
+      userRequestInfo.userNickname === "" ||
+      userRequestInfo.userBirth === "" ||
+      activeAreas === [] ||
+      userRequestInfo.gender === "" ||
+      userRequestInfo.interests === []
+    ) {
+      e.preventDefault();
+      alert("입력되지 않은 정보가 있습니다.");
+      return;
+    } else {
+      postUserRequest(
+        userRequestInfo.userNickname,
+        userRequestInfo.userBirth,
+        activeAreas,
+        userRequestInfo.gender,
+        userRequestInfo.userProfileExtension,
+        userRequestInfo.imageSource,
+        userRequestInfo.interests
+      ).then((res) => {
+        console.log(res.status.message);
+        if (res.status.code === 5000) {
+          alert("추가정보입력에 성공하였습니다!");
+        } else {
+          FailResponse(res.status.code);
+        }
+      });
+    }
   };
 
   // 카카오 지도 한번만 렌더링
