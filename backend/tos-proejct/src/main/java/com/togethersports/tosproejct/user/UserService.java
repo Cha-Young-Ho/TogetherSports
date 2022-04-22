@@ -104,6 +104,7 @@ public class UserService {
                 .interests(parsingEntityUtils.parsingInterestsEntityToString(userEntity.getInterests()))
                 .userNickname(userEntity.getNickname())
                 .mannerPoint(userEntity.getMannerPoint())
+                .userProfileImagePath(userEntity.getUserProfileImage())
                 .build();
 
     }

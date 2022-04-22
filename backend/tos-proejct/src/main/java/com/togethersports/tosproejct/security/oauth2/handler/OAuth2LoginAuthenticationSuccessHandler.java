@@ -7,6 +7,7 @@ import com.togethersports.tosproejct.security.oauth2.CustomOAuth2User;
 import com.togethersports.tosproejct.security.util.ClientIpUtils;
 import com.togethersports.tosproejct.user.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
@@ -42,6 +43,7 @@ import java.util.Map;
  *
  * @author seunjeon
  */
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class OAuth2LoginAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
@@ -97,6 +99,7 @@ public class OAuth2LoginAuthenticationSuccessHandler implements AuthenticationSu
                 .queryParam("refresh_token", refreshToken)
                 .queryParam("is_first", firstUser)
                 .toUriString();
+        log.info("token = {}", accessToken);
 
         response.sendRedirect(redirectUri);
     }
