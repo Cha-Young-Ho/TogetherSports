@@ -3,7 +3,7 @@ import SetRoomImages from "../rooms/setRoomImages";
 import { getRoomInfo, postUpdateRoom } from "../../api/rooms";
 import FailResponse from "../../api/failResponse";
 
-const ModifyRoomModal = ({ open, close, sequenceId }) => {
+const ModifyRoomModal = (props) => {
   // 방 제목, 설명, 인원
   const [roomTitle, setRoomTitle] = useState("");
   const [roomContent, setRoomContent] = useState("");
@@ -12,15 +12,15 @@ const ModifyRoomModal = ({ open, close, sequenceId }) => {
   // post 하기위한 정보들
   const [roomArea, setRoomArea] = useState({});
   const [exercise, setExercise] = useState("");
-  const [tag, setTag] = useState("");
+  const [tags, setTags] = useState("");
   const [startAppointmentDate, setStartAppointmentDate] = useState("");
   const [endAppointmentDate, setEndAppointmentDate] = useState("");
 
   // 서버로 보내기 위한 방 이미지 정보(확장자, 원본주소)
-  const [roomImage, setRoomImage] = useState([]);
+  const [roomImages, setRoomImages] = useState([]);
   const [thumbnailIndex, setThumbnailIndex] = useState(0);
   const getImageData = (imageData) => {
-    setRoomImage(imageData);
+    setRoomImages(imageData);
   };
 
   const getThumbnailIndex = (index) => {
@@ -28,7 +28,7 @@ const ModifyRoomModal = ({ open, close, sequenceId }) => {
   };
 
   const setData = () => {
-    return roomImage;
+    return roomImages;
   };
 
   // 이미지 배열에 order 추가하기
@@ -47,7 +47,7 @@ const ModifyRoomModal = ({ open, close, sequenceId }) => {
       arr[i].order = i + 1;
     }
 
-    return setRoomImage((roomImage = thumbnail.concat(arr)));
+    return setRoomImages((roomImages = thumbnail.concat(arr)));
   };
 
   // 화면에 표시되는 프리뷰 이미지
@@ -62,7 +62,7 @@ const ModifyRoomModal = ({ open, close, sequenceId }) => {
 
   // 완료 버튼 클릭 시
   const clickDoneBtn = () => {
-    addOrder(roomImage, thumbnailIndex);
+    addOrder(roomImages, thumbnailIndex);
 
     if (roomTitle === "" || limitPeopleCount === "") {
       alert("입력이 올바르지 않은 정보가 있습니다");
@@ -75,10 +75,10 @@ const ModifyRoomModal = ({ open, close, sequenceId }) => {
       roomContent,
       roomArea,
       exercise,
-      tag,
+      tags,
       startAppointmentDate,
       endAppointmentDate,
-      roomImage
+      roomImages
     )
       .then((res) => {
         if (res.status.code === 5000) {
@@ -114,8 +114,8 @@ const ModifyRoomModal = ({ open, close, sequenceId }) => {
 
   // 방에 대한 정보 조회
   useEffect(() => {
-    if (open) {
-      getRoomInfo(sequenceId)
+    if (props.open) {
+      getRoomInfo(props.sequenceId)
         .then((res) => {
           if (res.status.code === 5000) {
             console.log(res.status.message);
@@ -125,11 +125,11 @@ const ModifyRoomModal = ({ open, close, sequenceId }) => {
             setRoomContent(res.content.roomContent);
             setRoomArea(res.content.roomArea);
             setExercise(res.content.exercise);
-            setTag(res.content.tag);
+            setTags(res.content.tags);
             setStartAppointmentDate(res.content.startAppointmentDate);
             setEndAppointmentDate(res.content.endAppointmentDate);
             setImagePreview(
-              (imagePreview = res.content.roomImage.imageSource.map(preview))
+              (imagePreview = res.content.roomImages.imageSource.map(preview))
             );
             setLimitPeopleCount(res.content.limitPeopleCount);
           }
@@ -139,11 +139,11 @@ const ModifyRoomModal = ({ open, close, sequenceId }) => {
           return;
         });
     }
-  }, [open]);
+  }, [props.open]);
 
   return (
     <>
-      <div className={open ? "openModal modal" : "modal"}>
+      <div className={props.open ? "openModal modal" : "modal"}>
         <div className="box-container">
           <h1>방 정보 수정</h1>
           <div className="picture-wrapper">
@@ -189,7 +189,7 @@ const ModifyRoomModal = ({ open, close, sequenceId }) => {
           </div>
 
           <div className="button-wrapper">
-            <button className="cancel-btn" onClick={close}>
+            <button className="cancel-btn" onClick={props.close}>
               수정 취소
             </button>
             <button className="done-btn" onClick={clickDoneBtn}>

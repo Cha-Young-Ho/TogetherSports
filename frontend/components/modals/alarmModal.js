@@ -1,44 +1,18 @@
-/* AlarmModal 컴포넌트 사용법 !! */
-
-// open = modal을 열 함수
-// close = modal을 닫을 함수
-// content = 팝업 내용
-// result = 팝업 왼쪽 버튼을 눌렀을 때 실행될 함수
-// leftButton = 팝업 왼쪽 버튼으로, 긍정적인 답변들 위치 (ex. 예, 수락)
-// rightButton = 팝업 오른쪽 버튼으로, 부정적인 답변들 위치 (ex. 아니오, 거절)
-
-/* 상위 컴포넌트에서 쓰게 될 state 변수와 open, close 함수 */
-
-// const [modalOpen, setModalOpen] = useState(false);
-// const openModal = () => {
-//   setModalOpen(true);
-// };
-// const closeModal = () => {
-//   setModalOpen(false);
-// };
-
-const AlarmModal = ({
-  open,
-  close,
-  result,
-  content,
-  leftButton,
-  rightButton,
-}) => {
+const AlarmModal = (props) => {
   return (
     <>
-      <div className={open ? "openModal modal" : "modal"}>
-        {open ? (
+      <div className={props.open ? "openModal modal" : "modal"}>
+        {props.open ? (
           <section>
             <div className="modal-body">
               <img className="logo-image" src="logo-alarm-modal.png"></img>
-              <div className="content">{content}</div>
+              <div className="content">{props.content}</div>
               <div className="buttons">
-                <button className="left-button" onClick={result}>
-                  {leftButton}
+                <button className="left-button" onClick={props.result}>
+                  {props.leftButton}
                 </button>
-                <button className="right-button" onClick={close}>
-                  {rightButton}
+                <button className="right-button" onClick={props.close}>
+                  {props.rightButton}
                 </button>
               </div>
             </div>

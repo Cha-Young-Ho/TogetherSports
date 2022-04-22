@@ -1,4 +1,4 @@
-const UserInfoNavBar = ({ personal_atv, interest_atv, activearea }) => {
+const UserInfoNavBar = (props) => {
   return (
     <>
       <h1>추가 정보 입력</h1>
@@ -6,7 +6,7 @@ const UserInfoNavBar = ({ personal_atv, interest_atv, activearea }) => {
         <div>
           <div>
             <img
-              src={`/personalinfo-${personal_atv}.png`}
+              src={`/personalinfo-${props.personal_atv}.png`}
               alt="인적사항"
               className="personalinfo"
             ></img>
@@ -16,7 +16,7 @@ const UserInfoNavBar = ({ personal_atv, interest_atv, activearea }) => {
         <div>
           <div>
             <img
-              src={`/interests-${interest_atv}.png`}
+              src={`/interests-${props.interest_atv}.png`}
               alt="관심종목"
               className="interests"
             ></img>
@@ -26,7 +26,7 @@ const UserInfoNavBar = ({ personal_atv, interest_atv, activearea }) => {
         <div>
           <div>
             <img
-              src={`/activearea-${activearea}.png`}
+              src={`/activearea-${props.activearea_atv}.png`}
               alt="활동지역"
               className="activeareas"
             ></img>

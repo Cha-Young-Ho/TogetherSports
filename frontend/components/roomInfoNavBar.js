@@ -1,8 +1,4 @@
-const RoomInfoNavBar = ({
-  roomSetting_atv,
-  roomSchedule_atv,
-  roomTagInfo_atv,
-}) => {
+const RoomInfoNavBar = (props) => {
   return (
     <>
       <h1>방 생성하기</h1>
@@ -10,7 +6,7 @@ const RoomInfoNavBar = ({
         <div>
           <div>
             <img
-              src={`/roomsetting-${roomSetting_atv}.png`}
+              src={`/roomsetting-${props.roomSetting_atv}.png`}
               alt="기본 정보 설정"
               className="roomsetting"
             ></img>
@@ -20,7 +16,7 @@ const RoomInfoNavBar = ({
         <div>
           <div>
             <img
-              src={`/roomschedule-${roomSchedule_atv}.png`}
+              src={`/roomschedule-${props.roomSchedule_atv}.png`}
               alt="일정 생성하기"
               className="roomschedule"
             ></img>
@@ -30,7 +26,7 @@ const RoomInfoNavBar = ({
         <div>
           <div>
             <img
-              src={`/roomtaginfo-${roomTagInfo_atv}.png`}
+              src={`/roomtaginfo-${props.roomTagInfo_atv}.png`}
               alt="태그 및 설명"
               className="roomtaginfo"
             ></img>

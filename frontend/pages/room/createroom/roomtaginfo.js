@@ -20,7 +20,7 @@ const RoomTagInfo = () => {
   const [thumbnailIndex, setThumbnailIndex] = useState(0);
 
   // 방 태그
-  const [tag, setTag] = useState([]);
+  const [tags, setTags] = useState([]);
   const tagsAge = ["10대", "20대", "30대", "40대", "50대", "60대", "70대"];
   const tagsLevel = ["입문만", "초보만", "중수만", "고수만"];
   const tagsGender = ["남자만", "여자만"];
@@ -58,18 +58,18 @@ const RoomTagInfo = () => {
   const onClickTag = (e) => {
     if (e.target.classList[2] === "tag-clicked") {
       e.target.classList.remove("tag-clicked");
-      setTag((prev) =>
+      setTags((prev) =>
         prev.filter((el) => {
           return el !== e.target.innerText;
         })
       );
     } else {
-      if (tag.length > 4) {
+      if (tags.length > 4) {
         e.preventDefault();
         alert("태그는 최대 5개 선택 가능합니다!");
       } else {
         e.target.classList.add("tag-clicked");
-        setTag((prev) => [...prev, e.target.innerText]);
+        setTags((prev) => [...prev, e.target.innerText]);
       }
     }
   };
@@ -99,7 +99,7 @@ const RoomTagInfo = () => {
         roomInfo.roomArea,
         roomInfo.limitPeopleCount,
         roomInfo.exercise,
-        tag,
+        tags,
         roomInfo.startAppointmentDate,
         roomInfo.endAppointmentDate,
         roomImages

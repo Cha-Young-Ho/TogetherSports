@@ -29,7 +29,7 @@ const getRoomList = async (
   roomContent,
   area,
   exercise,
-  tag,
+  tags,
   startAppointmentDate,
   endAppointmentDate,
   containTimeClosing,
@@ -40,7 +40,7 @@ const getRoomList = async (
   roomContent = roomContent === "" ? "" : `roomContent=${roomContent}&`;
   area = area === "" ? "" : `area=${area}&`;
   exercise = exercise.map((el) => "exercise=" + el + "&").join("");
-  tag = tag.map((el) => "tag=" + el + "&").join("");
+  tags = tags.map((el) => "tags=" + el + "&").join("");
   startAppointmentDate =
     startAppointmentDate === ""
       ? ""
@@ -61,7 +61,7 @@ const getRoomList = async (
     roomContent +
     area +
     exercise +
-    tag +
+    tags +
     startAppointmentDate +
     endAppointmentDate +
     containTimeClosing +
@@ -96,7 +96,7 @@ const postCreateRoom = async (
   roomArea,
   limitPeopleCount,
   exercise,
-  tag,
+  tags,
   startAppointmentDate,
   endAppointmentDate,
   roomImages
@@ -109,7 +109,7 @@ const postCreateRoom = async (
       roomArea: roomArea,
       limitPeopleCount: limitPeopleCount,
       exercise: exercise,
-      tags: tag,
+      tags: tags,
       startAppointmentDate: startAppointmentDate,
       endAppointmentDate: endAppointmentDate,
       roomImages: roomImages,
@@ -135,10 +135,10 @@ const postUpdateRoom = async (
   roomContent,
   roomArea,
   exercise,
-  tag,
+  tags,
   startAppointmentDate,
   endAppointmentDate,
-  roomImage
+  roomImages
 ) => {
   const promise = axios.put(
     "http://localhost:8080/api/room",
@@ -147,10 +147,10 @@ const postUpdateRoom = async (
       roomContent: roomContent,
       roomArea: roomArea,
       exercise: exercise,
-      tag: tag,
+      tags: tags,
       startAppointmentDate: startAppointmentDate,
       endAppointmentDate: endAppointmentDate,
-      roomImage: roomImage,
+      roomImages: roomImages,
     },
     {
       headers: {

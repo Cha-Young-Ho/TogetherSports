@@ -4,7 +4,7 @@ import { getRoomInfo } from "../../api/rooms";
 import ImageSlide from "../imageSlide";
 
 /* roomList에서 받은 각 room들의 roomId를 props로 받기 */
-const RoomModal = ({ open, close, roomID }) => {
+const RoomModal = (props) => {
   const [mapLoaded, setMapLoaded] = useState(false); // 지도 로드 동기화
 
   /* response content 담을 변수들 */
@@ -21,7 +21,7 @@ const RoomModal = ({ open, close, roomID }) => {
   const [startAppointmentDate, setStartAppointmentDate] = useState("");
   const [endAppointmentDate, setEndAppointmentDate] = useState("");
   const [viewCount, setViewCount] = useState("");
-  const [roomImagePath, setRoomImagePath] = useState([
+  const [roomImages, setRoomImages] = useState([
     {
       // test를 위한 임시 데이터
       order: -1,
@@ -37,10 +37,10 @@ const RoomModal = ({ open, close, roomID }) => {
   }, []);
 
   useEffect(() => {
-    if (open && mapLoaded) {
-      console.log(roomID);
+    if (props.open && mapLoaded) {
+      console.log(props.roomID);
       // 방 정보 받아오기
-      getRoomInfo(roomID).then((res) => {
+      getRoomInfo(props.roomID).then((res) => {
         if (res.status.code === 5000) {
           setRoomId((roomId = res.content.roomId));
           setCreatorNickName((creatorNickName = res.content.creatorNickName));
@@ -63,7 +63,7 @@ const RoomModal = ({ open, close, roomID }) => {
             (endAppointmentDate = res.content.endAppointmentDate)
           );
           setViewCount((viewCount = res.content.viewCount));
-          setRoomImagePath((roomImagePath = res.content.roomImagePath));
+          setRoomImages((roomImages = res.content.roomImages));
         } else {
           FailResponse(res.status.code);
         }
@@ -107,7 +107,7 @@ const RoomModal = ({ open, close, roomID }) => {
         });
       });
     }
-  }, [open]);
+  }, [props.open]);
 
   const enterRoom = () => {
     // 방에 참가
@@ -115,19 +115,23 @@ const RoomModal = ({ open, close, roomID }) => {
 
   return (
     <>
-      <div className={open ? "openModal modal" : "modal"}>
-        {open ? (
+      <div className={props.open ? "openModal modal" : "modal"}>
+        {props.open ? (
           <section>
             <div className="room-modal-body">
               <div className="header">
                 <div className="tags">
-                  {tags.map((tag, index) => {
-                    return (
-                      <div className="tag" key={index}>
-                        {tag}
-                      </div>
-                    );
-                  })}
+                  {tags.length !== 0 ? (
+                    tags.map((tag, index) => {
+                      return (
+                        <div className="tag" key={index}>
+                          {tag}
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <></>
+                  )}
                 </div>
 
                 <div>
@@ -186,7 +190,7 @@ const RoomModal = ({ open, close, roomID }) => {
 
                 <div className="right-section">
                   <div className="image">
-                    <ImageSlide imageArr={roomImagePath} />
+                    <ImageSlide imageArr={roomImages} />
                   </div>
 
                   <div className="room-info">
@@ -199,7 +203,7 @@ const RoomModal = ({ open, close, roomID }) => {
                     <button className="left-button" onClick={enterRoom}>
                       참여
                     </button>
-                    <button className="right-button" onClick={close}>
+                    <button className="right-button" onClick={props.close}>
                       닫기
                     </button>
                   </div>
