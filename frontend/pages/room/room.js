@@ -15,7 +15,7 @@ import { useSelector } from "react-redux";
 // 5. 채팅 보내기 버튼 이미지 받기
 
 const Room = () => {
-  const [tag, setTag] = useState([
+  const [tags, setTags] = useState([
     "10대",
     "20대",
     "초보만",
@@ -118,7 +118,7 @@ const Room = () => {
           <div className="header">
             <div>
               <div className="tags">
-                {tag.map((tag, index) => {
+                {tags.map((tag, index) => {
                   return (
                     <div className="tag" key={index}>
                       {tag}

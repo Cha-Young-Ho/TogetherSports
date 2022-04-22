@@ -12,7 +12,7 @@ const ModifyRoomModal = ({ open, close, sequenceId }) => {
   // post 하기위한 정보들
   const [roomArea, setRoomArea] = useState({});
   const [exercise, setExercise] = useState("");
-  const [tag, setTag] = useState("");
+  const [tags, setTags] = useState("");
   const [startAppointmentDate, setStartAppointmentDate] = useState("");
   const [endAppointmentDate, setEndAppointmentDate] = useState("");
 
@@ -75,7 +75,7 @@ const ModifyRoomModal = ({ open, close, sequenceId }) => {
       roomContent,
       roomArea,
       exercise,
-      tag,
+      tags,
       startAppointmentDate,
       endAppointmentDate,
       roomImage
@@ -125,7 +125,7 @@ const ModifyRoomModal = ({ open, close, sequenceId }) => {
             setRoomContent(res.content.roomContent);
             setRoomArea(res.content.roomArea);
             setExercise(res.content.exercise);
-            setTag(res.content.tag);
+            setTags(res.content.tags);
             setStartAppointmentDate(res.content.startAppointmentDate);
             setEndAppointmentDate(res.content.endAppointmentDate);
             setImagePreview(
