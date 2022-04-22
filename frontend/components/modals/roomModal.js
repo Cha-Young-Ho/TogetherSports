@@ -121,13 +121,17 @@ const RoomModal = (props) => {
             <div className="room-modal-body">
               <div className="header">
                 <div className="tags">
-                  {tags.map((tag, index) => {
-                    return (
-                      <div className="tag" key={index}>
-                        {tag}
-                      </div>
-                    );
-                  })}
+                  {tags.length !== 0 ? (
+                    tags.map((tag, index) => {
+                      return (
+                        <div className="tag" key={index}>
+                          {tag}
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <></>
+                  )}
                 </div>
 
                 <div>
