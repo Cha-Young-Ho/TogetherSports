@@ -26,7 +26,7 @@ const FilteredRooms = () => {
       roomTitle: "축구 한판 뛰실분?",
       limitPeopleCount: "22",
       paricipantCount: "1",
-      tag: ["20대만", "고수만"],
+      tags: ["20대만", "고수만"],
       startAppointmentDate: "2022-04-18T19:00",
       roomImagePath: "",
     },
@@ -35,7 +35,7 @@ const FilteredRooms = () => {
       roomTitle: "야구 한판 뛰실분?",
       limitPeopleCount: "30",
       paricipantCount: "1",
-      tag: ["20대만", "초보만"],
+      tags: ["20대만", "초보만"],
       startAppointmentDate: "2022-04-19T22:30",
       roomImagePath: "",
     },
@@ -73,7 +73,7 @@ const FilteredRooms = () => {
       roomFilteringData.requiredPeopleCount
     ).then((res) => {
       if (res.status.code === 5000) {
-        setEachRoomInfo(res.content.rooms);
+        setEachRoomInfo(res.content.content);
       }
     });
   }, []);
@@ -148,7 +148,7 @@ const FilteredRooms = () => {
         roomFilteringData.requiredPeopleCount
       ).then((res) => {
         if (res.status.code === 5000) {
-          setEachRoomInfo(res.content.rooms);
+          setEachRoomInfo(res.content.content);
         }
       });
 
@@ -167,15 +167,19 @@ const FilteredRooms = () => {
           </div>
           <div className="rooms-wrapper">
             <div className="rooms-grid">
-              {eachRoomInfo.map((datas, index) => {
-                return (
-                  <RoomShowingBox
-                    setRoomID={setRoomID}
-                    openRoomExplainModal={openRoomExplainModal}
-                    datas={datas}
-                  />
-                );
-              })}
+              {eachRoomInfo.length !== 0 ? (
+                eachRoomInfo.map((datas, index) => {
+                  return (
+                    <RoomShowingBox
+                      setRoomID={setRoomID}
+                      openRoomExplainModal={openRoomExplainModal}
+                      datas={datas}
+                    />
+                  );
+                })
+              ) : (
+                <></>
+              )}
             </div>
             <RoomModal
               open={roomExplainModalOpen}
