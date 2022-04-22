@@ -79,7 +79,6 @@ const getRoomList = async (
       headers: {
         "Content-type": "application/json; charset=UTF-8",
         Accept: "*/*",
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
     }
   );
@@ -110,7 +109,7 @@ const postCreateRoom = async (
       roomArea: roomArea,
       limitPeopleCount: limitPeopleCount,
       exercise: exercise,
-      tag: tag,
+      tags: tag,
       startAppointmentDate: startAppointmentDate,
       endAppointmentDate: endAppointmentDate,
       roomImages: roomImages,

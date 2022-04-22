@@ -27,13 +27,23 @@ const getNicknameDuplicationCheck = async (nickname) => {
 
 // 내 정보 조회
 const getMyInfo = async () => {
-  const promise = axios.get("http://localhost:8080/api/user", {
-    headers: {
-      "Content-type": "application/json; charset=UTF-8",
-      Accept: "*/*",
-      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-    },
-  });
+  const header =
+    localStorage.getItem("accessToken") === null
+      ? {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            Accept: "*/*",
+          },
+        }
+      : {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            Accept: "*/*",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        };
+
+  const promise = axios.get("http://localhost:8080/api/user", header);
   const dataPromise = promise.then((res) => res.data);
 
   return dataPromise;

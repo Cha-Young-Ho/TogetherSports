@@ -196,7 +196,7 @@ const NavigationBar = () => {
           </div>
         </div>
       </div>
-      {loginData && !myinfo.isInformationRequired ? <FixedRequestAlarm /> : ""}
+      {loginData && myinfo.isInformationRequired ? <FixedRequestAlarm /> : ""}
 
       <style jsx>{`
         .header {

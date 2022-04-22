@@ -17,7 +17,7 @@ const RoomModal = ({ open, close, roomID }) => {
   const [limitPeopleCount, setLimitPeopleCount] = useState("");
   const [participantCount, setParticipantCount] = useState("");
   const [exercise, setExercise] = useState("");
-  const [tag, setTag] = useState([]);
+  const [tags, setTags] = useState([]);
   const [startAppointmentDate, setStartAppointmentDate] = useState("");
   const [endAppointmentDate, setEndAppointmentDate] = useState("");
   const [viewCount, setViewCount] = useState("");
@@ -55,7 +55,7 @@ const RoomModal = ({ open, close, roomID }) => {
             (participantCount = res.content.participantCount)
           );
           setExercise((exercise = res.content.exercise));
-          setTag((tag = res.content.tag));
+          setTags((tags = res.content.tags));
           setStartAppointmentDate(
             (startAppointmentDate = res.content.startAppointmentDate)
           );
@@ -121,7 +121,7 @@ const RoomModal = ({ open, close, roomID }) => {
             <div className="room-modal-body">
               <div className="header">
                 <div className="tags">
-                  {tag.map((tag, index) => {
+                  {tags.map((tag, index) => {
                     return (
                       <div className="tag" key={index}>
                         {tag}
