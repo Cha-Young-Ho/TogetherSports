@@ -30,7 +30,7 @@ public class RoomImageService {
                 //기본 이미지에 대한 DTO 생성(RoomImage 생성 메서드는 1개만 존재시키려는 의도)
                 //fixme 기본 이미지 경로 수정해야함
                 ImageOfRoomCRUD defaultImage = ImageOfRoomCRUD.builder()
-                        .imageSource("정보 없음")
+                        .imageSource("/Users/chayeongho/Pictures/User/User.png")
                         .order(0)
                         .roomImageExtension("png")
                         .build();
