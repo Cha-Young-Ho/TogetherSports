@@ -42,7 +42,6 @@ const NavigationBar = () => {
   // 서버로 로그인 요청
   useEffect(() => {
     console.log("Request Login Info To Server...");
-    //setLoginData(true);
     if (myinfo.userEmail === "") {
       getMyInfo()
         .then((res) => {
@@ -90,7 +89,7 @@ const NavigationBar = () => {
     } else {
       setLoginData(true);
     }
-  }, []);
+  });
 
   // 로그아웃 버튼 클릭
   const ClickLogout = () => {
