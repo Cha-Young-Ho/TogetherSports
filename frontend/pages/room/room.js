@@ -22,7 +22,7 @@ const Room = () => {
     "성별 무관",
     "고수만", // 임시 데이터
   ]);
-  const [viewCount, setViewCount] = useState("");
+  const [viewCount, setViewCount] = useState("30");
   const [creatorNickName, setCreatorNickName] = useState("abcdef");
   const [host, setHost] = useState("abcdef");
   const [roomTitle, setRoomTitle] = useState(
@@ -116,25 +116,25 @@ const Room = () => {
       <div className="container">
         <div className="main-info">
           <div className="header">
-            <div>
-              <div className="tags">
-                {tags.length !== 0 ? (
-                  tags.map((tag, index) => {
-                    return (
-                      <div className="tag" key={index}>
-                        {tag}
-                      </div>
-                    );
-                  })
-                ) : (
-                  <></>
-                )}
-              </div>
+            <div className="viewCount">
+              <p>{`조회수 : ${viewCount}`}</p>
+              <p>{`생성일시 : 2022년 4월 23일 PM 2 : 15`}</p>
+            </div>
 
-              <div>
-                <div className="viewCount">{`조회수 : ${viewCount}`}</div>
-                <div className="nickName">{`ID : ${host}님의 방`}</div>
-              </div>
+            <div className="long-line"></div>
+
+            <div className="tags">
+              {tags.length !== 0 ? (
+                tags.map((tag, index) => {
+                  return (
+                    <div className="tag" key={index}>
+                      {tag}
+                    </div>
+                  );
+                })
+              ) : (
+                <></>
+              )}
             </div>
 
             <div className="title">
@@ -238,7 +238,9 @@ const Room = () => {
 
                   <div className="dialog-input">
                     <input />
-                    <button>↑</button>
+                    <button>
+                      <img src="/chatting-send-button.png" />
+                    </button>
                   </div>
                 </div>
               </div>
@@ -295,11 +297,20 @@ const Room = () => {
           margin-bottom: 20px;
         }
 
-        .header > div:nth-child(1) {
+        .header > .long-line {
+          margin: 5px 0 10px 0;
+        }
+
+        .viewCount {
           display: flex;
           flex-direction: row;
-          justify-content: space-between;
-          align-items: center;
+          /* justify-content: right; */
+        }
+
+        .viewCount > p {
+          font-size: 1.3rem;
+          margin-right: 30px;
+          /* margin-left: 30px; */
         }
 
         .tags {
@@ -316,39 +327,7 @@ const Room = () => {
           border-radius: 6px;
           background-color: #efefef;
           font-weight: bold;
-          font-size: 1.3em;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        .header > div:nth-child(1) > div:nth-child(2) {
-          display: flex;
-          flex-direction: row;
-        }
-
-        .viewCount {
-          height: 25px;
-          padding: 0 10px;
-          margin-right: 10px;
-          border: solid 1px #f4f4f4;
-          border-radius: 6px;
-          background-color: #efefef;
-          font-weight: bold;
-          font-size: 1.3em;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        .nickName {
-          height: 25px;
-          padding: 0 10px;
-          border: solid 1px #f4f4f4;
-          border-radius: 6px;
-          background-color: #efefef;
-          font-weight: bold;
-          font-size: 1.3em;
+          font-size: 1.3rem;
           display: flex;
           justify-content: center;
           align-items: center;
@@ -362,7 +341,7 @@ const Room = () => {
         }
 
         .title p {
-          font-size: 2.7em;
+          font-size: 2.7rem;
           font-weight: bold;
         }
 
@@ -446,19 +425,19 @@ const Room = () => {
 
         .option > p:nth-child(1),
         .option-time > p:nth-child(1) {
-          font-size: 1.5em;
+          font-size: 1.5rem;
           margin-bottom: 5px;
         }
 
         .option > p:nth-child(2) {
           font-weight: bold;
-          font-size: 2.5em;
+          font-size: 2.5rem;
         }
 
         .option-time > p:nth-child(2),
         .option-time > p:nth-child(3) {
           font-weight: bold;
-          font-size: 1.5em;
+          font-size: 1.5rem;
         }
 
         .participant-list {
@@ -475,7 +454,7 @@ const Room = () => {
 
         .participant-list > p {
           font-weight: bold;
-          font-size: 1.5em;
+          font-size: 1.5rem;
         }
 
         .participants {
@@ -507,7 +486,7 @@ const Room = () => {
         }
 
         .master p {
-          font-size: 1.3em;
+          font-size: 1.3rem;
         }
 
         .chatting {
@@ -549,15 +528,17 @@ const Room = () => {
         }
 
         .dialog-input button {
-          width: 27px;
-          height: 27px;
+          width: 28px;
+          height: 28px;
           border: none;
           border-radius: 50%;
-          padding: 4.4px 6.5px 3.4px 5.9px;
-          background-color: #08555f;
-          color: white;
           user-select: none;
           cursor: pointer;
+        }
+
+        .dialog-input img {
+          width: 28px;
+          height: 28px;
         }
 
         .room-info > p,
@@ -574,7 +555,7 @@ const Room = () => {
           border-radius: 10px;
           background-color: #f4f4f4;
           resize: none;
-          font-size: 1.4em;
+          font-size: 1.4rem;
           scroll: auto;
           overflow-x: hidden;
         }
