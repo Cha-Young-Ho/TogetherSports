@@ -17,13 +17,11 @@ const RoomShowingBox = (props) => {
             }
           ></img>
           <div className="tags">
-            {props.datas.tags.length !== 0 ? (
-              props.datas.tags.map((tag, index) => {
-                return <p key={index}>{tag}</p>;
-              })
-            ) : (
-              <></>
-            )}
+            {props.datas.tags.length !== 0
+              ? props.datas.tags.map((tag, index) => {
+                  return <p key={index}>{tag}</p>;
+                })
+              : ""}
           </div>
           <div className="participants">
             <p>{`${props.datas.participantCount} / ${props.datas.limitPeopleCount}`}</p>
