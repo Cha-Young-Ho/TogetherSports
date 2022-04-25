@@ -66,6 +66,9 @@ const FailResponse = (codeNumber) => {
     case 1306:
       alert("리프레시 토큰 유지, 액세스 토큰 갱신");
       break;
+    case 1307:
+      alert("유효하지 않은 리프레시 토큰입니다.");
+      break;
     default:
       alert("알 수 없는 이유로 실패했습니다.");
       break;
