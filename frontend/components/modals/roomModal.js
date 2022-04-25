@@ -10,17 +10,19 @@ const RoomModal = (props) => {
   /* response content 담을 변수들 */
   const [roomId, setRoomId] = useState(""); // 참여페이지로 넘어가기 위한 roomId
   const [creatorNickName, setCreatorNickName] = useState(""); // 방 생성자
-  const [host, setHost] = useState(""); // 방장
-  const [roomTitle, setRoomTitle] = useState("");
-  const [roomContent, setRoomContent] = useState("");
-  const [area, setArea] = useState("");
-  const [limitPeopleCount, setLimitPeopleCount] = useState("");
-  const [participantCount, setParticipantCount] = useState("");
-  const [exercise, setExercise] = useState("");
+  const [host, setHost] = useState("kinggoni"); // 방장
+  const [roomTitle, setRoomTitle] = useState("라라와 함께 춤을");
+  const [roomContent, setRoomContent] = useState("숭구리당당숭당당");
+  const [area, setArea] = useState("서울 송파구 올림픽로 19-2");
+  const [limitPeopleCount, setLimitPeopleCount] = useState("50명");
+  const [participantCount, setParticipantCount] = useState("30명");
+  const [exercise, setExercise] = useState("축구");
   const [tags, setTags] = useState([]);
-  const [startAppointmentDate, setStartAppointmentDate] = useState("");
-  const [endAppointmentDate, setEndAppointmentDate] = useState("");
-  const [viewCount, setViewCount] = useState("");
+  const [startAppointmentDate, setStartAppointmentDate] =
+    useState("2022-04-01T12:00");
+  const [endAppointmentDate, setEndAppointmentDate] =
+    useState("2022-04-01T12:00");
+  const [viewCount, setViewCount] = useState("5");
   const [roomImages, setRoomImages] = useState([
     {
       // test를 위한 임시 데이터
@@ -116,102 +118,104 @@ const RoomModal = (props) => {
   return (
     <>
       <div className={props.open ? "openModal modal" : "modal"}>
-        {props.open ? (
-          <section>
-            <div className="room-modal-body">
-              <div className="header">
-                <div className="tags">
-                  {tags.length !== 0 ? (
-                    tags.map((tag, index) => {
-                      return (
-                        <div className="tag" key={index}>
-                          {tag}
-                        </div>
-                      );
-                    })
-                  ) : (
-                    <></>
-                  )}
-                </div>
+        <div className="room-modal-body">
+          <div className="header">
+            <div>
+              {tags.length !== 0 ? (
+                tags.map((tag, index) => {
+                  return (
+                    <div className="tag" key={index}>
+                      {tag}
+                    </div>
+                  );
+                })
+              ) : (
+                <></>
+              )}
+            </div>
 
-                <div>
-                  <div className="viewCount">{`조회수 : ${viewCount}`}</div>
-                  <div className="nickName">{`ID : ${host}님의 방`}</div>
+            <div>
+              <div className="viewCount">{`조회수 : ${viewCount}`}</div>
+              <div className="nickName">{`ID : ${host}님의 방`}</div>
+            </div>
+          </div>
+
+          <div className="section">
+            <div className="left-section">
+              <p>{roomTitle}</p>
+
+              <div className="options">
+                <div className="option">
+                  <p>참여인원</p>
+                  <p>{participantCount}</p>
+                </div>
+                <div className="option">
+                  <p>모집인원</p>
+                  <p>{limitPeopleCount}</p>
+                </div>
+                <div className="option-exercise">
+                  <p>종목</p>
+                  <p>{exercise}</p>
+                </div>
+                <div className="option-time">
+                  <p>시간</p>
+                  <p>{`${startAppointmentDate.substr(
+                    11,
+                    2
+                  )}시 ${startAppointmentDate.substr(-2)}분 ~`}</p>
+                  <p>{`${endAppointmentDate.substr(
+                    11,
+                    2
+                  )}시 ${endAppointmentDate.substr(-2)}분`}</p>
                 </div>
               </div>
 
-              <div className="section">
-                <div className="left-section">
-                  <p>{roomTitle}</p>
+              <div className="calendar">
+                <Calendar
+                  clickDateOptionFunction={`${
+                    startAppointmentDate[8] === "0"
+                      ? startAppointmentDate.substr(0, 8) +
+                        startAppointmentDate[9]
+                      : startAppointmentDate.substr(0, 10)
+                  }`}
+                  moveDateButtonOptionFunction={true}
+                />
+              </div>
 
-                  <div className="options">
-                    <div className="option">
-                      <p className="small-p">참여인원</p>
-                      <p className="big-p">{participantCount}</p>
-                    </div>
-                    <div className="option">
-                      <p className="small-p">모집인원</p>
-                      <p className="big-p">{limitPeopleCount}</p>
-                    </div>
-                    <div className="option">
-                      <p className="small-p">종목</p>
-                      <p className="big-p">{exercise}</p>
-                    </div>
-                    <div className="option-time">
-                      <p className="small-p">시간</p>
-                      <p className="big-p">{`${startAppointmentDate.substr(
-                        11,
-                        2
-                      )}시 ${startAppointmentDate.substr(-2)}분 ~`}</p>
-                      <p className="big-p">{`${endAppointmentDate.substr(
-                        11,
-                        2
-                      )}시 ${endAppointmentDate.substr(-2)}분`}</p>
-                    </div>
-                  </div>
-
-                  <div className="calendar">
-                    <Calendar
-                      clickDateOptionFunction={`${startAppointmentDate.substr(
-                        0,
-                        10
-                      )}`}
-                      moveDateButtonOptionFunction={true}
-                    />
-                  </div>
-
-                  <div className="location">
-                    <p className="location-info">위치 정보</p>
-                    <div className="line"></div>
-                    <p className="address-info">{area}</p>
-                    <div id="map"></div>
-                  </div>
-                </div>
-
-                <div className="right-section">
-                  <div className="image">
-                    <ImageSlide imageArr={roomImages} />
-                  </div>
-
-                  <div className="room-info">
-                    <p>방 설명 및 안내</p>
-                    <div className="line"></div>
-                    <textarea readOnly value={roomContent}></textarea>
-                  </div>
-
-                  <div className="buttons">
-                    <button className="left-button" onClick={enterRoom}>
-                      참여
-                    </button>
-                    <button className="right-button" onClick={props.close}>
-                      닫기
-                    </button>
-                  </div>
-                </div>
+              <div className="location">
+                <p>위치 정보</p>
+                <div></div>
+                <p className="address-info">{area}</p>
+                <div id="map"></div>
               </div>
             </div>
-          </section>
-        ) : null}
+
+            <div className="right-section">
+              <div className="image">
+                {roomImages.length !== 0 ? (
+                  <ImageSlide imageArr={roomImages} />
+                ) : (
+                  <></>
+                )}
+              </div>
+
+              <div className="room-info">
+                <p>방 설명 및 안내</p>
+                <div className="line"></div>
+                <textarea readOnly value={roomContent}></textarea>
+              </div>
+
+              <div className="buttons">
+                <button className="left-button" onClick={props.close}>
+                  닫기
+                </button>
+                <button className="right-button" onClick={enterRoom}>
+                  참여
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <style jsx>{`
         .modal {
@@ -225,103 +229,68 @@ const RoomModal = (props) => {
           background-color: rgba(0, 0, 0, 0.6);
         }
 
-        section {
-          width: 1150px;
-          height: 720px;
-          margin: 0 auto;
-          border-radius: 22px;
-          background-color: #fff;
-          box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
-          /* 팝업이 열릴때 스르륵 열리는 효과 */
-          animation: modal-show 0.3s;
-          overflow: hidden;
-          display: table;
-          text-align: center;
-        }
-
         .modal.openModal {
           display: flex;
           align-items: center;
-          /* 팝업이 열릴때 스르륵 열리는 효과 */
-          animation: modal-bg-show 0.3s;
+          justify-content: center;
+          animation: modal-bg-show 0.3s; // 스르륵 효과
         }
 
         .room-modal-body {
-          width: 100%;
-          height: 100%;
-          padding: 20px 30px;
+          width: 70%;
+          height: 85%;
+          border-radius: 22px;
+          background-color: white;
           display: flex;
           flex-direction: column;
+          align-items: center;
+          padding: 20px 30px;
+          /* overflow: auto; */
         }
 
         .header {
+          width: 100%;
+          height: 5%;
           display: flex;
           flex-direction: row;
           justify-content: space-between;
-          align-items: center;
-          margin-bottom: 15px;
+          margin-bottom: 10px;
         }
 
-        .tags {
+        .header div {
           display: flex;
           flex-direction: row;
         }
 
-        .tag {
-          height: 25px;
+        .tag,
+        .viewCount,
+        .nickName {
+          height: 100%;
           padding: 0 10px;
           margin-right: 10px;
           border: solid 1px #f4f4f4;
           border-radius: 6px;
           background-color: #efefef;
           font-weight: bold;
-          font-size: 0.9em;
+          font-size: 1.2rem; // 수정필요한지 확인필요
           display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        .header > div:nth-child(2) {
-          display: flex;
-          flex-direction: row;
-        }
-
-        .viewCount {
-          height: 25px;
-          padding: 0 10px;
-          margin-right: 10px;
-          border: solid 1px #f4f4f4;
-          border-radius: 6px;
-          background-color: #efefef;
-          font-weight: bold;
-          font-size: 0.9em;
-          display: flex;
-          justify-content: center;
           align-items: center;
         }
 
         .nickName {
-          height: 25px;
-          padding: 0 10px;
-          border: solid 1px #f4f4f4;
-          border-radius: 6px;
-          background-color: #efefef;
-          font-weight: bold;
-          font-size: 0.9em;
-          display: flex;
-          justify-content: center;
-          align-items: center;
+          margin-right: 0px;
         }
 
         .section {
           width: 100%;
-          height: 100%;
+          height: 95%;
           display: flex;
           flex-direction: row;
         }
 
         .left-section {
-          width: 440px;
+          width: 40%;
+          height: 100%;
         }
 
         .left-section > div,
@@ -329,25 +298,30 @@ const RoomModal = (props) => {
           display: flex;
           justify-content: left;
           align-items: center;
-          margin-bottom: 13px;
+          margin-bottom: 10px;
         }
 
         .left-section > p {
-          font-size: 1.9em;
+          height: 5%;
+          font-size: 2.5rem;
           font-weight: bold;
         }
 
         .options {
+          width: 100%;
+          height: 13%;
           display: flex;
           flex-direction: row;
           justify-content: space-between;
           align-items: center;
         }
 
-        .option {
-          height: 70px;
+        .option,
+        .option-exercise,
+        .option-time {
+          min-height: 80%;
           margin-right: 10px;
-          padding: 10px 15px;
+          padding: 10px 10px;
           border-radius: 10px;
           box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
           display: flex;
@@ -357,43 +331,36 @@ const RoomModal = (props) => {
         }
 
         .option-time {
-          height: 70px;
-          padding: 10px 15px;
-          border-radius: 10px;
-          box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
+          margin-right: 0px;
         }
 
-        .option > p:nth-child(1),
-        .option-time > p:nth-child(1) {
-          font-size: 0.9em;
-          margin-bottom: 4px;
+        .options > div > p:nth-child(1) {
+          font-size: 1.3rem;
+          margin-bottom: 5px;
         }
 
-        .option > p:nth-child(2) {
+        .option > p:nth-child(2),
+        .option-exercise > p:nth-child(2) {
+          font-size: 2rem;
           font-weight: bold;
-          font-size: 1.7em;
         }
 
         .option-time > p:nth-child(2),
         .option-time > p:nth-child(3) {
           font-weight: bold;
-          font-size: 1em;
+          font-size: 1.3rem;
         }
 
         .calendar {
           width: 100%;
-          height: 220px;
+          height: 35%;
           border-radius: 12px;
           box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
         }
 
         .location {
           width: 100%;
-          height: 265px;
+          height: 40%;
           border-radius: 10px;
           box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
           display: flex;
@@ -402,17 +369,17 @@ const RoomModal = (props) => {
           padding: 5px;
         }
 
-        .location-info {
+        .location p:nth-child(1) {
           font-weight: bold;
-          margin-top: 10px;
+          margin-top: 5px;
         }
 
-        .address-info {
-          margin-bottom: 10px;
+        .location p:nth-child(3) {
+          margin-bottom: 5px;
         }
 
-        .left-section .line {
-          width: 311.5px;
+        .location > div:nth-child(2) {
+          width: 80%;
           height: 0;
           margin: 10px 0;
           border: solid 0.3px #707070;
@@ -420,27 +387,43 @@ const RoomModal = (props) => {
 
         #map {
           width: 100%;
-          height: 170px;
+          height: 100%;
           border-radius: 10px;
           border: solid 1px #e8e8e8;
           background-color: #f2f2f2;
         }
 
         .right-section {
-          width: 710px;
-        }
-
-        .right-section div {
-          margin-left: 30px;
+          width: 60%;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          margin-left: 20px;
         }
 
         .image {
-          width: 680px;
-          height: 350px;
+          width: 100%;
+          height: 55%;
+        }
+
+        .room-info {
+          width: 100%;
+          height: 35%;
+          margin-top: 10px;
+        }
+
+        .buttons {
+          width: 100%;
+          height: 5%;
+          margin-top: 10px;
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          align-items: center;
         }
 
         .room-info > p {
-          margin: 20px 10px 0 0;
           display: flex;
           justify-content: left;
           font-weight: bold;
@@ -448,17 +431,14 @@ const RoomModal = (props) => {
 
         .room-info > div {
           margin: 10px 0;
-        }
-
-        .right-section .line {
-          width: 680px;
+          width: 100%;
           height: 0;
           border: solid 0.3px #707070;
         }
 
         .room-info textarea {
-          width: 680px;
-          height: 160px;
+          width: 100%;
+          height: 70%;
           padding: 10px;
           border-radius: 10px;
           border: solid 1px #e8e8e8;
@@ -466,29 +446,23 @@ const RoomModal = (props) => {
           resize: none;
         }
 
-        .buttons {
-          margin-top: 20px;
-        }
-
         .left-button,
         .right-button {
-          margin: 0 10px;
-          width: 175px;
-          height: 40px;
+          padding: 10px 60px;
           border: none;
           border-radius: 25px;
           color: white;
-          font-size: 15px;
-          font-weight: 200px;
+          font-size: 1.5rem;
           cursor: pointer;
         }
 
         .left-button {
-          background-color: #00555f;
+          background-color: #d8d8d8;
+          margin-right: 10px;
         }
 
         .right-button {
-          background-color: #d8d8d8;
+          background-color: #00555f;
         }
 
         @keyframes modal-show {

@@ -233,7 +233,7 @@ const ModifyRoomModal = (props) => {
           display: flex;
           flex-direction: column;
           align-items: center;
-          scroll: auto;
+          overflow: auto;
           overflow-x: hidden;
         }
 

@@ -24,7 +24,6 @@ const Calendar = (props) => {
     if (props.clickDateOptionFunction) {
       setClickDateOption(true);
 
-      // startAppointmentDate의 yyyy-MM-dd에서 dd 예외 처리해야함
       setCurSelectedDate(props.clickDateOptionFunction);
     }
 
@@ -376,19 +375,19 @@ const Calendar = (props) => {
 
         .days-in-grid:hover {
           background-color: #2b7a5f;
-          border-radius: 100px;
+          border-radius: 100%;
           color: white;
         }
 
         .special-days-in-grid:hover {
           background-color: tomato;
-          border-radius: 100px;
+          border-radius: 100%;
           color: white;
         }
 
         .clicked {
           background-color: #468f5b;
-          border-radius: 100px;
+          border-radius: 100%;
           color: white;
         }
       `}</style>
