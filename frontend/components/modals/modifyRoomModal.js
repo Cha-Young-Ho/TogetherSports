@@ -119,7 +119,6 @@ const ModifyRoomModal = (props) => {
         .then((res) => {
           if (res.status.code === 5000) {
             console.log(res.status.message);
-
             //초기값 받아오기
             setRoomTitle(res.content.roomTitle);
             setRoomContent(res.content.roomContent);
@@ -226,7 +225,8 @@ const ModifyRoomModal = (props) => {
 
         .box-container {
           width: 700px;
-          height: 550px;
+          height: 570px;
+          padding: 40px 50px 20px 50px;
           border-radius: 10px;
           box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
           background-color: #fff;
@@ -243,11 +243,9 @@ const ModifyRoomModal = (props) => {
           align-items: center;
           font-size: 2rem;
           font-weight: bold;
-          margin-top: 20px;
         }
 
         .picture-wrapper {
-          width: 80%;
           margin: 25px 0 10px 0;
           display: flex;
           align-items: center;
@@ -255,7 +253,7 @@ const ModifyRoomModal = (props) => {
         }
 
         .roomTitle-wrapper {
-          width: 80%;
+          width: 550px;
           height: 40px;
           padding: 5px 10px 5px 14px;
           border-radius: 10px;
@@ -277,8 +275,8 @@ const ModifyRoomModal = (props) => {
         }
 
         .peopleCount-wrapper {
-          width: 80%;
-          height: 40px;
+          width: 550px;
+          height: 50px;
           margin-top: 10px;
           display: flex;
           align-items: center;
@@ -302,7 +300,7 @@ const ModifyRoomModal = (props) => {
         }
 
         .roomNotice-wrapper {
-          width: 80%;
+          width: 550px;
           height: 160px;
           margin-top: 10px;
           display: flex;
@@ -310,7 +308,7 @@ const ModifyRoomModal = (props) => {
         }
 
         .roomNotice-wrapper textarea {
-          width: 570px;
+          width: 550px;
           height: 130px;
           margin: 10px 0;
           border-radius: 10px;
