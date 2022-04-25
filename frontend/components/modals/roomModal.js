@@ -10,18 +10,16 @@ const RoomModal = (props) => {
   /* response content 담을 변수들 */
   const [roomId, setRoomId] = useState(""); // 참여페이지로 넘어가기 위한 roomId
   const [creatorNickName, setCreatorNickName] = useState(""); // 방 생성자
-  const [host, setHost] = useState("kinggoni"); // 방장
-  const [roomTitle, setRoomTitle] = useState("라라와 함께 춤을");
-  const [roomContent, setRoomContent] = useState("숭구리당당숭당당");
+  const [host, setHost] = useState(""); // 방장
+  const [roomTitle, setRoomTitle] = useState("");
+  const [roomContent, setRoomContent] = useState("");
   const [area, setArea] = useState("서울 송파구 올림픽로 19-2");
-  const [limitPeopleCount, setLimitPeopleCount] = useState("50명");
-  const [participantCount, setParticipantCount] = useState("30명");
-  const [exercise, setExercise] = useState("축구");
+  const [limitPeopleCount, setLimitPeopleCount] = useState("");
+  const [participantCount, setParticipantCount] = useState("");
+  const [exercise, setExercise] = useState("");
   const [tags, setTags] = useState([]);
-  const [startAppointmentDate, setStartAppointmentDate] =
-    useState("2022-04-01T12:00");
-  const [endAppointmentDate, setEndAppointmentDate] =
-    useState("2022-04-01T12:00");
+  const [startAppointmentDate, setStartAppointmentDate] = useState("");
+  const [endAppointmentDate, setEndAppointmentDate] = useState("");
   const [viewCount, setViewCount] = useState("5");
   const [roomImages, setRoomImages] = useState([
     {
@@ -42,34 +40,34 @@ const RoomModal = (props) => {
     if (props.open && mapLoaded) {
       console.log(props.roomID);
       // 방 정보 받아오기
-      getRoomInfo(props.roomID).then((res) => {
-        if (res.status.code === 5000) {
-          setRoomId((roomId = res.content.roomId));
-          setCreatorNickName((creatorNickName = res.content.creatorNickName));
-          setHost((host = res.content.host));
-          setRoomTitle((roomTitle = res.content.roomTitle));
-          setRoomContent((roomContent = res.content.roomContent));
-          setArea((area = res.content.area));
-          setLimitPeopleCount(
-            (limitPeopleCount = res.content.limitPeopleCount)
-          );
-          setParticipantCount(
-            (participantCount = res.content.participantCount)
-          );
-          setExercise((exercise = res.content.exercise));
-          setTags((tags = res.content.tags));
-          setStartAppointmentDate(
-            (startAppointmentDate = res.content.startAppointmentDate)
-          );
-          setEndAppointmentDate(
-            (endAppointmentDate = res.content.endAppointmentDate)
-          );
-          setViewCount((viewCount = res.content.viewCount));
-          setRoomImages((roomImages = res.content.roomImages));
-        } else {
-          FailResponse(res.status.code);
-        }
-      });
+      // getRoomInfo(props.roomID).then((res) => {
+      //   if (res.status.code === 5000) {
+      //     setRoomId((roomId = res.content.roomId));
+      //     setCreatorNickName((creatorNickName = res.content.creatorNickName));
+      //     setHost((host = res.content.host));
+      //     setRoomTitle((roomTitle = res.content.roomTitle));
+      //     setRoomContent((roomContent = res.content.roomContent));
+      //     setArea((area = res.content.area));
+      //     setLimitPeopleCount(
+      //       (limitPeopleCount = res.content.limitPeopleCount)
+      //     );
+      //     setParticipantCount(
+      //       (participantCount = res.content.participantCount)
+      //     );
+      //     setExercise((exercise = res.content.exercise));
+      //     setTags((tags = res.content.tags));
+      //     setStartAppointmentDate(
+      //       (startAppointmentDate = res.content.startAppointmentDate)
+      //     );
+      //     setEndAppointmentDate(
+      //       (endAppointmentDate = res.content.endAppointmentDate)
+      //     );
+      //     setViewCount((viewCount = res.content.viewCount));
+      //     setRoomImages((roomImages = res.content.roomImages));
+      //   } else {
+      //     FailResponse(res.status.code);
+      //   }
+      // });
 
       // 위치 정보 받아오기
       kakao.maps.load(() => {
