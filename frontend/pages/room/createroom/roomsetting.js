@@ -200,7 +200,7 @@ const RoomSetting = () => {
               <p>인원</p>
               <input
                 type="number"
-                min="1"
+                min="2"
                 value={limitPeopleCount}
                 onKeyUp={(e) =>
                   (e.target.value = e.target.value.replace(/[^0-9]/g, ""))
