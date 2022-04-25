@@ -168,6 +168,7 @@ const RoomSchedule = () => {
 
         .calendar {
           width: 400px;
+          height: 300px;
           border-radius: 12px;
           box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
           margin-bottom: 30px;

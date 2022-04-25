@@ -40,7 +40,7 @@ const getRoomList = async (
   roomContent = roomContent === "" ? "" : `roomContent=${roomContent}&`;
   area = area === "" ? "" : `area=${area}&`;
   exercise = exercise.map((el) => "exercise=" + el + "&").join("");
-  tags = tags.map((el) => "tags=" + el + "&").join("");
+  tags = tags.length !== 0 ? tags.map((el) => "tags=" + el + "&").join("") : "";
   startAppointmentDate =
     startAppointmentDate === ""
       ? ""

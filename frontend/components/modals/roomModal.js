@@ -10,23 +10,25 @@ const RoomModal = (props) => {
   /* response content 담을 변수들 */
   const [roomId, setRoomId] = useState(""); // 참여페이지로 넘어가기 위한 roomId
   const [creatorNickName, setCreatorNickName] = useState(""); // 방 생성자
-  const [host, setHost] = useState(""); // 방장
-  const [roomTitle, setRoomTitle] = useState("");
-  const [roomContent, setRoomContent] = useState("");
-  const [area, setArea] = useState("");
-  const [limitPeopleCount, setLimitPeopleCount] = useState("");
-  const [participantCount, setParticipantCount] = useState("");
-  const [exercise, setExercise] = useState("");
+  const [host, setHost] = useState("kinggoni"); // 방장
+  const [roomTitle, setRoomTitle] = useState("kinggoni와 함께 춤을");
+  const [roomContent, setRoomContent] = useState("숭구리당당숭당당");
+  const [area, setArea] = useState("서울 송파구 올림픽로 19-2");
+  const [limitPeopleCount, setLimitPeopleCount] = useState("5");
+  const [participantCount, setParticipantCount] = useState("3");
+  const [exercise, setExercise] = useState("배드민턴");
   const [tags, setTags] = useState([]);
-  const [startAppointmentDate, setStartAppointmentDate] = useState("");
-  const [endAppointmentDate, setEndAppointmentDate] = useState("");
-  const [viewCount, setViewCount] = useState("");
+  const [startAppointmentDate, setStartAppointmentDate] =
+    useState("2022-04-01T12:00");
+  const [endAppointmentDate, setEndAppointmentDate] =
+    useState("2022-04-01T12:00");
+  const [viewCount, setViewCount] = useState("5");
   const [roomImages, setRoomImages] = useState([
-    {
-      // test를 위한 임시 데이터
-      order: -1,
-      imagePath: "logo-sign.png",
-    },
+    // {
+    //   // test를 위한 임시 데이터
+    //   order: -1,
+    //   imagePath: "logo-sign.png",
+    // },
   ]);
 
   useEffect(() => {
@@ -40,34 +42,34 @@ const RoomModal = (props) => {
     if (props.open && mapLoaded) {
       console.log(props.roomID);
       // 방 정보 받아오기
-      getRoomInfo(props.roomID).then((res) => {
-        if (res.status.code === 5000) {
-          setRoomId((roomId = res.content.roomId));
-          setCreatorNickName((creatorNickName = res.content.creatorNickName));
-          setHost((host = res.content.host));
-          setRoomTitle((roomTitle = res.content.roomTitle));
-          setRoomContent((roomContent = res.content.roomContent));
-          setArea((area = res.content.area));
-          setLimitPeopleCount(
-            (limitPeopleCount = res.content.limitPeopleCount)
-          );
-          setParticipantCount(
-            (participantCount = res.content.participantCount)
-          );
-          setExercise((exercise = res.content.exercise));
-          setTags((tags = res.content.tags));
-          setStartAppointmentDate(
-            (startAppointmentDate = res.content.startAppointmentDate)
-          );
-          setEndAppointmentDate(
-            (endAppointmentDate = res.content.endAppointmentDate)
-          );
-          setViewCount((viewCount = res.content.viewCount));
-          setRoomImages((roomImages = res.content.roomImages));
-        } else {
-          FailResponse(res.status.code);
-        }
-      });
+      // getRoomInfo(props.roomID).then((res) => {
+      //   if (res.status.code === 5000) {
+      //     setRoomId((roomId = res.content.roomId));
+      //     setCreatorNickName((creatorNickName = res.content.creatorNickName));
+      //     setHost((host = res.content.host));
+      //     setRoomTitle((roomTitle = res.content.roomTitle));
+      //     setRoomContent((roomContent = res.content.roomContent));
+      //     setArea((area = res.content.area));
+      //     setLimitPeopleCount(
+      //       (limitPeopleCount = res.content.limitPeopleCount)
+      //     );
+      //     setParticipantCount(
+      //       (participantCount = res.content.participantCount)
+      //     );
+      //     setExercise((exercise = res.content.exercise));
+      //     setTags((tags = res.content.tags));
+      //     setStartAppointmentDate(
+      //       (startAppointmentDate = res.content.startAppointmentDate)
+      //     );
+      //     setEndAppointmentDate(
+      //       (endAppointmentDate = res.content.endAppointmentDate)
+      //     );
+      //     setViewCount((viewCount = res.content.viewCount));
+      //     setRoomImages((roomImages = res.content.roomImages));
+      //   } else {
+      //     FailResponse(res.status.code);
+      //   }
+      // });
 
       // 위치 정보 받아오기
       kakao.maps.load(() => {
@@ -190,7 +192,11 @@ const RoomModal = (props) => {
 
                 <div className="right-section">
                   <div className="image">
-                    <ImageSlide imageArr={roomImages} />
+                    {roomImages.length !== 0 ? (
+                      <ImageSlide imageArr={roomImages} />
+                    ) : (
+                      <></>
+                    )}
                   </div>
 
                   <div className="room-info">
@@ -225,9 +231,19 @@ const RoomModal = (props) => {
           background-color: rgba(0, 0, 0, 0.6);
         }
 
+        .modal.openModal {
+          display: flex;
+          align-items: center;
+          /* 팝업이 열릴때 스르륵 열리는 효과 */
+          animation: modal-bg-show 0.3s;
+        }
+
+        // section 은 width, height 지정할 필요 X
         section {
-          width: 1150px;
-          height: 720px;
+          /* width: 20vw;
+          height: 80vh; */
+          /* width: 1150px;
+          height: 720px; */
           margin: 0 auto;
           border-radius: 22px;
           background-color: #fff;
@@ -239,19 +255,16 @@ const RoomModal = (props) => {
           text-align: center;
         }
 
-        .modal.openModal {
-          display: flex;
-          align-items: center;
-          /* 팝업이 열릴때 스르륵 열리는 효과 */
-          animation: modal-bg-show 0.3s;
-        }
-
+        // section 바로 하위 div의 width, height가 modal의 동적인 크기가 됨
         .room-modal-body {
-          width: 100%;
-          height: 100%;
+          width: 80vw;
+          height: 95vh;
+          /* width: 100%;
+          height: 100%; */
           padding: 20px 30px;
           display: flex;
           flex-direction: column;
+          overflow: scroll;
         }
 
         .header {
