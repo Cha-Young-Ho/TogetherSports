@@ -85,12 +85,15 @@ const CalendarModal = (props) => {
           display: flex;
           justify-content: center;
           align-items: center;
+          position: relative;
+          bottom: 10px;
         }
 
         .select-button {
           display: flex;
           justify-content: center;
           align-items: center;
+
           width: 200px;
           height: 50px;
           border: none;

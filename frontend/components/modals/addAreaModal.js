@@ -23,6 +23,8 @@ const AddAreaModal = (props) => {
           </div>
           <div className="tag-wrapper">
             <p>최대 x개까지 선택 가능합니다.</p>
+            <p>태그</p>
+            <p>태그</p>
           </div>
           <div className="button-wrapper">
             <button className="done-btn">완료</button>
@@ -54,8 +56,8 @@ const AddAreaModal = (props) => {
         }
 
         .box-container {
-          width: 1000px;
-          height: 650px;
+          width: 55%;
+          height: 80%;
           border-radius: 22px;
           box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
           background-color: #fff;
@@ -67,15 +69,16 @@ const AddAreaModal = (props) => {
 
         .header-wrapper {
           width: 100%;
-          height: 30px;
+          height: 5%;
           margin: 25px 0;
           display: flex;
           align-items: center;
         }
 
         .reset-button {
-          width: 80px;
-          height: 30px;
+          width: 8%;
+          min-width: 50px;
+          height: 100%;
           border: none;
           cursor: pointer;
           color: white;
@@ -97,7 +100,7 @@ const AddAreaModal = (props) => {
 
         .body-wrapper {
           width: 100%;
-          height: 450px;
+          height: 75%;
           margin: 15px 25px;
           display: flex;
           justify-content: space-between;
@@ -108,8 +111,8 @@ const AddAreaModal = (props) => {
           display: flex;
           flex-direction: column;
           align-items: center;
-          width: 360px;
-          height: 430px;
+          width: 100%;
+          height: 100%;
           margin: 0 15px;
           border-radius: 10px;
           box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
@@ -119,7 +122,7 @@ const AddAreaModal = (props) => {
         .region-depth p {
           display: flex;
           width: 90%;
-          height: 30px;
+          height: 8%;
           justify-content: center;
           align-items: center;
           font-size: 1.5rem;
@@ -129,7 +132,7 @@ const AddAreaModal = (props) => {
 
         .tag-wrapper {
           width: 100%;
-          height: 80px;
+          height: 5%;
           margin: 15px 0;
           display: column;
           align-items: center;
@@ -143,7 +146,7 @@ const AddAreaModal = (props) => {
 
         .button-wrapper {
           width: 100%;
-          height: 50px;
+          height: 8%;
           margin: 20px 0;
           display: flex;
           align-items: center;
@@ -151,8 +154,8 @@ const AddAreaModal = (props) => {
         }
 
         .done-btn {
-          width: 160px;
-          height: 45px;
+          width: 15%;
+          height: 100%;
           color: white;
           border: none;
           cursor: pointer;
@@ -162,8 +165,8 @@ const AddAreaModal = (props) => {
         }
 
         .cancel-btn {
-          width: 160px;
-          height: 45px;
+          width: 15%;
+          height: 100%;
           border: none;
           cursor: pointer;
           border-radius: 23.5px;

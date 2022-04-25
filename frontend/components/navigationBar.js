@@ -205,7 +205,7 @@ const NavigationBar = () => {
           height: 80px;
           min-height: 8vh;
           border-bottom: 1px solid #e4e8eb;
-          z-index: 9999;
+          z-index: 90;
           position: fixed;
           top: 0;
           left: 0;
