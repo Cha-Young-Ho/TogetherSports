@@ -6,6 +6,7 @@ import ParticipantList from "../../components/rooms/participantList";
 import UserInfoModal from "../../components/modals/userInfoModal";
 import ModifyRoomModal from "../../components/modals/modifyRoomModal";
 import { useSelector } from "react-redux";
+import Chatting from "../../components/chatting";
 
 /* 수정 필요 */
 // 1. 명세 후에 제대로 다시 하기
@@ -233,16 +234,7 @@ const Room = () => {
                   <p>{`ID : ${host}님의 방`}</p>
                 </div>
 
-                <div className="chatting">
-                  <div className="dialog"></div>
-
-                  <div className="dialog-input">
-                    <input />
-                    <button>
-                      <img src="/chatting-send-button.png" />
-                    </button>
-                  </div>
-                </div>
+                <Chatting />
               </div>
             </div>
           </div>
@@ -489,7 +481,7 @@ const Room = () => {
           font-size: 1.3rem;
         }
 
-        .chatting {
+        /* .chatting {
           width: 100%;
           height: 433px;
           padding: 15px 15px;
@@ -539,7 +531,7 @@ const Room = () => {
         .dialog-input img {
           width: 28px;
           height: 28px;
-        }
+        } */
 
         .room-info > p,
         .location-info > div:nth-child(1) > p:nth-child(1) {
