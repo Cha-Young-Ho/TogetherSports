@@ -32,17 +32,30 @@ const getNicknameDuplicationCheck = async (nickname) => {
 
 // 내 정보 조회
 const getMyInfo = async () => {
+<<<<<<< Updated upstream
   const promise =
     localStorage.getItem("accessToken") === null
       ? axios.get("http://localhost:8080/api/user")
       : axios.get("http://localhost:8080/api/user", {
+=======
+  const header =
+    localStorage.getItem("accessToken") === null
+      ? null
+      : {
+>>>>>>> Stashed changes
           headers: {
             "Content-type": "application/json; charset=UTF-8",
             Accept: "*/*",
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
+<<<<<<< Updated upstream
         });
 
+=======
+        };
+
+  const promise = axios.get("http://localhost:8080/api/user", header);
+>>>>>>> Stashed changes
   const dataPromise = promise.then((res) => res.data);
 
   return dataPromise;

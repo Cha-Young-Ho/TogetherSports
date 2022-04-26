@@ -8,6 +8,7 @@ import com.togethersports.tosproejct.user.dto.UserOfMyInfo;
 import com.togethersports.tosproejct.user.dto.UserOfOtherInfo;
 import com.togethersports.tosproejct.user.exception.NicknameDuplicationException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
  * @author younghoCha
  */
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class UserController {
@@ -57,6 +59,8 @@ public class UserController {
     //내 정보 조회
     @GetMapping("/api/user")
     public ResponseEntity<Response> getMyInfo(@CurrentUser User user){
+
+        log.info("컨트롤러 탔음");
         UserOfMyInfo myInfo = userService.getMyInfo(user.getId());
 
         return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, myInfo));

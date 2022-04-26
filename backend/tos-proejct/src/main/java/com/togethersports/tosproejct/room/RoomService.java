@@ -58,7 +58,7 @@ public class RoomService {
 
         //-- Tag --
         //List<String>을 List<Tag>로 변환
-        List<Tag> tagList = parsingEntityUtils.parsingStringToTagEntity(roomOfCreate.getTag());
+        List<Tag> tagList = parsingEntityUtils.parsingStringToTagEntity(roomOfCreate.getTags());
 
         //tag 저장
         tagService.saveTagFromRoomCreation(tagList, roomEntity);
