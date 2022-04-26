@@ -35,7 +35,7 @@ const FailResponse = (codeNumber) => {
     case 1301:
       console.log("변조된 토큰입니다.");
       postRefreshToken(localStorage.getItem("refreshToken")).then((res) => {
-        if (res.code === 5000) {
+        if (res.status.code === 5000) {
           localStorage.setItem("accessToken", res.accessToken);
         } else {
           localStorage.removeItem("accessToken");
@@ -46,8 +46,8 @@ const FailResponse = (codeNumber) => {
     case 1302:
       alert("액세스 토큰이 만료되었습니다.");
       postRefreshToken(localStorage.getItem("refreshToken")).then((res) => {
-        if (res.code === 5000) {
-          localStorage.setItem("accessToken", res.accessToken);
+        if (res.status.code === 5000) {
+          localStorage.setItem("accessToken", res.content.accessToken);
         } else {
           localStorage.removeItem("accessToken");
           localStorage.removeItem("refreshToken");
