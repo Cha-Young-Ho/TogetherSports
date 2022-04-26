@@ -1,7 +1,7 @@
 ---
 name: Bug report
 about: 프로그램에 발생한 버그 보고 및 조치 요구
-title: ''
+title: '[Bug]'
 labels: 'type: 🐞bug'
 assignees: ''
 
