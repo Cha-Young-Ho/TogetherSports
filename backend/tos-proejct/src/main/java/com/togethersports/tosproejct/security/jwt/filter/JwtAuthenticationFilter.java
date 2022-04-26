@@ -1,6 +1,7 @@
 package com.togethersports.tosproejct.security.jwt.filter;
 
 import com.togethersports.tosproejct.security.jwt.token.JwtPreAuthenticationToken;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -26,6 +27,7 @@ import java.util.UUID;
  * </p>
  * @author seunjeon
  */
+@Slf4j
 public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
@@ -40,9 +42,10 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
 
         String authorizationHeader = request.getHeader(AUTHORIZATION_HEADER);
-
+        log.info("request = {}", request.getRequestURI());
         // 인증 헤더가 없는 경우 익명 사용자로 간주 (Anonymous Authentication)
         if (Objects.isNull(authorizationHeader)) {
+
             return new AnonymousAuthenticationToken(UUID.randomUUID().toString(),
                     "anonymousUser",
                     List.of(new SimpleGrantedAuthority("ROLE_ANONYMOUS")));
