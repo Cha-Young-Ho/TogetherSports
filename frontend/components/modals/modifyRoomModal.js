@@ -145,46 +145,49 @@ const ModifyRoomModal = (props) => {
       <div className={props.open ? "openModal modal" : "modal"}>
         <div className="box-container">
           <h1>방 정보 수정</h1>
-          <div className="picture-wrapper">
-            <SetRoomImages
-              getImageData={getImageData}
-              setPreview={setPreview}
-              getPreview={getPreview}
-              setData={setData}
-              getThumbnailData={getThumbnailIndex}
-            />
-          </div>
 
-          <div className="roomTitle-wrapper">
-            <p>방 제목</p>
-            <input
-              type="text"
-              minLength="1"
-              maxLength="20"
-              placeholder={roomTitle}
-              onChange={changeTitle}
-            ></input>
-          </div>
+          <div className="contents-wrapper">
+            <div className="picture-wrapper">
+              <SetRoomImages
+                getImageData={getImageData}
+                setPreview={setPreview}
+                getPreview={getPreview}
+                setData={setData}
+                getThumbnailData={getThumbnailIndex}
+              />
+            </div>
 
-          <div className="peopleCount-wrapper">
-            <p>인원 수 조절</p>
-            <input
-              type="text"
-              placeholder={limitPeopleCount}
-              onChange={changePplCnt}
-            ></input>
-            <p>명</p>
-            <p className="notice">
-              * 현재 참여 인원보다 많은 인원만 입력 가능합니다.
-            </p>
-          </div>
+            <div className="roomTitle-wrapper">
+              <p>방 제목</p>
+              <input
+                type="text"
+                minLength="1"
+                maxLength="20"
+                placeholder={roomTitle}
+                onChange={changeTitle}
+              ></input>
+            </div>
 
-          <div className="roomNotice-wrapper">
-            <p>방 설명 작성</p>
-            <textarea
-              onChange={changeContent}
-              defaultValue={roomContent}
-            ></textarea>
+            <div className="peopleCount-wrapper">
+              <p>인원 수 조절</p>
+              <input
+                type="text"
+                placeholder={limitPeopleCount}
+                onChange={changePplCnt}
+              ></input>
+              <p>명</p>
+              <p className="notice">
+                * 현재 참여 인원보다 많은 인원만 입력 가능합니다.
+              </p>
+            </div>
+
+            <div className="roomNotice-wrapper">
+              <p>방 설명 작성</p>
+              <textarea
+                onChange={changeContent}
+                defaultValue={roomContent}
+              ></textarea>
+            </div>
           </div>
 
           <div className="button-wrapper">
@@ -219,25 +222,52 @@ const ModifyRoomModal = (props) => {
           display: flex;
           align-items: center;
           justify-content: center;
-          /* 팝업이 열릴때 스르륵 열리는 효과 */
-          animation: modal-bg-show 0.3s;
+          animation: modal-bg-show 0.3s; // 스르륵 효과
         }
 
         .box-container {
-          width: 700px;
-          height: 570px;
-          padding: 40px 50px 20px 50px;
+          width: 48%;
+          height: 80%;
+          padding: 40px 50px;
           border-radius: 10px;
           box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
-          background-color: #fff;
+          background-color: white;
           display: flex;
           flex-direction: column;
           align-items: center;
-          overflow: auto;
-          overflow-x: hidden;
         }
 
-        .box-container h1 {
+        .contents-wrapper {
+          width: 100%;
+          /* height: 100%; */
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: space-between;
+          overflow: auto;
+        }
+
+        .contents-wrapper::-webkit-scrollbar {
+          width: 15px;
+        }
+
+        .contents-wrapper::-webkit-scrollbar-track {
+          width: 9px;
+          border-radius: 4px;
+          background-color: #f5f5f5;
+          background-clip: padding-box;
+          border: 5px solid transparent;
+        }
+
+        .contents-wrapper::-webkit-scrollbar-thumb {
+          width: 15px;
+          height: 26px;
+          border-radius: 4px;
+          border: solid 1px #e5e5e5;
+          background-color: white;
+        }
+
+        h1 {
           display: flex;
           justify-content: center;
           align-items: center;
@@ -246,15 +276,17 @@ const ModifyRoomModal = (props) => {
         }
 
         .picture-wrapper {
-          margin: 25px 0 10px 0;
+          width: 95%;
+          margin: 25px 0 20px 0;
           display: flex;
           align-items: center;
           flex-direction: column;
         }
 
         .roomTitle-wrapper {
-          width: 550px;
+          width: 95%;
           height: 40px;
+          margin-bottom: 10px;
           padding: 5px 10px 5px 14px;
           border-radius: 10px;
           border: solid 1px #e8e8e8;
@@ -275,7 +307,7 @@ const ModifyRoomModal = (props) => {
         }
 
         .peopleCount-wrapper {
-          width: 550px;
+          width: 95%;
           height: 50px;
           margin-top: 10px;
           display: flex;
@@ -300,7 +332,7 @@ const ModifyRoomModal = (props) => {
         }
 
         .roomNotice-wrapper {
-          width: 550px;
+          width: 95%;
           height: 160px;
           margin-top: 10px;
           display: flex;
@@ -308,8 +340,8 @@ const ModifyRoomModal = (props) => {
         }
 
         .roomNotice-wrapper textarea {
-          width: 550px;
-          height: 130px;
+          width: 100%;
+          height: 150px;
           margin: 10px 0;
           border-radius: 10px;
           border: none;
@@ -319,7 +351,8 @@ const ModifyRoomModal = (props) => {
         }
 
         .button-wrapper {
-          margin: 25px 0;
+          width: 100%;
+          margin-top: 25px;
           display: flex;
           align-items: center;
           justify-content: center;

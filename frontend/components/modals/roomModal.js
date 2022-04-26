@@ -370,9 +370,11 @@ const RoomModal = (props) => {
         .location p:nth-child(1) {
           font-weight: bold;
           margin-top: 5px;
+          font-size: 1.3rem;
         }
 
         .location p:nth-child(3) {
+          font-size: 1.3rem;
           margin-bottom: 5px;
         }
 
@@ -425,6 +427,7 @@ const RoomModal = (props) => {
           display: flex;
           justify-content: left;
           font-weight: bold;
+          font-size: 1.3rem;
         }
 
         .room-info > div {
