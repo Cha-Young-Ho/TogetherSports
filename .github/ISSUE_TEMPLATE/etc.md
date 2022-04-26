@@ -1,5 +1,5 @@
 ---
-name: etc
+name: Etc
 about: 빌드 스크립트, 문서 수정, 협업툴 관련 등 기타 내용에 대한 이슈
 title: "[Etc]"
 labels: ''
