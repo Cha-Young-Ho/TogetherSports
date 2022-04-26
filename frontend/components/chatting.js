@@ -135,7 +135,24 @@ const Chatting = () => {
         }
 
         .dialog::-webkit-scrollbar {
-          //visibility: hidden;
+          width: 17px;
+          border: none;
+        }
+
+        .dialog::-webkit-scrollbar-track {
+          width: 9px;
+          border-radius: 4px;
+          background-color: #f5f5f5;
+          background-clip: padding-box;
+          border: 5px solid transparent;
+        }
+
+        .dialog::-webkit-scrollbar-thumb {
+          width: 17px;
+          border-radius: 4px;
+          border: solid 1px #e5e5e5;
+          //box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+          background-color: #fff;
         }
 
         .messages {

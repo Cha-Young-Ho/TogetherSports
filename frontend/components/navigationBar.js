@@ -138,16 +138,9 @@ const NavigationBar = () => {
               </Link>
             </div>
             <div className="category">
-              {/* <Link href="/">
+              <Link href="/">
                 <div className="tag">소개</div>
-              </Link> */}
-              <div className="tag" onClick={roomOpenModal}>
-                소개
-              </div>
-              <RoomModal
-                open={roomModalOpen}
-                close={roomCloseModal}
-              ></RoomModal>
+              </Link>
               <Link href="/room/roomlist">
                 <div className="tag">방 목록</div>
               </Link>

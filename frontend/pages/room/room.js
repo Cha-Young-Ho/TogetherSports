@@ -164,10 +164,12 @@ const Room = () => {
               </div>
               <div className="calendar">
                 <Calendar
-                  clickDateOptionFunction={`${startAppointmentDate.substr(
-                    0,
-                    10
-                  )}`}
+                  clickDateOptionFunction={`${
+                    startAppointmentDate[8] === "0"
+                      ? startAppointmentDate.substr(0, 8) +
+                        startAppointmentDate[9]
+                      : startAppointmentDate.substr(0, 10)
+                  }`}
                   moveDateButtonOptionFunction={true}
                 />
               </div>
