@@ -21,9 +21,18 @@ const RoomTagInfo = () => {
 
   // 방 태그
   const [tags, setTags] = useState([]);
-  const tagsAge = ["10대", "20대", "30대", "40대", "50대", "60대", "70대"];
-  const tagsLevel = ["입문만", "초보만", "중수만", "고수만"];
-  const tagsGender = ["남자만", "여자만"];
+  const tagsAge = [
+    "10대",
+    "20대",
+    "30대",
+    "40대",
+    "50대",
+    "60대",
+    "70대",
+    "연령 무관",
+  ];
+  const tagsLevel = ["입문만", "초보만", "중수만", "고수만", "실력 무관"];
+  const tagsGender = ["남자만", "여자만", "성별 무관"];
 
   // setRoomImages 컴포넌트에서 데이터(이미지 배열) 받기
   const getRoomImages = (roomImage) => {
@@ -151,10 +160,8 @@ const RoomTagInfo = () => {
                     </div>
                   );
                 })}
-                <div className="tag-nomatter" onClick={onClickTag}>
-                  연령 무관
-                </div>
               </div>
+
               <div className="tags-level-gender">
                 {tagsLevel.map((level, index) => {
                   return (
@@ -163,9 +170,7 @@ const RoomTagInfo = () => {
                     </div>
                   );
                 })}
-                <div className="tag-nomatter" onClick={onClickTag}>
-                  실력 무관
-                </div>
+
                 {tagsGender.map((gender, index) => {
                   return (
                     <div className="tag" onClick={onClickTag} key={index}>
@@ -173,9 +178,6 @@ const RoomTagInfo = () => {
                     </div>
                   );
                 })}
-                <div className="tag-nomatter" onClick={onClickTag}>
-                  성별 무관
-                </div>
               </div>
             </div>
           </div>
@@ -218,20 +220,20 @@ const RoomTagInfo = () => {
         }
 
         .content-info p {
-          font-size: 1.5em;
+          font-size: 1.5rem;
           font-weight: bold;
         }
 
         .content-info textarea {
           margin-top: 20px;
           padding: 10px;
-          width: 550px;
+          width: 100%;
           height: 200px;
           border: none;
           border-radius: 10px;
           background-color: #f4f4f4;
           resize: none;
-          font-size: 1.4em;
+          font-size: 1.4rem;
         }
 
         .content-tag {
@@ -243,13 +245,13 @@ const RoomTagInfo = () => {
         }
 
         .content-tag p {
-          font-size: 1.5em;
+          font-size: 1.5rem;
           font-weight: bold;
         }
 
         .tags {
           margin-top: 20px;
-          width: 550px;
+          width: 100%;
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -257,13 +259,14 @@ const RoomTagInfo = () => {
 
         .tags-age,
         .tags-level-gender {
+          width: 100%;
           display: flex;
           flex-direction: row;
-          width: 100%;
+          justify-content: space-between;
         }
 
         .tag {
-          width: 60px;
+          padding: 0 10px;
           height: 30px;
           border: solid 1px #f4f4f4;
           border-radius: 6px;
@@ -272,28 +275,12 @@ const RoomTagInfo = () => {
           display: flex;
           justify-content: center;
           align-items: center;
-          font-size: 1.2em;
+          font-size: 1.2rem;
           font-weight: bold;
           cursor: pointer;
         }
 
-        .tag-nomatter {
-          width: 70px;
-          height: 30px;
-          border: solid 1px #f4f4f4;
-          border-radius: 6px;
-          background-color: #efefef;
-          margin: 10px 5px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          font-size: 1.2em;
-          font-weight: bold;
-          cursor: pointer;
-        }
-
-        .tag:hover,
-        .tag-nomatter:hover {
+        .tag:hover {
           transition-duration: 0.5s;
           transform: scale(1.2);
           background-color: #468f5b;

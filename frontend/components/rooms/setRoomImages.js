@@ -180,13 +180,14 @@ const SetRoomImages = (props) => {
       </div>
       <style jsx>{`
         .content-images {
+          width: 100%;
           display: flex;
           flex-direction: column;
           align-items: center;
         }
 
         .images {
-          width: 550px;
+          width: 100%;
           height: 40px;
           padding: 5px 10px 5px 14px;
           margin-bottom: 10px;
@@ -198,15 +199,16 @@ const SetRoomImages = (props) => {
         }
 
         .images p {
-          font-size: 1.5em;
+          font-size: 1.5rem;
           font-weight: bold;
         }
 
         .image-name {
-          width: 380px;
+          width: 70%;
           height: 30px;
+          margin-right: 10px;
           border-style: none;
-          font-size: 1.4em;
+          font-size: 1.4rem;
           padding: 5px;
         }
 
@@ -215,7 +217,7 @@ const SetRoomImages = (props) => {
           height: 28px;
           background-color: #08555f;
           color: white;
-          font-size: 1.3em;
+          font-size: 1.3rem;
           border: 0;
           outline: 0;
           cursor: pointer;
@@ -236,7 +238,7 @@ const SetRoomImages = (props) => {
 
         .content-images > p {
           margin-bottom: 20px;
-          font-size: 1.2em;
+          font-size: 1.2rem;
           color: #b5b5b5;
         }
 
@@ -253,7 +255,8 @@ const SetRoomImages = (props) => {
           text-align: center;
         }
 
-        .preview-unclicked {
+        .preview-unclicked,
+        .preview-clicked {
           width: 97px;
           height: 90px;
           margin: 0 10px;
@@ -267,16 +270,7 @@ const SetRoomImages = (props) => {
         }
 
         .preview-clicked {
-          width: 97px;
-          height: 90px;
-          margin: 0 10px;
           border: solid 3px #468f5b;
-          border-radius: 10px;
-          background-color: #d8d8d8;
-          overflow: hidden;
-          display: table-cell;
-          vertical-align: middle;
-          cursor: pointer;
         }
 
         .preview img {
@@ -296,7 +290,7 @@ const SetRoomImages = (props) => {
           opacity: 0.8;
           background-color: darkgray;
           font-weight: bold;
-          font-size: 1.2em;
+          font-size: 1.2rem;
           color: white;
           user-select: none;
           cursor: pointer;
