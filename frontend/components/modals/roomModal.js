@@ -40,7 +40,6 @@ const RoomModal = (props) => {
     if (props.open && mapLoaded) {
       console.log(props.roomID);
       // 방 정보 받아오기
-<<<<<<< Updated upstream
       // getRoomInfo(props.roomID).then((res) => {
       //   if (res.status.code === 5000) {
       //     setRoomId((roomId = res.content.roomId));
@@ -69,36 +68,6 @@ const RoomModal = (props) => {
       //     FailResponse(res.status.code);
       //   }
       // });
-=======
-      getRoomInfo(roomID).then((res) => {
-        if (res.status.code === 5000) {
-          setRoomId((roomId = res.content.roomId));
-          setCreatorNickName((creatorNickName = res.content.creatorNickName));
-          setHost((host = res.content.host));
-          setRoomTitle((roomTitle = res.content.roomTitle));
-          setRoomContent((roomContent = res.content.roomContent));
-          setArea((area = res.content.area));
-          setLimitPeopleCount(
-            (limitPeopleCount = res.content.limitPeopleCount)
-          );
-          setParticipantCount(
-            (participantCount = res.content.participantCount)
-          );
-          setExercise((exercise = res.content.exercise));
-          setTags((tags = res.content.tags));
-          setStartAppointmentDate(
-            (startAppointmentDate = res.content.startAppointmentDate)
-          );
-          setEndAppointmentDate(
-            (endAppointmentDate = res.content.endAppointmentDate)
-          );
-          setViewCount((viewCount = res.content.viewCount));
-          setRoomImagePath((roomImagePath = res.content.roomImagePath));
-        } else {
-          FailResponse(res.status.code);
-        }
-      });
->>>>>>> Stashed changes
 
       // 위치 정보 받아오기
       kakao.maps.load(() => {
@@ -146,7 +115,6 @@ const RoomModal = (props) => {
 
   return (
     <>
-<<<<<<< Updated upstream
       <div className={props.open ? "openModal modal" : "modal"}>
         <div className="room-modal-body">
           <div className="header">
@@ -169,22 +137,6 @@ const RoomModal = (props) => {
               <div className="nickName">{`ID : ${host}님의 방`}</div>
             </div>
           </div>
-=======
-      <div className={open ? "openModal modal" : "modal"}>
-        {open ? (
-          <section>
-            <div className="room-modal-body">
-              <div className="header">
-                <div className="tags">
-                  {tags.map((tag, index) => {
-                    return (
-                      <div className="tag" key={index}>
-                        {tag}
-                      </div>
-                    );
-                  })}
-                </div>
->>>>>>> Stashed changes
 
           <div className="section">
             <div className="left-section">

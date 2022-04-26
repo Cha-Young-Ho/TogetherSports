@@ -17,21 +17,11 @@ const RoomShowingBox = (props) => {
             }
           ></img>
           <div className="tags">
-<<<<<<< Updated upstream
             {props.datas.tags.length !== 0
               ? props.datas.tags.map((tag, index) => {
                   return <p key={index}>{tag}</p>;
                 })
               : ""}
-=======
-            {props.datas.tags.length !== 0 ? (
-              props.datas.tags.map((tag, index) => {
-                return <p key={index}>{tag}</p>;
-              })
-            ) : (
-              <></>
-            )}
->>>>>>> Stashed changes
           </div>
           <div className="participants">
             <p>{`${props.datas.participantCount} / ${props.datas.limitPeopleCount}`}</p>

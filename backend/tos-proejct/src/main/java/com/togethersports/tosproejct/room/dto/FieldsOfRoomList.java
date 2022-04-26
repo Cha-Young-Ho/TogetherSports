@@ -3,7 +3,6 @@ package com.togethersports.tosproejct.room.dto;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -47,7 +46,7 @@ public class FieldsOfRoomList {
     private Integer participantCount;
 
     // 페이지
-    private Integer page;
+    private int page;
 
     // 입장마감된 방 보기 여부
     private boolean containNoAdmittance;

@@ -26,23 +26,14 @@ const ImageSlide = (props) => {
   return (
     <>
       <div className="slideshow-container">
-<<<<<<< Updated upstream
         {props.imageArr.length !== 0 ? (
           props.imageArr
-=======
-        {imageArr.length !== 0 ? (
-          imageArr
->>>>>>> Stashed changes
             .sort((a, b) => a.order - b.order)
             .map((image, index) => {
               return (
                 <div className="slide fade" key={index}>
                   <div className="number-text">{`${index + 1} / ${
-<<<<<<< Updated upstream
                     props.imageArr.length
-=======
-                    imageArr.length
->>>>>>> Stashed changes
                   }`}</div>
                   <div className="image-container">
                     <img src={`/${image.imagePath}`} />
