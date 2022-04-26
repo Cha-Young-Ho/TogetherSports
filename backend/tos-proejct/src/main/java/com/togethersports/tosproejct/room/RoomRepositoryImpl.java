@@ -9,6 +9,7 @@ import com.togethersports.tosproejct.common.util.ParsingEntityUtils;
 import com.togethersports.tosproejct.room.dto.FieldsOfRoomList;
 import com.togethersports.tosproejct.room.dto.RoomOfList;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;

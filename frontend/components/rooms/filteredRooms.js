@@ -20,7 +20,6 @@ const FilteredRooms = () => {
   const [roomID, setRoomID] = useState();
 
   // 현재 임시 데이터
-<<<<<<< Updated upstream
   const [eachRoomInfo, setEachRoomInfo] = useState([
     {
       roomId: "121",
@@ -41,9 +40,6 @@ const FilteredRooms = () => {
       roomImagePath: "",
     },
   ]);
-=======
-  const [eachRoomInfo, setEachRoomInfo] = useState([]);
->>>>>>> Stashed changes
 
   const openRoomExplainModal = () => {
     setRoomExplainModalOpen(true);

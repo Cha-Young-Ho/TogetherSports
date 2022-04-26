@@ -74,7 +74,6 @@ const getRoomList = async (
 
   console.log("방 필터 최종 쿼리스트링 = " + totalQueryString);
 
-<<<<<<< Updated upstream
   const promise =
     localStorage.getItem("accessToken") === null
       ? axios.get("http://localhost:8080/api/room?" + totalQueryString)
@@ -85,17 +84,6 @@ const getRoomList = async (
           },
         });
 
-=======
-  const promise = axios.get(
-    "http://localhost:8080/api/room?" + totalQueryString,
-    {
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-        Accept: "*/*",
-      },
-    }
-  );
->>>>>>> Stashed changes
   const dataPromise = promise.then((res) => res.data);
 
   return dataPromise;
@@ -115,7 +103,6 @@ const postCreateRoom = async (
   endAppointmentDate,
   roomImages
 ) => {
-<<<<<<< Updated upstream
   const promise =
     localStorage.getItem("accessToken") === null
       ? axios.post("http://localhost:8080/api/room", {
@@ -151,29 +138,6 @@ const postCreateRoom = async (
           }
         );
 
-=======
-  const promise = axios.post(
-    "http://localhost:8080/api/room",
-    {
-      roomTitle: roomTitle,
-      roomContent: roomContent,
-      roomArea: roomArea,
-      limitPeopleCount: limitPeopleCount,
-      exercise: exercise,
-      tags: tag,
-      startAppointmentDate: startAppointmentDate,
-      endAppointmentDate: endAppointmentDate,
-      roomImages: roomImages,
-    },
-    {
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-        Accept: "*/*",
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-      },
-    }
-  );
->>>>>>> Stashed changes
   const dataPromise = promise.then((res) => res.data);
 
   return dataPromise;
