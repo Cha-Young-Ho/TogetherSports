@@ -20,6 +20,7 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.MissingClaimException;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -47,6 +48,7 @@ import java.util.Map;
  *
  * @author younghoCha
  */
+@Slf4j
 @RequiredArgsConstructor
 public class JwtRefreshFilter extends OncePerRequestFilter {
 
@@ -59,7 +61,10 @@ public class JwtRefreshFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        log.info("uri = {}", request.getRequestURI());
         if (requestMatcher.matches(request)) {
+
+
 
             ServletInputStream is = request.getInputStream();
             String body = StreamUtils.copyToString(is, StandardCharsets.UTF_8);

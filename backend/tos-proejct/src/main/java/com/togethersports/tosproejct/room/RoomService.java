@@ -115,4 +115,15 @@ public class RoomService {
 
         return list;
     }
+
+    public boolean checkAvailability(Long roomId){
+        Room roomEntity = roomRepository.findById(roomId)
+                .orElseThrow(() -> new NotFoundRoomException("해당 방을 찾을 수 없습니다."));
+
+        if(roomEntity.getParticipantCount() >= roomEntity.getLimitPeopleCount()){
+            return false;
+        }
+
+        return true;
+    }
 }

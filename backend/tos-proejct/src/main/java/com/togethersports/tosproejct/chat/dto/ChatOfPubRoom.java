@@ -5,6 +5,7 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class ChatOfRoom {
+public class ChatOfPubRoom {
 
+    String content;
 }

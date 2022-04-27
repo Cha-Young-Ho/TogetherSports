@@ -46,7 +46,7 @@ public class FieldsOfRoomList {
     private Integer participantCount;
 
     // 페이지
-    private int page;
+    private Integer page = 0;
 
     // 입장마감된 방 보기 여부
     private boolean containNoAdmittance;
