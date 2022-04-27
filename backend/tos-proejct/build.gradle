@@ -48,6 +48,11 @@ dependencies {
 	runtimeOnly 'mysql:mysql-connector-java' // 배포용
 	annotationProcessor 'org.projectlombok:lombok'
 
+	//websocket
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	implementation 'org.webjars:sockjs-client:1.1.2'
+	implementation 'org.webjars:stomp-websocket:2.3.3-1'
+
 	// utility
 	implementation 'org.modelmapper:modelmapper:3.1.0'
 

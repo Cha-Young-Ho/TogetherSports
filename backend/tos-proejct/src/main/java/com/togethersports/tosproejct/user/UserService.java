@@ -121,7 +121,7 @@ public class UserService {
 
         List<ActiveArea> activeAreas = parsingEntityUtils.parsingStringToActivesEntity(userOfModifyInfo.getActiveAreas());
         List<Interest> interests = parsingEntityUtils.parsingStringToInterestsEntity(userOfModifyInfo.getInterests());
-        if(userOfModifyInfo.getUserProfileImage().getImageSource().equals("정보 없음")){
+        if(userOfModifyInfo.getUserProfileImage().getImageSource() == null){
 
             findUser.updateUser(userOfModifyInfo, activeAreas, interests, "http://localhost:8080/Users/chayeongho/Desktop/스크린샷 2022-04-13 오후 6.51.46.png");
             return;
