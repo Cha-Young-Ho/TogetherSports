@@ -10,7 +10,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @AllArgsConstructor
 public class UserOfOtherInfo {
-
+    private Long id;
     private String userNickname;
     private int mannerPoint;
     private Gender gender;

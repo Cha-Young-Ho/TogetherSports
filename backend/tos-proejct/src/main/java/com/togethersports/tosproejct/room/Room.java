@@ -49,6 +49,7 @@ public class Room extends RoomBaseEntity {
     @Column(name = "EXERCISE")
     private String exercise;
 
+    
     //참여 인원
     @Column(name = "LIMIT_PEOPLE_COUNT")
     private int limitPeopleCount;
