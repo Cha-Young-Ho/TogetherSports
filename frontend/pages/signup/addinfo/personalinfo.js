@@ -128,11 +128,18 @@ const PersonalInfo = () => {
       return false;
     }
 
-    // 닉네임에 특수문자 사용했을 경우
-    const special_pattern = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
-    if (special_pattern.test(checkNickname) === true) {
+    // 닉네임에 특수문자 사용했을 경우 (추후 수정 예정)
+    // const special_pattern = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
+    // if (special_pattern.test(checkNickname) === true) {
+    //   e.preventDefault();
+    //   alert("닉네임에 특수문자는 사용할 수 없습니다.");
+    //   return false;
+    // }
+
+    // 닉네임 길이 제한
+    if (checkNickname.length < 2 && checkNickname.length > 8) {
       e.preventDefault();
-      alert("닉네임에 특수문자는 사용할 수 없습니다.");
+      alert("닉네임은 최소 2글자 최대 8글자까지 입력 가능합니다.");
       return false;
     }
 
@@ -178,24 +185,31 @@ const PersonalInfo = () => {
           activearea_atv={"deactivation"}
         />
 
-        <div className="contents">
-          <div className="content-nickname">
-            <p className="essential-mark">*</p>
-            <p>닉네임</p>
-            <input
-              type="text"
-              id="input-nickname"
-              value={nickname}
-              onChange={(e) => setNickname(e.target.value)}
-            />
-            <button onClick={checkNicknameDuplication}>중복확인</button>
+        <div>
+          <div className="contents-info">
+            <p>활동하실 때 필요한 정보를 추가적으로 입력해주세요 :)</p>
           </div>
 
-          <div className="content-birth">
+          <div className="content-nickname">
+            <p>🔥 사용하실 닉네임은요 ? 🔥</p>
+
             <div>
-              <p className="essential-mark">*</p>
-              <p>생년월일</p>
+              <input
+                type="text"
+                id="input-nickname"
+                minLength={2}
+                maxLength={8}
+                value={nickname}
+                onChange={(e) => setNickname(e.target.value)}
+              />
+              <button onClick={checkNicknameDuplication}>중복확인</button>
             </div>
+          </div>
+
+          <div className="line"></div>
+
+          <div className="content-birth">
+            <p>{`${nickname}님의 🎂생년월일🎂을 선택해주세요 !`}</p>
 
             <div>
               <select
@@ -219,11 +233,14 @@ const PersonalInfo = () => {
             </div>
           </div>
 
+          <div className="dividing-line">
+            <div className="line"></div>
+            <div>+ 기타 정보도 입력해주세요 !</div>
+            <div className="line"></div>
+          </div>
+
           <div className="content-gender">
-            <div>
-              <p className="essential-mark">*</p>
-              <p>성별</p>
-            </div>
+            <p>성별</p>
 
             <div>
               <div className="male">
@@ -266,7 +283,7 @@ const PersonalInfo = () => {
         </div>
 
         <Link href="/signup/addinfo/interest">
-          <button className="button-next" onClick={getNext}>
+          <button className="next-button" onClick={getNext}>
             다음
           </button>
         </Link>
@@ -281,49 +298,66 @@ const PersonalInfo = () => {
           flex-direction: column;
           align-items: center;
           justify-content: center;
+          user-select: none;
         }
 
-        .contents {
+        .contents-info {
           width: 600px;
           border-top: 1px solid #e4e8eb;
           border-bottom: 1px solid #e4e8eb;
+        }
+
+        .line {
+          width: 100%;
+          border-top: 1px solid #e4e8eb;
+          border-bottom: none;
+        }
+
+        .contents-info p {
+          margin: 5px 0;
+          text-align: center;
+          font-size: 1.5rem;
         }
 
         .essential-mark {
           color: red;
         }
 
-        .content-nickname p, .content-birth p, .content-gender p, .content-profile > p {
+        .content-gender p, .content-profile > p {
           font-weight: bold;
-          font-size: 1.5em;
+          font-size: 1.5rem;
           margin-right: 3px;
         }
 
         .content-nickname {
           width: 100%;
-          height: 40px;
-          margin: 40px 0;
-          padding: 5px 10px 5px 14px;
-          border-radius: 10px;
-          border: solid 1px #e8e8e8;
+          height: 130px;
+          margin: 20px 0;
           display: flex;
-          flex-direction: row;
+          flex-direction: column;
+          justify-content: center;
           align-items: center;
         }
 
+        .content-nickname > p {
+          font-size: 1.5rem;
+          margin-bottom: 20px;
+        }
+
         .content-nickname input {
-          width: 440px;
-          height: 30px;
-          border-style: none;
-          font-size: 1.4em;
-          padding: 5px;
-          margin-left: 2px;
-          margin-right: 5px;
+          width: 240px;
+          height: 40px;
+          padding: 10px;
+          border-radius: 10px;
+          border: solid 1px #e8e8e8;
+          font-size: 1.4rem;
+          font-weight: bold;
+          margin-right: 15px;
         }
 
         .content-nickname button {
-          width: 70px;
-          height: 28px;
+          width: 84px;
+          height: 30px;
           background-color: #08555f;
           color: white;
           border: none;
@@ -334,11 +368,17 @@ const PersonalInfo = () => {
 
         .content-birth {
           width: 100%;
-          margin: 40px 0;
-          padding: 5px 10px 5px 14px;
+          height: 150px;
+          margin: 20px 0;
           display: flex;
-          justify-content: space-between;
+          flex-direction: column;
+          justify-content: center;
           align-items: center;
+        }
+
+        .content-birth > p {
+          font-size: 1.5rem;
+          margin-bottom: 20px;
         }
 
         .content-birth > div {
@@ -365,10 +405,28 @@ const PersonalInfo = () => {
           font-weight: bold;
         }
 
+        .dividing-line {
+          display: flex;
+          flex-direction: row;
+          justify-content: space-around;
+          align-items: center
+        }
+
+        .dividing-line > div:nth-child(2) {
+          width: 600px;
+          height: 37px;
+          border-radius: 18.5px;
+          background-color: #6db152;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: white;
+          font-size: 1.3rem;
+        }
+
         .content-gender {
           width: 100%;
-          margin: 40px 0;
-          padding: 5px 10px 5px 14px;
+          margin: 40px 0 30px 0;
           display: flex;
           justify-content: space-between;
           align-items: center;
@@ -472,7 +530,7 @@ const PersonalInfo = () => {
           overflow: hidden;
         }
 
-        .button-next {
+        .next-button {
           display: flex;
           align-items: center;
           justify-content: center;
@@ -482,7 +540,7 @@ const PersonalInfo = () => {
           color: white;
           font-size: 1.5rem;
           margin-top: 25px;
-          margin-bottom: 30px;
+          margin-bottom: 50px;
           border: none;
           border-radius: 10px;
           outline: none;

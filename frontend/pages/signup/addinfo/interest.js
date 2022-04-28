@@ -81,11 +81,17 @@ const Interest = () => {
             );
           })}
         </div>
-        <Link href="/signup/addinfo/activearea">
-          <div onClick={BtnClickedNext} className="next-button">
-            다음
-          </div>
-        </Link>
+
+        <div className="button-wrapper">
+          <Link href="/signup/addinfo/personalinfo">
+            <button className="prev-button">이전</button>
+          </Link>
+          <Link href="/signup/addinfo/activearea">
+            <div onClick={BtnClickedNext} className="next-button">
+              다음
+            </div>
+          </Link>
+        </div>
       </div>
 
       <style jsx>{`
@@ -97,6 +103,7 @@ const Interest = () => {
           flex-direction: column;
           align-items: center;
           justify-content: center;
+          user-select: none;
         }
 
         p {
@@ -141,6 +148,27 @@ const Interest = () => {
           background-color: #468f5b;
         }
 
+        .button-wrapper {
+          margin: 50px 0;
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .prev-button {
+          width: 120px;
+          height: 40px;
+          background-color: #d8d8d8;
+          color: white;
+          font-size: 1.5rem;
+          border: 0;
+          outline: 0;
+          cursor: pointer;
+          border-radius: 10px;
+          margin-right: 10px;
+        }
+
         .next-button {
           display: flex;
           align-items: center;
@@ -150,12 +178,10 @@ const Interest = () => {
           background-color: #08555f;
           color: white;
           font-size: 1.5rem;
-          margin-top: 25px;
           border: 0;
           outline: 0;
           cursor: pointer;
           border-radius: 10px;
-          margin-bottom: 30px;
         }
       `}</style>
     </>
