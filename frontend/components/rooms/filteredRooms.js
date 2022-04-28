@@ -171,6 +171,7 @@ const FilteredRooms = () => {
                 eachRoomInfo.map((datas, index) => {
                   return (
                     <RoomShowingBox
+                      key={index}
                       setRoomID={setRoomID}
                       openRoomExplainModal={openRoomExplainModal}
                       datas={datas}

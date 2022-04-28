@@ -2,6 +2,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import UserInfoNavBar from "../../../components/userInfoNavBar";
+import Head from "next/head";
 
 const Interest = () => {
   const dispatch = useDispatch();
@@ -63,6 +64,9 @@ const Interest = () => {
 
   return (
     <>
+      <Head>
+        <title>회원정보 입력 페이지</title>
+      </Head>
       <div className="bg-container">
         <UserInfoNavBar
           personal_atv={"deactivation"}

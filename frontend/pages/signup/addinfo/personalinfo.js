@@ -4,13 +4,16 @@ import $ from "jquery";
 import { useDispatch } from "react-redux";
 import { getNicknameDuplicationCheck } from "../../../api/members";
 import UserInfoNavBar from "../../../components/userInfoNavBar";
+import Head from "next/head";
 
 const PersonalInfo = () => {
   const dispatch = useDispatch();
 
   //닉네임
   const [nickname, setNickname] = useState("");
-  const [isNicknameCheck, setIsNicknameCheck] = useState(true);
+
+  //기본 값 false
+  const [isNicknameCheck, setIsNicknameCheck] = useState(false);
 
   //생년월일
   const [birthYear, setBirthYear] = useState("YYYY");
@@ -171,6 +174,9 @@ const PersonalInfo = () => {
 
   return (
     <>
+      <Head>
+        <title>회원정보 입력 페이지</title>
+      </Head>
       <div className="container">
         <UserInfoNavBar
           personal_atv={"activation"}

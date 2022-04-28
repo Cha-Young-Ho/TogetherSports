@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { useState, useEffect } from "react";
 import { postUserRequest } from "../../../api/members";
 import { useSelector } from "react-redux";
@@ -197,16 +196,9 @@ const ActiveArea = () => {
             })}
         </div>
 
-        <Link href="/">
-          <button
-            className="button-done"
-            onClick={() => {
-              callUserRequest();
-            }}
-          >
-            완료
-          </button>
-        </Link>
+        <a className="button-done" href="/" onClick={callUserRequest}>
+          완료
+        </a>
       </div>
 
       <style jsx>{`
