@@ -1,7 +1,9 @@
 package com.togethersports.tosproejct.room;
 
+import com.togethersports.tosproejct.common.code.CommonCode;
 import com.togethersports.tosproejct.common.util.ParsingEntityUtils;
 import com.togethersports.tosproejct.image.RoomImageService;
+import com.togethersports.tosproejct.room.code.RoomCode;
 import com.togethersports.tosproejct.room.dto.*;
 import com.togethersports.tosproejct.room.exception.NotFoundRoomException;
 import com.togethersports.tosproejct.tag.Tag;
@@ -17,6 +19,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -116,14 +119,28 @@ public class RoomService {
         return list;
     }
 
-    public boolean checkAvailability(Long roomId){
+    public RoomOfParticipate<?> participateRoom(Long roomId){
         Room roomEntity = roomRepository.findById(roomId)
                 .orElseThrow(() -> new NotFoundRoomException("해당 방을 찾을 수 없습니다."));
 
+        //인원이 가득찬 경우
         if(roomEntity.getParticipantCount() >= roomEntity.getLimitPeopleCount()){
-            return false;
+            return RoomOfParticipate.builder()
+                    .status(RoomCode.FULL_ROOM)
+                    .build();
         }
 
-        return true;
+        //시간이 지난 방인 경우
+        if(roomEntity.getEndAppointmentDate().isBefore(LocalDateTime.now())){
+            return RoomOfParticipate.builder()
+                    .status(RoomCode.TIME_OUT_ROOM)
+                    .build();
+        }
+
+        //정상적으로 참여가 가능한 경우
+        return RoomOfParticipate.builder()
+                .status(RoomCode.PARTICPATE_ROOM)
+                .roomOfInfo(getRoomInfo(roomId))
+                .build();
     }
 }

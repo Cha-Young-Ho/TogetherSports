@@ -99,6 +99,7 @@ public class UserService {
 
         //다른 회원 정보 조회 DTO 리턴
         return UserOfOtherInfo.builder()
+                .id(userEntity.getId())
                 .activeAreas(parsingEntityUtils.parsingAreasEntityToString(userEntity.getActiveAreas()))
                 .gender(userEntity.getGender())
                 .interests(parsingEntityUtils.parsingInterestsEntityToString(userEntity.getInterests()))

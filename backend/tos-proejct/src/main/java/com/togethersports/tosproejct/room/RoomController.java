@@ -4,10 +4,7 @@ package com.togethersports.tosproejct.room;
 import com.togethersports.tosproejct.common.code.CommonCode;
 import com.togethersports.tosproejct.common.dto.Response;
 import com.togethersports.tosproejct.room.code.RoomCode;
-import com.togethersports.tosproejct.room.dto.FieldsOfRoomList;
-import com.togethersports.tosproejct.room.dto.RoomOfCreate;
-import com.togethersports.tosproejct.room.dto.RoomOfInfo;
-import com.togethersports.tosproejct.room.dto.RoomOfUpdate;
+import com.togethersports.tosproejct.room.dto.*;
 import com.togethersports.tosproejct.security.annotation.CurrentUser;
 import com.togethersports.tosproejct.user.User;
 import lombok.RequiredArgsConstructor;
@@ -57,15 +54,21 @@ public class RoomController {
         return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, roomService.roomFields(fieldsOfRoomList, pageable)));
 
     }
-
+    //방 참가
     @PostMapping("/api/room/{roomId}/user")
-    public ResponseEntity<Response> checkAvailability(@PathVariable Long roomId){
+    public ResponseEntity<Response> participateRoom(@PathVariable Long roomId){
 
-        boolean availability = roomService.checkAvailability(roomId);
-        //참가할 수 있는 경우
-        if(!availability){
-            return ResponseEntity.ok(Response.of(RoomCode.FULL_ROOM, false));
+        RoomOfParticipate room = roomService.participateRoom(roomId);
+        // 인원이 꽉 찬 방
+        if(room.getStatus() == RoomCode.FULL_ROOM){
+            return ResponseEntity.ok(Response.of(RoomCode.FULL_ROOM, null));
         }
-        return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, true));
+        // 시간이 지난 방
+        if(room.getStatus() == RoomCode.TIME_OUT_ROOM){
+            return ResponseEntity.ok(Response.of(RoomCode.TIME_OUT_ROOM, null));
+        }
+
+        // 참가 완료
+        return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, room));
     }
 }
