@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { deleteLogout } from "../api/members";
 import { FailResponse } from "../api/failResponse";
 import Modal from "./modals/userInfoModal";
-import RoomModal from "./modals/roomModal";
 import { getMyInfo } from "../api/members";
 import { useDispatch, useSelector } from "react-redux";
 import FixedRequestAlarm from "./fixedRequestAlarm";
@@ -30,25 +29,29 @@ const NavigationBar = () => {
     setModalOpen(false);
   };
 
-  const [roomModalOpen, setRoomModalOpen] = useState(false);
-
-  const roomOpenModal = () => {
-    setRoomModalOpen(true);
-  };
-  const roomCloseModal = () => {
-    setRoomModalOpen(false);
-  };
-
   // 서버로 로그인 요청
   useEffect(() => {
-    console.log("Request Login Info To Server...");
-    if (myinfo.userEmail === "") {
-      getMyInfo()
-        .then((res) => {
-          if (res.status.code === 5000) {
-            console.log("* Success Login Info Request *");
+    getMyInfo()
+      .then((res) => {
+        if (res.status.code === 5000) {
+          console.log("*Nav : Success Login Info Request *");
 
-            setMyinfo({
+          setMyinfo({
+            userEmail: res.content.userEmail,
+            userName: res.content.userName,
+            userNickname: res.content.userNickname,
+            userBirth: res.content.userBirth,
+            gender: res.content.gender,
+            userProfileImagePath: res.content.userProfileImagePath,
+            activeAreas: res.content.activeAreas.map((el) => el),
+            interests: res.content.interests.map((el) => el),
+            mannerPoint: res.content.mannerPoint,
+            isInformationRequired: res.content.isInformationRequired,
+          });
+
+          dispatch({
+            type: "SAVEMYINFO",
+            payload: {
               userEmail: res.content.userEmail,
               userName: res.content.userName,
               userNickname: res.content.userNickname,
@@ -59,37 +62,19 @@ const NavigationBar = () => {
               interests: res.content.interests.map((el) => el),
               mannerPoint: res.content.mannerPoint,
               isInformationRequired: res.content.isInformationRequired,
-            });
+            },
+          });
 
-            dispatch({
-              type: "SAVEMYINFO",
-              payload: {
-                userEmail: res.content.userEmail,
-                userName: res.content.userName,
-                userNickname: res.content.userNickname,
-                userBirth: res.content.userBirth,
-                gender: res.content.gender,
-                userProfileImagePath: res.content.userProfileImagePath,
-                activeAreas: res.content.activeAreas.map((el) => el),
-                interests: res.content.interests.map((el) => el),
-                mannerPoint: res.content.mannerPoint,
-                isInformationRequired: res.content.isInformationRequired,
-              },
-            });
+          setLoginData(true);
 
-            setLoginData(true);
-
-            console.log("Client got this info = " + myinfo);
-          }
-        })
-        .catch((error) => {
-          FailResponse(error.response.data.status.code);
-          setLoginData(false);
-        });
-    } else {
-      setLoginData(true);
-    }
-  });
+          console.log("Nav : Client got this info = " + myinfo);
+        }
+      })
+      .catch((error) => {
+        FailResponse(error.response.data.status.code);
+        setLoginData(false);
+      });
+  }, []);
 
   // 로그아웃 버튼 클릭
   const ClickLogout = () => {
@@ -105,8 +90,8 @@ const NavigationBar = () => {
             type: "SAVEMYINFO",
             payload: {
               userEmail: "",
-              userName: "익명",
-              userNickname: "",
+              userName: "",
+              userNickname: "익명",
               userBirth: "yyyy-mm-dd",
               gender: "",
               userProfileImagePath: "/base_profileImage.jpg",
