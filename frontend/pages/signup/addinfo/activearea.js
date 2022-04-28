@@ -3,6 +3,7 @@ import { postUserRequest } from "../../../api/members";
 import { useSelector } from "react-redux";
 import UserInfoNavBar from "../../../components/userInfoNavBar";
 import { FailResponse } from "../../../api/failResponse";
+import Link from "next/link";
 
 let activeAreas = []; // 서버에 보낼 데이터를 담는 변수
 const ActiveArea = () => {
@@ -196,9 +197,14 @@ const ActiveArea = () => {
             })}
         </div>
 
-        <a className="button-done" href="/" onClick={callUserRequest}>
-          완료
-        </a>
+        <div className="button-wrapper">
+          <Link href="/signup/addinfo/interest">
+            <button className="prev-button">이전</button>
+          </Link>
+          <a className="button-done" href="/" onClick={callUserRequest}>
+            완료
+          </a>
+        </div>
       </div>
 
       <style jsx>{`
@@ -210,6 +216,7 @@ const ActiveArea = () => {
           flex-direction: column;
           align-items: center;
           justify-content: center;
+          user-select: none;
         }
 
         .title {
@@ -256,6 +263,27 @@ const ActiveArea = () => {
           align-items: center;
         }
 
+        .button-wrapper {
+          margin: 50px 0;
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .prev-button {
+          width: 120px;
+          height: 40px;
+          background-color: #d8d8d8;
+          color: white;
+          font-size: 1.5rem;
+          border: 0;
+          outline: 0;
+          cursor: pointer;
+          border-radius: 10px;
+          margin-right: 10px;
+        }
+
         .button-done {
           display: flex;
           align-items: center;
@@ -264,9 +292,7 @@ const ActiveArea = () => {
           height: 40px;
           background-color: #08555f;
           color: white;
-          font-size: 1.5rem;
-          margin-top: 25px;
-          margin-bottom: 30px;
+          font-size: 1.5rem;y
           border: 0;
           border-radius: 10px;
           outline: 0;
