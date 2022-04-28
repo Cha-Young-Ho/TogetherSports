@@ -1,9 +1,9 @@
-import Link from "next/link";
 import { useState, useEffect } from "react";
 import { postUserRequest } from "../../../api/members";
 import { useSelector } from "react-redux";
 import UserInfoNavBar from "../../../components/userInfoNavBar";
 import { FailResponse } from "../../../api/failResponse";
+import Link from "next/link";
 
 let activeAreas = []; // 서버에 보낼 데이터를 담는 변수
 const ActiveArea = () => {
@@ -201,16 +201,9 @@ const ActiveArea = () => {
           <Link href="/signup/addinfo/interest">
             <button className="prev-button">이전</button>
           </Link>
-          <Link href="/">
-            <button
-              className="button-done"
-              onClick={() => {
-                callUserRequest();
-              }}
-            >
-              완료
-            </button>
-          </Link>
+          <a className="button-done" href="/" onClick={callUserRequest}>
+            완료
+          </a>
         </div>
       </div>
 

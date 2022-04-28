@@ -26,7 +26,7 @@ const myInfoInitialState = {
   activeAreas: [],
   interests: [],
   mannerPoint: "",
-  isInformationRequired: "",
+  isInformationRequired: "true",
 };
 
 // 닉네임 저장 초기값

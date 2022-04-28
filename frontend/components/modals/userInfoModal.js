@@ -35,7 +35,7 @@ const UserInfoModal = (props) => {
         return;
       }
     } else {
-      if (props.open && myInfo.userNickname === "") {
+      if (props.open && myInfo.userNickname === "익명") {
         alert("회원 추가 정보가 없어 내 정보를 요청할 수 없습니다.");
         props.close();
         return;
