@@ -70,6 +70,10 @@ const ModifyRoomModal = (props) => {
       return;
     }
 
+    if (roomContent === "") setRoomContent(null);
+    if (tags.length === 0) setTags(null);
+    if (roomImages.length === 0) setRoomImages(null);
+
     postUpdateRoom(
       roomTitle,
       roomContent,

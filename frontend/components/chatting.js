@@ -1,49 +1,40 @@
-import * as StompJS from "@stomp/stompjs";
+import StompJS from "stompjs";
+import SockJS from "sockjs-client";
 import { useState, useEffect } from "react";
-
-let client = null;
+import { postRefreshToken } from "../api/etc";
 
 const Chatting = () => {
   const [messageToServer, setMessageToServer] = useState("");
   const [showingMessages, setShowingMessages] = useState([
     { target: "other", msg: "다른사람 메시지" },
     { target: "mine", msg: "내 메시지" },
-    { target: "mine", msg: "내 메시지" },
-    { target: "mine", msg: "내 메시지" },
-    { target: "other", msg: "다른사람 메시지" },
-    { target: "other", msg: "다른사람 메시지" },
-    { target: "other", msg: "다른사람 메시지" },
-    { target: "other", msg: "다른사람 메시지" },
-    { target: "other", msg: "다른사람 메시지" },
-    { target: "other", msg: "다른사람 메시지" },
-    { target: "other", msg: "다른사람 메시지" },
-    { target: "mine", msg: "내 메시지" },
   ]);
 
+  let sockJS = new SockJS("http://localhost:8080/api/websocket");
+  let client = StompJS.over(sockJS);
+
   const connect = () => {
-    client = new StompJS.Client({
-      brokerURL: "ws://localhost:8080/api/websocket",
-      debug: function (str) {
-        console.log("debug" + str);
-      },
-      onConnect: () => {
-        subscribe();
-      },
-    });
+    client.connect(
+      {},
+      () => {
+        client.subscribe("/topic/room/1/chat", (data) => {
+          const newMessage = JSON.parse(data.body);
 
-    client.activate();
-  };
-
-  const subscribe = () => {
-    if (client != null) {
-      client.subscribe("/topic/room/1/chat", (data) => {
-        const newMessage = JSON.parse(data.body).message;
-        setShowingMessages((prev) => [
-          ...prev,
-          { target: "other", msg: newMessage },
-        ]);
-      });
-    }
+          setShowingMessages((prev) => [...prev, newMessage]);
+        });
+      },
+      (error) => {
+        console.log("에러 떴음");
+        postRefreshToken(localStorage.getItem("refreshToken")).then((res) => {
+          if (res.status.code === 5000) {
+            localStorage.setItem("accessToken", res.accessToken);
+          } else {
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
+          }
+        });
+      }
+    );
   };
 
   const addMessageToServer = (e) => {
@@ -52,33 +43,20 @@ const Chatting = () => {
 
   const onSubmitMessage = (e) => {
     e.preventDefault();
+    client.send(
+      "/api/room/1/chat",
+      {},
+      JSON.stringify({ target: "mine", msg: messageToServer })
+    ).catch;
 
-    if (client != null) {
-      if (!client.connected) return;
-
-      client.publish({
-        destination: "/api/room/1/chat",
-        body: JSON.stringify({
-          message: messageToServer,
-        }),
-      });
-
-      setShowingMessages((prev) => [
-        ...prev,
-        { target: "mine", msg: messageToServer },
-      ]);
-    }
-  };
-
-  const disConnect = () => {
-    if (client != null) {
-      if (client.connected) client.deactivate();
-    }
+    setShowingMessages((prev) => [
+      ...prev,
+      { target: "mine", msg: messageToServer },
+    ]);
   };
 
   useEffect(() => {
     connect();
-    return () => disConnect();
   }, []);
 
   useEffect(() => {

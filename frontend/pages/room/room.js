@@ -9,44 +9,29 @@ import { useSelector } from "react-redux";
 import Chatting from "../../components/chatting";
 
 /* 수정 필요 */
-// 1. 명세 후에 제대로 다시 하기
-// 2. 조회수에 대한 디자인 필요
-// 3. 방장의 경우에만 방 수정하기 버튼이 보이게 하기
-// 4. 명세 방법에 따라 채팅 컴포넌트화 가능하면 하기
-// 5. 채팅 보내기 버튼 이미지 받기
+// 1. 명세 후에 제대로 다시 할 것들
+//   ㄴ 방장의 경우에만 방 수정하기 버튼이 보이게 하기
 
 const Room = () => {
-  const [tags, setTags] = useState([
-    "10대",
-    "20대",
-    "초보만",
-    "성별 무관",
-    "고수만", // 임시 데이터
-  ]);
-  const [viewCount, setViewCount] = useState("30");
-  const [creatorNickName, setCreatorNickName] = useState("abcdef");
-  const [host, setHost] = useState("abcdef");
-  const [roomTitle, setRoomTitle] = useState(
-    "매너축구 하실 멋쟁이 분들 모십니다."
-  );
+  const [tags, setTags] = useState([]);
+  const [viewCount, setViewCount] = useState("");
+  const [creatorNickName, setCreatorNickName] = useState("");
+  const [host, setHost] = useState("");
+  const [roomTitle, setRoomTitle] = useState("");
   const [roomImagePath, setRoomImagePath] = useState([
     {
-      // test를 위한 임시 데이터
+      // 임시 데이터
       order: -1,
       imagePath: "logo-sign.png",
     },
   ]);
-  const [startAppointmentDate, setStartAppointmentDate] =
-    useState("2022-04-01T12:00");
-  const [endAppointmentDate, setEndAppointmentDate] =
-    useState("2022-04-01T14:30");
-  const [limitPeopleCount, setLimitPeopleCount] = useState("30명");
-  const [participantCount, setParticipantCount] = useState("10명");
-  const [exercise, setExercise] = useState("축구");
-  const [roomContent, setRoomContent] = useState(
-    "축구 열심히 하실 분들 모십니다. 😍"
-  );
-  const [area, setArea] = useState("서울 송파구 올림픽로 19-2");
+  const [startAppointmentDate, setStartAppointmentDate] = useState("");
+  const [endAppointmentDate, setEndAppointmentDate] = useState("");
+  const [limitPeopleCount, setLimitPeopleCount] = useState("");
+  const [participantCount, setParticipantCount] = useState("");
+  const [exercise, setExercise] = useState("");
+  const [roomContent, setRoomContent] = useState("");
+  const [area, setArea] = useState("서울 송파구 올림픽로 19-2"); // 임시 데이터
 
   // 방 수정하기
   const [modifyModalOpen, setModifyModalOpen] = useState(false);
