@@ -162,57 +162,76 @@ const RoomSetting = () => {
           roomTagInfo_atv={"deactivation"}
         />
 
-        <div className="contents">
-          <div className="content-title">
-            <p>방 제목</p>
-            <input
-              value={roomTitle}
-              onChange={(e) => setRoomTitle(e.target.value)}
-              type="text"
-              minLength="1"
-              maxLength="20"
-            />
+        <div>
+          <div className="contents-info">
+            <p>방의 기본 정보 입력하기</p>
           </div>
 
-          <div className="content-exercise-limitpeoplecount">
-            <div className="exercise">
-              <p>종목</p>
-              <select
-                value={exercise}
-                onChange={(e) => setExercise(e.target.value)}
-              >
-                <option>선택</option>
-                <option>축구</option>
-                <option>야구</option>
-                <option>농구</option>
-                <option>당구</option>
-                <option>탁구</option>
-                <option>헬스</option>
-                <option>자전거</option>
-                <option>골프</option>
-                <option>등산</option>
-                <option>런닝</option>
-                <option>배드민턴</option>
-                <option>기타</option>
-              </select>
-            </div>
-            <div className="limitpeoplecount">
-              <p>인원</p>
+          <div className="content-title">
+            <p>🔥 방의 이름을 설정해주세요 🔥</p>
+
+            <div>
+              <p>방 이름</p>
               <input
-                type="number"
-                min="2"
-                value={limitPeopleCount}
-                onKeyUp={(e) =>
-                  (e.target.value = e.target.value.replace(/[^0-9]/g, ""))
-                }
-                onChange={(e) => setLimitPeopleCount(e.target.value)}
+                value={roomTitle}
+                onChange={(e) => setRoomTitle(e.target.value)}
+                type="text"
+                minLength="1"
+                maxLength="20"
               />
             </div>
           </div>
 
+          <div className="line"></div>
+
+          <div className="content-exercise-limitpeoplecount">
+            <p>🏀 종목과 인원을 입력해주세요 ! 🏀</p>
+
+            <div>
+              <div className="exercise">
+                <p>종목</p>
+                <select
+                  value={exercise}
+                  onChange={(e) => setExercise(e.target.value)}
+                >
+                  <option>선택</option>
+                  <option>축구</option>
+                  <option>야구</option>
+                  <option>농구</option>
+                  <option>당구</option>
+                  <option>탁구</option>
+                  <option>헬스</option>
+                  <option>자전거</option>
+                  <option>골프</option>
+                  <option>등산</option>
+                  <option>런닝</option>
+                  <option>배드민턴</option>
+                  <option>기타</option>
+                </select>
+              </div>
+
+              <div className="limitpeoplecount">
+                <p>인원</p>
+                <input
+                  type="number"
+                  min="2"
+                  value={limitPeopleCount}
+                  onKeyUp={(e) =>
+                    (e.target.value = e.target.value.replace(/[^0-9]/g, ""))
+                  }
+                  onChange={(e) => setLimitPeopleCount(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <p>* 본인을 포함한 인원을 입력해주셔야 합니다.</p>
+          </div>
+
+          <div className="line"></div>
+
           <div className="content-map">
             <div className="unselected-area">
-              <p>장소를 선택해주세요!</p>
+              <p>모이는 지역을 지도에서 선택해주세요 !</p>
               <div className="map"></div>
             </div>
             <div className="selected-area">
@@ -245,48 +264,93 @@ const RoomSetting = () => {
           border-top: solid 1px #e4e8eb;
         }
 
-        .contents {
+        .line {
+          width: 100%;
+          border-top: 1px solid #e4e8eb;
+          border-bottom: none;
+        }
+
+        .contents-info {
           width: 600px;
           border-top: solid 1px #e4e8eb;
           border-bottom: solid 1px #e4e8eb;
         }
 
+        .contents-info p {
+          margin: 5px 0;
+          text-align: center;
+          font-size: 1.5rem;
+        }
+
         .content-title {
           width: 100%;
-          height: 40px;
-          margin: 30px 0;
-          padding: 5px 10px 5px 14px;
-          border-radius: 10px;
-          border: solid 1px #e8e8e8;
+          height: 130px;
+          margin: 20px 0;
           display: flex;
-          flex-direction: row;
+          flex-direction: column;
+          justify-content: center;
           align-items: center;
         }
 
-        .content-title p {
-          font-size: 1.5em;
+        .content-title > p {
+          font-size: 1.5rem;
+          margin-bottom: 20px;
+        }
+
+        .content-title > div {
+          width: 500px;
+          height: 40px;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          border: solid 1px #e8e8e8;
+          border-radius: 10px;
+        }
+
+        .content-title > div > p {
+          font-size: 1.5rem;
           font-weight: bold;
-          margin-right: 3px;
+          margin-left: 10px;
+          margin-right: 5px;
         }
 
         .content-title input {
-          width: 520px;
-          height: 30px;
+          width: 85%;
           padding: 10px;
-          border-style: none;
-          font-size: 1.5em;
+          border: none;
+          font-size: 1.4rem;
         }
 
         .content-exercise-limitpeoplecount {
           width: 100%;
-          margin: 30px 0;
+          height: 150px;
+          margin: 20px 0;
           display: flex;
-          flex-direction: row;
+          flex-direction: column;
+          justify-content: center;
           align-items: center;
         }
 
-        .content-exercise-limitpeoplecount p {
-          font-size: 1.5em;
+        .content-exercise-limitpeoplecount > p:nth-child(1) {
+          font-size: 1.5rem;
+          margin-bottom: 20px;
+        }
+
+        .content-exercise-limitpeoplecount > p:nth-child(3) {
+          font-size: 1.2rem;
+          color: #b5b5b5;
+        }
+
+        .content-exercise-limitpeoplecount > div {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          margin-bottom: 10px;
+        }
+
+        .exercise p,
+        .limitpeoplecount p {
+          font-size: 1.5rem;
           font-weight: bold;
           margin-right: 10px;
         }
@@ -306,7 +370,7 @@ const RoomSetting = () => {
           padding: 0 10px;
           border-radius: 10px;
           border: solid 1px #e8e8e8;
-          font-size: 1.5em;
+          font-size: 1.5rem;
         }
 
         .limitpeoplecount input {
@@ -315,7 +379,7 @@ const RoomSetting = () => {
           padding: 10px;
           border-radius: 10px;
           border: solid 1px #e8e8e8;
-          font-size: 1.5em;
+          font-size: 1.5rem;
         }
 
         .content-map {
@@ -332,10 +396,9 @@ const RoomSetting = () => {
           align-items: center;
         }
 
-        .content-map .unselected-area p {
-          font-size: 1.2em;
-          font-weight: bold;
-          margin-bottom: 10px;
+        .unselected-area p {
+          font-size: 1.5rem;
+          margin-bottom: 20px;
         }
 
         .map {
@@ -345,8 +408,8 @@ const RoomSetting = () => {
           border: solid 1px #e8e8e8;
         }
 
-        .content-map .selected-area p {
-          font-size: 1.5em;
+        .selected-area p {
+          font-size: 1.5rem;
           font-weight: bold;
           margin-right: 10px;
         }
@@ -372,7 +435,7 @@ const RoomSetting = () => {
           width: 240px;
           height: 30px;
           padding: 10px;
-          font-size: 1.3em;
+          font-size: 1.3rem;
           border-radius: 10px;
           border: solid 1px #e8e8e8;
         }

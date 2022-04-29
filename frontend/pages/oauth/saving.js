@@ -1,11 +1,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { useDispatch } from "react-redux";
-//mport { getMyInfo } from "../../api/members";
 
 const Saving = () => {
   const router = useRouter();
-  //const dispatch = useDispatch();
   const [accessToken, setAccessToken] = useState();
   const [refreshToken, setRefreshToken] = useState();
   const [isFirst, setIsFirst] = useState();
@@ -15,12 +12,16 @@ const Saving = () => {
 
     const urlParams = new URLSearchParams(url);
 
-    setAccessToken((accessToken = urlParams.get("access_token")));
-    setRefreshToken((refreshToken = urlParams.get("refresh_token")));
+    setAccessToken(urlParams.get("access_token"));
+    setRefreshToken(urlParams.get("refresh_token"));
     setIsFirst(urlParams.get("is_first"));
   }, []);
 
   useEffect(() => {
+    alert(
+      `aToken = ${accessToken}, rToken = ${refreshToken}, first = ${isFirst}`
+    );
+
     if (accessToken && refreshToken && isFirst) {
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);

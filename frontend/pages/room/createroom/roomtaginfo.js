@@ -139,14 +139,20 @@ const RoomTagInfo = () => {
           roomTagInfo_atv={"activation"}
         />
 
-        <div className="contents">
+        <div>
+          <div className="contents-info">
+            <p>방의 추가적인 정보를 입력해주세요 !</p>
+          </div>
+
           <div className="content-info">
-            <p>방에 대한 정보를 입력해주세요!</p>
+            <p>방을 자유롭게 소개해보세요 😁</p>
             <textarea
               value={roomContent}
               onChange={(e) => setRoomContent(e.target.value)}
             ></textarea>
           </div>
+
+          <div className="line"></div>
 
           <SetRoomImages
             getImageData={getRoomImages}
@@ -187,7 +193,7 @@ const RoomTagInfo = () => {
           </div>
         </div>
 
-        <div className="buttons">
+        <div className="button-wrapper">
           <Link href="/room/createroom/roomschedule">
             <button className="button-prev">이전</button>
           </Link>
@@ -209,10 +215,16 @@ const RoomTagInfo = () => {
           border-top: solid 1px #e4e8eb;
         }
 
-        .contents {
+        .contents-info {
           width: 600px;
           border-top: solid 1px #e4e8eb;
           border-bottom: solid 1px #e4e8eb;
+        }
+
+        .contents-info p {
+          margin: 5px 0;
+          text-align: center;
+          font-size: 1.5rem;
         }
 
         .content-info {
@@ -225,7 +237,6 @@ const RoomTagInfo = () => {
 
         .content-info p {
           font-size: 1.5rem;
-          font-weight: bold;
         }
 
         .content-info textarea {
@@ -240,11 +251,17 @@ const RoomTagInfo = () => {
           font-size: 1.4rem;
         }
 
+        .line {
+          width: 100%;
+          border-top: 1px solid #e4e8eb;
+          border-bottom: none;
+          margin-bottom: 40px;
+        }
+
         .content-tag {
           display: flex;
           flex-direction: column;
-          justify-content: center;
-          align-items: center;
+          justify-content: left;
           margin: 30px 0;
         }
 
@@ -296,7 +313,7 @@ const RoomTagInfo = () => {
           background-color: #468f5b;
         }
 
-        .buttons {
+        .button-wrapper {
           display: flex;
           flex-direction: row;
           justify-content: center;

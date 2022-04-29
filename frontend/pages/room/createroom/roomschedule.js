@@ -95,41 +95,56 @@ const RoomSchedule = () => {
           roomSchedule_atv={`activation`}
           roomTagInfo_atv={`deactivation`}
         />
+
         <div className="content-showbox">
-          <p>달력에서 날짜를 체크해주세요!</p>
+          <p>모이는 일정 설정하기</p>
         </div>
+
+        <p>🗓️ 달력에서 날짜를 선택해주세요 ! 🗓️</p>
+
         <div className="calendar">
           <Calendar setDateFunction={setSelectedDate} />
         </div>
+
+        <div className="line"></div>
+
         <div className="dateTime">
-          <p>시간</p>
-          <select value={hour} onChange={(e) => setHour(e.target.value)}>
-            {optionHour.map((hour, index) => (
-              <option key={index}>{hour}</option>
-            ))}
-          </select>
-          <p>:</p>
-          <input
-            value={minute}
-            onChange={(e) => setMinute(e.target.value)}
-            onKeyUp={(e) =>
-              (e.target.value = e.target.value.replace(/[^0-9]/g, ""))
-            }
-            type="number"
-            min="0"
-            max="59"
-          />
-          <p>소요 시간</p>
-          <select
-            value={runningTime}
-            onChange={(e) => setRunningTime(e.target.value)}
-          >
-            {optionRunningTime.map((time, index) => (
-              <option key={index}>{time}</option>
-            ))}
-          </select>
-          <p>시간</p>
+          <p>⏰ 시작시간을 입력해주세요 ! ⏰</p>
+          <div>
+            <select value={hour} onChange={(e) => setHour(e.target.value)}>
+              {optionHour.map((hour, index) => (
+                <option key={index}>{hour}</option>
+              ))}
+            </select>
+            <p>시</p>
+            <p>:</p>
+            <input
+              value={minute}
+              onChange={(e) => setMinute(e.target.value)}
+              onKeyUp={(e) =>
+                (e.target.value = e.target.value.replace(/[^0-9]/g, ""))
+              }
+              type="number"
+              min="0"
+              max="59"
+            />
+            <p>분</p>
+          </div>
+
+          <p>⏰ 소요되는 시간을 입력해주세요 ! ⏰</p>
+          <div>
+            <select
+              value={runningTime}
+              onChange={(e) => setRunningTime(e.target.value)}
+            >
+              {optionRunningTime.map((time, index) => (
+                <option key={index}>{time}</option>
+              ))}
+            </select>
+            <p>시간</p>
+          </div>
         </div>
+
         <div className="button-wrapper">
           <Link href="/room/createroom/roomsetting">
             <button className="button-prev">이전</button>
@@ -155,6 +170,7 @@ const RoomSchedule = () => {
         .content-showbox {
           width: 600px;
           border-top: 1px solid #e4e8eb;
+          border-bottom: 1px solid #e4e8eb;
         }
 
         p {
@@ -164,6 +180,21 @@ const RoomSchedule = () => {
           align-items: center;
           margin: 20px 0;
           font-weight: bold;
+        }
+
+        .line {
+          width: 600px;
+          border-top: 1px solid #e4e8eb;
+          border-bottom: none;
+        }
+
+        .content-showbox > p {
+          margin: 5px 0;
+          font-weight: normal;
+        }
+
+        .bg-container > p {
+          font-weight: normal;
         }
 
         .calendar {
@@ -176,20 +207,39 @@ const RoomSchedule = () => {
 
         .dateTime {
           width: 600px;
-          height: 20px;
+          height: 250px;
           display: flex;
-          justify-content: space-around;
+          flex-direction: column;
           align-items: center;
+        }
+
+        .dateTime > p {
+          font-weight: normal;
+        }
+
+        .dateTime > div {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+        }
+
+        .dateTime > div > p:nth-child(2) {
+          margin-right: 10px;
         }
 
         select,
         input {
-          width: 70px;
-          height: 30px;
+          width: 85px;
+          height: 40px;
           padding: 0 10px;
-          border-radius: 4px;
+          margin: 0 10px;
+          border-radius: 10px;
           border: solid 1px #e8e8e8;
           font-size: 1.5em;
+        }
+
+        .dateTime > div:nth-child(4) > select {
+          width: 150px;
         }
 
         .button-wrapper {

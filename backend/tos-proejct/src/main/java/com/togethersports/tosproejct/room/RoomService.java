@@ -1,8 +1,9 @@
 package com.togethersports.tosproejct.room;
 
-import com.togethersports.tosproejct.common.code.CommonCode;
 import com.togethersports.tosproejct.common.util.ParsingEntityUtils;
 import com.togethersports.tosproejct.image.RoomImageService;
+import com.togethersports.tosproejct.participant.Participant;
+import com.togethersports.tosproejct.participant.ParticipantService;
 import com.togethersports.tosproejct.room.code.RoomCode;
 import com.togethersports.tosproejct.room.dto.*;
 import com.togethersports.tosproejct.room.exception.NotFoundRoomException;
@@ -10,6 +11,8 @@ import com.togethersports.tosproejct.tag.Tag;
 import com.togethersports.tosproejct.tag.TagService;
 import com.togethersports.tosproejct.user.User;
 import com.togethersports.tosproejct.user.UserRepository;
+import com.togethersports.tosproejct.user.UserService;
+import com.togethersports.tosproejct.user.dto.UserOfOtherInfo;
 import com.togethersports.tosproejct.user.exception.NotEnteredInformationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,19 +23,31 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * <h1>RoomService</h1>
+ * <p>
+ *     Room과 관련된 비즈니스 로직
+ * </p>
+ * <p>
+ *     CRUD 및 참가와 퇴장 로직을 수행하는 클래스이다.
+ * </p>
+ *
+ * @author younghoCha
+ */
 @Slf4j
 @RequiredArgsConstructor
 @Transactional
 @Service
 public class RoomService {
-
+    private final ParticipantService participantService;
     private final TagService tagService;
     private final ParsingEntityUtils parsingEntityUtils;
     private final RoomRepository roomRepository;
     private final UserRepository userRepository;
     private final RoomImageService roomImageService;
+    private final UserService userService;
 
     //방 생성
     public void createRoom(User user, RoomOfCreate roomOfCreate){
@@ -61,7 +76,7 @@ public class RoomService {
 
         //-- Tag --
         //List<String>을 List<Tag>로 변환
-        List<Tag> tagList = parsingEntityUtils.parsingStringToTagEntity(roomOfCreate.getTag());
+        List<Tag> tagList = parsingEntityUtils.parsingStringToTagEntity(roomOfCreate.getTags());
 
         //tag 저장
         tagService.saveTagFromRoomCreation(tagList, roomEntity);
@@ -72,7 +87,7 @@ public class RoomService {
     }
 
     //방 설명 페이지 조회
-    public RoomOfInfo getRoomInfo(Long roomId){
+    public RoomOfInfo getRoomInfo(User user, Long roomId){
 
         Room roomEntity = roomRepository.findById(roomId)
                 .orElseThrow(() -> new NotFoundRoomException("해당 방을 찾을 수 없습니다."));
@@ -119,7 +134,7 @@ public class RoomService {
         return list;
     }
 
-    public RoomOfParticipate<?> participateRoom(Long roomId){
+    public RoomOfParticipate<?> participateRoom(User currentUser, Long roomId){
         Room roomEntity = roomRepository.findById(roomId)
                 .orElseThrow(() -> new NotFoundRoomException("해당 방을 찾을 수 없습니다."));
 
@@ -137,10 +152,29 @@ public class RoomService {
                     .build();
         }
 
-        //정상적으로 참여가 가능한 경우
+        // 참가 저장
+        boolean isParticipation = participantService.save(currentUser, roomEntity);
+
+        // 참가한 경우
+        if(isParticipation) {
+            // 참가 인원 추가
+            roomEntity.participate();
+        }
+        // 정상적으로 참여가 가능한 경우
         return RoomOfParticipate.builder()
                 .status(RoomCode.PARTICPATE_ROOM)
-                .roomOfInfo(getRoomInfo(roomId))
+                .roomOfInfo(getRoomInfo(currentUser, roomId))
+                .participates(getParticipantsInfo(roomEntity.getParticipants()))
                 .build();
+    }
+
+    public List<UserOfOtherInfo> getParticipantsInfo(List<Participant> participantList){
+        List<UserOfOtherInfo> userOfOtherInfoList = new ArrayList<>();
+        for (Participant user : participantList){
+            userOfOtherInfoList.add(userService.getOtherInfo(user.getId()));
+        }
+
+        return userOfOtherInfoList;
+
     }
 }

@@ -15,7 +15,7 @@ const Chatting = () => {
 
   const connect = () => {
     client.connect(
-      {},
+      { token: localStorage.getItem("accessToken") },
       () => {
         client.subscribe("/topic/room/1/chat", (data) => {
           const newMessage = JSON.parse(data.body);
@@ -28,7 +28,9 @@ const Chatting = () => {
         postRefreshToken(localStorage.getItem("refreshToken")).then((res) => {
           if (res.status.code === 5000) {
             localStorage.setItem("accessToken", res.accessToken);
+            console.log("액세스 토큰 재발급 완료");
           } else {
+            console.log("토큰 재발급 실패, 토큰 삭제...");
             localStorage.removeItem("accessToken");
             localStorage.removeItem("refreshToken");
           }
@@ -45,14 +47,9 @@ const Chatting = () => {
     e.preventDefault();
     client.send(
       "/api/room/1/chat",
-      {},
+      { token: localStorage.getItem("accessToken") },
       JSON.stringify({ target: "mine", msg: messageToServer })
-    ).catch;
-
-    setShowingMessages((prev) => [
-      ...prev,
-      { target: "mine", msg: messageToServer },
-    ]);
+    );
   };
 
   useEffect(() => {

@@ -1,5 +1,6 @@
 package com.togethersports.tosproejct.user;
 
+import com.togethersports.tosproejct.participant.Participant;
 import com.togethersports.tosproejct.room.Room;
 import com.togethersports.tosproejct.user.dto.UserOfModifyInfo;
 import com.togethersports.tosproejct.area.ActiveArea;
@@ -84,6 +85,9 @@ public class User {
 
     @Column(name = "INFORMATION_REQUIRED")
     private boolean informationRequired;
+
+    @OneToMany(mappedBy = "user")
+    private List<Participant> participateRoom;
 
     /**
      * 신규 사용자 계정 엔티티를 생성해서 반환한다.<br>

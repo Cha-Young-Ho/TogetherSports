@@ -311,11 +311,18 @@ const UserModification = () => {
       return false;
     }
 
-    // 닉네임에 특수문자 사용했을 경우
-    const special_pattern = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
-    if (special_pattern.test(checkNickname) === true) {
+    // 닉네임에 특수문자 사용했을 경우 (추후 수정 예정)
+    // const special_pattern = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
+    // if (special_pattern.test(checkNickname) === true) {
+    //   e.preventDefault();
+    //   alert("닉네임에 특수문자는 사용할 수 없습니다.");
+    //   return false;
+    // }
+
+    // 닉네임 길이 제한
+    if (checkNickname.length < 2 && checkNickname.length > 8) {
       e.preventDefault();
-      alert("닉네임에 특수문자는 사용할 수 없습니다.");
+      alert("닉네임은 최소 2글자 최대 8글자까지 입력 가능합니다.");
       return false;
     }
 
@@ -427,6 +434,8 @@ const UserModification = () => {
               <input
                 type="text"
                 id="input-nickname"
+                minLength={2}
+                maxLength={8}
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
               />
