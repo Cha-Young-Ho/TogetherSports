@@ -39,13 +39,13 @@ public class RoomOfCreate {
     private int limitPeopleCount;
 
 
-    @NotNull(message = "이미지를 1개 이상 입력해야 합니다.")
+
     private List<ImageOfRoomCRUD> roomImages;
 
 
     @NotNull(message = "태그를 1개 이상 입력해야 합니다.")
     @Size(min = 1, message = "태그는 최소 1개 이상 최대 5개로 지정할 수 있습니다.")
-    private List<String> tag;
+    private List<String> tags;
 
 
     @NotNull(message = "시작 시간을 입력해야 합니다.")

@@ -3,6 +3,7 @@ package com.togethersports.tosproejct.user;
 import com.togethersports.tosproejct.common.code.CommonCode;
 import com.togethersports.tosproejct.common.dto.Response;
 import com.togethersports.tosproejct.security.annotation.CurrentUser;
+import com.togethersports.tosproejct.user.code.UserCode;
 import com.togethersports.tosproejct.user.dto.UserOfModifyInfo;
 import com.togethersports.tosproejct.user.dto.UserOfMyInfo;
 import com.togethersports.tosproejct.user.dto.UserOfOtherInfo;
@@ -59,6 +60,9 @@ public class UserController {
     public ResponseEntity<Response> getMyInfo(@CurrentUser User user){
         UserOfMyInfo myInfo = userService.getMyInfo(user.getId());
 
+        if(myInfo.isInformationRequired()){
+            return ResponseEntity.ok(Response.of(UserCode.NOT_ENTERED_INFORMATION, myInfo));
+        }
         return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, myInfo));
     }
 }

@@ -3,8 +3,10 @@ package com.togethersports.tosproejct.common.util;
 import com.togethersports.tosproejct.area.ActiveArea;
 import com.togethersports.tosproejct.image.RoomImage;
 import com.togethersports.tosproejct.interest.Interest;
+import com.togethersports.tosproejct.participant.Participant;
 import com.togethersports.tosproejct.room.dto.ImageOfRoomInfo;
 import com.togethersports.tosproejct.tag.Tag;
+import com.togethersports.tosproejct.user.dto.UserOfOtherInfo;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -13,7 +15,7 @@ import java.util.List;
 /**
  * <h1>ParsingEntityUtils</h1>
  * <p>
- *     Json과 객체 간 타입 변환 유틸리티
+ *     객체 간 타입 변환 유틸리티
  * </p>
  * <p>
  *     입력받은 값과 실제 DB 객체의 연동을 위하여 양방향으로 변환해줍니다.
@@ -99,4 +101,6 @@ public class ParsingEntityUtils {
 
         return imageOfRoomInfoList;
     }
+
+
 }
