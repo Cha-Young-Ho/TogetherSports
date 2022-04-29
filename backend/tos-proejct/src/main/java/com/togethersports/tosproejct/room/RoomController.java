@@ -21,6 +21,7 @@ public class RoomController {
 
     private final RoomService roomService;
 
+    //방 생성
     @PostMapping("/api/room")
     public ResponseEntity<Response> createRoom(@CurrentUser User user, @RequestBody @Validated RoomOfCreate roomOfCreate){
 
@@ -31,9 +32,9 @@ public class RoomController {
     }
 
     @GetMapping("/api/room/{roomId}")
-    public ResponseEntity<Response> getRoomInfo(@PathVariable Long roomId){
+    public ResponseEntity<Response> getRoomInfo(@CurrentUser User user, @PathVariable Long roomId){
 
-        RoomOfInfo roomOfInfo = roomService.getRoomInfo(roomId);
+        RoomOfInfo roomOfInfo = roomService.getRoomInfo(user, roomId);
 
         return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, roomOfInfo));
     }
@@ -56,9 +57,9 @@ public class RoomController {
     }
     //방 참가
     @PostMapping("/api/room/{roomId}/user")
-    public ResponseEntity<Response> participateRoom(@PathVariable Long roomId){
+    public ResponseEntity<Response> participateRoom(@CurrentUser User user, @PathVariable Long roomId){
 
-        RoomOfParticipate room = roomService.participateRoom(roomId);
+        RoomOfParticipate room = roomService.participateRoom(user, roomId);
         // 인원이 꽉 찬 방
         if(room.getStatus() == RoomCode.FULL_ROOM){
             return ResponseEntity.ok(Response.of(RoomCode.FULL_ROOM, null));

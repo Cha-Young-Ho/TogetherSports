@@ -1,15 +1,11 @@
 package com.togethersports.tosproejct.user;
 
 import com.togethersports.tosproejct.area.ActiveArea;
-import com.togethersports.tosproejct.area.ActiveAreaRepository;
 import com.togethersports.tosproejct.common.file.service.StorageService;
 import com.togethersports.tosproejct.common.file.util.Base64Decoder;
 import com.togethersports.tosproejct.common.file.util.NameGenerator;
 import com.togethersports.tosproejct.common.util.ParsingEntityUtils;
 import com.togethersports.tosproejct.interest.Interest;
-import com.togethersports.tosproejct.interest.InterestRepository;
-import com.togethersports.tosproejct.security.acl.AclPermission;
-import com.togethersports.tosproejct.security.annotation.AclCreate;
 import com.togethersports.tosproejct.security.oauth2.model.OAuth2Provider;
 import com.togethersports.tosproejct.user.dto.UserOfModifyInfo;
 import com.togethersports.tosproejct.user.dto.UserOfMyInfo;
@@ -18,7 +14,7 @@ import com.togethersports.tosproejct.user.exception.NicknameDuplicationException
 import com.togethersports.tosproejct.user.exception.NotEnteredInformationException;
 import com.togethersports.tosproejct.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +34,7 @@ import java.util.List;
  * @author younghoCha
  */
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserService {
@@ -75,6 +72,7 @@ public class UserService {
      * @return : 존재할경우 false, 존재하지 않을 경우 true
      */
     public boolean nicknameDuplicationCheck(String nickname){
+
         // 존재할 경우
         if(userRepository.existsByNickname(nickname)){
             return false;
@@ -90,6 +88,7 @@ public class UserService {
      * @return USerOfOtherInfo : 다른 회원 정보에 대한 DTO
      */
     public UserOfOtherInfo getOtherInfo(Long otherUserId){
+
         //유저 엔티티
         User userEntity = userRepository.findById(otherUserId)
                 .orElseThrow(() -> new UserNotFoundException("해당 사용자를 찾을 수 없습니다."));

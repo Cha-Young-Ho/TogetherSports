@@ -3,6 +3,7 @@ package com.togethersports.tosproejct.room;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.togethersports.tosproejct.image.RoomImage;
+import com.togethersports.tosproejct.participant.Participant;
 import com.togethersports.tosproejct.room.auditing.RoomBaseEntity;
 import com.togethersports.tosproejct.room.dto.RoomOfCreate;
 import com.togethersports.tosproejct.room.dto.RoomOfUpdate;
@@ -49,7 +50,7 @@ public class Room extends RoomBaseEntity {
     @Column(name = "EXERCISE")
     private String exercise;
 
-    
+
     //참여 인원
     @Column(name = "LIMIT_PEOPLE_COUNT")
     private int limitPeopleCount;
@@ -76,7 +77,8 @@ public class Room extends RoomBaseEntity {
 
     //참여자
     //todo N : N 매핑
-//    private List<User> participant;
+    @OneToMany(mappedBy = "room")
+    private List<Participant> participants;
 
     //방장
     @JsonIgnore
@@ -135,5 +137,14 @@ public class Room extends RoomBaseEntity {
         this.roomTitle = roomOfUpdate.getRoomTitle();
         this.roomContent = roomOfUpdate.getRoomContent();
     }
+
+    public void participate(){
+        this.participantCount = participantCount + 1;
+    }
+
+    public void leave(){
+        this.participantCount = participantCount - 1 ;
+    }
+
 
 }
