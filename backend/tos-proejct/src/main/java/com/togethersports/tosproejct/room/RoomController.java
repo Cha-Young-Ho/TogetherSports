@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-@Slf4j
+
 @RequiredArgsConstructor
 @RestController
 public class RoomController {
@@ -39,7 +39,7 @@ public class RoomController {
         return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, roomOfInfo));
     }
 
-    @PutMapping("api/room")
+    @PutMapping("/api/room")
     public ResponseEntity<Response> modifyRoomInfo(@RequestBody RoomOfUpdate roomOfUpdate){
 
         roomService.modifyRoomInfo(roomOfUpdate);
