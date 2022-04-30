@@ -1,144 +1,89 @@
+import BannerRoomCount from "./bannerRoomCount";
+
 const Banner = () => {
   return (
     <>
-      <div className="banner-wrapper">
-        <div className="main-banner">
-          <div className="half-container">
-            <div className="title-in-banner">
-              <div className="title">동네 운동장에서 족구 한판 뛰실 분?</div>
-              <button className="btn-goToRoom">방 찾아보기</button>
+      <div className="container">
+        <img src="/banner_01.png"></img>
+        <div className="banner-contents">
+          <p>아직 모집중인 방이 무려</p>
+
+          <div className="roomCount">
+            <div>
+              <BannerRoomCount roomCount={42} />
             </div>
-            <div className="search-container">
-              <div className="bar-in-search">
-                <div className="searchBar">
-                  <div className="dropdown-in-searchBar">방 이름</div>
-                  <div className="split"></div>
-                  <input className="input-searchRoom"></input>
-                </div>
-                <button className="btn-nextToRoom">다음</button>
-              </div>
-            </div>
+            <p>개</p>
+          </div>
+
+          <div className="roomList">
+            <p>🏀 방 목록 보기 🏀</p>
+            <p>{`>`}</p>
           </div>
         </div>
       </div>
 
       <style jsx>{`
-        .banner-wrapper {
+        .container {
           width: 100%;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        .main-banner {
-          margin-top: 3px;
-          width: 100%;
-          max-width: 1920px;
-          height: 930px;
-          z-index: 2;
-          background-image: url("banner_01.png");
-          background-repeat: no-repeat;
-        }
-
-        .half-container {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          flex-direction: column;
           position: relative;
-          top: 530px;
-          width: 100%;
-          max-width: 1920px;
-          height: 400px;
-          z-index: 5;
+          user-select: none;
+          background-color: rgba(0, 0, 0, 0.16);
         }
 
-        .title-in-banner {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          flex-direction: column;
-          width: 400px;
-          height: 150px;
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
         }
 
-        .search-container {
-          width: 100%;
-          height: 250px;
-          background-color: rgb(43, 122, 95, 0.6);
+        .banner-contents {
+          position: absolute;
+          top: 0;
+          right: 0;
+          width: 45%;
+          height: 100%;
+          background-color: rgba(43, 122, 95, 0.8);
           display: flex;
+          flex-direction: column;
           justify-content: center;
           align-items: center;
         }
 
-        .title {
-          font-size: 2rem;
+        p {
           font-weight: bold;
           color: white;
-          margin: 10px 0;
+          letter-spacing: 2px;
         }
 
-        .btn-goToRoom {
-          width: 400px;
-          height: 60px;
-          border-radius: 30px;
-          background-color: white;
-          border: 0;
-          outline: 0;
-          cursor: pointer;
-          font-size: 2rem;
-          font-weight: bold;
-          color: #00555f;
+        .banner-contents > p {
+          font-size: 4rem;
+          margin-bottom: 30px;
         }
 
-        .bar-in-search {
-          width: 1400px;
-          height: 60px;
+        .banner-contents > div {
           display: flex;
+          flex-direction: row;
+        }
+
+        .roomCount {
+          margin-bottom: 30px;
+          font-size: 5rem;
+        }
+
+        .roomList {
+          width: 60%;
+          height: 85px;
+          padding: 30px;
+          border-radius: 10px;
+          border: solid 3px white;
           justify-content: space-between;
-        }
-
-        .searchBar {
-          display: flex;
-          justify-content: space-around;
           align-items: center;
-          width: 1150px;
-          height: 60px;
-          border-radius: 30px;
-          background-color: white;
-        }
-
-        .btn-nextToRoom {
-          width: 200px;
-          height: 60px;
-          border-radius: 30px;
-          background-color: #2b7a5f;
-          border: 0;
-          outline: 0;
+          font-size: 3rem;
           cursor: pointer;
         }
 
-        .dropdown-in-searchBar {
-          margin-left: 25px;
-          font-size: 2rem;
-          font-weight: bold;
-          color: #00555f;
-        }
-
-        .split {
-          height: 40px;
-          width: 0.1px;
-          border: 0.5px solid rgb(43, 122, 95, 0.6);
-        }
-
-        .input-searchRoom {
-          width: 950px;
-          height: 40px;
-          font-size: 2rem;
-          font-weight: bold;
-          color: #00555f;
-          text-align: center;
-          border: 0;
+        .roomList > p {
+          font-weight: normal;
         }
       `}</style>
     </>

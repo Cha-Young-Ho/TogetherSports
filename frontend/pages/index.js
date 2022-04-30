@@ -12,7 +12,7 @@ export default function Home() {
       </Head>
       <div>
         <Banner />
-        <HotRoom />
+        {/* <HotRoom /> */}
         <Footer />
       </div>
     </>
