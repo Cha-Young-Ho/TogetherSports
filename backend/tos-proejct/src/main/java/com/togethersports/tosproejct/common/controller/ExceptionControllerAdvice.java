@@ -9,6 +9,7 @@ import com.togethersports.tosproejct.user.exception.UserNotFoundException;
 import com.togethersports.tosproejct.common.code.CommonCode;
 import com.togethersports.tosproejct.common.dto.FieldValidationError;
 import com.togethersports.tosproejct.common.dto.Response;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
  * @author seunjeon
  * @author younghoCha
  */
+@Slf4j
 @RestControllerAdvice
 public class ExceptionControllerAdvice {
 
@@ -45,7 +47,7 @@ public class ExceptionControllerAdvice {
     // non User found exception
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<Response> handleUserNotFountException() {
-
+        log.info("ex 실행됨");
         return ResponseEntity.badRequest().body(Response.of(UserCode.USER_NOT_FOUNT, null));
     }
 

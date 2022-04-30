@@ -34,7 +34,6 @@ import java.util.List;
  * @author younghoCha
  */
 
-@Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserService {

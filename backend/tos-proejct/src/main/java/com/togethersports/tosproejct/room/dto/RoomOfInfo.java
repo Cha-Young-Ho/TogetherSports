@@ -62,8 +62,11 @@ public class RoomOfInfo {
     //조회수
     private int viewCount;
 
+    //참여 여부
+    private boolean attendance;
+
     @Builder(access = AccessLevel.PRIVATE)
-    private RoomOfInfo(Room roomEntity, List<ImageOfRoomInfo> roomImages, List<String> tag){
+    private RoomOfInfo(Room roomEntity, List<ImageOfRoomInfo> roomImages, List<String> tag, boolean attendance){
         this.creatorNickName = roomEntity.getCreateUser().getNickname();
         this.tags = tag;
         this.host = roomEntity.getHost().getNickname();
@@ -78,13 +81,15 @@ public class RoomOfInfo {
         this.roomTitle = roomEntity.getRoomTitle();
         this.roomContent = roomEntity.getRoomContent();
         this.viewCount = roomEntity.getViewCount();
+        this.attendance = attendance;
     }
 
-    public static RoomOfInfo of(Room roomEntity, List<ImageOfRoomInfo> roomImages, List<String> tags){
+    public static RoomOfInfo of(Room roomEntity, List<ImageOfRoomInfo> roomImages, List<String> tags, boolean attendance){
         return RoomOfInfo.builder()
                 .roomEntity(roomEntity)
                 .roomImages(roomImages)
                 .tag(tags)
+                .attendance(attendance)
                 .build();
     }
 }

@@ -47,7 +47,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
         if (Objects.isNull(authorizationHeader)) {
 
             return new AnonymousAuthenticationToken(UUID.randomUUID().toString(),
-                    "anonymousUser",
+                    "anonymous",
                     List.of(new SimpleGrantedAuthority("ROLE_ANONYMOUS")));
         }
         // Bearer 접두어 제거
