@@ -12,7 +12,6 @@ const ModifyRoomModal = (props) => {
   // post 하기위한 정보들
   const [roomArea, setRoomArea] = useState({});
   const [exercise, setExercise] = useState("");
-  const [tags, setTags] = useState("");
   const [startAppointmentDate, setStartAppointmentDate] = useState("");
   const [endAppointmentDate, setEndAppointmentDate] = useState("");
 
@@ -25,6 +24,41 @@ const ModifyRoomModal = (props) => {
 
   const getThumbnailIndex = (index) => {
     setThumbnailIndex(index);
+  };
+
+  // 방 태그
+  const [tags, setTags] = useState([]);
+  const tagsAge = [
+    "10대",
+    "20대",
+    "30대",
+    "40대",
+    "50대",
+    "60대",
+    "70대",
+    "연령 무관",
+  ];
+  const tagsLevel = ["입문만", "초보만", "중수만", "고수만", "실력 무관"];
+  const tagsGender = ["남자만", "여자만", "성별 무관"];
+
+  // 태그 선택 함수
+  const onClickTag = (e) => {
+    if (e.target.classList[2] === "tag-clicked") {
+      e.target.classList.remove("tag-clicked");
+      setTags((prev) =>
+        prev.filter((el) => {
+          return el !== e.target.innerText;
+        })
+      );
+    } else {
+      if (tags.length > 4) {
+        e.preventDefault();
+        alert("태그는 최대 5개 선택 가능합니다!");
+      } else {
+        e.target.classList.add("tag-clicked");
+        setTags((prev) => [...prev, e.target.innerText]);
+      }
+    }
   };
 
   const setData = () => {
@@ -151,16 +185,6 @@ const ModifyRoomModal = (props) => {
           <h1>방 정보 수정</h1>
 
           <div className="contents-wrapper">
-            <div className="picture-wrapper">
-              <SetRoomImages
-                getImageData={getImageData}
-                setPreview={setPreview}
-                getPreview={getPreview}
-                setData={setData}
-                getThumbnailData={getThumbnailIndex}
-              />
-            </div>
-
             <div className="roomTitle-wrapper">
               <p>방 제목</p>
               <input
@@ -191,6 +215,49 @@ const ModifyRoomModal = (props) => {
                 onChange={changeContent}
                 defaultValue={roomContent}
               ></textarea>
+            </div>
+
+            <div className="picture-wrapper">
+              <SetRoomImages
+                getImageData={getImageData}
+                setPreview={setPreview}
+                getPreview={getPreview}
+                setData={setData}
+                getThumbnailData={getThumbnailIndex}
+              />
+            </div>
+
+            <div className="tag-wrapper">
+              <p>빠른 태그 추가 (최대 5개)</p>
+              <div className="tags">
+                <div className="tags-age">
+                  {tagsAge.map((age, index) => {
+                    return (
+                      <div className="tag" onClick={onClickTag} key={index}>
+                        {age}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="tags-level-gender">
+                  {tagsLevel.map((level, index) => {
+                    return (
+                      <div className="tag" onClick={onClickTag} key={index}>
+                        {level}
+                      </div>
+                    );
+                  })}
+
+                  {tagsGender.map((gender, index) => {
+                    return (
+                      <div className="tag" onClick={onClickTag} key={index}>
+                        {gender}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
           </div>
 
@@ -231,7 +298,7 @@ const ModifyRoomModal = (props) => {
 
         .box-container {
           width: 48%;
-          height: 80%;
+          height: 85%;
           padding: 40px 50px;
           border-radius: 10px;
           box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
@@ -251,6 +318,7 @@ const ModifyRoomModal = (props) => {
           overflow: auto;
         }
 
+        /* 스크롤에 대한 부분 */
         .contents-wrapper::-webkit-scrollbar {
           width: 15px;
         }
@@ -275,22 +343,14 @@ const ModifyRoomModal = (props) => {
           display: flex;
           justify-content: center;
           align-items: center;
+          margin-bottom: 20px;
           font-size: 2rem;
           font-weight: bold;
         }
 
-        .picture-wrapper {
-          width: 95%;
-          margin: 25px 0 20px 0;
-          display: flex;
-          align-items: center;
-          flex-direction: column;
-        }
-
         .roomTitle-wrapper {
           width: 95%;
-          height: 40px;
-          margin-bottom: 10px;
+          margin-bottom: 20px;
           padding: 5px 10px 5px 14px;
           border-radius: 10px;
           border: solid 1px #e8e8e8;
@@ -304,7 +364,7 @@ const ModifyRoomModal = (props) => {
         }
 
         .roomTitle-wrapper input[type="text"] {
-          width: 470px;
+          width: 90%;
           height: 30px;
           border: none;
           padding: 0 5px;
@@ -312,8 +372,7 @@ const ModifyRoomModal = (props) => {
 
         .peopleCount-wrapper {
           width: 95%;
-          height: 50px;
-          margin-top: 10px;
+          margin-bottom: 20px;
           display: flex;
           align-items: center;
         }
@@ -323,7 +382,7 @@ const ModifyRoomModal = (props) => {
           height: 35px;
           border-radius: 10px;
           border: solid 1px #e8e8e8;
-          background-color: #fff;
+          background-color: white;
           margin: 0 15px;
           text-align: center;
         }
@@ -337,8 +396,7 @@ const ModifyRoomModal = (props) => {
 
         .roomNotice-wrapper {
           width: 95%;
-          height: 160px;
-          margin-top: 10px;
+          margin-bottom: 20px;
           display: flex;
           flex-direction: column;
         }
@@ -346,7 +404,7 @@ const ModifyRoomModal = (props) => {
         .roomNotice-wrapper textarea {
           width: 100%;
           height: 150px;
-          margin: 10px 0;
+          margin-top: 10px;
           border-radius: 10px;
           border: none;
           background-color: #f4f4f4;
@@ -354,12 +412,75 @@ const ModifyRoomModal = (props) => {
           resize: none;
         }
 
+        .picture-wrapper {
+          width: 95%;
+          margin-bottom: 20px;
+          display: flex;
+          align-items: center;
+          flex-direction: column;
+        }
+
+        .tag-wrapper {
+          width: 95%;
+          display: flex;
+          flex-direction: column;
+          justify-content: left;
+        }
+
+        .tag-wrapper p {
+          font-size: 1.5rem;
+          font-weight: bold;
+        }
+
+        .tags {
+          margin-top: 20px;
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .tags-age,
+        .tags-level-gender {
+          width: 100%;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+        }
+
+        .tag {
+          padding: 0 10px;
+          height: 30px;
+          border: solid 1px #f4f4f4;
+          border-radius: 6px;
+          background-color: #efefef;
+          margin: 10px 5px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: 1.2rem;
+          font-weight: bold;
+          cursor: pointer;
+        }
+
+        .tag:hover {
+          transition-duration: 0.5s;
+          transform: scale(1.2);
+          background-color: #468f5b;
+          color: white;
+        }
+
+        .tag-clicked {
+          color: white;
+          background-color: #468f5b;
+        }
+
         .button-wrapper {
           width: 100%;
-          margin-top: 25px;
           display: flex;
           align-items: center;
           justify-content: center;
+          margin-top: 30px;
         }
 
         .cancel-btn {
