@@ -9,25 +9,25 @@ import Head from "next/head";
 const PersonalInfo = () => {
   const dispatch = useDispatch();
 
-  //닉네임
+  // 닉네임
   const [nickname, setNickname] = useState("");
 
   //기본 값 false
   const [isNicknameCheck, setIsNicknameCheck] = useState(false);
 
-  //생년월일
+  // 생년월일
   const [birthYear, setBirthYear] = useState("YYYY");
   const [birthMonth, setBirthMonth] = useState("MM");
   const [birthDay, setBirthDay] = useState("DD");
   const userBirth = `${birthYear}-${birthMonth}-${birthDay}`;
 
-  //성별
+  // 성별
   const [gender, setGender] = useState("male");
 
-  //프로필
+  // 프로필
   const [profile, setProfile] = useState("");
-  const [extension, setExtension] = useState("정보 없음");
-  const [imagesrc, setImagesrc] = useState("정보 없음");
+  const [extension, setExtension] = useState("");
+  const [imagesrc, setImagesrc] = useState("");
 
   // 닉네임 중복확인
   const checkNicknameDuplication = () => {
@@ -163,6 +163,11 @@ const PersonalInfo = () => {
       e.preventDefault();
       alert("생년월일을 확인해주세요.");
       return false;
+    }
+
+    if (extension === "" || imagesrc === "") {
+      setExtension(null);
+      setImagesrc(null);
     }
 
     dispatch({

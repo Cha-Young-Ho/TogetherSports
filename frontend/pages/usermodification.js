@@ -12,7 +12,7 @@ const UserModification = () => {
 
   // 닉네임
   const [nickname, setNickname] = useState(userInfo.userNickname);
-  const [isNicknameCheck, setIsNicknameCheck] = useState(true);
+  const [isNicknameCheck, setIsNicknameCheck] = useState(false);
 
   // 생년월일
   const setBirth = userInfo.userBirth.split("-");
@@ -349,6 +349,11 @@ const UserModification = () => {
       e.preventDefault();
       alert("최소 1개의 종목을 선택하여야 합니다.");
       return false;
+    }
+
+    if (extension === "" || imagesrc === "") {
+      setExtension(null);
+      setImagesrc(null);
     }
 
     // 회원가입 요청 및 회원정보 수정
