@@ -36,7 +36,7 @@ import java.util.List;
  *
  * @author younghoCha
  */
-@Slf4j
+
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -72,7 +72,7 @@ public class RoomService {
         Room roomEntity = Room.of(roomOfCreate, userEntity);
 
         //방 저장
-        roomRepository.save(roomEntity);
+        Room room = roomRepository.save(roomEntity);
 
         //-- Tag --
         //List<String>을 List<Tag>로 변환
@@ -84,6 +84,8 @@ public class RoomService {
         // -- Image --
         // image 로컬에 저장
         roomImageService.registerRoomImage(roomOfCreate.getRoomImages(), roomEntity);
+
+        participantService.save(user, room);
     }
 
     //방 설명 페이지 조회
@@ -102,7 +104,13 @@ public class RoomService {
         //조회수 증가
         roomEntity.plusViewCount();
 
-        return RoomOfInfo.of(roomEntity, imageOfRoomInfos, tag);
+        //요청자의 참여 여부 확인
+        if(user == null){
+            return RoomOfInfo.of(roomEntity, imageOfRoomInfos, tag, false);
+        }
+
+        boolean attendance = getAttendance(user.getId(), roomId);
+        return RoomOfInfo.of(roomEntity, imageOfRoomInfos, tag, attendance);
 
     }
 
@@ -154,7 +162,6 @@ public class RoomService {
 
         // 참가 저장
         boolean isParticipation = participantService.save(currentUser, roomEntity);
-
         // 참가한 경우
         if(isParticipation) {
             // 참가 인원 추가
@@ -170,11 +177,16 @@ public class RoomService {
 
     public List<UserOfOtherInfo> getParticipantsInfo(List<Participant> participantList){
         List<UserOfOtherInfo> userOfOtherInfoList = new ArrayList<>();
+
         for (Participant user : participantList){
             userOfOtherInfoList.add(userService.getOtherInfo(user.getId()));
         }
 
         return userOfOtherInfoList;
 
+    }
+
+    public boolean getAttendance(Long userId, Long roomId){
+        return participantService.checkAttendance(userRepository.findById(userId).get(), roomRepository.findById(roomId).get());
     }
 }

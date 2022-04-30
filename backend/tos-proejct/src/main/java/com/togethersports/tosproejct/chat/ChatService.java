@@ -11,5 +11,9 @@ public class ChatService {
 
     private final ChatRepository chatRepository;
 
+    public void saveChat(){
+
+    }
+
 
 }

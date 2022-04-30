@@ -2,7 +2,9 @@ package com.togethersports.tosproejct.participant;
 
 import com.togethersports.tosproejct.room.Room;
 import com.togethersports.tosproejct.user.User;
+import com.togethersports.tosproejct.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
  *
  * @author younghoCha
  */
+
 @Service
 @RequiredArgsConstructor
 public class ParticipantService {
@@ -34,6 +37,10 @@ public class ParticipantService {
         participantRepository.save(participant);
 
         return true;
+    }
+
+    public boolean checkAttendance(User user, Room room){
+        return participantRepository.existsByUserAndRoom(user, room);
     }
 
 
