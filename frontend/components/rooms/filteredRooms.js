@@ -3,9 +3,25 @@ import { getRoomList } from "../../api/rooms";
 import { useDispatch, useSelector } from "react-redux";
 import RoomModal from "../modals/roomModal";
 import RoomShowingBox from "./roomShowingBox";
+import FailResponse from "../../api/failResponse";
 
 const FilteredRooms = () => {
   const dispatch = useDispatch();
+
+  const [selectedTypeButtons, _] = useState([
+    "최신순",
+    "임박한 시간순",
+    "참여자순",
+  ]);
+  const [selectedSortType, setSelectedSortType] = useState("최신순");
+
+  const [page, setPage] = useState(1);
+  const [size, setSize] = useState(10);
+  const [sort, setSort] = useState("updateTime_DESC");
+
+  // 스크롤 위치값
+  const [scrollY, setScrollY] = useState(0);
+  const handleFollowScroll = () => setScrollY(window.pageYOffset);
 
   const roomFilteringData = useSelector(
     (state) => state.roomFilteringDataReducer
@@ -21,6 +37,42 @@ const FilteredRooms = () => {
 
   // 현재 임시 데이터
   const [eachRoomInfo, setEachRoomInfo] = useState([
+    {
+      roomId: "121",
+      roomTitle: "축구 한판 뛰실분?",
+      limitPeopleCount: "22",
+      participantCount: "1",
+      tags: ["20대만", "고수만"],
+      startAppointmentDate: "2022-04-18T19:00",
+      roomImagePath: "",
+    },
+    {
+      roomId: "123",
+      roomTitle: "야구 한판 뛰실분?",
+      limitPeopleCount: "30",
+      participantCount: "1",
+      tags: ["20대만", "초보만"],
+      startAppointmentDate: "2022-04-19T22:30",
+      roomImagePath: "",
+    },
+    {
+      roomId: "121",
+      roomTitle: "축구 한판 뛰실분?",
+      limitPeopleCount: "22",
+      participantCount: "1",
+      tags: ["20대만", "고수만"],
+      startAppointmentDate: "2022-04-18T19:00",
+      roomImagePath: "",
+    },
+    {
+      roomId: "123",
+      roomTitle: "야구 한판 뛰실분?",
+      limitPeopleCount: "30",
+      participantCount: "1",
+      tags: ["20대만", "초보만"],
+      startAppointmentDate: "2022-04-19T22:30",
+      roomImagePath: "",
+    },
     {
       roomId: "121",
       roomTitle: "축구 한판 뛰실분?",
@@ -58,6 +110,21 @@ const FilteredRooms = () => {
     });
   };
 
+  const changeSortType = (name) => {
+    console.log(name);
+    switch (name) {
+      case "최신순":
+        setSort("updateTime_DESC");
+        break;
+      case "임박한 시간순":
+        setSort("start_DESC");
+        break;
+      case "참여자순":
+        setSort("participant_DESC");
+        break;
+    }
+  };
+
   // 첫 화면 렌더 시 아무런 필터 없이 요청
   useEffect(() => {
     getRoomList(
@@ -70,14 +137,26 @@ const FilteredRooms = () => {
       roomFilteringData.endAppointmentDate,
       roomFilteringData.containTimeClosing,
       roomFilteringData.containNoAdmittance,
-      roomFilteringData.requiredPeopleCount
-    ).then((res) => {
-      if (res.status.code === 5000) {
-        setEachRoomInfo(res.content.content);
-      }
-    });
+      roomFilteringData.requiredPeopleCount,
+      page,
+      size,
+      sort
+    )
+      .then((res) => {
+        if (res.status.code === 5000) {
+          setEachRoomInfo(res.content.content);
+          setPage(page + 1);
+        }
+      })
+      .catch((error) => FailResponse(error.response.data.status.code));
+
+    window.addEventListener("scroll", handleFollowScroll);
+    return () => {
+      window.removeEventListener("scroll", handleFollowScroll);
+    };
   }, []);
 
+  // 필터 버튼 눌렀을 때 실행
   useEffect(() => {
     if (changeDectection.detection === "true") {
       /* 시간 예외처리 수정 필요합니다.
@@ -145,25 +224,92 @@ const FilteredRooms = () => {
         roomFilteringData.endAppointmentDate,
         roomFilteringData.containTimeClosing,
         roomFilteringData.containNoAdmittance,
-        roomFilteringData.requiredPeopleCount
-      ).then((res) => {
-        if (res.status.code === 5000) {
-          setEachRoomInfo(res.content.content);
-        }
-      });
+        roomFilteringData.requiredPeopleCount,
+        1,
+        10,
+        sort
+      )
+        .then((res) => {
+          if (res.status.code === 5000) {
+            setEachRoomInfo(res.content.content);
+            setPage(2);
+          }
+        })
+        .catch((error) => FailResponse(error.response.data.status.code));
 
       requestFilteringToFalse();
     }
   }, [changeDectection.detection]);
+
+  // 리셋 버튼 클릭
+  useEffect(() => {
+    setPage(1);
+    setSize(10);
+    setSort("updateTime_DESC");
+    setSelectedSortType("최신순");
+  }, [changeDectection.reset]);
+
+  // 화면 맨 아래 도착 시
+  useEffect(() => {
+    let windowHeight = window.innerHeight; // 스크린 창크기
+    let fullHeight = document.body.scrollHeight + 80; //  margin 값 80추가
+
+    if (scrollY + windowHeight === fullHeight) {
+      getRoomList(
+        roomFilteringData.roomTitle,
+        roomFilteringData.roomContent,
+        roomFilteringData.area,
+        roomFilteringData.exercise,
+        roomFilteringData.tags,
+        roomFilteringData.startAppointmentDate,
+        roomFilteringData.endAppointmentDate,
+        roomFilteringData.containTimeClosing,
+        roomFilteringData.containNoAdmittance,
+        roomFilteringData.requiredPeopleCount,
+        1,
+        10,
+        sort
+      )
+        .then((res) => {
+          if (res.status.code === 5000) {
+            setEachRoomInfo(res.content.content);
+            setPage(page + 1);
+          }
+        })
+        .catch((error) => FailResponse(error.response.data.status.code));
+    }
+  }, [scrollY]);
 
   return (
     <>
       <div className="filteredRooms-wrapper">
         <div className="centerLine">
           <div>
-            <button className="buttons">최신순</button>
-            <button className="buttons">시간순</button>
-            <button className="buttons">참여자순</button>
+            {selectedTypeButtons.map((name, index) => {
+              return name === selectedSortType ? (
+                <button
+                  key={index}
+                  className="buttons clicked"
+                  onClick={() => {
+                    setSelectedSortType(name);
+                    changeSortType(name);
+                  }}
+                >
+                  {name}
+                </button>
+              ) : (
+                <button
+                  key={index}
+                  className="buttons"
+                  onClick={() => {
+                    setSelectedSortType(name);
+                    changeSortType(name);
+                  }}
+                >
+                  {name}
+                </button>
+              );
+            })}
           </div>
           <div className="rooms-wrapper">
             <div className="rooms-grid">
@@ -230,6 +376,15 @@ const FilteredRooms = () => {
           place-items: center;
           row-gap: 30px;
           margin-bottom: 100px;
+        }
+
+        .clicked {
+          width: 80px;
+          height: 20px;
+          background-color: #6db152;
+          color: white;
+          border-radius: 6px;
+          box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.16);
         }
       `}</style>
     </>

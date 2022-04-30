@@ -14,33 +14,23 @@ const FixedRoomAlarm = () => {
   return (
     <>
       <Link href="/room/createroom/roomsetting">
-        <button className="roomRequestButton" onClick={checkingUserInfo}>
-          <p>+</p>
-        </button>
+        <img
+          src="/room-create-button.png"
+          className="roomRequestButton"
+          onClick={checkingUserInfo}
+        ></img>
       </Link>
 
       <style jsx>{`
         .roomRequestButton {
-          width: 50px;
-          height: 50px;
+          width: 90px;
+          height: 90px;
           position: fixed;
-          display: flex;
-          justify-content: center;
-          align-items: center;
           right: 20px;
           bottom: 20px;
-          background-color: #6db152;
-          box-shadow: 0px 0px 100px 5px rgba(0, 0, 0, 0.75);
-          border-radius: 50%;
           z-index: 10;
           cursor: pointer;
           border: none;
-        }
-
-        .roomRequestButton p {
-          color: white;
-          font-size: 4rem;
-          font-weight: 1200;
         }
       `}</style>
     </>
