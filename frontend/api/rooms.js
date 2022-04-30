@@ -35,12 +35,18 @@ const getRoomList = async (
   endAppointmentDate,
   containTimeClosing,
   containNoAdmittance,
-  requiredPeopleCount
+  requiredPeopleCount,
+  page,
+  size,
+  sort
 ) => {
   roomTitle = roomTitle === "" ? "" : `roomTitle=${roomTitle}&`;
   roomContent = roomContent === "" ? "" : `roomContent=${roomContent}&`;
   area = area === "" ? "" : `area=${area}&`;
-  exercise = exercise.map((el) => "exercise=" + el + "&").join("");
+  exercise =
+    exercise.length !== 0
+      ? exercise.map((el) => "exercise=" + el + "&").join("")
+      : "";
   tags = tags.length !== 0 ? tags.map((el) => "tags=" + el + "&").join("") : "";
   startAppointmentDate =
     startAppointmentDate === ""
@@ -56,6 +62,9 @@ const getRoomList = async (
     requiredPeopleCount === ""
       ? ""
       : `requiredPeopleCount=${requiredPeopleCount}&`;
+  page = `page=${page}&`;
+  size = `size=${size}&`;
+  sort = `sort=${sort}&`;
 
   const totalQueryString =
     roomTitle +
@@ -67,7 +76,10 @@ const getRoomList = async (
     endAppointmentDate +
     containTimeClosing +
     containNoAdmittance +
-    requiredPeopleCount;
+    requiredPeopleCount +
+    page +
+    size +
+    sort;
 
   if (totalQueryString[totalQueryString.length - 1] === "&")
     totalQueryString = totalQueryString.slice(0, -1);

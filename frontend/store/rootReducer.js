@@ -63,6 +63,9 @@ const roomFilteringDataInitialState = {
   endDate: "",
   startTime: "",
   endTime: "",
+  page: "1",
+  size: "10",
+  sort: "updateTime_DESC",
 };
 
 // 필터 적용 및 초기화 클릭 감지용 초기값
