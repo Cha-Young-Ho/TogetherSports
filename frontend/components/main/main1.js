@@ -1,3 +1,5 @@
+import TextLogo from "./textLogo";
+
 const Main1 = () => {
   const sports = ["야구", "농구", "축구", "탁구", "당구"];
 
@@ -28,12 +30,7 @@ const Main1 = () => {
 
         <div className="text">
           <p>운동모임 일정은 편하게</p>
-          <div className="text-logo">
-            <p>To</p>
-            <p>gether </p>
-            <p>S</p>
-            <p>ports</p>
-          </div>
+          <TextLogo />
           <p>로 잡아보세요 !</p>
         </div>
       </div>
@@ -107,29 +104,6 @@ const Main1 = () => {
 
         .text > p:nth-child(3) {
           margin-left: 15px;
-        }
-
-        .text-logo {
-          width: 245px;
-          height: 55px;
-          padding: 10px;
-          border: solid 1px #000;
-          display: flex;
-          flex-direction: row;
-          justify-content: center;
-        }
-
-        .text-logo p {
-          font-size: 2.8rem;
-        }
-
-        .text-logo p:nth-child(1),
-        .text-logo p:nth-child(3) {
-          font-weight: bold;
-        }
-
-        .text-logo p:nth-child(2) {
-          margin-right: 10px;
         }
       `}</style>
     </>
