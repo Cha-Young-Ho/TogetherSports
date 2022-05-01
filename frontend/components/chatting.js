@@ -6,8 +6,43 @@ import { postRefreshToken } from "../api/etc";
 const Chatting = () => {
   const [messageToServer, setMessageToServer] = useState("");
   const [showingMessages, setShowingMessages] = useState([
-    { target: "other", msg: "다른사람 메시지" },
-    { target: "mine", msg: "내 메시지" },
+    {
+      userId: "me",
+      nickname: "동동이",
+      userProfileImagePath: "/base_profileImage.jpg",
+      content: {
+        message: "안녕하세요",
+        sendAt: "2022-12-11T13:05",
+      },
+    },
+    {
+      userId: "me2",
+      nickname: "아리",
+      userProfileImagePath: "/base_profileImage.jpg",
+      content: {
+        message:
+          "감사해요ㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁ",
+        sendAt: "2022-12-11T13:05",
+      },
+    },
+    {
+      userId: "me3",
+      nickname: "아빠",
+      userProfileImagePath: "/base_profileImage.jpg",
+      content: {
+        message: "잘있어요",
+        sendAt: "2022-12-11T13:05",
+      },
+    },
+    {
+      userId: "me4",
+      nickname: "엄마",
+      userProfileImagePath: "/base_profileImage.jpg",
+      content: {
+        message: "다시만나요",
+        sendAt: "2022-12-11T13:05",
+      },
+    },
   ]);
 
   let sockJS = new SockJS("http://localhost:8080/api/websocket");
@@ -15,13 +50,17 @@ const Chatting = () => {
 
   const connect = () => {
     client.connect(
-      { token: localStorage.getItem("accessToken") },
+      { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
       () => {
-        client.subscribe("/topic/room/1/chat", (data) => {
-          const newMessage = JSON.parse(data.body);
+        client.subscribe(
+          "/topic/room/1/chat",
+          (data) => {
+            const newMessage = JSON.parse(data.body);
 
-          setShowingMessages((prev) => [...prev, newMessage]);
-        });
+            setShowingMessages((prev) => [...prev, newMessage]);
+          },
+          { Authorization: `Bearer ${localStorage.getItem("accessToken")}` }
+        );
       },
       (error) => {
         console.log("에러 떴음");
@@ -47,8 +86,11 @@ const Chatting = () => {
     e.preventDefault();
     client.send(
       "/api/room/1/chat",
-      { token: localStorage.getItem("accessToken") },
-      JSON.stringify({ target: "mine", msg: messageToServer })
+      {},
+      JSON.stringify({
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        message: messageToServer,
+      })
     );
   };
 
@@ -67,13 +109,17 @@ const Chatting = () => {
         <div className="dialog">
           <div className="messages">
             {showingMessages.map((datas, index) => {
-              return datas.target === "mine" ? (
+              return datas.userId === "me" ? (
                 <div key={index} className="my-message">
-                  <p>{datas.msg}</p>
+                  <p>{datas.content.message}</p>
                 </div>
               ) : (
                 <div key={index} className="other-message">
-                  <p>{datas.msg}</p>
+                  <img
+                    className="msg-profileImg"
+                    src={`${datas.userProfileImagePath}`}
+                  ></img>
+                  <p>{datas.content.message}</p>
                 </div>
               );
             })}
@@ -126,7 +172,6 @@ const Chatting = () => {
           width: 17px;
           border-radius: 4px;
           border: solid 1px #e5e5e5;
-          //box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
           background-color: #fff;
         }
 
@@ -173,11 +218,18 @@ const Chatting = () => {
         .other-message {
           float: left;
           text-align: left;
+          display: flex;
+          align-items: center;
         }
 
         .my-message {
           float: right;
-          text-align: right;
+          text-align: left;
+        }
+
+        .msg-profileImg {
+          width: 50px;
+          height: 50px;
         }
 
         .other-message p {
