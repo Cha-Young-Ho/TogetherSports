@@ -6,43 +6,78 @@ import { postRefreshToken } from "../api/etc";
 const Chatting = () => {
   const [messageToServer, setMessageToServer] = useState("");
   const [showingMessages, setShowingMessages] = useState([
-    {
-      userId: "me",
-      nickname: "동동이",
-      userProfileImagePath: "/base_profileImage.jpg",
-      content: {
-        message: "안녕하세요",
-        sendAt: "2022-12-11T13:05",
+    [
+      {
+        userId: "me",
+        nickname: "동동이",
+        userProfileImagePath: "/base_profileImage.jpg",
+        content: {
+          message: "안녕하세요",
+          sendAt: "2022-12-11T13:05",
+        },
       },
-    },
-    {
-      userId: "me2",
-      nickname: "아리",
-      userProfileImagePath: "/base_profileImage.jpg",
-      content: {
-        message:
-          "감사해요ㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁ",
-        sendAt: "2022-12-11T13:05",
+      {
+        userId: "me",
+        nickname: "동동이",
+        userProfileImagePath: "/base_profileImage.jpg",
+        content: {
+          message: "안녕하세요",
+          sendAt: "2022-12-11T13:05",
+        },
       },
-    },
-    {
-      userId: "me3",
-      nickname: "아빠",
-      userProfileImagePath: "/base_profileImage.jpg",
-      content: {
-        message: "잘있어요",
-        sendAt: "2022-12-11T13:05",
+    ],
+    [
+      {
+        userId: "me2",
+        nickname: "아리",
+        userProfileImagePath: "/base_profileImage.jpg",
+        content: {
+          message:
+            "감사해요ㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁ",
+          sendAt: "2022-12-11T13:05",
+        },
       },
-    },
-    {
-      userId: "me4",
-      nickname: "엄마",
-      userProfileImagePath: "/base_profileImage.jpg",
-      content: {
-        message: "다시만나요",
-        sendAt: "2022-12-11T13:05",
+      {
+        userId: "me2",
+        nickname: "아빠",
+        userProfileImagePath: "/base_profileImage.jpg",
+        content: {
+          message: "잘있어요",
+          sendAt: "2022-12-11T13:05",
+        },
       },
-    },
+      {
+        userId: "me2",
+        nickname: "엄마",
+        userProfileImagePath: "/base_profileImage.jpg",
+        content: {
+          message: "다시만나요",
+          sendAt: "2022-12-11T13:05",
+        },
+      },
+    ],
+    [
+      {
+        userId: "me",
+        nickname: "동동이",
+        userProfileImagePath: "/base_profileImage.jpg",
+        content: {
+          message: "안녕하세요",
+          sendAt: "2022-12-11T13:05",
+        },
+      },
+    ],
+    [
+      {
+        userId: "me2",
+        nickname: "아리",
+        userProfileImagePath: "/base_profileImage.jpg",
+        content: {
+          message: "감사해요",
+          sendAt: "2022-12-11T13:05",
+        },
+      },
+    ],
   ]);
 
   let sockJS = new SockJS("http://localhost:8080/api/websocket");
@@ -56,14 +91,35 @@ const Chatting = () => {
           "/topic/room/1/chat",
           (data) => {
             const newMessage = JSON.parse(data.body);
+            const msgLen = showingMessages.length;
 
-            setShowingMessages((prev) => [...prev, newMessage]);
+            if (
+              msgLen &&
+              newMessage.userId === showingMessages[msgLen - 1][0].userId
+            ) {
+              const temp = [...showingMessages];
+              temp[temp.length - 1].push({
+                userId: newMessage.userId,
+                nickname: newMessage.nickname,
+                userProfileImagePath: newMessage.userProfileImagePath,
+                content: {
+                  message: newMessage.content.message,
+                  sendAt: newMessage.content.sendAt,
+                },
+              });
+
+              setShowingMessages(temp);
+            } else {
+              setShowingMessages((prev) => [...prev, newMessage]);
+            }
+
+            setMessageToServer("");
           },
           { Authorization: `Bearer ${localStorage.getItem("accessToken")}` }
         );
       },
       (error) => {
-        console.log("에러 떴음");
+        console.log(error);
         postRefreshToken(localStorage.getItem("refreshToken")).then((res) => {
           if (res.status.code === 5000) {
             localStorage.setItem("accessToken", res.accessToken);
@@ -108,25 +164,55 @@ const Chatting = () => {
       <div className="chatting">
         <div className="dialog">
           <div className="messages">
-            {showingMessages.map((datas, index) => {
-              return datas.userId === "me" ? (
-                <div key={index} className="my-message">
-                  <p>{datas.content.message}</p>
-                </div>
-              ) : (
-                <div key={index} className="other-message">
-                  <img
-                    className="msg-profileImg"
-                    src={`${datas.userProfileImagePath}`}
-                  ></img>
-                  <p>{datas.content.message}</p>
-                </div>
-              );
-            })}
+            {showingMessages.length ? (
+              showingMessages.map((messages) => {
+                // 내 메세지가 아닌 경우만 중복에 대해 처리필요
+                if (messages.length > 1 && messages[0].userId !== "me") {
+                  return messages.map((datas, index) => {
+                    return index === messages.length - 1 ? (
+                      <div key={index} className="other-message">
+                        <img
+                          className="msg-profileImg"
+                          src={`${datas.userProfileImagePath}`}
+                        ></img>
+                        <p>{datas.content.message}</p>
+                      </div>
+                    ) : (
+                      <div key={index} className="dupID-message">
+                        <p>{datas.content.message}</p>
+                      </div>
+                    );
+                  });
+                }
+
+                return messages.map((datas, index) => {
+                  return datas.userId === "me" ? (
+                    <div key={index} className="my-message">
+                      <p>{datas.content.message}</p>
+                    </div>
+                  ) : (
+                    <div key={index} className="other-message">
+                      <img
+                        className="msg-profileImg"
+                        src={`${datas.userProfileImagePath}`}
+                      ></img>
+                      <p>{datas.content.message}</p>
+                    </div>
+                  );
+                });
+              })
+            ) : (
+              <></>
+            )}
           </div>
         </div>
         <form className="dialog-input" onSubmit={onSubmitMessage}>
-          <input id="content" type="text" onChange={addMessageToServer} />
+          <input
+            id="content"
+            type="text"
+            value={messageToServer}
+            onChange={addMessageToServer}
+          />
           <br />
           <button>
             <img src="/chatting-send-button.png" />
@@ -222,6 +308,14 @@ const Chatting = () => {
           align-items: center;
         }
 
+        .dupID-message {
+          float: left;
+          text-align: left;
+          display: flex;
+          align-items: center;
+          margin-left: 50px;
+        }
+
         .my-message {
           float: right;
           text-align: left;
@@ -232,7 +326,8 @@ const Chatting = () => {
           height: 50px;
         }
 
-        .other-message p {
+        .other-message p,
+        .dupID-message p {
           display: block;
           float: left;
           border-radius: 12px;
