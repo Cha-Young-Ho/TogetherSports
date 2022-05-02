@@ -27,7 +27,7 @@ import java.util.List;
  *     User 엔티티 CRUD 서비스 클래스
  * </p>
  * <p>
- *     User 엔티티 관련 직적적인 로직 수행 대신 각 담당 클래스간의 메소드 호출 흐름을 정의한다.
+ *     User 엔티티 관련 직접적인 로직 수행 대신 각 담당 클래스간의 메소드 호출 흐름을 정의한다.
  * </p>
  *
  * @author seunjeon
