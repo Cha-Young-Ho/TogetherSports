@@ -34,4 +34,15 @@ public class LocationService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * 최상위 행정구역 목록을 제공한다.
+     * @return locationNames 최상위 행정구역 명 리스트
+     */
+    public List<String> getPrimaryLocation() {
+        return locationRepository.findPrimaryLocations()
+                .stream()
+                .map(Location::getName)
+                .collect(Collectors.toList());
+    }
+
 }
