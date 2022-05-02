@@ -3,9 +3,7 @@ import Link from "next/link";
 
 /* 수정 필요 */
 // 1. 명세 후에 현재 모집중인 방의 개수 입력 필요
-// 2. right-section 원 안의 이미지구하기
-// 3. right-section의 화살표 이미지 구하기
-// 4. 회원가입 버튼 누를 때 이미 회원인지 아닌지 판단에 따라 다른 link로 보내기
+// 2. 회원가입 버튼 누를 때 이미 회원인지 아닌지 판단에 따라 다른 link로 보내기
 
 const Main2 = () => {
   return (
@@ -27,12 +25,11 @@ const Main2 = () => {
             <p>같이 운동할 사람을 구하는 중 !</p>
           </div>
 
-          <div className="right-section">
-            <p>🔥</p>
-            <p>참여하실래요 ?</p>
-            <img />
-            <p>회원가입 바로가기</p>
-          </div>
+          <Link href="/login">
+            <div className="right-section">
+              <img src={"/main2.png"} />
+            </div>
+          </Link>
         </div>
       </div>
       <style jsx>{`
@@ -50,7 +47,7 @@ const Main2 = () => {
         }
 
         .section {
-          width: 85%;
+          width: 80%;
           display: flex;
           flex-direction: row;
           justify-content: space-between;
@@ -71,12 +68,12 @@ const Main2 = () => {
         }
 
         .left-section > div:nth-child(1) > p:nth-child(1) {
-          font-size: 2rem;
+          font-size: 2.5rem;
           margin-right: 15px;
         }
 
         .left-section > div:nth-child(1) > p:nth-child(3) {
-          font-size: 2rem;
+          font-size: 2.5rem;
           margin-left: 15px;
         }
 
@@ -94,21 +91,7 @@ const Main2 = () => {
         .right-section {
           width: 350px;
           height: 350px;
-          border-radius: 50%;
-          background-color: rgba(0, 0, 0, 0.8);
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        .right-section > p:nth-child(1),
-        .right-section > p:nth-child(2) {
-          font-size: 3rem;
-          margin-bottom: 10px;
-        }
-
-        .right-section > p:nth-child(4) {
-          font-size: 2rem;
+          cursor: pointer;
         }
       `}</style>
     </>

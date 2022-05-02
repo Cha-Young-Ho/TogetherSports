@@ -18,7 +18,7 @@ const Main3 = () => {
             <p>
               원하는 <b>종목</b> 선택
             </p>
-            <img src={"/interests-activation.png"} />
+            <img src={"/main3-img1.png"} />
           </div>
 
           <p>▶</p>
@@ -27,7 +27,7 @@ const Main3 = () => {
             <p>
               가능한 <b>일정</b> 선택
             </p>
-            <img src={"/roomschedule-activation.png"} />
+            <img src={"/main3-img2.png"} />
           </div>
 
           <p>▶</p>
@@ -36,11 +36,11 @@ const Main3 = () => {
             <p>
               같이할 <b>인원</b> 선택
             </p>
-            <img src={"/roomtaginfo-activation.png"} />
+            <img src={"/main3-img3.png"} />
           </div>
         </div>
 
-        <div className="arrow"></div>
+        <img src="/main3-arrow.png" />
 
         <p>방 생성 완료 !</p>
 
@@ -67,7 +67,7 @@ const Main3 = () => {
         }
 
         .guide {
-          width: 60%;
+          width: 1050px;
           display: flex;
           flex-direction: row;
           justify-content: space-between;
@@ -88,26 +88,17 @@ const Main3 = () => {
           font-size: 3rem;
         }
 
-        img {
+        .guide img {
           width: 200px;
           height: 200px;
           margin-top: 20px;
         }
 
-        .arrow {
-          width: 47%;
-          height: 42px;
-          border-top: none;
-          border-left: solid 1px black;
-          border-right: solid 1px black;
-          border-bottom: solid 1px black;
-          margin-bottom: 30px;
-        }
-
         .container > p:nth-child(5) {
           font-size: 2.5rem;
           font-weight: bold;
-          margin-bottom: 100px;
+          margin-top: 20px;
+          margin-bottom: 50px;
         }
 
         button {
