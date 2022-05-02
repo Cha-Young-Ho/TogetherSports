@@ -68,11 +68,14 @@ const NavigationBar = () => {
           setLoginData(true);
 
           console.log("Nav : Client got this info = " + myinfo);
+        } else {
+          setLoginData(true);
+          FailResponse(res.status.code);
         }
       })
       .catch((error) => {
-        FailResponse(error.response.data.status.code);
         setLoginData(false);
+        FailResponse(error.response.data.status.code);
       });
   }, []);
 

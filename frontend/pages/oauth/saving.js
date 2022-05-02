@@ -18,15 +18,11 @@ const Saving = () => {
   }, []);
 
   useEffect(() => {
-    alert(
-      `aToken = ${accessToken}, rToken = ${refreshToken}, first = ${isFirst}`
-    );
-
     if (accessToken && refreshToken && isFirst) {
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
 
-      if (isFirst) {
+      if (isFirst === "true") {
         router.replace("/signup/addinfo/personalinfo");
         return;
       }
