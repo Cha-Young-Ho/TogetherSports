@@ -23,10 +23,3 @@ server:
     encoding:
       charset: UTF-8
       force: true
-
-# aws properties
-
----
-spring:
-  profiles:
-    active: deployment
