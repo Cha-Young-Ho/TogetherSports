@@ -126,14 +126,14 @@ const NavigationBar = () => {
               </Link>
             </div>
             <div className="category">
-              <Link href="/">
-                <div className="tag">소개</div>
-              </Link>
               <Link href="/room/roomlist">
-                <div className="tag">방 목록</div>
+                <div className="tag">일정목록</div>
               </Link>
               <Link href="/myroom">
-                <div className="tag">마이룸</div>
+                <div className="tag">내일정</div>
+              </Link>
+              <Link href="/room/createroom/roomsetting">
+                <div className="tag">방생성</div>
               </Link>
             </div>
           </div>
