@@ -61,6 +61,9 @@ dependencies {
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
 	runtimeOnly'io.jsonwebtoken:jjwt-jackson:0.11.2'
 
+	// poi (엑셀 파일 처리용 라이브러리)
+	implementation 'org.apache.poi:poi-ooxml:5.2.2'
+
 	// test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
