@@ -33,7 +33,6 @@ const Banner = () => {
         .container {
           width: 100%;
           position: relative;
-          user-select: none;
           background-color: rgba(0, 0, 0, 0.16);
         }
 

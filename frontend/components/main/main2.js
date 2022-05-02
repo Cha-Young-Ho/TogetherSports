@@ -1,9 +1,11 @@
 import TextLogo from "./textLogo";
+import Link from "next/link";
 
 /* 수정 필요 */
 // 1. 명세 후에 현재 모집중인 방의 개수 입력 필요
 // 2. right-section 원 안의 이미지구하기
 // 3. right-section의 화살표 이미지 구하기
+// 4. 회원가입 버튼 누를 때 이미 회원인지 아닌지 판단에 따라 다른 link로 보내기
 
 const Main2 = () => {
   return (
