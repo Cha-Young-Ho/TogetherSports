@@ -27,7 +27,7 @@ public class LocationController {
     private final LocationService locationService;
 
     // 특별시, 광역시, 도 단위 행정구역(최상위 행정구역) 조회
-    @GetMapping("/locations")
+    @GetMapping("/api/locations")
     public ResponseEntity<Response<List<String>>> retrievePrimaryLocations() {
         List<String> primaryLocation = locationService.getPrimaryLocation();
 
@@ -35,7 +35,7 @@ public class LocationController {
     }
 
     // 하위 행정구역 조회
-    @GetMapping("/locations/parent/{name}")
+    @GetMapping("/api/locations/parent/{name}")
     public ResponseEntity<Response<List<String>>> retrieveChildLocations(@PathVariable String name) {
         List<String> childLocation = locationService.getChildLocation(name);
 
