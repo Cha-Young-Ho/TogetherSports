@@ -2,8 +2,10 @@ package com.togethersports.tosproejct.location;
 
 import com.togethersports.tosproejct.common.code.CommonCode;
 import com.togethersports.tosproejct.common.dto.Response;
+import com.togethersports.tosproejct.location.code.LocationCode;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,9 +26,22 @@ public class LocationController {
 
     private final LocationService locationService;
 
-    @GetMapping("/location/parent/{name}")
+    // 특별시, 광역시, 도 단위 행정구역(최상위 행정구역) 조회
+    @GetMapping("/api/locations")
+    public ResponseEntity<Response<List<String>>> retrievePrimaryLocations() {
+        List<String> primaryLocation = locationService.getPrimaryLocation();
+
+        return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, primaryLocation));
+    }
+
+    // 하위 행정구역 조회
+    @GetMapping("/api/locations/parent/{name}")
     public ResponseEntity<Response<List<String>>> retrieveChildLocations(@PathVariable String name) {
         List<String> childLocation = locationService.getChildLocation(name);
+
+        if (childLocation.isEmpty()) {
+            return ResponseEntity.badRequest().body(Response.of(LocationCode.CHILD_NOT_FOUND, null));
+        }
 
         return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, childLocation));
     }
