@@ -2,9 +2,7 @@ import TextLogo from "./textLogo";
 import Link from "next/link";
 
 /* 수정 필요 */
-// 1. img 색상 다른거 이미지 받아야함
-// 2. 화살표 이미지 받기
-// 3. 방 생성하러 갈 때 로그인 했는지 확인 필요
+// 1. 방 생성하러 갈 때 로그인 했는지 확인 필요
 
 const Main3 = () => {
   return (
@@ -43,16 +41,11 @@ const Main3 = () => {
         <img src="/main3-arrow.png" />
 
         <p>방 생성 완료 !</p>
-
-        <Link href="/room/createroom/roomsetting">
-          <button>🔥방 생성하러 가기🔥</button>
-        </Link>
       </div>
       <style jsx>{`
         .container {
           width: 100%;
-          height: 788px;
-          box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.16);
+          height: 700px;
           background-color: white;
           display: flex;
           flex-direction: column;
@@ -98,20 +91,6 @@ const Main3 = () => {
           font-size: 2.5rem;
           font-weight: bold;
           margin-top: 20px;
-          margin-bottom: 50px;
-        }
-
-        button {
-          width: 338px;
-          height: 81px;
-          border: none;
-          border-radius: 10px;
-          box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
-          background-image: linear-gradient(to bottom, #6db152, #2b7a5f);
-          font-size: 3rem;
-          font-weight: bold;
-          color: white;
-          cursor: pointer;
         }
       `}</style>
     </>

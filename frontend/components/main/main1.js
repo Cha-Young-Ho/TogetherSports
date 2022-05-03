@@ -1,7 +1,20 @@
 import TextLogo from "./textLogo";
 
 const Main1 = () => {
-  const sports = ["야구", "농구", "축구", "탁구", "당구"];
+  const sports = [
+    "축구",
+    "야구",
+    "농구",
+    "당구",
+    "탁구",
+    "헬스",
+    "자전거",
+    "골프",
+    "등산",
+    "런닝",
+    "배드민턴",
+    "기타",
+  ];
 
   return (
     <>

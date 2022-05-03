@@ -31,7 +31,7 @@ const Footer = () => {
           align-items: center;
           background-color: rgba(0, 0, 0, 0.16);
           width: 100%;
-          height: 450px;
+          height: 450px; // 이 값은 main3에서도 쓰이기 때문에 바꾸면 안됨
           max-width: 1920px;
         }
 
