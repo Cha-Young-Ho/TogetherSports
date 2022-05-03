@@ -21,7 +21,7 @@ export default function Home() {
           <Main2 />
           <Main3 />
           <Link href="/room/createroom/roomsetting">
-            <button>🔥방 생성하러 가기🔥</button>
+            <button className="fadein">🔥방 생성하러 가기🔥</button>
           </Link>
         </div>
 
@@ -36,16 +36,26 @@ export default function Home() {
           border-radius: 10px;
           box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
           background-image: linear-gradient(to bottom, #6db152, #2b7a5f);
-          font-size: 3rem;
+          font-size: 2.5rem;
+          letter-spacing: 1px;
           font-weight: bold;
           color: white;
           cursor: pointer;
           position: -webkit-sticky; // safari
           position: sticky;
           bottom: 30px;
-          left: 50%;
-          transform: translate(-50%, 0);
+          left: calc((100% - 310px) / 2);
           margin-bottom: 50px;
+          animation: zoomin 0.5s ease-in-out;
+        }
+
+        @keyframes zoomin {
+          0% {
+            transform: scale(0);
+          }
+          100% {
+            transform: scale(1);
+          }
         }
       `}</style>
     </>

@@ -1,10 +1,18 @@
 import TextLogo from "./textLogo";
-import Link from "next/link";
+import useScrollFadeIn from "./useScrollFadeIn";
 
 /* 수정 필요 */
 // 1. 방 생성하러 갈 때 로그인 했는지 확인 필요
 
 const Main3 = () => {
+  const animatedItem1 = useScrollFadeIn("up", 0.5, 0.1);
+  const animatedItem2 = useScrollFadeIn("up", 0.5, 0.2);
+  const animatedItem3 = useScrollFadeIn("up", 0.5, 0.3);
+  const animatedItem4 = useScrollFadeIn("up", 0.5, 0.4);
+  const animatedItem5 = useScrollFadeIn("up", 0.5, 0.5);
+  const animatedItem6 = useScrollFadeIn("up", 0.5, 0.8);
+  const animatedItem7 = useScrollFadeIn("up", 0.5, 1.0);
+
   return (
     <>
       <div className="container">
@@ -12,25 +20,25 @@ const Main3 = () => {
         <p>할 사람을 직접 모집할 수도 있어요 ~</p>
 
         <div className="guide">
-          <div>
+          <div {...animatedItem1}>
             <p>
               원하는 <b>종목</b> 선택
             </p>
             <img src={"/main3-img1.png"} />
           </div>
 
-          <p>▶</p>
+          <p {...animatedItem2}>▶</p>
 
-          <div>
+          <div {...animatedItem3}>
             <p>
               가능한 <b>일정</b> 선택
             </p>
             <img src={"/main3-img2.png"} />
           </div>
 
-          <p>▶</p>
+          <p {...animatedItem4}>▶</p>
 
-          <div>
+          <div {...animatedItem5}>
             <p>
               같이할 <b>인원</b> 선택
             </p>
@@ -38,9 +46,9 @@ const Main3 = () => {
           </div>
         </div>
 
-        <img src="/main3-arrow.png" />
+        <img src="/main3-arrow.png" {...animatedItem6} />
 
-        <p>방 생성 완료 !</p>
+        <p {...animatedItem7}>방 생성 완료 !</p>
       </div>
       <style jsx>{`
         .container {
@@ -88,7 +96,7 @@ const Main3 = () => {
         }
 
         .container > p:nth-child(5) {
-          font-size: 2.5rem;
+          font-size: 3rem;
           font-weight: bold;
           margin-top: 20px;
         }

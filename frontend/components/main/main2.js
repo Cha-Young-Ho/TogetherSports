@@ -1,32 +1,42 @@
 import TextLogo from "./textLogo";
 import Link from "next/link";
+import useScrollFadeIn from "./useScrollFadeIn";
 
 /* 수정 필요 */
 // 1. 명세 후에 현재 모집중인 방의 개수 입력 필요
 // 2. 회원가입 버튼 누를 때 이미 회원인지 아닌지 판단에 따라 다른 link로 보내기
 
 const Main2 = () => {
+  const animatedItem1 = useScrollFadeIn("up", 0.5, 0.1);
+  const animatedItem2 = useScrollFadeIn("up", 0.5, 0.3);
+  const animatedItem3 = useScrollFadeIn("up", 0.5, 0.5);
+  const animatedItem4 = useScrollFadeIn("up", 0.5, 0.1);
+
   return (
     <>
       <div className="container">
         <div className="section">
           <div className="left-section">
-            <div>
+            <div {...animatedItem1}>
               <p>가까운 동네에서 함께</p>
               <TextLogo color={"white"} />
               <p>일정을 구해보세요 !</p>
             </div>
 
-            <p className="emoji">🏃🏃‍♂️🏃‍♀️</p>
-
-            <p>
-              현재 <b>123</b>개의 방에서
+            <p className="emoji" {...animatedItem2}>
+              🏃🏃‍♂️🏃‍♀️
             </p>
-            <p>같이 운동할 사람을 구하는 중 !</p>
+
+            <div className="info-text" {...animatedItem3}>
+              <p>
+                현재 <b>123</b>개의 방에서
+              </p>
+              <p>같이 운동할 사람을 구하는 중 !</p>
+            </div>
           </div>
 
           <Link href="/login">
-            <div className="right-section">
+            <div className="right-section" {...animatedItem4}>
               <img src={"/main2.png"} />
             </div>
           </Link>
@@ -79,11 +89,10 @@ const Main2 = () => {
 
         .emoji {
           font-size: 10rem;
-          /* margin-bottom: 10px; */
+          margin-bottom: 10px;
         }
 
-        .left-section > p:nth-child(3),
-        .left-section > p:nth-child(4) {
+        .info-text > p {
           font-size: 3rem;
           letter-spacing: 2px;
         }
