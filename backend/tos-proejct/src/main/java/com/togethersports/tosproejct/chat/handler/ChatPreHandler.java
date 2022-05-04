@@ -27,9 +27,12 @@ public class ChatPreHandler implements ChannelInterceptor {
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
+
+        log.info("여기 실행했음");
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(message);
 
 
+        log.info("여기임 = {}", message.getHeaders());
         // 헤더 토큰 얻기
         String authorizationHeader = String.valueOf(headerAccessor.getNativeHeader("Authorization"));
         String command = String.valueOf(headerAccessor.getHeader("stompCommand"));
@@ -38,8 +41,10 @@ public class ChatPreHandler implements ChannelInterceptor {
 
             return message;
         }
-        if(authorizationHeader == null || authorizationHeader.equals("null")){
 
+        log.info("authorization header = {}", authorizationHeader);
+        if(authorizationHeader == null || authorizationHeader.equals("null")){
+            log.info("---");
             throw new MalformedJwtException("JWT");
         }
 
@@ -50,10 +55,13 @@ public class ChatPreHandler implements ChannelInterceptor {
         try{
             claims = jwtService.verifyToken(token, jwtProperties.getAccessTokenSigningKey());
         }catch (JwtExpiredTokenException e){
+
             throw new MessageDeliveryException("JWT");
         }catch (MalformedJwtException e){
+
             throw new MalformedJwtException("JWT");
         }catch (JwtModulatedTokenException e){
+
             throw new JwtModulatedTokenException("JWT");
         }
 

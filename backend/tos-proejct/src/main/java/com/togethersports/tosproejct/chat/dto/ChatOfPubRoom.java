@@ -6,6 +6,8 @@ import lombok.Getter;
 @Builder
 @Getter
 public class ChatOfPubRoom {
-
-    String content;
+    Long userId;
+    String nickname;
+    String userProfileImagePath;
+    ChatOfMessage content;
 }
