@@ -169,7 +169,7 @@ public class RoomService {
         }
         // 정상적으로 참여가 가능한 경우
         return RoomOfParticipate.builder()
-                .status(RoomCode.PARTICPATE_ROOM)
+                .status(RoomCode.PARTICIPATE_ROOM)
                 .roomOfInfo(getRoomInfo(currentUser, roomId))
                 .participates(getParticipantsInfo(roomEntity.getParticipants()))
                 .build();

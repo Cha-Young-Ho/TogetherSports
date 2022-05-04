@@ -1,5 +1,6 @@
 package com.togethersports.tosproejct.user;
 
+import com.togethersports.tosproejct.chat.ChatMessage;
 import com.togethersports.tosproejct.participant.Participant;
 import com.togethersports.tosproejct.room.Room;
 import com.togethersports.tosproejct.user.dto.UserOfModifyInfo;
@@ -87,7 +88,10 @@ public class User {
     private boolean informationRequired;
 
     @OneToMany(mappedBy = "user")
-    private List<Participant> participateRoom;
+    private List<Participant> participateRooms;
+
+    @OneToMany(mappedBy = "user")
+    private List<ChatMessage> chatMessages;
 
     /**
      * 신규 사용자 계정 엔티티를 생성해서 반환한다.<br>

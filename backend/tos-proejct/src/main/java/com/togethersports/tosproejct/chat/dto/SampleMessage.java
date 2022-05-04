@@ -7,6 +7,8 @@ import lombok.Getter;
 @Getter
 public class SampleMessage {
 
+    private Long userId;
+    private Long roomId;
     private String target;
     private String msg;
 }

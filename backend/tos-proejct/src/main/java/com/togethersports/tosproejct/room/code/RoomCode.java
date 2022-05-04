@@ -14,7 +14,8 @@ public enum RoomCode implements ResponseCode {
     NOT_FOUND_ROOM(1200, "해당하는 방이 존재하지 않습니다."),
     FULL_ROOM(1201, "인원이 가득 찼습니다."),
     TIME_OUT_ROOM(1202, "시간이 지난 방"),
-    PARTICPATE_ROOM(1203, "방에 참가 완료했습니다.");
+    PARTICIPATE_ROOM(1203, "방에 참가 완료했습니다."),
+    NOT_PARTICIPATE_ROOM(1204, "참가하지않은 방입니다.");
 
     private final int code;
     private final String message;
