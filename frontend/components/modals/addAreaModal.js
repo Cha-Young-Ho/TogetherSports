@@ -1,4 +1,76 @@
+import { getRootLocations, getChildLocations } from "../../api/rooms";
+import { useEffect, useState } from "react";
+import { FailResponse } from "../../api/failResponse";
+
 const AddAreaModal = (props) => {
+  const [rootItems, setRootItems] = useState([
+    "서울특별시",
+    "부산광역시",
+    "대구광역시",
+  ]);
+  const [secondItems, setSecondItems] = useState([]);
+  const [thirdItems, setThirdItems] = useState([]);
+  const [selectedAreas, setSelectedAreas] = useState([]);
+
+  const clickRootItem = (e) => {
+    console.log("root : " + e.target.innerText);
+    setSecondItems(["구구", "강남구", "강동구", "강남구"]);
+    // getChildLocations(e.target.innerText)
+    //   .then((res) => {
+    //     if (res.status.code === 5000) {
+    //       setSecondItems(res.content);
+    //     } else {
+    //       FailResponse(res.status.code);
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     if (error.response) {
+    //       FailResponse(error.response.data.status.code);
+    //     }
+    //   });
+  };
+
+  const clickSecondItem = (e) => {
+    console.log("second : " + e.target.innerText);
+    setThirdItems(["가츠동", "우동", "숭구리 동동", "주모 여기 동동"]);
+    // getChildLocations(e.target.innerText)
+    //   .then((res) => {
+    //     if (res.status.code === 5000) {
+    //       setThirdItems(res.content);
+    //     } else {
+    //       FailResponse(res.status.code);
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     if (error.response) {
+    //       FailResponse(error.response.data.status.code);
+    //     }
+    //   });
+  };
+
+  const clickThirdItem = (e) => {
+    console.log("마지막 선택" + e.target.innerText);
+    setSelectedAreas((prev) => [...prev, e.target.innerText]);
+  };
+
+  useEffect(() => {
+    if (props.open) {
+      getRootLocations()
+        .then((res) => {
+          if (res.status.code === 5000) {
+            setRootItems(res.content);
+          } else {
+            FailResponse(res.status.code);
+          }
+        })
+        .catch((error) => {
+          if (error.response) {
+            FailResponse(error.response.data.status.code);
+          }
+        });
+    }
+  }, props.open);
+
   return (
     <>
       <div className={props.open ? "openModal modal" : "modal"}>
@@ -10,21 +82,69 @@ const AddAreaModal = (props) => {
           <div className="body-wrapper">
             <div className="region-depth">
               <p>시/도</p>
-              <div className="depth1-list"></div>
+              <div className="depth-list">
+                {rootItems.length !== 0 ? (
+                  rootItems.map((location, index) => {
+                    return (
+                      <p key={index} onClick={clickRootItem}>
+                        {location}
+                      </p>
+                    );
+                  })
+                ) : (
+                  <></>
+                )}
+              </div>
             </div>
             <div className="region-depth">
               <p>시/군/구</p>
-              <div className="depth2-list"></div>
+              <div className="depth-list">
+                {secondItems.length !== 0 ? (
+                  secondItems.map((location, index) => {
+                    return (
+                      <p key={index} onClick={clickSecondItem}>
+                        {location}
+                      </p>
+                    );
+                  })
+                ) : (
+                  <></>
+                )}
+              </div>
             </div>
             <div className="region-depth">
               <p>동/읍/면</p>
-              <div className="depth3-list"></div>
+              <div className="depth-list">
+                {thirdItems.length !== 0 ? (
+                  thirdItems.map((location, index) => {
+                    return (
+                      <p key={index} onClick={clickThirdItem}>
+                        {location}
+                      </p>
+                    );
+                  })
+                ) : (
+                  <></>
+                )}
+              </div>
             </div>
           </div>
           <div className="tag-wrapper">
-            <p>최대 x개까지 선택 가능합니다.</p>
-            <p>태그</p>
-            <p>태그</p>
+            <p>최대 3개까지 선택 가능합니다.</p>
+            <div className="selected-areas">
+              {selectedAreas.length !== 0 ? (
+                selectedAreas.map((area, index) => {
+                  return (
+                    <div key={index}>
+                      <p>{area}</p>
+                      <button>⨉</button>
+                    </div>
+                  );
+                })
+              ) : (
+                <></>
+              )}
+            </div>
           </div>
           <div className="button-wrapper">
             <button className="done-btn">완료</button>
@@ -119,15 +239,35 @@ const AddAreaModal = (props) => {
           background-color: #fff;
         }
 
-        .region-depth p {
+        .region-depth > p {
           display: flex;
           width: 90%;
-          height: 8%;
+          padding: 10px;
+          border-bottom: 1px solid lightgrey;
           justify-content: center;
           align-items: center;
           font-size: 1.5rem;
-          margin: 15px 0;
-          border-bottom: 1px solid lightgrey;
+        }
+
+        .depth-list {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          padding: 0 17px;
+        }
+
+        .depth-list p {
+          font-size: 1.5rem;
+          text-align: left;
+          padding: 10px 0 10px 5px;
+          cursor: pointer;
+        }
+
+        .depth-list p:hover {
+          font-weight: bold;
+          background-color: rgb(70, 143, 91, 0.2);
+          color: #08555f;
         }
 
         .tag-wrapper {
@@ -142,6 +282,33 @@ const AddAreaModal = (props) => {
           margin: 0 25px;
           font-weight: 300;
           color: #b5b5b5;
+        }
+
+        .selected-areas {
+          display: flex;
+          margin-left: 25px;
+        }
+
+        .selected-areas > div {
+          display: flex;
+          align-items: center;
+          height: 30px;
+          border-radius: 16px;
+          border: solid 1px #6db152;
+          margin: 5px 5px 5px 0;
+        }
+
+        .selected-areas > div > p {
+          color: black;
+        }
+
+        .selected-areas > div > button {
+          border: none;
+          cursor: pointer;
+          background-color: #fff;
+          display: flex;
+          align-items: center;
+          margin-right: 10px;
         }
 
         .button-wrapper {

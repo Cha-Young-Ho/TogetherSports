@@ -101,6 +101,26 @@ const getRoomList = async (
   return dataPromise;
 };
 
+// 최상위(시) 행정구역 조회
+const getRootLocations = async () => {
+  const promise = axios.get(`http://localhost:8080/locations`);
+
+  const dataPromise = promise.then((res) => res.data);
+
+  return dataPromise;
+};
+
+// 하위(시 이하) 행정구역 조회
+const getChildLocations = async (name) => {
+  const promise = axios.get(
+    `http://localhost:8080/locations/parent/name?${name}`
+  );
+
+  const dataPromise = promise.then((res) => res.data);
+
+  return dataPromise;
+};
+
 // POST
 
 // 방 생성
@@ -229,4 +249,12 @@ const deleteRoom = async (roomSequenceId) => {
   return dataPromise;
 };
 
-export { getRoomInfo, getRoomList, postUpdateRoom, postCreateRoom, deleteRoom };
+export {
+  getRoomInfo,
+  getRoomList,
+  getRootLocations,
+  getChildLocations,
+  postUpdateRoom,
+  postCreateRoom,
+  deleteRoom,
+};
