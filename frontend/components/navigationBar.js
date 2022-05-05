@@ -75,7 +75,9 @@ const NavigationBar = () => {
       })
       .catch((error) => {
         setLoginData(false);
-        FailResponse(error.response.data.status.code);
+        if (error.response) {
+          FailResponse(error.response.data.status.code);
+        }
       });
   }, []);
 
@@ -109,7 +111,9 @@ const NavigationBar = () => {
         }
       })
       .catch((error) => {
-        FailResponse(error.response.data.status.code);
+        if (error.response) {
+          FailResponse(error.response.data.status.code);
+        }
       });
   };
 
