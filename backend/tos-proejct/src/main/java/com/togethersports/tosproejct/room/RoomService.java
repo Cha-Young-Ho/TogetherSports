@@ -14,8 +14,10 @@ import com.togethersports.tosproejct.user.UserRepository;
 import com.togethersports.tosproejct.user.UserService;
 import com.togethersports.tosproejct.user.dto.UserOfOtherInfo;
 import com.togethersports.tosproejct.user.exception.NotEnteredInformationException;
+import com.togethersports.tosproejct.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.binary.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,7 +26,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * <h1>RoomService</h1>
  * <p>
@@ -37,6 +43,7 @@ import java.util.List;
  * @author younghoCha
  */
 
+@Slf4j
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -142,7 +149,7 @@ public class RoomService {
         return list;
     }
 
-    public RoomOfParticipate<?> participateRoom(User currentUser, Long roomId){
+    public RoomOfParticipate participateRoom(User currentUser, Long roomId){
         Room roomEntity = roomRepository.findById(roomId)
                 .orElseThrow(() -> new NotFoundRoomException("해당 방을 찾을 수 없습니다."));
 
@@ -189,4 +196,55 @@ public class RoomService {
     public boolean getAttendance(Long userId, Long roomId){
         return participantService.checkAttendance(userRepository.findById(userId).get(), roomRepository.findById(roomId).get());
     }
+
+    public RoomsOfMyRoom getMyRoom(User currentUser){
+        User userEntity = userRepository.findById(currentUser.getId())
+                .orElseThrow(() -> new UserNotFoundException());
+
+        List<Room> hostingRoomEntities = userEntity.getHostingRooms();
+
+        List<Participant> participateEntities = userEntity.getParticipateRooms();
+
+        List<Room> participatingRoomEntities = new ArrayList<>();
+        for (Participant participant : participateEntities){
+            participatingRoomEntities.add(participant.getRoom());
+        }
+
+
+
+        List<Room> imminentRoomEntities = participatingRoomEntities.stream().filter(room->{
+            if (LocalDateTime.now().isAfter(room.getStartAppointmentDate())) {
+                return false;
+            }
+            return true;
+        }).collect(Collectors.toList());
+
+        
+
+        Collections.sort(imminentRoomEntities, new SortByDate());
+
+
+        //시간 정렬
+
+        return RoomsOfMyRoom.builder()
+                .hostingRooms(parsingEntityUtils.parsingRoomToRoomOfList(hostingRoomEntities))
+                .participateRooms(parsingEntityUtils.parsingRoomToRoomOfList(participatingRoomEntities))
+                .imminentRooms(parsingEntityUtils.parsingRoomToRoomOfList(imminentRoomEntities))
+                .build();
+
+
+
+    }
+
+    //시간 정렬을 위한 스태틱클래스
+    static class SortByDate implements Comparator<Room> {
+
+        @Override
+        public int compare(Room o1, Room o2) {
+            return o1.getStartAppointmentDate().compareTo(o2.getStartAppointmentDate());
+        }
+    }
+
+
+
 }

@@ -75,4 +75,12 @@ public class RoomController {
         // 참가 완료
         return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, room));
     }
+
+    @GetMapping("/api/room/myroom")
+    public ResponseEntity<Response> myRoom(@CurrentUser User user){
+        RoomsOfMyRoom rooms = roomService.getMyRoom(user);
+
+        return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, rooms));
+
+    }
 }
