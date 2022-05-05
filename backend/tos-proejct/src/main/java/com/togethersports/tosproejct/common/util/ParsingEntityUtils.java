@@ -4,7 +4,9 @@ import com.togethersports.tosproejct.area.ActiveArea;
 import com.togethersports.tosproejct.image.RoomImage;
 import com.togethersports.tosproejct.interest.Interest;
 import com.togethersports.tosproejct.participant.Participant;
+import com.togethersports.tosproejct.room.Room;
 import com.togethersports.tosproejct.room.dto.ImageOfRoomInfo;
+import com.togethersports.tosproejct.room.dto.RoomOfList;
 import com.togethersports.tosproejct.tag.Tag;
 import com.togethersports.tosproejct.user.dto.UserOfOtherInfo;
 import org.springframework.stereotype.Component;
@@ -100,6 +102,17 @@ public class ParsingEntityUtils {
         }
 
         return imageOfRoomInfoList;
+    }
+
+    public List<RoomOfList> parsingRoomToRoomOfList(List<Room> roomEntities){
+        List<RoomOfList> roomOfLists = new ArrayList<>();
+
+        for (Room room : roomEntities){
+            List<String> tags = parsingTagEntityToString(room.getTags());
+            roomOfLists.add(RoomOfList.of(room, tags));
+        }
+
+        return roomOfLists;
     }
 
 
