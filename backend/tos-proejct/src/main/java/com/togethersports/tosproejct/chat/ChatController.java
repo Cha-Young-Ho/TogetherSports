@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
  * </p>
  * @author younghoCha
  */
+
 @RestController
 @RequiredArgsConstructor
 public class ChatController {
@@ -31,14 +33,14 @@ public class ChatController {
     private final SimpMessageSendingOperations sendingOperations;
     //방 채팅
     @MessageMapping("/room/{roomId}/chat")
-    public void chat(ClientMessage message, @DestinationVariable Long roomId) {
+    public void chat(ClientMessage message, @DestinationVariable Long roomId, @Header Long userId) {
 //        if (ChatMessage.MessageType.ENTER.equals(message.getType())) {
 //            message.setMessage(message.getSender()+"님이 입장하였습니다.");
 //        }
 
 
         // 해당 방과 해당 유저가 존재하는지 확인
-        chatService.checkValidate(message.getUserId(), roomId);
+        chatService.checkValidate(userId, roomId);
 
         // 메세지 저장
         ChatOfPubRoom pubMessage = chatService.saveChat(message, roomId);
