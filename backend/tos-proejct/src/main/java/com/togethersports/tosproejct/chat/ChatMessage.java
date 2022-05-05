@@ -9,7 +9,13 @@ import lombok.Getter;
 
 import javax.persistence.*;
 
-
+/**
+ * <h1>ChatMessage</h1>
+ * <p>
+ *     채팅 엔티티
+ * </p>
+ * @author younghocha
+ */
 @Getter
 @Entity
 public class ChatMessage extends ChatBaseEntity {

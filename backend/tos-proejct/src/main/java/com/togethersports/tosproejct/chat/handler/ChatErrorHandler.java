@@ -16,7 +16,13 @@ import org.springframework.web.socket.messaging.StompSubProtocolErrorHandler;
 import java.nio.charset.MalformedInputException;
 import java.nio.charset.StandardCharsets;
 
-@Slf4j
+/**
+ * <h1>ChatErrorHandler</h1>
+ * <p>
+ *     채팅 관련 예외 처리 핸들러
+ * </p>
+ * @author younghocha
+ */
 @Component
 public class ChatErrorHandler extends StompSubProtocolErrorHandler {
 
@@ -24,39 +30,58 @@ public class ChatErrorHandler extends StompSubProtocolErrorHandler {
         super();
     }
 
+    /**
+     * @param clientMessage : 실제 사용자 메세지
+     * @param ex : 예외 내용
+     * @return : 예외 내용 메세지
+     * @author : younghoCha
+     */
     @Override
     public Message<byte[]> handleClientMessageProcessingError(Message<byte[]>clientMessage, Throwable ex)
     {
         if(ex.getCause().getMessage().equals("JWT")){
-            return handleJwtException(clientMessage, ex);
+            return handleJwtException();
         }
 
         if(ex.getCause().getMessage().equals("Auth")){
-            return handleUnauthorizedException(clientMessage, ex);
+            return handleUnauthorizedException();
         }
 
         return super.handleClientMessageProcessingError(clientMessage, ex);
     }
 
-
+    /**
+     * 방에 대한 권한이 없을 경우를 처리하는 메소드
+     * @return : Client에 전달하기위한 예외 내용에 대한 메세지
+     * @author younghoCha
+     */
     // 권한 예외(해당 방에 접속하지 않았을 시)
-    private Message<byte[]> handleUnauthorizedException(Message<byte[]> clientMessage, Throwable ex)
+    private Message<byte[]> handleUnauthorizedException()
     {
 
-        ApiError apiError = new ApiError(
-                ex.getMessage());
 
         return prepareErrorMessage(RoomCode.NOT_PARTICIPATE_ROOM);
 
     }
 
+    /**
+     * Jwt관련 예외 상황의 경우를 처리하는 메소드
+     * @return : Client에 전달하기위한 예외 내용에 대한 메세지
+     * @author : younghoCha
+     */
     // JWT 예외
-    private Message<byte[]> handleJwtException(Message<byte[]> clientMessage, Throwable ex){
+    private Message<byte[]> handleJwtException(){
 
 
         return prepareErrorMessage(JwtErrorCode.ACCESS_TOKEN_EXPIRATION);
     }
 
+    /**
+     * 메세지 생성을 위한 메소드
+     * @param responseCode : 예외 내용에 따라 다른 코드를 전달
+     * @return : Client에 전달될 메세지
+     * @author younghoCha
+     */
     // 메세지 생성
     private Message<byte[]> prepareErrorMessage(ResponseCode responseCode)
     {

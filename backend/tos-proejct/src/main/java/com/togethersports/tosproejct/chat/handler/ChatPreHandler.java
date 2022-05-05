@@ -8,7 +8,6 @@ import com.togethersports.tosproejct.user.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.MalformedJwtException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageDeliveryException;
@@ -16,7 +15,13 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.stereotype.Component;
 
-@Slf4j
+/**
+ * <h1>ChatPreHandler</h1>
+ * <p>
+ *     채팅 전달 전, 사용자의 인증을 수행하는 클래스
+ * </p>
+ * @author younghocha
+ */
 @RequiredArgsConstructor
 @Component
 public class ChatPreHandler implements ChannelInterceptor {
@@ -27,19 +32,21 @@ public class ChatPreHandler implements ChannelInterceptor {
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
+
+
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(message);
-
-
         // 헤더 토큰 얻기
         String authorizationHeader = String.valueOf(headerAccessor.getNativeHeader("Authorization"));
         String command = String.valueOf(headerAccessor.getHeader("stompCommand"));
         // 토큰 자르기 fixme 토큰 자르는 로직 validate 로 리팩토링
-        if(!command.equals("SEND")){
 
+        //SEND Command 시에만 JWT 검증을 수행한다.
+        //DISCONNECT 일 경우 Auth 헤더가 추가되지 않음.
+        if(!command.equals("SEND")){
             return message;
         }
-        if(authorizationHeader == null || authorizationHeader.equals("null")){
 
+        if(authorizationHeader == null || authorizationHeader.equals("null")){
             throw new MalformedJwtException("JWT");
         }
 
@@ -49,18 +56,15 @@ public class ChatPreHandler implements ChannelInterceptor {
         Claims claims;
         try{
             claims = jwtService.verifyToken(token, jwtProperties.getAccessTokenSigningKey());
-        }catch (JwtExpiredTokenException e){
+        }catch (JwtExpiredTokenException e){ // 만료 예외
             throw new MessageDeliveryException("JWT");
-        }catch (MalformedJwtException e){
+        }catch (MalformedJwtException e){ //변조 예외
             throw new MalformedJwtException("JWT");
-        }catch (JwtModulatedTokenException e){
+        }catch (JwtModulatedTokenException e){ //변조 예외
             throw new JwtModulatedTokenException("JWT");
         }
 
-        // Principal로 담을 예정
-        User verifiedUser = jwtService.convertUserModel(claims);
-        
+        //인증 성공 시
         return message;
-
     }
 }
