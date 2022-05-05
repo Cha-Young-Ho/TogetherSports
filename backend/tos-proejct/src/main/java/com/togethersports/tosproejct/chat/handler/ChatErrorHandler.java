@@ -23,6 +23,7 @@ import java.nio.charset.StandardCharsets;
  * </p>
  * @author younghocha
  */
+
 @Component
 public class ChatErrorHandler extends StompSubProtocolErrorHandler {
 
@@ -85,7 +86,6 @@ public class ChatErrorHandler extends StompSubProtocolErrorHandler {
     // 메세지 생성
     private Message<byte[]> prepareErrorMessage(ResponseCode responseCode)
     {
-
         String code = String.valueOf(responseCode.getMessage());
 
         StompHeaderAccessor accessor = StompHeaderAccessor.create(StompCommand.ERROR);
