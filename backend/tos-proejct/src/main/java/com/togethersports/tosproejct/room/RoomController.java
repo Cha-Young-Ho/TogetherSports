@@ -11,7 +11,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
+/**
+ * <h1>RoomController</h1>
+ * <p>
+ *     방과 관련된 요청에 대한 컨트롤러
+ * </p>
+ * @author younghocha
+ */
 @RequiredArgsConstructor
 @RestController
 public class RoomController {

@@ -3,7 +3,7 @@ package com.togethersports.tosproejct.chat;
 import com.togethersports.tosproejct.chat.dto.ChatOfHistory;
 import com.togethersports.tosproejct.chat.dto.ChatOfMessage;
 import com.togethersports.tosproejct.chat.dto.ChatOfPubRoom;
-import com.togethersports.tosproejct.chat.dto.SampleMessage;
+import com.togethersports.tosproejct.chat.dto.ClientMessage;
 import com.togethersports.tosproejct.participant.ParticipantRepository;
 import com.togethersports.tosproejct.participant.exception.NotParticipateRoomException;
 import com.togethersports.tosproejct.room.Room;
@@ -13,15 +13,11 @@ import com.togethersports.tosproejct.user.User;
 import com.togethersports.tosproejct.user.UserRepository;
 import com.togethersports.tosproejct.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
-
-
 
 @Service
 @Transactional
@@ -33,7 +29,7 @@ public class ChatService {
     private final ParticipantRepository participantRepository;
     private final ChatRepository chatRepository;
 
-    public ChatOfPubRoom saveChat(SampleMessage message, Long room_id){
+    public ChatOfPubRoom saveChat(ClientMessage message, Long room_id){
 
 //        User userEntity = userRepository.findById(message.getUserId())
 //                .orElseThrow(() -> new UserNotFoundException());
@@ -54,17 +50,20 @@ public class ChatService {
     }
 
     public void checkValidate(Long userId, Long roomId){
-        User user = userRepository.findById(1L)
+        //유저 존재 확인
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("해당하는 유저를 찾을 수 없습니다."));
+        //방 존재 확인
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new NotFoundRoomException("해당하는 방을 찾을 수 없습니다."));
+        //참여 여부 확인
+        //참여 했을 경우
         if(participantRepository.existsByUserAndRoom(user, room)){
-
-
             return;
         }
 
-        throw new NotParticipateRoomException();
+        //참여하지 않았을 경우
+        throw new NotParticipateRoomException("Auth");
     }
 
     public Page<ChatOfHistory> getChatHistory(Pageable pageable, Long roomId){
@@ -86,7 +85,7 @@ public class ChatService {
         return pageList;
     }
 
-    public ChatOfPubRoom getMessage(Long userId, SampleMessage message){
+    public ChatOfPubRoom getMessage(Long userId, ClientMessage message){
 
         User userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException());
