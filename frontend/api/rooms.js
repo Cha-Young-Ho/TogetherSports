@@ -42,7 +42,7 @@ const getRoomList = async (
 ) => {
   roomTitle = roomTitle === "" ? "" : `roomTitle=${roomTitle}&`;
   roomContent = roomContent === "" ? "" : `roomContent=${roomContent}&`;
-  area = area === "" ? "" : `area=${area}&`;
+  area = area.length !== 0 ? area.map((el) => "area=" + el + "&").join("") : "";
   exercise =
     exercise.length !== 0
       ? exercise.map((el) => "exercise=" + el + "&").join("")

@@ -8,11 +8,7 @@ import FailResponse from "../../api/failResponse";
 const FilteredRooms = () => {
   const dispatch = useDispatch();
 
-  const [selectedTypeButtons, _] = useState([
-    "최신순",
-    "임박한 시간순",
-    "참여자순",
-  ]);
+  const selectedTypeButtons = ["최신순", "임박한 시간순", "참여자순"];
   const [selectedSortType, setSelectedSortType] = useState("최신순");
 
   const [page, setPage] = useState(1);
@@ -148,7 +144,11 @@ const FilteredRooms = () => {
           setPage(page + 1);
         }
       })
-      .catch((error) => FailResponse(error.response.data.status.code));
+      .catch((error) => {
+        if (error.response) {
+          FailResponse(error.response.data.status.code);
+        }
+      });
 
     window.addEventListener("scroll", handleFollowScroll);
     return () => {
@@ -235,7 +235,11 @@ const FilteredRooms = () => {
             setPage(2);
           }
         })
-        .catch((error) => FailResponse(error.response.data.status.code));
+        .catch((error) => {
+          if (error.response) {
+            FailResponse(error.response.data.status.code);
+          }
+        });
 
       requestFilteringToFalse();
     }
@@ -276,7 +280,11 @@ const FilteredRooms = () => {
             setPage(page + 1);
           }
         })
-        .catch((error) => FailResponse(error.response.data.status.code));
+        .catch((error) => {
+          if (error.response) {
+            FailResponse(error.response.data.status.code);
+          }
+        });
     }
   }, [scrollY]);
 

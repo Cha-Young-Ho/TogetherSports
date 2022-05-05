@@ -1,56 +1,116 @@
 import { getRootLocations, getChildLocations } from "../../api/rooms";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { FailResponse } from "../../api/failResponse";
 
 const AddAreaModal = (props) => {
-  const [rootItems, setRootItems] = useState([
+  const dispatch = useDispatch();
+
+  const resetDectection = useSelector(
+    (state) => state.filteringButtonClickDetectionReducer.reset
+  );
+
+  const [rootLocations, setRootLocations] = useState([
     "서울특별시",
     "부산광역시",
     "대구광역시",
   ]);
-  const [secondItems, setSecondItems] = useState([]);
-  const [thirdItems, setThirdItems] = useState([]);
+  const [secondLocations, setSecondLocations] = useState([]);
+  const [thirdLocations, setThirdLocations] = useState([]);
   const [selectedAreas, setSelectedAreas] = useState([]);
 
+  const [emphasisRoot, setEmphasisRoot] = useState("");
+  const [emphasisSecond, setEmphasisSecond] = useState("");
+
+  const resetButton = () => {
+    setEmphasisRoot("");
+    setEmphasisSecond("");
+    setSecondLocations([]);
+    setThirdLocations([]);
+    setSelectedAreas([]);
+  };
+
   const clickRootItem = (e) => {
-    console.log("root : " + e.target.innerText);
-    setSecondItems(["구구", "강남구", "강동구", "강남구"]);
-    // getChildLocations(e.target.innerText)
-    //   .then((res) => {
-    //     if (res.status.code === 5000) {
-    //       setSecondItems(res.content);
-    //     } else {
-    //       FailResponse(res.status.code);
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     if (error.response) {
-    //       FailResponse(error.response.data.status.code);
-    //     }
-    //   });
+    setEmphasisRoot(e.target.innerText);
+
+    getChildLocations(e.target.innerText)
+      .then((res) => {
+        if (res.status.code === 5000) {
+          setSecondLocations(res.content);
+        } else {
+          FailResponse(res.status.code);
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          FailResponse(error.response.data.status.code);
+        }
+      });
   };
 
   const clickSecondItem = (e) => {
-    console.log("second : " + e.target.innerText);
-    setThirdItems(["가츠동", "우동", "숭구리 동동", "주모 여기 동동"]);
-    // getChildLocations(e.target.innerText)
-    //   .then((res) => {
-    //     if (res.status.code === 5000) {
-    //       setThirdItems(res.content);
-    //     } else {
-    //       FailResponse(res.status.code);
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     if (error.response) {
-    //       FailResponse(error.response.data.status.code);
-    //     }
-    //   });
+    setEmphasisSecond(e.target.innerText);
+
+    getChildLocations(e.target.innerText)
+      .then((res) => {
+        if (res.status.code === 5000) {
+          setThirdLocations(res.content);
+        } else {
+          FailResponse(res.status.code);
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          FailResponse(error.response.data.status.code);
+        }
+      });
   };
 
   const clickThirdItem = (e) => {
-    console.log("마지막 선택" + e.target.innerText);
-    setSelectedAreas((prev) => [...prev, e.target.innerText]);
+    if (selectedAreas.length >= 3) {
+      e.preventDefault();
+      alert("최대 3개까지 선택할 수 있습니다.");
+      return;
+    }
+
+    for (const area of selectedAreas) {
+      if (area === e.target.innerText) {
+        e.preventDefault();
+        alert("이미 선택한 지역입니다.");
+        return;
+      }
+    }
+
+    setSelectedAreas((prev) => [
+      ...prev,
+      `${emphasisRoot} ${emphasisSecond} ${e.target.innerText}`,
+    ]);
+  };
+
+  const clickRemoveAreas = (e) => {
+    setSelectedAreas(
+      (prev) =>
+        (selectedAreas = prev.filter(
+          (_, index) => index !== Number(e.target.value)
+        ))
+    );
+  };
+
+  const clickDone = () => {
+    dispatch({
+      type: "SELECTEDAREA",
+      payload: {
+        area: selectedAreas,
+      },
+    });
+
+    dispatch({
+      type: "ADDAREABUTTONCLICK",
+      payload: {
+        add: "true",
+      },
+    });
+    props.close();
   };
 
   useEffect(() => {
@@ -58,7 +118,7 @@ const AddAreaModal = (props) => {
       getRootLocations()
         .then((res) => {
           if (res.status.code === 5000) {
-            setRootItems(res.content);
+            setRootLocations(res.content);
           } else {
             FailResponse(res.status.code);
           }
@@ -71,25 +131,43 @@ const AddAreaModal = (props) => {
     }
   }, props.open);
 
+  useEffect(() => {
+    resetButton();
+  }, [resetDectection]);
+
   return (
     <>
       <div className={props.open ? "openModal modal" : "modal"}>
         <div className="box-container">
           <div className="header-wrapper">
-            <button className="reset-button">초기화</button>
+            <button className="reset-button" onClick={resetButton}>
+              초기화
+            </button>
             <h1>지역 추가</h1>
           </div>
           <div className="body-wrapper">
             <div className="region-depth">
               <p>시/도</p>
               <div className="depth-list">
-                {rootItems.length !== 0 ? (
-                  rootItems.map((location, index) => {
-                    return (
-                      <p key={index} onClick={clickRootItem}>
-                        {location}
-                      </p>
-                    );
+                {rootLocations.length !== 0 ? (
+                  rootLocations.map((location, index) => {
+                    if (location === emphasisRoot) {
+                      return (
+                        <p
+                          key={index}
+                          className="clicked"
+                          onClick={clickRootItem}
+                        >
+                          {location}
+                        </p>
+                      );
+                    } else {
+                      return (
+                        <p key={index} onClick={clickRootItem}>
+                          {location}
+                        </p>
+                      );
+                    }
                   })
                 ) : (
                   <></>
@@ -99,13 +177,25 @@ const AddAreaModal = (props) => {
             <div className="region-depth">
               <p>시/군/구</p>
               <div className="depth-list">
-                {secondItems.length !== 0 ? (
-                  secondItems.map((location, index) => {
-                    return (
-                      <p key={index} onClick={clickSecondItem}>
-                        {location}
-                      </p>
-                    );
+                {secondLocations.length !== 0 ? (
+                  secondLocations.map((location, index) => {
+                    if (location === emphasisSecond) {
+                      return (
+                        <p
+                          key={index}
+                          className="clicked"
+                          onClick={clickSecondItem}
+                        >
+                          {location}
+                        </p>
+                      );
+                    } else {
+                      return (
+                        <p key={index} onClick={clickSecondItem}>
+                          {location}
+                        </p>
+                      );
+                    }
                   })
                 ) : (
                   <></>
@@ -115,8 +205,8 @@ const AddAreaModal = (props) => {
             <div className="region-depth">
               <p>동/읍/면</p>
               <div className="depth-list">
-                {thirdItems.length !== 0 ? (
-                  thirdItems.map((location, index) => {
+                {thirdLocations.length !== 0 ? (
+                  thirdLocations.map((location, index) => {
                     return (
                       <p key={index} onClick={clickThirdItem}>
                         {location}
@@ -137,7 +227,9 @@ const AddAreaModal = (props) => {
                   return (
                     <div key={index}>
                       <p>{area}</p>
-                      <button>⨉</button>
+                      <button value={index} onClick={clickRemoveAreas}>
+                        ⨉
+                      </button>
                     </div>
                   );
                 })
@@ -147,7 +239,9 @@ const AddAreaModal = (props) => {
             </div>
           </div>
           <div className="button-wrapper">
-            <button className="done-btn">완료</button>
+            <button className="done-btn" onClick={clickDone}>
+              완료
+            </button>
             <button className="cancel-btn" onClick={props.close}>
               취소
             </button>
@@ -270,6 +364,12 @@ const AddAreaModal = (props) => {
           color: #08555f;
         }
 
+        .clicked {
+          font-weight: bold;
+          background-color: rgb(70, 143, 91, 0.2);
+          color: #08555f;
+        }
+
         .tag-wrapper {
           width: 100%;
           height: 5%;
@@ -300,6 +400,7 @@ const AddAreaModal = (props) => {
 
         .selected-areas > div > p {
           color: black;
+          font-size: 1.2rem;
         }
 
         .selected-areas > div > button {

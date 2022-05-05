@@ -51,7 +51,7 @@ const createRoomInitialState = {
 const roomFilteringDataInitialState = {
   roomTitle: "",
   roomContent: "",
-  area: "",
+  area: [],
   exercise: [],
   tags: [],
   startAppointmentDate: "",
@@ -72,6 +72,7 @@ const roomFilteringDataInitialState = {
 const clickDetectionInitialState = {
   detection: "false",
   reset: "false",
+  add: "false",
 };
 
 // 오타 방지용
@@ -83,8 +84,10 @@ const ROOMSETTING = "ROOMSETTING";
 const ROOMSCHEDULE = "ROOMSCHEDULE";
 const FILTERINGTITLE = "FILTERINGTITLE";
 const ROOMEXERCISES = "ROOMEXERCISES";
+const SELECTEDAREA = "SELECTEDAREA";
 const FILTERBUTTONCLICK = "FILTERBUTTONCLICK";
 const RESETBUTTONCLICK = "RESETBUTTONCLICK";
+const ADDAREABUTTONCLICK = "ADDAREABUTTONCLICK";
 const SETSTARTDATE = "SETSTARTDATE";
 const SETENDDATE = "SETENDDATE";
 const SETSTARTTIME = "SETSTARTTIME";
@@ -196,6 +199,11 @@ const roomFilteringDataReducer = (
           .filter((el) => el[1] === true)
           .map((el) => el[0]),
       };
+    case SELECTEDAREA:
+      return {
+        ...state,
+        area: action.payload.area,
+      };
     case SETSTARTDATE:
       return {
         ...state,
@@ -253,6 +261,8 @@ const filteringButtonClickDetectionReducer = (
       return { ...state, detection: action.payload.detection };
     case RESETBUTTONCLICK:
       return { ...state, reset: action.payload.reset };
+    case ADDAREABUTTONCLICK:
+      return { ...state, add: action.payload.add };
     default:
       return state;
   }
