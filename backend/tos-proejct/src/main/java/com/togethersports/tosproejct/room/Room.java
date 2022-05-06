@@ -24,7 +24,6 @@ import java.util.List;
  * @author younghocha
  */
 
-
 @Getter
 @Entity
 @NoArgsConstructor

@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * <h1>FiledsOfRoomList</h1>
+ * <h1>FieldsOfRoomList</h1>
  * <p>
  * 룸 필터링 과정 중, 쿼리 스트링을 받기위한 DTO
  * </p>
