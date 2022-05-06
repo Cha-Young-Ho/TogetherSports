@@ -2,6 +2,7 @@ package com.togethersports.tosproejct.room;
 
 import com.togethersports.tosproejct.chat.ChatController;
 import com.togethersports.tosproejct.chat.dto.MessageOfDelegate;
+import com.togethersports.tosproejct.chat.dto.MessageOfKickOut;
 import com.togethersports.tosproejct.common.code.CommonCode;
 import com.togethersports.tosproejct.common.dto.Response;
 import com.togethersports.tosproejct.common.util.ParsingEntityUtils;
@@ -283,6 +284,52 @@ public class RoomService {
 
     }
 
+    // 강퇴
+    public Response kickOut(User currentUser, Long roomId, Long targetUserId){
+        log.info("kickOut 실행");
+        // 해당 방 찾기
+        Room roomEntity = roomRepository.findById(roomId)
+                .orElseThrow(() -> new NotFoundRoomException("해당하는 방을 찾을 수 없습니다."));
+
+        // 요청 유저 찾기.
+        User requestUser = userRepository.findById(currentUser.getId())
+                .orElseThrow(() -> new UserNotFoundException("해당하는 유저를 찾을 수 없습니다."));
+
+        // 위임 받는 유저 찾기.
+        User kickedOutUser = userRepository.findById(targetUserId)
+                .orElseThrow(() -> new UserNotFoundException());
+
+        // 요청 유저가 방장인지 확인
+        if(requestUser.getId() != roomEntity.getHost().getId()){
+            // 해당하는 사람이 방장이 아님.
+        }
+
+        // 요청자 및 위임받는 유저 방에 참여했는지 확인
+        if(!getAttendance(requestUser.getId(), 1L) && !getAttendance(kickedOutUser.getId(), 1L)){
+            //둘 중 1명이 참여하지 않았을 경우
+            return Response.of(CommonCode.BAD_REQUEST, null);
+        }
+
+        // 강퇴
+        participantService.kickUser(kickedOutUser.getId());
+
+        // 방 인원 수 1명 줄이기
+        roomEntity.leave();
+
+        // 응답 메세지 생성
+        Response response = Response.of(
+                RoomCode.KICKED_OUT, MessageOfKickOut.builder()
+                .kickedUserId(kickedOutUser.getId())
+                .kickedUserNickname(kickedOutUser.getNickname())
+                .build());
+        // 소켓 통신, 정보 발행
+        chatController.sendServerMessage(1L, kickedOutUser, "kickOut", response);
+
+        return response;
+
+
+    }
+
     //시간 정렬을 위한 스태틱클래스
     static class SortByDate implements Comparator<Room> {
 
@@ -292,8 +339,6 @@ public class RoomService {
             return o1.getStartAppointmentDate().compareTo(o2.getStartAppointmentDate());
         }
     }
-
-
 
 
 }
