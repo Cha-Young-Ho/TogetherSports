@@ -4,7 +4,9 @@ import com.togethersports.tosproejct.chat.dto.ChatOfPubRoom;
 import com.togethersports.tosproejct.chat.dto.ClientMessage;
 import com.togethersports.tosproejct.common.code.CommonCode;
 import com.togethersports.tosproejct.common.dto.Response;
+import com.togethersports.tosproejct.user.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -23,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
  * </p>
  * @author younghoCha
  */
-
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class ChatController {
@@ -40,13 +42,46 @@ public class ChatController {
 
 
         // 해당 방과 해당 유저가 존재하는지 확인
-        chatService.checkValidate(userId, roomId);
+        //chatService.checkValidate(userId, roomId);
 
         // 메세지 저장
         ChatOfPubRoom pubMessage = chatService.saveChat(message, roomId);
 
         // 메세지 전송
         sendingOperations.convertAndSend("/topic/room/"+roomId+"/chat", pubMessage);
+    }
+
+
+    public void sendServerMessage(Long roomId, User user, String command, Response response){
+
+        // 방 정보 변화 시, 발행
+        if(command.equals("roomInfo")){
+            return;
+        }
+
+        // 새로운 사용자가 들어왔을 시, 발행
+        if(command.equals("enter")){
+            return;
+        }
+
+        // 사용자 방 나갔을 시, 발행
+        if(command.equals("out")){
+            return;
+        }
+
+        // 방장 위임 시 발행
+        if(command.equals("delegate")){
+            sendingOperations.convertAndSend("/topic/room/" + roomId +"/chat", response);
+            return;
+        }
+
+        // 강퇴 시 발행
+        if(command.equals("kickOut")){
+            return;
+        }
+
+
+        sendingOperations.convertAndSend("/topic/room/"+roomId+"/chat", "서버에서 보낸 메세지");
     }
 
     //채팅 내역 조회

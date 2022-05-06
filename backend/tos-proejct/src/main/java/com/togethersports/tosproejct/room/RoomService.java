@@ -1,5 +1,9 @@
 package com.togethersports.tosproejct.room;
 
+import com.togethersports.tosproejct.chat.ChatController;
+import com.togethersports.tosproejct.chat.dto.MessageOfDelegate;
+import com.togethersports.tosproejct.common.code.CommonCode;
+import com.togethersports.tosproejct.common.dto.Response;
 import com.togethersports.tosproejct.common.util.ParsingEntityUtils;
 import com.togethersports.tosproejct.image.RoomImageService;
 import com.togethersports.tosproejct.participant.Participant;
@@ -42,6 +46,7 @@ import java.util.stream.Collectors;
  * @author younghoCha
  */
 
+@Slf4j
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -53,7 +58,7 @@ public class RoomService {
     private final UserRepository userRepository;
     private final RoomImageService roomImageService;
     private final UserService userService;
-
+    private final ChatController chatController;
     //방 생성
     public void createRoom(User user, RoomOfCreate roomOfCreate){
 
@@ -234,14 +239,60 @@ public class RoomService {
 
     }
 
+
+    //방장 위임
+    public Response delegate(User currentUser, Long roomId, Long targetUserId){
+        log.info("delegate 실행");
+        // 해당 방 찾기
+        Room roomEntity = roomRepository.findById(roomId)
+                .orElseThrow(() -> new NotFoundRoomException("해당하는 방을 찾을 수 없습니다."));
+
+        // 요청 유저 찾기.
+        User requestUser = userRepository.findById(currentUser.getId())
+                .orElseThrow(() -> new UserNotFoundException("해당하는 유저를 찾을 수 없습니다."));
+
+        // 위임 받는 유저 찾기.
+        User delegatedUser = userRepository.findById(targetUserId)
+                        .orElseThrow(() -> new UserNotFoundException());
+
+        // 요청 유저가 방장인지 확인
+        if(requestUser.getId() != roomEntity.getHost().getId()){
+            // 해당하는 사람이 방장이 아님.
+        }
+
+        // 요청자 및 위임받는 유저 방에 참여했는지 확인
+        if(!getAttendance(requestUser.getId(), 1L) && !getAttendance(delegatedUser.getId(), 1L)){
+            //둘 중 1명이 참여하지 않았을 경우
+            return Response.of(CommonCode.BAD_REQUEST, null);
+        }
+
+        // 방장 위임
+        roomEntity.updateHost(delegatedUser);
+
+        // 응답 메세지 생성
+        Response response = Response.of(RoomCode.DELEGATE,MessageOfDelegate.builder()
+                .beforeHostId(requestUser.getId())
+                .beforeHostNickname(requestUser.getNickname())
+                .afterHostId(delegatedUser.getId())
+                .afterHostNickname(delegatedUser.getNickname()).build());
+        // 소켓 통신, 정보 발행
+        chatController.sendServerMessage(1L, delegatedUser, "delegate", response);
+
+        return response;
+
+
+    }
+
     //시간 정렬을 위한 스태틱클래스
     static class SortByDate implements Comparator<Room> {
 
         @Override
         public int compare(Room o1, Room o2) {
+
             return o1.getStartAppointmentDate().compareTo(o2.getStartAppointmentDate());
         }
     }
+
 
 
 
