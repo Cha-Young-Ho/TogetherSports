@@ -18,7 +18,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
-
+/**
+ * <h1>ChatService</h1>
+ * <p>
+ *     채팅과 관련된 요청에 대한 컨트롤러
+ * </p>
+ * @author younghoCha
+ */
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -29,6 +35,12 @@ public class ChatService {
     private final ParticipantRepository participantRepository;
     private final ChatRepository chatRepository;
 
+    /**
+     * 클라이언트가 보낸 메세지를 DB에 저장하는 메소드
+     * @param message : 클라이언트가 보낸 메세지 DTO
+     * @param room_id : 클라이언트가 보낸 Destination room
+     * @return : 발행할 메세지 DTO
+     */
     public ChatOfPubRoom saveChat(ClientMessage message, Long room_id){
 
 //        User userEntity = userRepository.findById(message.getUserId())
@@ -49,6 +61,11 @@ public class ChatService {
 
     }
 
+    /**
+     * 클라이언트가 실제 해당 방에 참가했는지 확인하는 메소드
+     * @param userId : 채팅을 발행하는 클라이언트 id(pk)
+     * @param roomId : 발행하려는 방 id(pk)
+     */
     public void checkValidate(Long userId, Long roomId){
         //유저 존재 확인
         User user = userRepository.findById(userId)
@@ -66,6 +83,12 @@ public class ChatService {
         throw new NotParticipateRoomException("Auth");
     }
 
+    /**
+     * 과거 채팅을 조회하는 메소드
+     * @param pageable : 채팅 내용 페이징 객체
+     * @param roomId : 조회하려는 방 id(pk)
+     * @return : 조회된 채팅 페이징
+     */
     public Page<ChatOfHistory> getChatHistory(Pageable pageable, Long roomId){
         Room roomEntity = roomRepository.findById(roomId)
                 .orElseThrow(() -> new NotFoundRoomException("해당 방을 찾을 수 없습니다."));
