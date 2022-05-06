@@ -7,6 +7,7 @@ import com.togethersports.tosproejct.room.dto.*;
 import com.togethersports.tosproejct.security.annotation.CurrentUser;
 import com.togethersports.tosproejct.user.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
  * </p>
  * @author younghocha
  */
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class RoomController {
@@ -82,5 +84,14 @@ public class RoomController {
 
         return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, rooms));
 
+    }
+
+    @PatchMapping("/api/room/{roomId}/user/delegate")
+    public ResponseEntity delegate(@CurrentUser User user, @PathVariable Long roomId, Long targetUserId){
+
+
+        roomService.delegate(user, roomId, targetUserId);
+
+        return ResponseEntity.ok((Response.of(CommonCode.GOOD_REQUEST, null)));
     }
 }

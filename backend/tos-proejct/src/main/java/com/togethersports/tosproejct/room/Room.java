@@ -149,5 +149,10 @@ public class Room extends RoomBaseEntity {
         this.participantCount = participantCount - 1 ;
     }
 
+    //방장 위임
+    public void updateHost(User user){
+        this.host = user;
+    }
+
 
 }
