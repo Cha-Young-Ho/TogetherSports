@@ -57,5 +57,10 @@ public class ParticipantService {
         return participantRepository.existsByUserAndRoom(user, room);
     }
 
+    public void kickUser(Long kickedUserId){
+        Participant user = participantRepository.findById(kickedUserId)
+                .orElseThrow(() -> new UserNotFoundException("해당하는 사용자를 찾을 수 없어, 강퇴할 수 없습니다."));
+        participantRepository.delete(user);
+    }
 
 }

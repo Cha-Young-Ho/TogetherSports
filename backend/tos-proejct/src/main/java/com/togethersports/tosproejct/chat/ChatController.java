@@ -77,6 +77,7 @@ public class ChatController {
 
         // 강퇴 시 발행
         if(command.equals("kickOut")){
+            sendingOperations.convertAndSend("/topic/room/" + roomId + "/chat", response);
             return;
         }
 

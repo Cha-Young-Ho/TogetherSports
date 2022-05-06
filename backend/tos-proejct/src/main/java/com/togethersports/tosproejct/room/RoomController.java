@@ -86,12 +86,22 @@ public class RoomController {
 
     }
 
+    //방장 위임
     @PatchMapping("/api/room/{roomId}/user/delegate")
     public ResponseEntity delegate(@CurrentUser User user, @PathVariable Long roomId, Long targetUserId){
 
 
-        roomService.delegate(user, roomId, targetUserId);
+        Response response = roomService.delegate(user, roomId, targetUserId);
 
-        return ResponseEntity.ok((Response.of(CommonCode.GOOD_REQUEST, null)));
+        return ResponseEntity.ok(response);
+    }
+
+    //강퇴
+    @DeleteMapping("/api/room/{roomId}/user/kick-out")
+    public ResponseEntity kickOut(@CurrentUser User user, @PathVariable Long roomId, Long targetUserId){
+
+        Response response = roomService.kickOut(user, roomId, targetUserId);
+
+        return ResponseEntity.ok(response);
     }
 }
