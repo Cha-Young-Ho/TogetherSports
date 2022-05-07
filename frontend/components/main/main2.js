@@ -1,38 +1,45 @@
 import TextLogo from "./textLogo";
 import Link from "next/link";
+import useScrollFadeIn from "./useScrollFadeIn";
 
 /* 수정 필요 */
 // 1. 명세 후에 현재 모집중인 방의 개수 입력 필요
-// 2. right-section 원 안의 이미지구하기
-// 3. right-section의 화살표 이미지 구하기
-// 4. 회원가입 버튼 누를 때 이미 회원인지 아닌지 판단에 따라 다른 link로 보내기
+// 2. 회원가입 버튼 누를 때 이미 회원인지 아닌지 판단에 따라 다른 link로 보내기
 
 const Main2 = () => {
+  const animatedItem1 = useScrollFadeIn("up", 0.5, 0.1);
+  const animatedItem2 = useScrollFadeIn("up", 0.5, 0.3);
+  const animatedItem3 = useScrollFadeIn("up", 0.5, 0.5);
+  const animatedItem4 = useScrollFadeIn("up", 0.5, 0.1);
+
   return (
     <>
       <div className="container">
         <div className="section">
           <div className="left-section">
-            <div>
+            <div {...animatedItem1}>
               <p>가까운 동네에서 함께</p>
               <TextLogo color={"white"} />
               <p>일정을 구해보세요 !</p>
             </div>
 
-            <p className="emoji">🏃🏃‍♂️🏃‍♀️</p>
-
-            <p>
-              현재 <b>123</b>개의 방에서
+            <p className="emoji" {...animatedItem2}>
+              🏃🏃‍♂️🏃‍♀️
             </p>
-            <p>같이 운동할 사람을 구하는 중 !</p>
+
+            <div className="info-text" {...animatedItem3}>
+              <p>
+                현재 <b>123</b>개의 방에서
+              </p>
+              <p>같이 운동할 사람을 구하는 중 !</p>
+            </div>
           </div>
 
-          <div className="right-section">
-            <p>🔥</p>
-            <p>참여하실래요 ?</p>
-            <img />
-            <p>회원가입 바로가기</p>
-          </div>
+          <Link href="/login">
+            <div className="right-section" {...animatedItem4}>
+              <img src={"/main2.png"} />
+            </div>
+          </Link>
         </div>
       </div>
       <style jsx>{`
@@ -50,7 +57,7 @@ const Main2 = () => {
         }
 
         .section {
-          width: 85%;
+          width: 80%;
           display: flex;
           flex-direction: row;
           justify-content: space-between;
@@ -71,22 +78,21 @@ const Main2 = () => {
         }
 
         .left-section > div:nth-child(1) > p:nth-child(1) {
-          font-size: 2rem;
+          font-size: 2.5rem;
           margin-right: 15px;
         }
 
         .left-section > div:nth-child(1) > p:nth-child(3) {
-          font-size: 2rem;
+          font-size: 2.5rem;
           margin-left: 15px;
         }
 
         .emoji {
           font-size: 10rem;
-          /* margin-bottom: 10px; */
+          margin-bottom: 10px;
         }
 
-        .left-section > p:nth-child(3),
-        .left-section > p:nth-child(4) {
+        .info-text > p {
           font-size: 3rem;
           letter-spacing: 2px;
         }
@@ -94,21 +100,7 @@ const Main2 = () => {
         .right-section {
           width: 350px;
           height: 350px;
-          border-radius: 50%;
-          background-color: rgba(0, 0, 0, 0.8);
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        .right-section > p:nth-child(1),
-        .right-section > p:nth-child(2) {
-          font-size: 3rem;
-          margin-bottom: 10px;
-        }
-
-        .right-section > p:nth-child(4) {
-          font-size: 2rem;
+          cursor: pointer;
         }
       `}</style>
     </>
