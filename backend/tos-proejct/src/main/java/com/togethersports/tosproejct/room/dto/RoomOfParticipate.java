@@ -10,7 +10,7 @@ import java.util.List;
 
 @Builder
 @Getter
-public class RoomOfParticipate<T> {
+public class RoomOfParticipate {
     @JsonIgnore
     RoomCode status;
 

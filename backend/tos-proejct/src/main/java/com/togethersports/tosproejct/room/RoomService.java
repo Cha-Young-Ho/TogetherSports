@@ -1,5 +1,10 @@
 package com.togethersports.tosproejct.room;
 
+import com.togethersports.tosproejct.chat.ChatController;
+import com.togethersports.tosproejct.chat.dto.MessageOfDelegate;
+import com.togethersports.tosproejct.chat.dto.MessageOfKickOut;
+import com.togethersports.tosproejct.common.code.CommonCode;
+import com.togethersports.tosproejct.common.dto.Response;
 import com.togethersports.tosproejct.common.util.ParsingEntityUtils;
 import com.togethersports.tosproejct.image.RoomImageService;
 import com.togethersports.tosproejct.participant.Participant;
@@ -14,6 +19,7 @@ import com.togethersports.tosproejct.user.UserRepository;
 import com.togethersports.tosproejct.user.UserService;
 import com.togethersports.tosproejct.user.dto.UserOfOtherInfo;
 import com.togethersports.tosproejct.user.exception.NotEnteredInformationException;
+import com.togethersports.tosproejct.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -24,7 +30,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * <h1>RoomService</h1>
  * <p>
@@ -37,6 +47,7 @@ import java.util.List;
  * @author younghoCha
  */
 
+@Slf4j
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -48,7 +59,7 @@ public class RoomService {
     private final UserRepository userRepository;
     private final RoomImageService roomImageService;
     private final UserService userService;
-
+    private final ChatController chatController;
     //방 생성
     public void createRoom(User user, RoomOfCreate roomOfCreate){
 
@@ -142,7 +153,7 @@ public class RoomService {
         return list;
     }
 
-    public RoomOfParticipate<?> participateRoom(User currentUser, Long roomId){
+    public RoomOfParticipate participateRoom(User currentUser, Long roomId){
         Room roomEntity = roomRepository.findById(roomId)
                 .orElseThrow(() -> new NotFoundRoomException("해당 방을 찾을 수 없습니다."));
 
@@ -169,7 +180,7 @@ public class RoomService {
         }
         // 정상적으로 참여가 가능한 경우
         return RoomOfParticipate.builder()
-                .status(RoomCode.PARTICPATE_ROOM)
+                .status(RoomCode.PARTICIPATE_ROOM)
                 .roomOfInfo(getRoomInfo(currentUser, roomId))
                 .participates(getParticipantsInfo(roomEntity.getParticipants()))
                 .build();
@@ -189,4 +200,145 @@ public class RoomService {
     public boolean getAttendance(Long userId, Long roomId){
         return participantService.checkAttendance(userRepository.findById(userId).get(), roomRepository.findById(roomId).get());
     }
+
+    public RoomsOfMyRoom getMyRoom(User currentUser){
+        User userEntity = userRepository.findById(currentUser.getId())
+                .orElseThrow(() -> new UserNotFoundException());
+
+        List<Room> hostingRoomEntities = userEntity.getHostingRooms();
+
+        List<Participant> participateEntities = userEntity.getParticipateRooms();
+
+        List<Room> participatingRoomEntities = new ArrayList<>();
+        for (Participant participant : participateEntities){
+            participatingRoomEntities.add(participant.getRoom());
+        }
+
+
+
+        List<Room> imminentRoomEntities = participatingRoomEntities.stream().filter(room->{
+            if (LocalDateTime.now().isAfter(room.getStartAppointmentDate())) {
+                return false;
+            }
+            return true;
+        }).collect(Collectors.toList());
+
+        
+
+        Collections.sort(imminentRoomEntities, new SortByDate());
+
+
+        //시간 정렬
+
+        return RoomsOfMyRoom.builder()
+                .hostingRooms(parsingEntityUtils.parsingRoomToRoomOfList(hostingRoomEntities))
+                .participateRooms(parsingEntityUtils.parsingRoomToRoomOfList(participatingRoomEntities))
+                .imminentRooms(parsingEntityUtils.parsingRoomToRoomOfList(imminentRoomEntities))
+                .build();
+
+
+
+    }
+
+
+    //방장 위임
+    public Response delegate(User currentUser, Long roomId, Long targetUserId){
+        log.info("delegate 실행");
+        // 해당 방 찾기
+        Room roomEntity = roomRepository.findById(roomId)
+                .orElseThrow(() -> new NotFoundRoomException("해당하는 방을 찾을 수 없습니다."));
+
+        // 요청 유저 찾기.
+        User requestUser = userRepository.findById(currentUser.getId())
+                .orElseThrow(() -> new UserNotFoundException("해당하는 유저를 찾을 수 없습니다."));
+
+        // 위임 받는 유저 찾기.
+        User delegatedUser = userRepository.findById(targetUserId)
+                        .orElseThrow(() -> new UserNotFoundException());
+
+        // 요청 유저가 방장인지 확인
+        if(requestUser.getId() != roomEntity.getHost().getId()){
+            // 해당하는 사람이 방장이 아님.
+        }
+
+        // 요청자 및 위임받는 유저 방에 참여했는지 확인
+        if(!getAttendance(requestUser.getId(), 1L) && !getAttendance(delegatedUser.getId(), 1L)){
+            //둘 중 1명이 참여하지 않았을 경우
+            return Response.of(CommonCode.BAD_REQUEST, null);
+        }
+
+        // 방장 위임
+        roomEntity.updateHost(delegatedUser);
+
+        // 응답 메세지 생성
+        Response response = Response.of(RoomCode.DELEGATE,MessageOfDelegate.builder()
+                .beforeHostId(requestUser.getId())
+                .beforeHostNickname(requestUser.getNickname())
+                .afterHostId(delegatedUser.getId())
+                .afterHostNickname(delegatedUser.getNickname()).build());
+        // 소켓 통신, 정보 발행
+        chatController.sendServerMessage(1L, delegatedUser, "delegate", response);
+
+        return response;
+
+
+    }
+
+    // 강퇴
+    public Response kickOut(User currentUser, Long roomId, Long targetUserId){
+        log.info("kickOut 실행");
+        // 해당 방 찾기
+        Room roomEntity = roomRepository.findById(roomId)
+                .orElseThrow(() -> new NotFoundRoomException("해당하는 방을 찾을 수 없습니다."));
+
+        // 요청 유저 찾기.
+        User requestUser = userRepository.findById(currentUser.getId())
+                .orElseThrow(() -> new UserNotFoundException("해당하는 유저를 찾을 수 없습니다."));
+
+        // 위임 받는 유저 찾기.
+        User kickedOutUser = userRepository.findById(targetUserId)
+                .orElseThrow(() -> new UserNotFoundException());
+
+        // 요청 유저가 방장인지 확인
+        if(requestUser.getId() != roomEntity.getHost().getId()){
+            // 해당하는 사람이 방장이 아님.
+        }
+
+        // 요청자 및 위임받는 유저 방에 참여했는지 확인
+        if(!getAttendance(requestUser.getId(), 1L) && !getAttendance(kickedOutUser.getId(), 1L)){
+            //둘 중 1명이 참여하지 않았을 경우
+            return Response.of(CommonCode.BAD_REQUEST, null);
+        }
+
+        // 강퇴
+        participantService.kickUser(kickedOutUser.getId());
+
+        // 방 인원 수 1명 줄이기
+        roomEntity.leave();
+
+        // 응답 메세지 생성
+        Response response = Response.of(
+                RoomCode.KICKED_OUT, MessageOfKickOut.builder()
+                .kickedUserId(kickedOutUser.getId())
+                .kickedUserNickname(kickedOutUser.getNickname())
+                .build());
+        // 소켓 통신, 정보 발행
+        chatController.sendServerMessage(1L, kickedOutUser, "kickOut", response);
+
+        return response;
+
+
+    }
+
+    //시간 정렬을 위한 스태틱클래스
+    static class SortByDate implements Comparator<Room> {
+
+        @Override
+        public int compare(Room o1, Room o2) {
+
+            return o1.getStartAppointmentDate().compareTo(o2.getStartAppointmentDate());
+        }
+    }
+
+
 }

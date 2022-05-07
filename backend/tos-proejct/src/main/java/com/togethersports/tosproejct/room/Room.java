@@ -2,6 +2,7 @@ package com.togethersports.tosproejct.room;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.togethersports.tosproejct.chat.ChatMessage;
 import com.togethersports.tosproejct.image.RoomImage;
 import com.togethersports.tosproejct.participant.Participant;
 import com.togethersports.tosproejct.room.auditing.RoomBaseEntity;
@@ -22,7 +23,6 @@ import java.util.List;
  * </p>
  * @author younghocha
  */
-
 
 @Getter
 @Entity
@@ -100,6 +100,9 @@ public class Room extends RoomBaseEntity {
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
     private List<Tag> tags;
 
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
+    private List<ChatMessage> chatMessages;
+
     @Builder(access = AccessLevel.PRIVATE)
     private Room(RoomOfCreate roomOfCreate, User user){
         this.roomContent = roomOfCreate.getRoomContent();
@@ -144,6 +147,11 @@ public class Room extends RoomBaseEntity {
 
     public void leave(){
         this.participantCount = participantCount - 1 ;
+    }
+
+    //방장 위임
+    public void updateHost(User user){
+        this.host = user;
     }
 
 

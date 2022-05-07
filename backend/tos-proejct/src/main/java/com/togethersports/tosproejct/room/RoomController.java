@@ -1,6 +1,5 @@
 package com.togethersports.tosproejct.room;
 
-
 import com.togethersports.tosproejct.common.code.CommonCode;
 import com.togethersports.tosproejct.common.dto.Response;
 import com.togethersports.tosproejct.room.code.RoomCode;
@@ -13,8 +12,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-
+/**
+ * <h1>RoomController</h1>
+ * <p>
+ *     방과 관련된 요청에 대한 컨트롤러
+ * </p>
+ * @author younghocha
+ */
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class RoomController {
@@ -71,5 +76,32 @@ public class RoomController {
 
         // 참가 완료
         return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, room));
+    }
+
+    @GetMapping("/api/room/myroom")
+    public ResponseEntity<Response> myRoom(@CurrentUser User user){
+        RoomsOfMyRoom rooms = roomService.getMyRoom(user);
+
+        return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, rooms));
+
+    }
+
+    //방장 위임
+    @PatchMapping("/api/room/{roomId}/user/delegate")
+    public ResponseEntity delegate(@CurrentUser User user, @PathVariable Long roomId, Long targetUserId){
+
+
+        Response response = roomService.delegate(user, roomId, targetUserId);
+
+        return ResponseEntity.ok(response);
+    }
+
+    //강퇴
+    @DeleteMapping("/api/room/{roomId}/user/kick-out")
+    public ResponseEntity kickOut(@CurrentUser User user, @PathVariable Long roomId, Long targetUserId){
+
+        Response response = roomService.kickOut(user, roomId, targetUserId);
+
+        return ResponseEntity.ok(response);
     }
 }

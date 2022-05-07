@@ -2,11 +2,17 @@ import { useEffect, useState } from "react";
 import CalendarModal from "../modals/calendarModal";
 import SelectExercise from "./selectExercise";
 import AddAreaModal from "../modals/addAreaModal";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 
 const Filter = () => {
   const dispatch = useDispatch();
+  const addAreaClickDetection = useSelector(
+    (state) => state.filteringButtonClickDetectionReducer
+  );
+  const roomFilteringDatas = useSelector(
+    (state) => state.roomFilteringDataReducer
+  );
 
   // 모달 관리 state
   const [startCalendarModalOpen, setStartCalendarModalOpen] = useState(false);
@@ -16,6 +22,9 @@ const Filter = () => {
   // ~방 보기 checkbox
   const [containTimeClosing, setContainTimeClosing] = useState(false);
   const [containNoAdmittance, setContainNoAdmittance] = useState(false);
+
+  // 지역
+  const [curSelectedAreas, setSelectedAreas] = useState([]);
 
   // 시기
   const [curStartFilteringDate, setCurStartFilteringDate] = useState("");
@@ -132,6 +141,7 @@ const Filter = () => {
     setCurEndFilteringDate("");
     setContainTimeClosing(false);
     setContainNoAdmittance(false);
+    setSelectedAreas([]);
 
     dispatch({
       type: "RESETALLDATAS",
@@ -215,6 +225,18 @@ const Filter = () => {
     });
   }, [containNoAdmittance]);
 
+  useEffect(() => {
+    if (addAreaClickDetection.add === "true") {
+      setSelectedAreas(roomFilteringDatas.area);
+      dispatch({
+        type: "ADDAREABUTTONCLICK",
+        payload: {
+          add: "false",
+        },
+      });
+    }
+  }, [addAreaClickDetection.add]);
+
   return (
     <>
       <div className="filter-wrapper">
@@ -240,6 +262,17 @@ const Filter = () => {
             <button className="directInput" onClick={openAreaModal}>
               지역추가
             </button>
+            {curSelectedAreas.length !== 0 ? (
+              curSelectedAreas.map((area, index) => {
+                return (
+                  <div key={index} className="selected-area">
+                    <p>{area}</p>
+                  </div>
+                );
+              })
+            ) : (
+              <></>
+            )}
             <AddAreaModal
               open={areaModalOpen}
               close={closeAreaModal}
@@ -397,6 +430,21 @@ const Filter = () => {
         .categories span {
           font-size: 1.1rem;
           margin: 4px;
+        }
+
+        .selected-area {
+          display: flex;
+          align-items: center;
+          height: 30px;
+          border-radius: 16px;
+          border: solid 1px #6db152;
+          margin: 5px 5px 5px 10px;
+        }
+
+        .selected-area > p {
+          color: black;
+          font-weight: normal;
+          font-size: 1.2rem;
         }
 
         .modalCalendar {
