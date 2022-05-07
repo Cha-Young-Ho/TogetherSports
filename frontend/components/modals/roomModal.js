@@ -40,34 +40,34 @@ const RoomModal = (props) => {
     if (props.open && mapLoaded) {
       console.log(props.roomID);
       // 방 정보 받아오기
-      // getRoomInfo(props.roomID).then((res) => {
-      //   if (res.status.code === 5000) {
-      //     setRoomId((roomId = res.content.roomId));
-      //     setCreatorNickName((creatorNickName = res.content.creatorNickName));
-      //     setHost((host = res.content.host));
-      //     setRoomTitle((roomTitle = res.content.roomTitle));
-      //     setRoomContent((roomContent = res.content.roomContent));
-      //     setArea((area = res.content.area));
-      //     setLimitPeopleCount(
-      //       (limitPeopleCount = res.content.limitPeopleCount)
-      //     );
-      //     setParticipantCount(
-      //       (participantCount = res.content.participantCount)
-      //     );
-      //     setExercise((exercise = res.content.exercise));
-      //     setTags((tags = res.content.tags));
-      //     setStartAppointmentDate(
-      //       (startAppointmentDate = res.content.startAppointmentDate)
-      //     );
-      //     setEndAppointmentDate(
-      //       (endAppointmentDate = res.content.endAppointmentDate)
-      //     );
-      //     setViewCount((viewCount = res.content.viewCount));
-      //     setRoomImages((roomImages = res.content.roomImages));
-      //   } else {
-      //     FailResponse(res.status.code);
-      //   }
-      // });
+      getRoomInfo(props.roomID).then((res) => {
+        if (res.status.code === 5000) {
+          setRoomId((roomId = res.content.roomId));
+          setCreatorNickName((creatorNickName = res.content.creatorNickName));
+          setHost((host = res.content.host));
+          setRoomTitle((roomTitle = res.content.roomTitle));
+          setRoomContent((roomContent = res.content.roomContent));
+          setArea((area = res.content.area));
+          setLimitPeopleCount(
+            (limitPeopleCount = res.content.limitPeopleCount)
+          );
+          setParticipantCount(
+            (participantCount = res.content.participantCount)
+          );
+          setExercise((exercise = res.content.exercise));
+          setTags((tags = res.content.tags));
+          setStartAppointmentDate(
+            (startAppointmentDate = res.content.startAppointmentDate)
+          );
+          setEndAppointmentDate(
+            (endAppointmentDate = res.content.endAppointmentDate)
+          );
+          setViewCount((viewCount = res.content.viewCount));
+          setRoomImages((roomImages = res.content.roomImages));
+        } else {
+          FailResponse(res.status.code);
+        }
+      });
 
       // 위치 정보 받아오기
       kakao.maps.load(() => {

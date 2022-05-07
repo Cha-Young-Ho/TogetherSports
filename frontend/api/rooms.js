@@ -7,11 +7,29 @@ import axios from "axios";
 // GET
 
 // 방 설명 페이지 조회
-const getRoomInfo = async (roomSequenceId) => {
+const getRoomInfo = async (roomId) => {
   const promise =
     localStorage.getItem("accessToken") === null
-      ? axios.get(`http://localhost:8080/api/room/${roomSequenceId}`)
-      : axios.get(`http://localhost:8080/api/room/${roomSequenceId}`, {
+      ? axios.get(`http://localhost:8080/api/rooms/${roomId}/info`)
+      : axios.get(`http://localhost:8080/api/rooms/${roomId}/info`, {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            Accept: "*/*",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        });
+
+  const dataPromise = promise.then((res) => res.data);
+
+  return dataPromise;
+};
+
+// 방 상세 페이지 조회
+const getRoomDetail = async (roomId) => {
+  const promise =
+    localStorage.getItem("accessToken") === null
+      ? axios.get(`http://localhost:8080/api/rooms/${roomId}/detail`)
+      : axios.get(`http://localhost:8080/api/rooms/${roomId}/info`, {
           headers: {
             "Content-type": "application/json; charset=UTF-8",
             Accept: "*/*",
@@ -251,6 +269,7 @@ const deleteRoom = async (roomSequenceId) => {
 
 export {
   getRoomInfo,
+  getRoomDetail,
   getRoomList,
   getRootLocations,
   getChildLocations,
