@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Calendar from "../calendar/calendar";
 import { getRoomInfo } from "../../api/rooms";
 import ImageSlide from "../imageSlide";
+import router from "next/router";
 
 /* roomList에서 받은 각 room들의 roomId를 props로 받기 */
 const RoomModal = (props) => {
@@ -109,8 +110,24 @@ const RoomModal = (props) => {
     }
   }, [props.open]);
 
-  const enterRoom = () => {
-    // 방에 참가
+  // 방에 참가
+  const enterRoom = (e) => {
+    // 참가 버튼을 누르는 순간 API요청을 한번 더 해서 참여가능여부 판단
+    getRoomInfo(props.roomId).then((res) => {
+      if (res.status.code === 5000) {
+        if (res.content.participantCount === res.content.limitPeopleCount) {
+          e.preventDefault();
+          alert("인원이 가득 차서 참가할 수 없습니다.");
+          return;
+        }
+      } else {
+        FailResponse(res.status.code);
+      }
+    });
+
+    // 위의 상황이 아니라면 방에 참가
+    /* roomID도 함께 전달해야 함 */
+    router.push("/room/room");
   };
 
   return (
