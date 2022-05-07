@@ -1,12 +1,18 @@
 import TextLogo from "./textLogo";
-import Link from "next/link";
+import useScrollFadeIn from "./useScrollFadeIn";
 
 /* 수정 필요 */
-// 1. img 색상 다른거 이미지 받아야함
-// 2. 화살표 이미지 받기
-// 3. 방 생성하러 갈 때 로그인 했는지 확인 필요
+// 1. 방 생성하러 갈 때 로그인 했는지 확인 필요
 
 const Main3 = () => {
+  const animatedItem1 = useScrollFadeIn("up", 0.5, 0.1);
+  const animatedItem2 = useScrollFadeIn("up", 0.5, 0.2);
+  const animatedItem3 = useScrollFadeIn("up", 0.5, 0.3);
+  const animatedItem4 = useScrollFadeIn("up", 0.5, 0.4);
+  const animatedItem5 = useScrollFadeIn("up", 0.5, 0.5);
+  const animatedItem6 = useScrollFadeIn("up", 0.5, 0.8);
+  const animatedItem7 = useScrollFadeIn("up", 0.5, 1.0);
+
   return (
     <>
       <div className="container">
@@ -14,45 +20,40 @@ const Main3 = () => {
         <p>할 사람을 직접 모집할 수도 있어요 ~</p>
 
         <div className="guide">
-          <div>
+          <div {...animatedItem1}>
             <p>
               원하는 <b>종목</b> 선택
             </p>
-            <img src={"/interests-activation.png"} />
+            <img src={"/main3-img1.png"} />
           </div>
 
-          <p>▶</p>
+          <p {...animatedItem2}>▶</p>
 
-          <div>
+          <div {...animatedItem3}>
             <p>
               가능한 <b>일정</b> 선택
             </p>
-            <img src={"/roomschedule-activation.png"} />
+            <img src={"/main3-img2.png"} />
           </div>
 
-          <p>▶</p>
+          <p {...animatedItem4}>▶</p>
 
-          <div>
+          <div {...animatedItem5}>
             <p>
               같이할 <b>인원</b> 선택
             </p>
-            <img src={"/roomtaginfo-activation.png"} />
+            <img src={"/main3-img3.png"} />
           </div>
         </div>
 
-        <div className="arrow"></div>
+        <img src="/main3-arrow.png" {...animatedItem6} />
 
-        <p>방 생성 완료 !</p>
-
-        <Link href="/room/createroom/roomsetting">
-          <button>🔥방 생성하러 가기🔥</button>
-        </Link>
+        <p {...animatedItem7}>방 생성 완료 !</p>
       </div>
       <style jsx>{`
         .container {
           width: 100%;
-          height: 788px;
-          box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.16);
+          height: 700px;
           background-color: white;
           display: flex;
           flex-direction: column;
@@ -67,7 +68,7 @@ const Main3 = () => {
         }
 
         .guide {
-          width: 60%;
+          width: 1050px;
           display: flex;
           flex-direction: row;
           justify-content: space-between;
@@ -88,39 +89,16 @@ const Main3 = () => {
           font-size: 3rem;
         }
 
-        img {
+        .guide img {
           width: 200px;
           height: 200px;
           margin-top: 20px;
         }
 
-        .arrow {
-          width: 47%;
-          height: 42px;
-          border-top: none;
-          border-left: solid 1px black;
-          border-right: solid 1px black;
-          border-bottom: solid 1px black;
-          margin-bottom: 30px;
-        }
-
         .container > p:nth-child(5) {
-          font-size: 2.5rem;
-          font-weight: bold;
-          margin-bottom: 100px;
-        }
-
-        button {
-          width: 338px;
-          height: 81px;
-          border: none;
-          border-radius: 10px;
-          box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
-          background-image: linear-gradient(to bottom, #6db152, #2b7a5f);
           font-size: 3rem;
           font-weight: bold;
-          color: white;
-          cursor: pointer;
+          margin-top: 20px;
         }
       `}</style>
     </>
