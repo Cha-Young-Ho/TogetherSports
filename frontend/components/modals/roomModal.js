@@ -3,9 +3,11 @@ import Calendar from "../calendar/calendar";
 import { getRoomInfo } from "../../api/rooms";
 import ImageSlide from "../imageSlide";
 import router from "next/router";
+import { useDispatch } from "react-redux";
 
 /* roomList에서 받은 각 room들의 roomId를 props로 받기 */
 const RoomModal = (props) => {
+  const dispatch = useDispatch();
   const [mapLoaded, setMapLoaded] = useState(false); // 지도 로드 동기화
 
   /* response content 담을 변수들 */
@@ -126,7 +128,13 @@ const RoomModal = (props) => {
     });
 
     // 위의 상황이 아니라면 방에 참가
-    /* roomID도 함께 전달해야 함 */
+    dispatch({
+      type: "SAVEROOMID",
+      payload: {
+        roomId: roomId,
+      },
+    });
+
     router.push("/room/room");
   };
 
