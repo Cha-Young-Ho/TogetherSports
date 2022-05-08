@@ -75,6 +75,11 @@ const clickDetectionInitialState = {
   add: "false",
 };
 
+// roomID 초기값
+const saveRoomId = {
+  roomId: "",
+};
+
 // 오타 방지용
 const PERSONALINFO = "PERSONALINFO";
 const INTERESTS = "INTERESTS";
@@ -97,6 +102,7 @@ const SETCONTAINTIMECLOSING = "SETCONTAINTIMECLOSING";
 const SETCONTAINNOADMITTANCE = "SETCONTAINNOADMITTANCE";
 const SETREQUIREDPPLCOUNT = "SETREQUIREDPPLCOUNT";
 const RESETALLDATAS = "RESETALLDATAS";
+const SAVEROOMID = "SAVEROOMID";
 
 // 유저 회원정보추가입력 정보 reducer
 const userRequestReducer = (state = signupInitialState, action) => {
@@ -268,6 +274,19 @@ const filteringButtonClickDetectionReducer = (
   }
 };
 
+// 방 설명페이지에서 방 상세페이지로 넘어가기 위한 roomId 저장 reducer
+const saveRoomIdReducer = (state = saveRoomId, action) => {
+  switch (action.type) {
+    case SAVEROOMID:
+      return {
+        ...state,
+        roomId: action.payload.roomId,
+      };
+    default:
+      return state;
+  }
+};
+
 // rootReducer로 모든 reducer Combine
 const rootReducer = combineReducers({
   userRequestReducer,
@@ -276,6 +295,7 @@ const rootReducer = combineReducers({
   createRoomReducer,
   roomFilteringDataReducer,
   filteringButtonClickDetectionReducer,
+  saveRoomIdReducer,
 });
 
 const makeStore = () => createStore(rootReducer, composeWithDevTools());
