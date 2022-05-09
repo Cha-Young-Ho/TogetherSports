@@ -15,7 +15,7 @@ const Room = () => {
 
   // 방 정보에 대한 필드
   const [creatorNickName, setCreatorNickName] = useState(""); // 방 생성자
-  const [host, setHost] = useState(""); // 방장
+  const [host, setHost] = useState("짱구"); // 방장
   const [roomTitle, setRoomTitle] = useState("");
   const [roomContent, setRoomContent] = useState("");
   const [roomArea, setRoomArea] = useState("서울 송파구 올림픽로 19-2"); // 임시 데이터
@@ -35,13 +35,26 @@ const Room = () => {
   ]);
 
   // 참가자 목록에 대한 필드
-  const participantlist = [];
-  const [userNickname, setUserNickname] = useState("");
-  const [mannerPoint, setMannerPoint] = useState(0);
-  const [activeAreas, setActiveAreas] = useState([]);
-  const [userProfileImagePath, setUserProfileImagePath] = useState("");
-  const [interests, setInterests] = useState([]);
-  const [gender, setGender] = useState("");
+  const [participants, setParticipants] = useState([
+    {
+      // 임시 데이터
+      userNickname: "짱구",
+      mannerPoint: 10,
+      activeAreas: ["서울특별시 강남구 강남동"],
+      userProfileImagePath: "",
+      interests: ["축구", "야구", "농구"],
+      gender: "male",
+    },
+    {
+      // 임시 데이터
+      userNickname: "짱아",
+      mannerPoint: 10,
+      activeAreas: ["서울특별시 강남구 강남동"],
+      userProfileImagePath: "",
+      interests: ["축구", "야구", "농구"],
+      gender: "female",
+    },
+  ]);
 
   // 방 수정하기
   const [modifyModalOpen, setModifyModalOpen] = useState(false);
@@ -109,10 +122,8 @@ const Room = () => {
 
   useEffect(() => {
     getRoomDetail(roomId).then((res) => {
-      // code 제대로 산정되지 않음 임시로 5000
       if (res.status.code === 5000) {
         const roomInfo = res.content.roomOfInfo;
-        const participantList = res.content.participants;
 
         setCreatorNickName((creatorNickName = roomInfo.creatorNickName));
         setHost((host = roomInfo.host));
@@ -131,6 +142,7 @@ const Room = () => {
         );
         setViewCount((viewCount = roomInfo.viewCount));
         setRoomImages((roomImages = roomInfo.roomImages));
+        setParticipants((participants = res.content.participants));
       } else {
         FailResponse(res.status.code);
       }
@@ -232,7 +244,7 @@ const Room = () => {
                 <div className="short-line"></div>
                 <div className="participants">
                   <ParticipantList
-                    userNickname={userNickname}
+                    participantArr={participants}
                     host={host}
                     participantListOpenModal={participantListOpenModal}
                   />

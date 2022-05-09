@@ -9,20 +9,48 @@ const ParticipantList = (props) => {
     dispatch({
       type: "SAVENICKNAME",
       payload: {
-        userNickname: props.userNickname,
+        // 수정 필요할듯
+        userNickname: props.participantArr.userNickname,
       },
     });
   };
 
   return (
     <>
-      <button className="participant" onClick={onClickUserInfo}>
-        <div className="profile">
-          <div></div>
-          <p>{props.userNickname}</p>
-        </div>
-        <p>방장</p>
-      </button>
+      {props.participantArr.length !== 0 ? (
+        props.participantArr.map((participant, index) => {
+          if (participant.userNickname === props.host) {
+            return (
+              <button
+                className="participant"
+                onClick={onClickUserInfo}
+                key={index}
+              >
+                <div className="profile">
+                  <div></div>
+                  <p>{participant.userNickname}</p>
+                </div>
+                <p>방장</p>
+              </button>
+            );
+          } else {
+            return (
+              <button
+                className="participant"
+                onClick={onClickUserInfo}
+                key={index}
+              >
+                <div className="profile">
+                  <div></div>
+                  <p>{participant.userNickname}</p>
+                </div>
+              </button>
+            );
+          }
+        })
+      ) : (
+        <></>
+      )}
       <style jsx>{`
         .participant {
           width: 100%;
