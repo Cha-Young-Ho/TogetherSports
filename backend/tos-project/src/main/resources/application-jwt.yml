@@ -1,0 +1,5 @@
+jwt:
+  access-token-signing-key: KWJ0fT7c7yeq6cPCAcikky1U+eRiXeqkStV3ZhkMkWE=
+  refresh-token-signing-key : Hh8NL4t1ZMXqc8xkKYS3vFp9b3OvNYy3e7CWSmm5ypU=
+  access-token-expiration-time: 30 # 분단위
+  refresh-token-expiration-time: 15 # 일단위
