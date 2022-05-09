@@ -75,6 +75,10 @@ const clickDetectionInitialState = {
   add: "false",
 };
 
+const loginStatusChangeInitialState = {
+  loginStatus: "false",
+};
+
 // 오타 방지용
 const PERSONALINFO = "PERSONALINFO";
 const INTERESTS = "INTERESTS";
@@ -97,6 +101,7 @@ const SETCONTAINTIMECLOSING = "SETCONTAINTIMECLOSING";
 const SETCONTAINNOADMITTANCE = "SETCONTAINNOADMITTANCE";
 const SETREQUIREDPPLCOUNT = "SETREQUIREDPPLCOUNT";
 const RESETALLDATAS = "RESETALLDATAS";
+const CHANGELOGINSTATUS = "CHANGELOGINSTATUS";
 
 // 유저 회원정보추가입력 정보 reducer
 const userRequestReducer = (state = signupInitialState, action) => {
@@ -268,6 +273,18 @@ const filteringButtonClickDetectionReducer = (
   }
 };
 
+const loginStatusChangeReducer = (
+  state = loginStatusChangeInitialState,
+  action
+) => {
+  switch (action.type) {
+    case CHANGELOGINSTATUS:
+      return { ...state, loginStatus: action.payload.loginStatus };
+    default:
+      return state;
+  }
+};
+
 // rootReducer로 모든 reducer Combine
 const rootReducer = combineReducers({
   userRequestReducer,
@@ -276,6 +293,7 @@ const rootReducer = combineReducers({
   createRoomReducer,
   roomFilteringDataReducer,
   filteringButtonClickDetectionReducer,
+  loginStatusChangeReducer,
 });
 
 const makeStore = () => createStore(rootReducer, composeWithDevTools());

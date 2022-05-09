@@ -121,6 +121,23 @@ const getChildLocations = async (name) => {
   return dataPromise;
 };
 
+const getChatInfo = async (roomSequenceId) => {
+  const promise =
+    localStorage.getItem("accessToken") === null
+      ? axios.get(`http://localhost:8080/api/room/${roomSequenceId}/chat`)
+      : axios.get(`http://localhost:8080/api/room/${roomSequenceId}/chat`, {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            Accept: "*/*",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        });
+
+  const dataPromise = promise.then((res) => res.data);
+
+  return dataPromise;
+};
+
 // POST
 
 // 방 생성
@@ -254,6 +271,7 @@ export {
   getRoomList,
   getRootLocations,
   getChildLocations,
+  getChatInfo,
   postUpdateRoom,
   postCreateRoom,
   deleteRoom,
