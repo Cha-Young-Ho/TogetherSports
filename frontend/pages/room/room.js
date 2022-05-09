@@ -8,6 +8,7 @@ import ModifyRoomModal from "../../components/modals/modifyRoomModal";
 import { useSelector } from "react-redux";
 import Chatting from "../../components/chatting";
 import { getRoomDetail } from "../../api/rooms";
+import { getMyInfo } from "../../api/members";
 
 const Room = () => {
   const getRoomId = useSelector((state) => state.saveRoomIdReducer);
@@ -55,6 +56,9 @@ const Room = () => {
       gender: "female",
     },
   ]);
+
+  // 내가 방장인지 아닌지 확인하기 위한 변수
+  const [myNickname, setMyNickname] = useState("");
 
   // 방 수정하기
   const [modifyModalOpen, setModifyModalOpen] = useState(false);
@@ -121,6 +125,14 @@ const Room = () => {
   }, []);
 
   useEffect(() => {
+    getMyInfo().then((res) => {
+      if (res.status.code === 5000) {
+        setMyNickname((myNickname = res.content.userNickname));
+      } else {
+        FailResponse(res.status.code);
+      }
+    });
+
     getRoomDetail(roomId).then((res) => {
       if (res.status.code === 5000) {
         const roomInfo = res.content.roomOfInfo;
@@ -156,7 +168,7 @@ const Room = () => {
           <div className="header">
             <div className="viewCount">
               <p>{`조회수 : ${viewCount}`}</p>
-              {/* <p>{`생성일시 : 2022년 4월 23일 PM 2 : 15`}</p> */}
+              {/* <p>{`생성일시 : ${}`}</p> */}
             </div>
 
             <div className="long-line"></div>
@@ -178,9 +190,14 @@ const Room = () => {
             <div className="title">
               <p>{roomTitle}</p>
               <div>
-                <button className="button-modify" onClick={openModifyModal}>
-                  수정하기
-                </button>
+                {myNickname === host ? (
+                  <button className="button-modify" onClick={openModifyModal}>
+                    수정하기
+                  </button>
+                ) : (
+                  <></>
+                )}
+
                 <Link href="/room/roomlist">
                   <button className="button-exit">나가기</button>
                 </Link>
