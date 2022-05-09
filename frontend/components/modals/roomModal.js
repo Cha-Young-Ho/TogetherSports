@@ -2,9 +2,12 @@ import { useState, useEffect } from "react";
 import Calendar from "../calendar/calendar";
 import { getRoomInfo } from "../../api/rooms";
 import ImageSlide from "../imageSlide";
+import router from "next/router";
+import { useDispatch } from "react-redux";
 
 /* roomList에서 받은 각 room들의 roomId를 props로 받기 */
 const RoomModal = (props) => {
+  const dispatch = useDispatch();
   const [mapLoaded, setMapLoaded] = useState(false); // 지도 로드 동기화
 
   /* response content 담을 변수들 */
@@ -40,34 +43,34 @@ const RoomModal = (props) => {
     if (props.open && mapLoaded) {
       console.log(props.roomID);
       // 방 정보 받아오기
-      // getRoomInfo(props.roomID).then((res) => {
-      //   if (res.status.code === 5000) {
-      //     setRoomId((roomId = res.content.roomId));
-      //     setCreatorNickName((creatorNickName = res.content.creatorNickName));
-      //     setHost((host = res.content.host));
-      //     setRoomTitle((roomTitle = res.content.roomTitle));
-      //     setRoomContent((roomContent = res.content.roomContent));
-      //     setArea((area = res.content.area));
-      //     setLimitPeopleCount(
-      //       (limitPeopleCount = res.content.limitPeopleCount)
-      //     );
-      //     setParticipantCount(
-      //       (participantCount = res.content.participantCount)
-      //     );
-      //     setExercise((exercise = res.content.exercise));
-      //     setTags((tags = res.content.tags));
-      //     setStartAppointmentDate(
-      //       (startAppointmentDate = res.content.startAppointmentDate)
-      //     );
-      //     setEndAppointmentDate(
-      //       (endAppointmentDate = res.content.endAppointmentDate)
-      //     );
-      //     setViewCount((viewCount = res.content.viewCount));
-      //     setRoomImages((roomImages = res.content.roomImages));
-      //   } else {
-      //     FailResponse(res.status.code);
-      //   }
-      // });
+      getRoomInfo(props.roomID).then((res) => {
+        if (res.status.code === 5000) {
+          setRoomId((roomId = res.content.roomId));
+          setCreatorNickName((creatorNickName = res.content.creatorNickName));
+          setHost((host = res.content.host));
+          setRoomTitle((roomTitle = res.content.roomTitle));
+          setRoomContent((roomContent = res.content.roomContent));
+          setArea((area = res.content.area));
+          setLimitPeopleCount(
+            (limitPeopleCount = res.content.limitPeopleCount)
+          );
+          setParticipantCount(
+            (participantCount = res.content.participantCount)
+          );
+          setExercise((exercise = res.content.exercise));
+          setTags((tags = res.content.tags));
+          setStartAppointmentDate(
+            (startAppointmentDate = res.content.startAppointmentDate)
+          );
+          setEndAppointmentDate(
+            (endAppointmentDate = res.content.endAppointmentDate)
+          );
+          setViewCount((viewCount = res.content.viewCount));
+          setRoomImages((roomImages = res.content.roomImages));
+        } else {
+          FailResponse(res.status.code);
+        }
+      });
 
       // 위치 정보 받아오기
       kakao.maps.load(() => {
@@ -109,8 +112,30 @@ const RoomModal = (props) => {
     }
   }, [props.open]);
 
-  const enterRoom = () => {
-    // 방에 참가
+  // 방에 참가
+  const enterRoom = (e) => {
+    // 참가 버튼을 누르는 순간 API요청을 한번 더 해서 참여가능여부 판단
+    getRoomInfo(props.roomId).then((res) => {
+      if (res.status.code === 5000) {
+        if (res.content.participantCount === res.content.limitPeopleCount) {
+          e.preventDefault();
+          alert("인원이 가득 차서 참가할 수 없습니다.");
+          return;
+        }
+      } else {
+        FailResponse(res.status.code);
+      }
+    });
+
+    // 위의 상황이 아니라면 방에 참가
+    dispatch({
+      type: "SAVEROOMID",
+      payload: {
+        roomId: roomId,
+      },
+    });
+
+    router.push("/room/room");
   };
 
   return (

@@ -7,31 +7,54 @@ import UserInfoModal from "../../components/modals/userInfoModal";
 import ModifyRoomModal from "../../components/modals/modifyRoomModal";
 import { useSelector } from "react-redux";
 import Chatting from "../../components/chatting";
-
-/* 수정 필요 */
-// 1. 명세 후에 제대로 다시 할 것들
-//   ㄴ 방장의 경우에만 방 수정하기 버튼이 보이게 하기
+import { getRoomDetail } from "../../api/rooms";
 
 const Room = () => {
-  const [tags, setTags] = useState([]);
-  const [viewCount, setViewCount] = useState("");
-  const [creatorNickName, setCreatorNickName] = useState("");
-  const [host, setHost] = useState("");
+  const getRoomId = useSelector((state) => state.saveRoomIdReducer);
+  const roomId = getRoomId.roomId;
+
+  // 방 정보에 대한 필드
+  const [creatorNickName, setCreatorNickName] = useState(""); // 방 생성자
+  const [host, setHost] = useState("짱구"); // 방장
   const [roomTitle, setRoomTitle] = useState("");
-  const [roomImagePath, setRoomImagePath] = useState([
+  const [roomContent, setRoomContent] = useState("");
+  const [roomArea, setRoomArea] = useState("서울 송파구 올림픽로 19-2"); // 임시 데이터
+  const [limitPeopleCount, setLimitPeopleCount] = useState("");
+  const [participantCount, setParticipantCount] = useState("");
+  const [exercise, setExercise] = useState("");
+  const [tags, setTags] = useState([]);
+  const [startAppointmentDate, setStartAppointmentDate] = useState("");
+  const [endAppointmentDate, setEndAppointmentDate] = useState("");
+  const [viewCount, setViewCount] = useState("");
+  const [roomImages, setRoomImages] = useState([
     {
       // 임시 데이터
       order: -1,
       imagePath: "logo-sign.png",
     },
   ]);
-  const [startAppointmentDate, setStartAppointmentDate] = useState("");
-  const [endAppointmentDate, setEndAppointmentDate] = useState("");
-  const [limitPeopleCount, setLimitPeopleCount] = useState("");
-  const [participantCount, setParticipantCount] = useState("");
-  const [exercise, setExercise] = useState("");
-  const [roomContent, setRoomContent] = useState("");
-  const [area, setArea] = useState("서울 송파구 올림픽로 19-2"); // 임시 데이터
+
+  // 참가자 목록에 대한 필드
+  const [participants, setParticipants] = useState([
+    {
+      // 임시 데이터
+      userNickname: "짱구",
+      mannerPoint: 10,
+      activeAreas: ["서울특별시 강남구 강남동"],
+      userProfileImagePath: "",
+      interests: ["축구", "야구", "농구"],
+      gender: "male",
+    },
+    {
+      // 임시 데이터
+      userNickname: "짱아",
+      mannerPoint: 10,
+      activeAreas: ["서울특별시 강남구 강남동"],
+      userProfileImagePath: "",
+      interests: ["축구", "야구", "농구"],
+      gender: "female",
+    },
+  ]);
 
   // 방 수정하기
   const [modifyModalOpen, setModifyModalOpen] = useState(false);
@@ -65,7 +88,7 @@ const Room = () => {
       const geocoder = new kakao.maps.services.Geocoder(); // 주소-좌표 변환 객체 생성
 
       // 주소로 좌표를 검색
-      geocoder.addressSearch(`${area}`, function (result, status) {
+      geocoder.addressSearch(`${roomArea}`, function (result, status) {
         if (status === kakao.maps.services.Status.OK) {
           const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
 
@@ -97,6 +120,35 @@ const Room = () => {
     mapScript.addEventListener("load", onLoadKakaoMap);
   }, []);
 
+  useEffect(() => {
+    getRoomDetail(roomId).then((res) => {
+      if (res.status.code === 5000) {
+        const roomInfo = res.content.roomOfInfo;
+
+        setCreatorNickName((creatorNickName = roomInfo.creatorNickName));
+        setHost((host = roomInfo.host));
+        setRoomTitle((roomTitle = roomInfo.roomTitle));
+        setRoomContent((roomContent = roomInfo.roomContent));
+        setRoomArea((roomArea = roomInfo.roomArea));
+        setLimitPeopleCount((limitPeopleCount = roomInfo.limitPeopleCount));
+        setParticipantCount((participantCount = roomInfo.participantCount));
+        setExercise((exercise = roomInfo.exercise));
+        setTags((tags = roomInfo.tags));
+        setStartAppointmentDate(
+          (startAppointmentDate = roomInfo.startAppointmentDate)
+        );
+        setEndAppointmentDate(
+          (endAppointmentDate = roomInfo.endAppointmentDate)
+        );
+        setViewCount((viewCount = roomInfo.viewCount));
+        setRoomImages((roomImages = roomInfo.roomImages));
+        setParticipants((participants = res.content.participants));
+      } else {
+        FailResponse(res.status.code);
+      }
+    });
+  });
+
   return (
     <>
       <div className="container">
@@ -104,7 +156,7 @@ const Room = () => {
           <div className="header">
             <div className="viewCount">
               <p>{`조회수 : ${viewCount}`}</p>
-              <p>{`생성일시 : 2022년 4월 23일 PM 2 : 15`}</p>
+              {/* <p>{`생성일시 : 2022년 4월 23일 PM 2 : 15`}</p> */}
             </div>
 
             <div className="long-line"></div>
@@ -145,7 +197,7 @@ const Room = () => {
           <div className="sections">
             <div className="left-section">
               <div className="image">
-                <ImageSlide imageArr={roomImagePath} />
+                <ImageSlide imageArr={roomImages} />
               </div>
               <div className="calendar">
                 <Calendar
@@ -192,18 +244,8 @@ const Room = () => {
                 <div className="short-line"></div>
                 <div className="participants">
                   <ParticipantList
-                    userNickname={"NMIXX"}
-                    host={"BTS"}
-                    participantListOpenModal={participantListOpenModal}
-                  />
-                  <ParticipantList
-                    userNickname={"IVE"}
-                    host={"BTS"}
-                    participantListOpenModal={participantListOpenModal}
-                  />
-                  <ParticipantList
-                    userNickname={"BTS"}
-                    host={"BTS"}
+                    participantArr={participants}
+                    host={host}
                     participantListOpenModal={participantListOpenModal}
                   />
                 </div>
@@ -236,7 +278,7 @@ const Room = () => {
         <div className="location-info">
           <div>
             <p>위치 정보</p>
-            <p>{area}</p>
+            <p>{roomArea}</p>
           </div>
           <div className="long-line"></div>
           <div id="map"></div>
