@@ -22,7 +22,7 @@ const RoomShowingBox = (props) => {
   return (
     <>
       <div
-        className="room-container"
+        className={`${props.slider ? "slider-wrapper" : "room-container"}`}
         onClick={() => {
           isAttendance();
         }}
@@ -59,6 +59,14 @@ const RoomShowingBox = (props) => {
       <style jsx>{`
         .room-container {
           width: 250px;
+          border-radius: 10px;
+          cursor: pointer;
+          box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+        }
+
+        .slider-wrapper {
+          min-width: 16%;
+          margin: 0 2%;
           border-radius: 10px;
           cursor: pointer;
           box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
