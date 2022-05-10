@@ -3,47 +3,43 @@ const BannerRoomCount = (props) => {
 
   return (
     <>
-      <div className="roomCount-wrapper">
-        {roomCount.map((count, index) => {
-          return (
-            <div key={index}>
-              <div></div>
-              {/* <p>{count}</p> */}
-              <div></div>
-            </div>
-          );
-        })}
-      </div>
+      {roomCount.map((count, index) => {
+        return (
+          <div key={index} className="count-wrapper">
+            <div></div>
+            <span>{count}</span>
+          </div>
+        );
+      })}
 
       <style jsx>{`
-        .roomCount-wrapper {
-          display: grid;
-          grid-template-columns: repeat(1, 1fr);
-          gap: 5px;
-        }
-
-        .roomCount-wrapper > div {
-          position: relative;
+        .count-wrapper {
+          max-width: 120px;
+          width: 100%;
+          height: 200px;
+          margin: 0 5px;
           border-radius: 10px;
           background-color: rgba(0, 0, 0, 0.6);
-          margin-right: 5px;
-          /* border-radius: 10px;
-          background-color: rgba(0, 0, 0, 0.6); */
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0 30px;
         }
 
-        .roomCount-wrapper > div > div {
-          /* position: absolute;
-          width: 100%;
-          height: 100%; */
-        }
-
-        p {
+        .count-wrapper > div {
+          width: 120px !important;
           position: absolute;
-          z-index: 2;
-          top: 5px;
+          height: 2.5px;
+          background-color: rgba(43, 122, 95, 0.8);
+        }
+
+        span {
           font-size: 13rem;
           font-weight: bold;
-          color: white;
+          line-height: 31.5px;
+          text-align: center;
+          color: rgb(239, 239, 239);
+          z-index: 1;
         }
       `}</style>
     </>

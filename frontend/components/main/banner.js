@@ -1,10 +1,6 @@
 import BannerRoomCount from "./bannerRoomCount";
 import Link from "next/link";
 
-/* 수정 사항 */
-// 1. roomCount CSS
-// 2. 사진 크기 bottom 맞추기
-
 const Banner = () => {
   return (
     <>
@@ -15,9 +11,9 @@ const Banner = () => {
 
           <div className="roomCount">
             <div>
-              <BannerRoomCount roomCount={"4"} />
+              <BannerRoomCount roomCount={"123"} />
             </div>
-            <p>개</p>
+            <span>개</span>
           </div>
 
           <Link href="/room/roomlist">
@@ -73,20 +69,24 @@ const Banner = () => {
 
         .roomCount {
           margin-bottom: 30px;
-          font-size: 5rem;
-          position: relative;
+          display: flex;
+          align-items: flex-end;
         }
 
         .roomCount > div {
-          margin-right: 5px;
+          display: flex;
+          flex-direction: row;
         }
 
-        .roomCount > p {
-          align-self: flex-end;
+        .roomCount span {
+          margin-left: 15px;
+          font-size: 5rem;
+          font-weight: bold;
+          color: white;
         }
 
         .roomList {
-          width: 60%;
+          width: 450px;
           height: 85px;
           padding: 30px;
           border-radius: 10px;
