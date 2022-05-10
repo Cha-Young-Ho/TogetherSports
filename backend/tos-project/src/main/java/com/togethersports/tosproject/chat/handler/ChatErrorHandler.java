@@ -4,6 +4,12 @@ import com.togethersports.tosproject.common.code.ResponseCode;
 import com.togethersports.tosproject.room.code.RoomCode;
 import com.togethersports.tosproject.security.jwt.JwtErrorCode;
 import org.springframework.messaging.Message;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageDeliveryException;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
+
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.MessageBuilder;
@@ -11,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.StompSubProtocolErrorHandler;
 
 import java.nio.charset.StandardCharsets;
+
 
 /**
  * <h1>ChatErrorHandler</h1>
@@ -22,10 +29,6 @@ import java.nio.charset.StandardCharsets;
 
 @Component
 public class ChatErrorHandler extends StompSubProtocolErrorHandler {
-
-    public ChatErrorHandler() {
-        super();
-    }
 
     /**
      * @param clientMessage : 실제 사용자 메세지
@@ -43,7 +46,6 @@ public class ChatErrorHandler extends StompSubProtocolErrorHandler {
         if(ex.getCause().getMessage().equals("Auth")){
             return handleUnauthorizedException();
         }
-
         return super.handleClientMessageProcessingError(clientMessage, ex);
     }
 
@@ -55,10 +57,7 @@ public class ChatErrorHandler extends StompSubProtocolErrorHandler {
     // 권한 예외(해당 방에 접속하지 않았을 시)
     private Message<byte[]> handleUnauthorizedException()
     {
-
-
         return prepareErrorMessage(RoomCode.NOT_PARTICIPATE_ROOM);
-
     }
 
     /**
@@ -68,7 +67,6 @@ public class ChatErrorHandler extends StompSubProtocolErrorHandler {
      */
     // JWT 예외
     private Message<byte[]> handleJwtException(){
-
 
         return prepareErrorMessage(JwtErrorCode.ACCESS_TOKEN_EXPIRATION);
     }
@@ -83,14 +81,12 @@ public class ChatErrorHandler extends StompSubProtocolErrorHandler {
     private Message<byte[]> prepareErrorMessage(ResponseCode responseCode)
     {
         String code = String.valueOf(responseCode.getMessage());
-
         StompHeaderAccessor accessor = StompHeaderAccessor.create(StompCommand.ERROR);
-
-
         accessor.setMessage(String.valueOf(responseCode.getCode()));
         accessor.setLeaveMutable(true);
 
         return MessageBuilder.createMessage(code.getBytes(StandardCharsets.UTF_8), accessor.getMessageHeaders());
+
     }
 
 

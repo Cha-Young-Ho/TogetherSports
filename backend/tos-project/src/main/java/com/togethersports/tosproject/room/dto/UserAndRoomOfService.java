@@ -1,7 +1,7 @@
-package com.togethersports.tosproejct.room.dto;
+package com.togethersports.tosproject.room.dto;
 
-import com.togethersports.tosproejct.room.Room;
-import com.togethersports.tosproejct.user.User;
+import com.togethersports.tosproject.room.Room;
+import com.togethersports.tosproject.user.User;
 import lombok.Builder;
 import lombok.Getter;
 
