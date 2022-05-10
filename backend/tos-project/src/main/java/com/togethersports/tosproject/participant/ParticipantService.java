@@ -1,13 +1,18 @@
 package com.togethersports.tosproject.participant;
 
+
+import com.togethersports.tosproject.participant.exception.NotParticipateRoomException;
 import com.togethersports.tosproject.room.Room;
 import com.togethersports.tosproject.room.RoomRepository;
 import com.togethersports.tosproject.room.exception.NotFoundRoomException;
 import com.togethersports.tosproject.user.User;
 import com.togethersports.tosproject.user.UserRepository;
 import com.togethersports.tosproject.user.exception.UserNotFoundException;
+
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <h1>ParticipantService</h1>
@@ -17,7 +22,7 @@ import org.springframework.stereotype.Service;
  *
  * @author younghoCha
  */
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ParticipantService {
@@ -56,10 +61,37 @@ public class ParticipantService {
         return participantRepository.existsByUserAndRoom(user, room);
     }
 
-    public void kickUser(Long kickedUserId){
-        Participant user = participantRepository.findById(kickedUserId)
+    public void kickUser(Long kickedUserId, Long roomId){
+        Participant user = participantRepository.findByUserIdAndRoomId(kickedUserId, roomId)
                 .orElseThrow(() -> new UserNotFoundException("해당하는 사용자를 찾을 수 없어, 강퇴할 수 없습니다."));
         participantRepository.delete(user);
+    }
+
+    public void out(User user, Room room){
+        Participant participant = participantRepository.findByUserIdAndRoomId(user.getId(), room.getId())
+                .orElseThrow(() -> new NotParticipateRoomException("해당하는 방에 참여하지 않았습니다."));
+
+        participantRepository.delete(participant);
+    }
+
+    @Transactional
+    public void verifySession(String sessionId, Long roomId, Long userId){
+
+        Participant participantEntity = participantRepository.findByUserIdAndRoomId(userId, roomId)
+                .orElseThrow(() -> new NotParticipateRoomException("해당 방에 참여하지 않은 유저입니다."));
+
+        participantEntity.updateSessionId(sessionId);
+
+
+
+    }
+
+    @Transactional
+    public String getSessionid(){
+        Participant participant = participantRepository.findByUserIdAndRoomId(1L, 1L)
+                .orElseThrow(() -> new NotParticipateRoomException());
+
+        return participant.getSocketSessionId();
     }
 
 }

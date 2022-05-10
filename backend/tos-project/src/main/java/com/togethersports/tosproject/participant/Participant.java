@@ -46,11 +46,18 @@ public class Participant {
     @JoinColumn(name = "ROOM_ID")
     private Room room;
 
+    @Column(name = "SOCKET_SESSION_ID")
+    private String socketSessionId;
+
     public static Participant of(User user, Room room){
         return Participant.builder()
                 .user(user)
                 .room(room)
                 .build();
+    }
+
+    public void updateSessionId(String sessionId){
+        this.socketSessionId = sessionId;
     }
 
 
