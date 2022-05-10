@@ -210,6 +210,24 @@ const postCreateRoom = async (
   return dataPromise;
 };
 
+// 마이룸 정보
+const getMyRoomInfo = async () => {
+  const promise =
+    localStorage.getItem("accessToken") === null
+      ? axios.get(`http://localhost:8080/api/room/myroom`)
+      : axios.get(`http://localhost:8080/api/room/myroom`, {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            Accept: "*/*",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        });
+
+  const dataPromise = promise.then((res) => res.data);
+
+  return dataPromise;
+};
+
 // PUT
 
 // 방 수정
@@ -291,6 +309,7 @@ export {
   getRootLocations,
   getChildLocations,
   getChatInfo,
+  getMyRoomInfo,
   postUpdateRoom,
   postCreateRoom,
   deleteRoom,
