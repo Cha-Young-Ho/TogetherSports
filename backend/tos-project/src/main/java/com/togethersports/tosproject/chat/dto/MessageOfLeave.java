@@ -1,4 +1,6 @@
-package com.togethersports.tosproejct.chat.dto;
+
+package com.togethersports.tosproject.chat.dto;
+
 
 import lombok.Builder;
 import lombok.Getter;
