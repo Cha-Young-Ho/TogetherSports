@@ -11,7 +11,7 @@ const Banner = () => {
 
           <div className="roomCount">
             <div>
-              <BannerRoomCount roomCount={"123"} />
+              <BannerRoomCount roomCount={"9"} />
             </div>
             <span>개</span>
           </div>
