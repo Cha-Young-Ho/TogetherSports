@@ -286,6 +286,8 @@ const loginStatusChangeReducer = (
   switch (action.type) {
     case CHANGELOGINSTATUS:
       return { ...state, loginStatus: action.payload.loginStatus };
+    default:
+      return state;
   }
 };
 
