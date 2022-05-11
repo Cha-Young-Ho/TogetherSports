@@ -26,7 +26,7 @@ const myInfoInitialState = {
   activeAreas: [],
   interests: [],
   mannerPoint: "",
-  isInformationRequired: "",
+  isInformationRequired: "true",
 };
 
 // 닉네임 저장 초기값
@@ -41,7 +41,7 @@ const createRoomInitialState = {
   roomArea: "",
   limitPeopleCount: "",
   exercise: "",
-  tag: [],
+  tags: [],
   startAppointmentDate: "",
   endAppointmentDate: "",
   roomImages: [],
@@ -51,9 +51,9 @@ const createRoomInitialState = {
 const roomFilteringDataInitialState = {
   roomTitle: "",
   roomContent: "",
-  area: "",
+  area: [],
   exercise: [],
-  tag: [],
+  tags: [],
   startAppointmentDate: "",
   endAppointmentDate: "",
   containTimeClosing: "false",
@@ -63,12 +63,25 @@ const roomFilteringDataInitialState = {
   endDate: "",
   startTime: "",
   endTime: "",
+  page: "1",
+  size: "10",
+  sort: "updateTime_DESC",
 };
 
 // 필터 적용 및 초기화 클릭 감지용 초기값
 const clickDetectionInitialState = {
   detection: "false",
   reset: "false",
+  add: "false",
+};
+
+const loginStatusChangeInitialState = {
+  loginStatus: "false",
+};
+
+// roomID 초기값
+const saveRoomId = {
+  roomId: "",
 };
 
 // 오타 방지용
@@ -80,8 +93,10 @@ const ROOMSETTING = "ROOMSETTING";
 const ROOMSCHEDULE = "ROOMSCHEDULE";
 const FILTERINGTITLE = "FILTERINGTITLE";
 const ROOMEXERCISES = "ROOMEXERCISES";
+const SELECTEDAREA = "SELECTEDAREA";
 const FILTERBUTTONCLICK = "FILTERBUTTONCLICK";
 const RESETBUTTONCLICK = "RESETBUTTONCLICK";
+const ADDAREABUTTONCLICK = "ADDAREABUTTONCLICK";
 const SETSTARTDATE = "SETSTARTDATE";
 const SETENDDATE = "SETENDDATE";
 const SETSTARTTIME = "SETSTARTTIME";
@@ -91,6 +106,8 @@ const SETCONTAINTIMECLOSING = "SETCONTAINTIMECLOSING";
 const SETCONTAINNOADMITTANCE = "SETCONTAINNOADMITTANCE";
 const SETREQUIREDPPLCOUNT = "SETREQUIREDPPLCOUNT";
 const RESETALLDATAS = "RESETALLDATAS";
+const CHANGELOGINSTATUS = "CHANGELOGINSTATUS";
+const SAVEROOMID = "SAVEROOMID";
 
 // 유저 회원정보추가입력 정보 reducer
 const userRequestReducer = (state = signupInitialState, action) => {
@@ -193,6 +210,11 @@ const roomFilteringDataReducer = (
           .filter((el) => el[1] === true)
           .map((el) => el[0]),
       };
+    case SELECTEDAREA:
+      return {
+        ...state,
+        area: action.payload.area,
+      };
     case SETSTARTDATE:
       return {
         ...state,
@@ -250,6 +272,33 @@ const filteringButtonClickDetectionReducer = (
       return { ...state, detection: action.payload.detection };
     case RESETBUTTONCLICK:
       return { ...state, reset: action.payload.reset };
+    case ADDAREABUTTONCLICK:
+      return { ...state, add: action.payload.add };
+    default:
+      return state;
+  }
+};
+
+const loginStatusChangeReducer = (
+  state = loginStatusChangeInitialState,
+  action
+) => {
+  switch (action.type) {
+    case CHANGELOGINSTATUS:
+      return { ...state, loginStatus: action.payload.loginStatus };
+    default:
+      return state;
+  }
+};
+
+// 방 설명페이지에서 방 상세페이지로 넘어가기 위한 roomId 저장 reducer
+const saveRoomIdReducer = (state = saveRoomId, action) => {
+  switch (action.type) {
+    case SAVEROOMID:
+      return {
+        ...state,
+        roomId: action.payload.roomId,
+      };
     default:
       return state;
   }
@@ -263,6 +312,8 @@ const rootReducer = combineReducers({
   createRoomReducer,
   roomFilteringDataReducer,
   filteringButtonClickDetectionReducer,
+  loginStatusChangeReducer,
+  saveRoomIdReducer,
 });
 
 const makeStore = () => createStore(rootReducer, composeWithDevTools());

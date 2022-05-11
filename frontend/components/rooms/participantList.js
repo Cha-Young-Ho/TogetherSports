@@ -1,8 +1,5 @@
 import { useDispatch } from "react-redux";
 
-/* 수정 필요 */
-// 1. 참여자 목록을 어떻게 받냐에 따라 수정 필요
-// 2. 참여자 목록 클릭 시, 다른 사람의 프로필 조회로 이동
 const ParticipantList = (props) => {
   const dispatch = useDispatch();
 
@@ -12,20 +9,48 @@ const ParticipantList = (props) => {
     dispatch({
       type: "SAVENICKNAME",
       payload: {
-        userNickname: props.userNickname,
+        // 수정 필요할듯
+        userNickname: props.participantArr.userNickname,
       },
     });
   };
 
   return (
     <>
-      <button className="participant" onClick={onClickUserInfo}>
-        <div className="profile">
-          <div></div>
-          <p>{props.userNickname}</p>
-        </div>
-        <p>방장</p>
-      </button>
+      {props.participantArr.length !== 0 ? (
+        props.participantArr.map((participant, index) => {
+          if (participant.userNickname === props.host) {
+            return (
+              <button
+                className="participant"
+                onClick={onClickUserInfo}
+                key={index}
+              >
+                <div className="profile">
+                  <div></div>
+                  <p>{participant.userNickname}</p>
+                </div>
+                <p>방장</p>
+              </button>
+            );
+          } else {
+            return (
+              <button
+                className="participant"
+                onClick={onClickUserInfo}
+                key={index}
+              >
+                <div className="profile">
+                  <div></div>
+                  <p>{participant.userNickname}</p>
+                </div>
+              </button>
+            );
+          }
+        })
+      ) : (
+        <></>
+      )}
       <style jsx>{`
         .participant {
           width: 100%;

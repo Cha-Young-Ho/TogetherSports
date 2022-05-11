@@ -7,17 +7,36 @@ import axios from "axios";
 // GET
 
 // 방 설명 페이지 조회
-const getRoomInfo = async (roomSequenceId) => {
-  const promise = axios.get(
-    `http://localhost:8080/api/room/${roomSequenceId}`,
-    {
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-        Accept: "*/*",
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-      },
-    }
-  );
+const getRoomInfo = async (roomId) => {
+  const promise =
+    localStorage.getItem("accessToken") === null
+      ? axios.get(`http://localhost:8080/api/rooms/${roomId}/info`)
+      : axios.get(`http://localhost:8080/api/rooms/${roomId}/info`, {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            Accept: "*/*",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        });
+
+  const dataPromise = promise.then((res) => res.data);
+
+  return dataPromise;
+};
+
+// 방 상세 페이지 조회
+const getRoomDetail = async (roomId) => {
+  const promise =
+    localStorage.getItem("accessToken") === null
+      ? axios.get(`http://localhost:8080/api/rooms/${roomId}/detail`)
+      : axios.get(`http://localhost:8080/api/rooms/${roomId}/info`, {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            Accept: "*/*",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        });
+
   const dataPromise = promise.then((res) => res.data);
 
   return dataPromise;
@@ -29,18 +48,24 @@ const getRoomList = async (
   roomContent,
   area,
   exercise,
-  tag,
+  tags,
   startAppointmentDate,
   endAppointmentDate,
   containTimeClosing,
   containNoAdmittance,
-  requiredPeopleCount
+  requiredPeopleCount,
+  page,
+  size,
+  sort
 ) => {
   roomTitle = roomTitle === "" ? "" : `roomTitle=${roomTitle}&`;
   roomContent = roomContent === "" ? "" : `roomContent=${roomContent}&`;
-  area = area === "" ? "" : `area=${area}&`;
-  exercise = exercise.map((el) => "exercise=" + el + "&").join("");
-  tag = tag.map((el) => "tag=" + el + "&").join("");
+  area = area.length !== 0 ? area.map((el) => "area=" + el + "&").join("") : "";
+  exercise =
+    exercise.length !== 0
+      ? exercise.map((el) => "exercise=" + el + "&").join("")
+      : "";
+  tags = tags.length !== 0 ? tags.map((el) => "tags=" + el + "&").join("") : "";
   startAppointmentDate =
     startAppointmentDate === ""
       ? ""
@@ -55,34 +80,77 @@ const getRoomList = async (
     requiredPeopleCount === ""
       ? ""
       : `requiredPeopleCount=${requiredPeopleCount}&`;
+  page = `page=${page}&`;
+  size = `size=${size}&`;
+  sort = `sort=${sort}&`;
 
   const totalQueryString =
     roomTitle +
     roomContent +
     area +
     exercise +
-    tag +
+    tags +
     startAppointmentDate +
     endAppointmentDate +
     containTimeClosing +
     containNoAdmittance +
-    requiredPeopleCount;
+    requiredPeopleCount +
+    page +
+    size +
+    sort;
 
   if (totalQueryString[totalQueryString.length - 1] === "&")
     totalQueryString = totalQueryString.slice(0, -1);
 
   console.log("방 필터 최종 쿼리스트링 = " + totalQueryString);
 
+  const promise =
+    localStorage.getItem("accessToken") === null
+      ? axios.get("http://localhost:8080/api/room?" + totalQueryString)
+      : axios.get("http://localhost:8080/api/room?" + totalQueryString, {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            Accept: "*/*",
+          },
+        });
+
+  const dataPromise = promise.then((res) => res.data);
+
+  return dataPromise;
+};
+
+// 최상위(시) 행정구역 조회
+const getRootLocations = async () => {
+  const promise = axios.get(`http://localhost:8080/locations`);
+
+  const dataPromise = promise.then((res) => res.data);
+
+  return dataPromise;
+};
+
+// 하위(시 이하) 행정구역 조회
+const getChildLocations = async (name) => {
   const promise = axios.get(
-    "http://localhost:8080/api/room?" + totalQueryString,
-    {
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-        Accept: "*/*",
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-      },
-    }
+    `http://localhost:8080/locations/parent/name?${name}`
   );
+
+  const dataPromise = promise.then((res) => res.data);
+
+  return dataPromise;
+};
+
+const getChatInfo = async (roomSequenceId) => {
+  const promise =
+    localStorage.getItem("accessToken") === null
+      ? axios.get(`http://localhost:8080/api/room/${roomSequenceId}/chat`)
+      : axios.get(`http://localhost:8080/api/room/${roomSequenceId}/chat`, {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            Accept: "*/*",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        });
+
   const dataPromise = promise.then((res) => res.data);
 
   return dataPromise;
@@ -97,32 +165,64 @@ const postCreateRoom = async (
   roomArea,
   limitPeopleCount,
   exercise,
-  tag,
+  tags,
   startAppointmentDate,
   endAppointmentDate,
   roomImages
 ) => {
-  const promise = axios.post(
-    "http://localhost:8080/api/room",
-    {
-      roomTitle: roomTitle,
-      roomContent: roomContent,
-      roomArea: roomArea,
-      limitPeopleCount: limitPeopleCount,
-      exercise: exercise,
-      tag: tag,
-      startAppointmentDate: startAppointmentDate,
-      endAppointmentDate: endAppointmentDate,
-      roomImages: roomImages,
-    },
-    {
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-        Accept: "*/*",
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-      },
-    }
-  );
+  const promise =
+    localStorage.getItem("accessToken") === null
+      ? axios.post("http://localhost:8080/api/room", {
+          roomTitle: roomTitle,
+          roomContent: roomContent,
+          roomArea: roomArea,
+          limitPeopleCount: limitPeopleCount,
+          exercise: exercise,
+          tags: tags,
+          startAppointmentDate: startAppointmentDate,
+          endAppointmentDate: endAppointmentDate,
+          roomImages: roomImages,
+        })
+      : axios.post(
+          "http://localhost:8080/api/room",
+          {
+            roomTitle: roomTitle,
+            roomContent: roomContent,
+            roomArea: roomArea,
+            limitPeopleCount: limitPeopleCount,
+            exercise: exercise,
+            tags: tags,
+            startAppointmentDate: startAppointmentDate,
+            endAppointmentDate: endAppointmentDate,
+            roomImages: roomImages,
+          },
+          {
+            headers: {
+              "Content-type": "application/json; charset=UTF-8",
+              Accept: "*/*",
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+          }
+        );
+
+  const dataPromise = promise.then((res) => res.data);
+
+  return dataPromise;
+};
+
+// 마이룸 정보
+const getMyRoomInfo = async () => {
+  const promise =
+    localStorage.getItem("accessToken") === null
+      ? axios.get(`http://localhost:8080/api/room/myroom`)
+      : axios.get(`http://localhost:8080/api/room/myroom`, {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            Accept: "*/*",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        });
+
   const dataPromise = promise.then((res) => res.data);
 
   return dataPromise;
@@ -136,31 +236,44 @@ const postUpdateRoom = async (
   roomContent,
   roomArea,
   exercise,
-  tag,
+  tags,
   startAppointmentDate,
   endAppointmentDate,
-  roomImage
+  roomImages
 ) => {
-  const promise = axios.put(
-    "http://localhost:8080/api/room",
-    {
-      roomTitle: roomTitle,
-      roomContent: roomContent,
-      roomArea: roomArea,
-      exercise: exercise,
-      tag: tag,
-      startAppointmentDate: startAppointmentDate,
-      endAppointmentDate: endAppointmentDate,
-      roomImage: roomImage,
-    },
-    {
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-        Accept: "*/*",
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-      },
-    }
-  );
+  const promise =
+    localStorage.getItem("accessToken") === null
+      ? axios.put("http://localhost:8080/api/room", {
+          roomTitle: roomTitle,
+          roomContent: roomContent,
+          roomArea: roomArea,
+          exercise: exercise,
+          tags: tags,
+          startAppointmentDate: startAppointmentDate,
+          endAppointmentDate: endAppointmentDate,
+          roomImages: roomImages,
+        })
+      : axios.put(
+          "http://localhost:8080/api/room",
+          {
+            roomTitle: roomTitle,
+            roomContent: roomContent,
+            roomArea: roomArea,
+            exercise: exercise,
+            tags: tags,
+            startAppointmentDate: startAppointmentDate,
+            endAppointmentDate: endAppointmentDate,
+            roomImages: roomImages,
+          },
+          {
+            headers: {
+              "Content-type": "application/json; charset=UTF-8",
+              Accept: "*/*",
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+          }
+        );
+
   const dataPromise = promise.then((res) => res.data);
 
   return dataPromise;
@@ -170,22 +283,34 @@ const postUpdateRoom = async (
 
 // 방 삭제
 const deleteRoom = async (roomSequenceId) => {
-  const promise = axios.delete(
-    `http://localhost:8080/api/room/${roomSequenceId}`,
-    {
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-        Accept: "*/*",
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-      },
-      // params: {
-      //   roomSequenceId: roomSequenceId,
-      // },
-    }
-  );
+  const promise =
+    localStorage.getItem("accessToken") === null
+      ? axios.delete(`http://localhost:8080/api/room/${roomSequenceId}`)
+      : axios.delete(`http://localhost:8080/api/room/${roomSequenceId}`, {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            Accept: "*/*",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+          // params: {
+          //   roomSequenceId: roomSequenceId,
+          // },
+        });
+
   const dataPromise = promise.then((res) => res.data);
 
   return dataPromise;
 };
 
-export { getRoomInfo, getRoomList, postUpdateRoom, postCreateRoom, deleteRoom };
+export {
+  getRoomInfo,
+  getRoomDetail,
+  getRoomList,
+  getRootLocations,
+  getChildLocations,
+  getChatInfo,
+  getMyRoomInfo,
+  postUpdateRoom,
+  postCreateRoom,
+  deleteRoom,
+};

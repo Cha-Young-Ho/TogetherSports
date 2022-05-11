@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { deleteLogout } from "../api/members";
 import { FailResponse } from "../api/failResponse";
 import Modal from "./modals/userInfoModal";
-import RoomModal from "./modals/roomModal";
 import { getMyInfo } from "../api/members";
 import { useDispatch, useSelector } from "react-redux";
 import FixedRequestAlarm from "./fixedRequestAlarm";
@@ -13,7 +12,9 @@ const NavigationBar = () => {
   const dispatch = useDispatch();
 
   // 로그인 상태 임을 판별하는 변수
-  const [loginData, setLoginData] = useState(false);
+  const loginStatus = useSelector(
+    (state) => state.loginStatusChangeReducer.loginStatus
+  );
 
   // 로그인 시 저장되는 데이터
   const [myinfo, setMyinfo] = useState(
@@ -30,26 +31,29 @@ const NavigationBar = () => {
     setModalOpen(false);
   };
 
-  const [roomModalOpen, setRoomModalOpen] = useState(false);
-
-  const roomOpenModal = () => {
-    setRoomModalOpen(true);
-  };
-  const roomCloseModal = () => {
-    setRoomModalOpen(false);
-  };
-
   // 서버로 로그인 요청
   useEffect(() => {
-    console.log("Request Login Info To Server...");
-    //setLoginData(true);
-    if (myinfo.userEmail === "") {
-      getMyInfo()
-        .then((res) => {
-          if (res.status.code === 5000) {
-            console.log("* Success Login Info Request *");
+    getMyInfo()
+      .then((res) => {
+        if (res.status.code === 5000) {
+          console.log("*Nav : Success Login Info Request *");
 
-            setMyinfo({
+          setMyinfo({
+            userEmail: res.content.userEmail,
+            userName: res.content.userName,
+            userNickname: res.content.userNickname,
+            userBirth: res.content.userBirth,
+            gender: res.content.gender,
+            userProfileImagePath: res.content.userProfileImagePath,
+            activeAreas: res.content.activeAreas.map((el) => el),
+            interests: res.content.interests.map((el) => el),
+            mannerPoint: res.content.mannerPoint,
+            isInformationRequired: res.content.isInformationRequired,
+          });
+
+          dispatch({
+            type: "SAVEMYINFO",
+            payload: {
               userEmail: res.content.userEmail,
               userName: res.content.userName,
               userNickname: res.content.userNickname,
@@ -60,37 +64,33 @@ const NavigationBar = () => {
               interests: res.content.interests.map((el) => el),
               mannerPoint: res.content.mannerPoint,
               isInformationRequired: res.content.isInformationRequired,
-            });
+            },
+          });
+          console.log("Nav : Client got this info = " + myinfo);
+        } else {
+          FailResponse(res.status.code);
+        }
 
-            dispatch({
-              type: "SAVEMYINFO",
-              payload: {
-                userEmail: res.content.userEmail,
-                userName: res.content.userName,
-                userNickname: res.content.userNickname,
-                userBirth: res.content.userBirth,
-                gender: res.content.gender,
-                userProfileImagePath: res.content.userProfileImagePath,
-                activeAreas: res.content.activeAreas.map((el) => el),
-                interests: res.content.interests.map((el) => el),
-                mannerPoint: res.content.mannerPoint,
-                isInformationRequired: res.content.isInformationRequired,
-              },
-            });
-
-            setLoginData(true);
-
-            console.log("Client got this info = " + myinfo);
-          }
-        })
-        .catch((error) => {
-          FailResponse(error.response.data.status.code);
-          setLoginData(false);
+        dispatch({
+          type: "CHANGELOGINSTATUS",
+          payload: {
+            loginStatus: "true",
+          },
         });
-    } else {
-      setLoginData(true);
-    }
-  }, []);
+      })
+      .catch((error) => {
+        if (error.response) {
+          dispatch({
+            type: "CHANGELOGINSTATUS",
+            payload: {
+              loginStatus: "false",
+            },
+          });
+
+          FailResponse(error.response.data.status.code);
+        }
+      });
+  }, [loginStatus]);
 
   // 로그아웃 버튼 클릭
   const ClickLogout = () => {
@@ -100,14 +100,20 @@ const NavigationBar = () => {
         if (res.status.code === 5000) {
           localStorage.removeItem("accessToken");
           localStorage.removeItem("refreshToken");
-          setLoginData(false);
+
+          dispatch({
+            type: "CHANGELOGINSTATUS",
+            payload: {
+              loginStatus: "false",
+            },
+          });
 
           dispatch({
             type: "SAVEMYINFO",
             payload: {
               userEmail: "",
-              userName: "익명",
-              userNickname: "",
+              userName: "",
+              userNickname: "익명",
               userBirth: "yyyy-mm-dd",
               gender: "",
               userProfileImagePath: "/base_profileImage.jpg",
@@ -122,7 +128,9 @@ const NavigationBar = () => {
         }
       })
       .catch((error) => {
-        FailResponse(error.response.data.status.code);
+        if (error.response) {
+          FailResponse(error.response.data.status.code);
+        }
       });
   };
 
@@ -139,27 +147,20 @@ const NavigationBar = () => {
               </Link>
             </div>
             <div className="category">
-              {/* <Link href="/">
-                <div className="tag">소개</div>
-              </Link> */}
-              <div className="tag" onClick={roomOpenModal}>
-                소개
-              </div>
-              <RoomModal
-                open={roomModalOpen}
-                close={roomCloseModal}
-              ></RoomModal>
               <Link href="/room/roomlist">
-                <div className="tag">방 목록</div>
+                <div className="tag">일정목록</div>
               </Link>
               <Link href="/myroom">
-                <div className="tag">마이룸</div>
+                <div className="tag">내일정</div>
+              </Link>
+              <Link href="/room/createroom/roomsetting">
+                <div className="tag">방생성</div>
               </Link>
             </div>
           </div>
           <div>
             <div className="sign">
-              {!loginData ? (
+              {loginStatus === "false" ? (
                 <>
                   <Link href="/login">
                     <div className="tag">로그인</div>
@@ -196,7 +197,11 @@ const NavigationBar = () => {
           </div>
         </div>
       </div>
-      {loginData && !myinfo.isInformationRequired ? <FixedRequestAlarm /> : ""}
+      {loginStatus === "true" && myinfo.isInformationRequired ? (
+        <FixedRequestAlarm />
+      ) : (
+        ""
+      )}
 
       <style jsx>{`
         .header {
@@ -206,7 +211,7 @@ const NavigationBar = () => {
           height: 80px;
           min-height: 8vh;
           border-bottom: 1px solid #e4e8eb;
-          z-index: 9999;
+          z-index: 90;
           position: fixed;
           top: 0;
           left: 0;

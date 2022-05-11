@@ -20,10 +20,19 @@ const RoomTagInfo = () => {
   const [thumbnailIndex, setThumbnailIndex] = useState(0);
 
   // 방 태그
-  const [tag, setTag] = useState([]);
-  const tagsAge = ["10대", "20대", "30대", "40대", "50대", "60대", "70대"];
-  const tagsLevel = ["입문만", "초보만", "중수만", "고수만"];
-  const tagsGender = ["남자만", "여자만"];
+  const [tags, setTags] = useState([]);
+  const tagsAge = [
+    "10대",
+    "20대",
+    "30대",
+    "40대",
+    "50대",
+    "60대",
+    "70대",
+    "연령 무관",
+  ];
+  const tagsLevel = ["입문만", "초보만", "중수만", "고수만", "실력 무관"];
+  const tagsGender = ["남자만", "여자만", "성별 무관"];
 
   // setRoomImages 컴포넌트에서 데이터(이미지 배열) 받기
   const getRoomImages = (roomImage) => {
@@ -58,18 +67,18 @@ const RoomTagInfo = () => {
   const onClickTag = (e) => {
     if (e.target.classList[2] === "tag-clicked") {
       e.target.classList.remove("tag-clicked");
-      setTag((prev) =>
+      setTags((prev) =>
         prev.filter((el) => {
           return el !== e.target.innerText;
         })
       );
     } else {
-      if (tag.length > 4) {
+      if (tags.length > 4) {
         e.preventDefault();
         alert("태그는 최대 5개 선택 가능합니다!");
       } else {
         e.target.classList.add("tag-clicked");
-        setTag((prev) => [...prev, e.target.innerText]);
+        setTags((prev) => [...prev, e.target.innerText]);
       }
     }
   };
@@ -91,6 +100,10 @@ const RoomTagInfo = () => {
       alert("입력되지 않은 정보가 있습니다.");
       return;
     }
+
+    if (roomContent === "") setRoomContent(null);
+    if (tags.length === 0) setTags(null);
+    if (roomImages.length === 0) setRoomImages(null);
     // 정상적으로 다 입력돼있으면 방 생성 요청
     else {
       postCreateRoom(
@@ -99,7 +112,7 @@ const RoomTagInfo = () => {
         roomInfo.roomArea,
         roomInfo.limitPeopleCount,
         roomInfo.exercise,
-        tag,
+        tags,
         roomInfo.startAppointmentDate,
         roomInfo.endAppointmentDate,
         roomImages
@@ -126,14 +139,20 @@ const RoomTagInfo = () => {
           roomTagInfo_atv={"activation"}
         />
 
-        <div className="contents">
+        <div>
+          <div className="contents-info">
+            <p>방의 추가적인 정보를 입력해주세요 !</p>
+          </div>
+
           <div className="content-info">
-            <p>방에 대한 정보를 입력해주세요!</p>
+            <p>방을 자유롭게 소개해보세요 😁</p>
             <textarea
               value={roomContent}
               onChange={(e) => setRoomContent(e.target.value)}
             ></textarea>
           </div>
+
+          <div className="line"></div>
 
           <SetRoomImages
             getImageData={getRoomImages}
@@ -151,10 +170,8 @@ const RoomTagInfo = () => {
                     </div>
                   );
                 })}
-                <div className="tag-nomatter" onClick={onClickTag}>
-                  연령 무관
-                </div>
               </div>
+
               <div className="tags-level-gender">
                 {tagsLevel.map((level, index) => {
                   return (
@@ -163,9 +180,7 @@ const RoomTagInfo = () => {
                     </div>
                   );
                 })}
-                <div className="tag-nomatter" onClick={onClickTag}>
-                  실력 무관
-                </div>
+
                 {tagsGender.map((gender, index) => {
                   return (
                     <div className="tag" onClick={onClickTag} key={index}>
@@ -173,15 +188,12 @@ const RoomTagInfo = () => {
                     </div>
                   );
                 })}
-                <div className="tag-nomatter" onClick={onClickTag}>
-                  성별 무관
-                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="buttons">
+        <div className="button-wrapper">
           <Link href="/room/createroom/roomschedule">
             <button className="button-prev">이전</button>
           </Link>
@@ -203,10 +215,16 @@ const RoomTagInfo = () => {
           border-top: solid 1px #e4e8eb;
         }
 
-        .contents {
+        .contents-info {
           width: 600px;
           border-top: solid 1px #e4e8eb;
           border-bottom: solid 1px #e4e8eb;
+        }
+
+        .contents-info p {
+          margin: 5px 0;
+          text-align: center;
+          font-size: 1.5rem;
         }
 
         .content-info {
@@ -218,38 +236,43 @@ const RoomTagInfo = () => {
         }
 
         .content-info p {
-          font-size: 1.5em;
-          font-weight: bold;
+          font-size: 1.5rem;
         }
 
         .content-info textarea {
           margin-top: 20px;
           padding: 10px;
-          width: 550px;
+          width: 100%;
           height: 200px;
           border: none;
           border-radius: 10px;
           background-color: #f4f4f4;
           resize: none;
-          font-size: 1.4em;
+          font-size: 1.4rem;
+        }
+
+        .line {
+          width: 100%;
+          border-top: 1px solid #e4e8eb;
+          border-bottom: none;
+          margin-bottom: 40px;
         }
 
         .content-tag {
           display: flex;
           flex-direction: column;
-          justify-content: center;
-          align-items: center;
+          justify-content: left;
           margin: 30px 0;
         }
 
         .content-tag p {
-          font-size: 1.5em;
+          font-size: 1.5rem;
           font-weight: bold;
         }
 
         .tags {
           margin-top: 20px;
-          width: 550px;
+          width: 100%;
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -257,13 +280,14 @@ const RoomTagInfo = () => {
 
         .tags-age,
         .tags-level-gender {
+          width: 100%;
           display: flex;
           flex-direction: row;
-          width: 100%;
+          justify-content: space-between;
         }
 
         .tag {
-          width: 60px;
+          padding: 0 10px;
           height: 30px;
           border: solid 1px #f4f4f4;
           border-radius: 6px;
@@ -272,28 +296,12 @@ const RoomTagInfo = () => {
           display: flex;
           justify-content: center;
           align-items: center;
-          font-size: 1.2em;
+          font-size: 1.2rem;
           font-weight: bold;
           cursor: pointer;
         }
 
-        .tag-nomatter {
-          width: 70px;
-          height: 30px;
-          border: solid 1px #f4f4f4;
-          border-radius: 6px;
-          background-color: #efefef;
-          margin: 10px 5px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          font-size: 1.2em;
-          font-weight: bold;
-          cursor: pointer;
-        }
-
-        .tag:hover,
-        .tag-nomatter:hover {
+        .tag:hover {
           transition-duration: 0.5s;
           transform: scale(1.2);
           background-color: #468f5b;
@@ -305,7 +313,7 @@ const RoomTagInfo = () => {
           background-color: #468f5b;
         }
 
-        .buttons {
+        .button-wrapper {
           display: flex;
           flex-direction: row;
           justify-content: center;

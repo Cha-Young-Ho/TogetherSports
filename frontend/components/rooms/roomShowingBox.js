@@ -1,11 +1,30 @@
+import { getRoomInfo } from "../../api/rooms";
+import router from "next/router";
+
 const RoomShowingBox = (props) => {
+  // 해당 방에 이미 참가중인지 여부 체크
+  const isAttendance = () => {
+    getRoomInfo(props.datas.roomId).then((res) => {
+      if (res.status.code === 5000) {
+        // 이미 참가중이라면 바로 방 상세 페이지로 이동
+        if (res.content.attendance) {
+          router.push("/room/room");
+        }
+        // 아니라면 방 설명 페이지 (roomModal) 띄우기
+        else {
+          props.setRoomID ? props.setRoomID(props.datas.roomId) : "";
+          props.openRoomExplainModal ? props.openRoomExplainModal() : "";
+        }
+      }
+    });
+  };
+
   return (
     <>
       <div
-        className="room-container"
+        className={`${props.slider ? "slider-wrapper" : "room-container"}`}
         onClick={() => {
-          props.setRoomID ? props.setRoomID(props.datas.roomId) : "";
-          props.openRoomExplainModal ? props.openRoomExplainModal() : "";
+          isAttendance();
         }}
       >
         <div className="thumbs-box">
@@ -17,12 +36,14 @@ const RoomShowingBox = (props) => {
             }
           ></img>
           <div className="tags">
-            {props.datas.tag.map((tag, index) => {
-              return <p key={index}>{tag}</p>;
-            })}
+            {props.datas.tags.length !== 0
+              ? props.datas.tags.map((tag, index) => {
+                  return <p key={index}>{tag}</p>;
+                })
+              : ""}
           </div>
           <div className="participants">
-            <p>{`${props.datas.paricipantCount} / ${props.datas.limitPeopleCount}`}</p>
+            <p>{`${props.datas.participantCount} / ${props.datas.limitPeopleCount}`}</p>
           </div>
         </div>
         <div className="bodyLine">
@@ -38,6 +59,14 @@ const RoomShowingBox = (props) => {
       <style jsx>{`
         .room-container {
           width: 250px;
+          border-radius: 10px;
+          cursor: pointer;
+          box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+        }
+
+        .slider-wrapper {
+          min-width: 16%;
+          margin: 0 2%;
           border-radius: 10px;
           cursor: pointer;
           box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);

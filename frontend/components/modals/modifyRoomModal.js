@@ -3,7 +3,7 @@ import SetRoomImages from "../rooms/setRoomImages";
 import { getRoomInfo, postUpdateRoom } from "../../api/rooms";
 import FailResponse from "../../api/failResponse";
 
-const ModifyRoomModal = ({ open, close, sequenceId }) => {
+const ModifyRoomModal = (props) => {
   // 방 제목, 설명, 인원
   const [roomTitle, setRoomTitle] = useState("");
   const [roomContent, setRoomContent] = useState("");
@@ -12,23 +12,57 @@ const ModifyRoomModal = ({ open, close, sequenceId }) => {
   // post 하기위한 정보들
   const [roomArea, setRoomArea] = useState({});
   const [exercise, setExercise] = useState("");
-  const [tag, setTag] = useState("");
   const [startAppointmentDate, setStartAppointmentDate] = useState("");
   const [endAppointmentDate, setEndAppointmentDate] = useState("");
 
   // 서버로 보내기 위한 방 이미지 정보(확장자, 원본주소)
-  const [roomImage, setRoomImage] = useState([]);
+  const [roomImages, setRoomImages] = useState([]);
   const [thumbnailIndex, setThumbnailIndex] = useState(0);
   const getImageData = (imageData) => {
-    setRoomImage(imageData);
+    setRoomImages(imageData);
   };
 
   const getThumbnailIndex = (index) => {
     setThumbnailIndex(index);
   };
 
+  // 방 태그
+  const [tags, setTags] = useState([]);
+  const tagsAge = [
+    "10대",
+    "20대",
+    "30대",
+    "40대",
+    "50대",
+    "60대",
+    "70대",
+    "연령 무관",
+  ];
+  const tagsLevel = ["입문만", "초보만", "중수만", "고수만", "실력 무관"];
+  const tagsGender = ["남자만", "여자만", "성별 무관"];
+
+  // 태그 선택 함수
+  const onClickTag = (e) => {
+    if (e.target.classList[2] === "tag-clicked") {
+      e.target.classList.remove("tag-clicked");
+      setTags((prev) =>
+        prev.filter((el) => {
+          return el !== e.target.innerText;
+        })
+      );
+    } else {
+      if (tags.length > 4) {
+        e.preventDefault();
+        alert("태그는 최대 5개 선택 가능합니다!");
+      } else {
+        e.target.classList.add("tag-clicked");
+        setTags((prev) => [...prev, e.target.innerText]);
+      }
+    }
+  };
+
   const setData = () => {
-    return roomImage;
+    return roomImages;
   };
 
   // 이미지 배열에 order 추가하기
@@ -47,7 +81,7 @@ const ModifyRoomModal = ({ open, close, sequenceId }) => {
       arr[i].order = i + 1;
     }
 
-    return setRoomImage((roomImage = thumbnail.concat(arr)));
+    return setRoomImages((roomImages = thumbnail.concat(arr)));
   };
 
   // 화면에 표시되는 프리뷰 이미지
@@ -62,7 +96,7 @@ const ModifyRoomModal = ({ open, close, sequenceId }) => {
 
   // 완료 버튼 클릭 시
   const clickDoneBtn = () => {
-    addOrder(roomImage, thumbnailIndex);
+    addOrder(roomImages, thumbnailIndex);
 
     if (roomTitle === "" || limitPeopleCount === "") {
       alert("입력이 올바르지 않은 정보가 있습니다");
@@ -70,15 +104,19 @@ const ModifyRoomModal = ({ open, close, sequenceId }) => {
       return;
     }
 
+    if (roomContent === "") setRoomContent(null);
+    if (tags.length === 0) setTags(null);
+    if (roomImages.length === 0) setRoomImages(null);
+
     postUpdateRoom(
       roomTitle,
       roomContent,
       roomArea,
       exercise,
-      tag,
+      tags,
       startAppointmentDate,
       endAppointmentDate,
-      roomImage
+      roomImages
     )
       .then((res) => {
         if (res.status.code === 5000) {
@@ -114,22 +152,21 @@ const ModifyRoomModal = ({ open, close, sequenceId }) => {
 
   // 방에 대한 정보 조회
   useEffect(() => {
-    if (open) {
-      getRoomInfo(sequenceId)
+    if (props.open) {
+      getRoomInfo(props.sequenceId)
         .then((res) => {
           if (res.status.code === 5000) {
             console.log(res.status.message);
-
             //초기값 받아오기
             setRoomTitle(res.content.roomTitle);
             setRoomContent(res.content.roomContent);
             setRoomArea(res.content.roomArea);
             setExercise(res.content.exercise);
-            setTag(res.content.tag);
+            setTags(res.content.tags);
             setStartAppointmentDate(res.content.startAppointmentDate);
             setEndAppointmentDate(res.content.endAppointmentDate);
             setImagePreview(
-              (imagePreview = res.content.roomImage.imageSource.map(preview))
+              (imagePreview = res.content.roomImages.imageSource.map(preview))
             );
             setLimitPeopleCount(res.content.limitPeopleCount);
           }
@@ -139,57 +176,93 @@ const ModifyRoomModal = ({ open, close, sequenceId }) => {
           return;
         });
     }
-  }, [open]);
+  }, [props.open]);
 
   return (
     <>
-      <div className={open ? "openModal modal" : "modal"}>
+      <div className={props.open ? "openModal modal" : "modal"}>
         <div className="box-container">
           <h1>방 정보 수정</h1>
-          <div className="picture-wrapper">
-            <SetRoomImages
-              getImageData={getImageData}
-              setPreview={setPreview}
-              getPreview={getPreview}
-              setData={setData}
-              getThumbnailData={getThumbnailIndex}
-            />
-          </div>
 
-          <div className="roomTitle-wrapper">
-            <p>방 제목</p>
-            <input
-              type="text"
-              minLength="1"
-              maxLength="20"
-              placeholder={roomTitle}
-              onChange={changeTitle}
-            ></input>
-          </div>
+          <div className="contents-wrapper">
+            <div className="roomTitle-wrapper">
+              <p>방 제목</p>
+              <input
+                type="text"
+                minLength="1"
+                maxLength="20"
+                placeholder={roomTitle}
+                onChange={changeTitle}
+              ></input>
+            </div>
 
-          <div className="peopleCount-wrapper">
-            <p>인원 수 조절</p>
-            <input
-              type="text"
-              placeholder={limitPeopleCount}
-              onChange={changePplCnt}
-            ></input>
-            <p>명</p>
-            <p className="notice">
-              * 현재 참여 인원보다 많은 인원만 입력 가능합니다.
-            </p>
-          </div>
+            <div className="peopleCount-wrapper">
+              <p>인원 수 조절</p>
+              <input
+                type="text"
+                placeholder={limitPeopleCount}
+                onChange={changePplCnt}
+              ></input>
+              <p>명</p>
+              <p className="notice">
+                * 현재 참여 인원보다 많은 인원만 입력 가능합니다.
+              </p>
+            </div>
 
-          <div className="roomNotice-wrapper">
-            <p>방 설명 작성</p>
-            <textarea
-              onChange={changeContent}
-              defaultValue={roomContent}
-            ></textarea>
+            <div className="roomNotice-wrapper">
+              <p>방 설명 작성</p>
+              <textarea
+                onChange={changeContent}
+                defaultValue={roomContent}
+              ></textarea>
+            </div>
+
+            <div className="picture-wrapper">
+              <SetRoomImages
+                getImageData={getImageData}
+                setPreview={setPreview}
+                getPreview={getPreview}
+                setData={setData}
+                getThumbnailData={getThumbnailIndex}
+              />
+            </div>
+
+            <div className="tag-wrapper">
+              <p>빠른 태그 추가 (최대 5개)</p>
+              <div className="tags">
+                <div className="tags-age">
+                  {tagsAge.map((age, index) => {
+                    return (
+                      <div className="tag" onClick={onClickTag} key={index}>
+                        {age}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="tags-level-gender">
+                  {tagsLevel.map((level, index) => {
+                    return (
+                      <div className="tag" onClick={onClickTag} key={index}>
+                        {level}
+                      </div>
+                    );
+                  })}
+
+                  {tagsGender.map((gender, index) => {
+                    return (
+                      <div className="tag" onClick={onClickTag} key={index}>
+                        {gender}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="button-wrapper">
-            <button className="cancel-btn" onClick={close}>
+            <button className="cancel-btn" onClick={props.close}>
               수정 취소
             </button>
             <button className="done-btn" onClick={clickDoneBtn}>
@@ -220,43 +293,64 @@ const ModifyRoomModal = ({ open, close, sequenceId }) => {
           display: flex;
           align-items: center;
           justify-content: center;
-          /* 팝업이 열릴때 스르륵 열리는 효과 */
-          animation: modal-bg-show 0.3s;
+          animation: modal-bg-show 0.3s; // 스르륵 효과
         }
 
         .box-container {
-          width: 700px;
-          height: 550px;
+          width: 48%;
+          height: 85%;
+          padding: 40px 50px;
           border-radius: 10px;
           box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
-          background-color: #fff;
+          background-color: white;
           display: flex;
           flex-direction: column;
           align-items: center;
-          scroll: auto;
-          overflow-x: hidden;
         }
 
-        .box-container h1 {
+        .contents-wrapper {
+          width: 100%;
+          /* height: 100%; */
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: space-between;
+          overflow: auto;
+        }
+
+        /* 스크롤에 대한 부분 */
+        .contents-wrapper::-webkit-scrollbar {
+          width: 15px;
+        }
+
+        .contents-wrapper::-webkit-scrollbar-track {
+          width: 9px;
+          border-radius: 4px;
+          background-color: #f5f5f5;
+          background-clip: padding-box;
+          border: 5px solid transparent;
+        }
+
+        .contents-wrapper::-webkit-scrollbar-thumb {
+          width: 15px;
+          height: 26px;
+          border-radius: 4px;
+          border: solid 1px #e5e5e5;
+          background-color: white;
+        }
+
+        h1 {
           display: flex;
           justify-content: center;
           align-items: center;
+          margin-bottom: 20px;
           font-size: 2rem;
           font-weight: bold;
-          margin-top: 20px;
-        }
-
-        .picture-wrapper {
-          width: 80%;
-          margin: 25px 0 10px 0;
-          display: flex;
-          align-items: center;
-          flex-direction: column;
         }
 
         .roomTitle-wrapper {
-          width: 80%;
-          height: 40px;
+          width: 95%;
+          margin-bottom: 20px;
           padding: 5px 10px 5px 14px;
           border-radius: 10px;
           border: solid 1px #e8e8e8;
@@ -270,16 +364,15 @@ const ModifyRoomModal = ({ open, close, sequenceId }) => {
         }
 
         .roomTitle-wrapper input[type="text"] {
-          width: 470px;
+          width: 90%;
           height: 30px;
           border: none;
           padding: 0 5px;
         }
 
         .peopleCount-wrapper {
-          width: 80%;
-          height: 40px;
-          margin-top: 10px;
+          width: 95%;
+          margin-bottom: 20px;
           display: flex;
           align-items: center;
         }
@@ -289,7 +382,7 @@ const ModifyRoomModal = ({ open, close, sequenceId }) => {
           height: 35px;
           border-radius: 10px;
           border: solid 1px #e8e8e8;
-          background-color: #fff;
+          background-color: white;
           margin: 0 15px;
           text-align: center;
         }
@@ -302,17 +395,16 @@ const ModifyRoomModal = ({ open, close, sequenceId }) => {
         }
 
         .roomNotice-wrapper {
-          width: 80%;
-          height: 160px;
-          margin-top: 10px;
+          width: 95%;
+          margin-bottom: 20px;
           display: flex;
           flex-direction: column;
         }
 
         .roomNotice-wrapper textarea {
-          width: 570px;
-          height: 130px;
-          margin: 10px 0;
+          width: 100%;
+          height: 150px;
+          margin-top: 10px;
           border-radius: 10px;
           border: none;
           background-color: #f4f4f4;
@@ -320,11 +412,75 @@ const ModifyRoomModal = ({ open, close, sequenceId }) => {
           resize: none;
         }
 
+        .picture-wrapper {
+          width: 95%;
+          margin-bottom: 20px;
+          display: flex;
+          align-items: center;
+          flex-direction: column;
+        }
+
+        .tag-wrapper {
+          width: 95%;
+          display: flex;
+          flex-direction: column;
+          justify-content: left;
+        }
+
+        .tag-wrapper p {
+          font-size: 1.5rem;
+          font-weight: bold;
+        }
+
+        .tags {
+          margin-top: 20px;
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .tags-age,
+        .tags-level-gender {
+          width: 100%;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+        }
+
+        .tag {
+          padding: 0 10px;
+          height: 30px;
+          border: solid 1px #f4f4f4;
+          border-radius: 6px;
+          background-color: #efefef;
+          margin: 10px 5px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: 1.2rem;
+          font-weight: bold;
+          cursor: pointer;
+        }
+
+        .tag:hover {
+          transition-duration: 0.5s;
+          transform: scale(1.2);
+          background-color: #468f5b;
+          color: white;
+        }
+
+        .tag-clicked {
+          color: white;
+          background-color: #468f5b;
+        }
+
         .button-wrapper {
-          margin: 25px 0;
+          width: 100%;
           display: flex;
           align-items: center;
           justify-content: center;
+          margin-top: 30px;
         }
 
         .cancel-btn {

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import UserInfoNavBar from "../../../components/userInfoNavBar";
+import Head from "next/head";
 
 const Interest = () => {
   const dispatch = useDispatch();
@@ -63,11 +64,14 @@ const Interest = () => {
 
   return (
     <>
+      <Head>
+        <title>회원정보 입력 페이지</title>
+      </Head>
       <div className="bg-container">
         <UserInfoNavBar
           personal_atv={"deactivation"}
           interest_atv={"activation"}
-          activearea={"deactivation"}
+          activearea_atv={"deactivation"}
         />
         <div className="content-showbox">
           <p>관심있는 종목에 맞는 방을 추천 해드립니다!</p>
@@ -81,11 +85,17 @@ const Interest = () => {
             );
           })}
         </div>
-        <Link href="/signup/addinfo/activearea">
-          <div onClick={BtnClickedNext} className="next-button">
-            다음
-          </div>
-        </Link>
+
+        <div className="button-wrapper">
+          <Link href="/signup/addinfo/personalinfo">
+            <button className="prev-button">이전</button>
+          </Link>
+          <Link href="/signup/addinfo/activearea">
+            <div onClick={BtnClickedNext} className="next-button">
+              다음
+            </div>
+          </Link>
+        </div>
       </div>
 
       <style jsx>{`
@@ -97,6 +107,7 @@ const Interest = () => {
           flex-direction: column;
           align-items: center;
           justify-content: center;
+          user-select: none;
         }
 
         p {
@@ -141,6 +152,27 @@ const Interest = () => {
           background-color: #468f5b;
         }
 
+        .button-wrapper {
+          margin: 50px 0;
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .prev-button {
+          width: 120px;
+          height: 40px;
+          background-color: #d8d8d8;
+          color: white;
+          font-size: 1.5rem;
+          border: 0;
+          outline: 0;
+          cursor: pointer;
+          border-radius: 10px;
+          margin-right: 10px;
+        }
+
         .next-button {
           display: flex;
           align-items: center;
@@ -150,12 +182,10 @@ const Interest = () => {
           background-color: #08555f;
           color: white;
           font-size: 1.5rem;
-          margin-top: 25px;
           border: 0;
           outline: 0;
           cursor: pointer;
           border-radius: 10px;
-          margin-bottom: 30px;
         }
       `}</style>
     </>
