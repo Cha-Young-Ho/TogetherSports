@@ -3,14 +3,13 @@ import { useDispatch } from "react-redux";
 const ParticipantList = (props) => {
   const dispatch = useDispatch();
 
-  const onClickUserInfo = () => {
-    props.participantListOpenModal();
+  const onClickUserInfo = (userNickname) => {
+    props.participantListOpenModal(); // 다른 회원 프로필 보기 modal open
 
     dispatch({
       type: "SAVENICKNAME",
       payload: {
-        // 수정 필요할듯
-        userNickname: props.participantArr.userNickname,
+        userNickname: userNickname,
       },
     });
   };
@@ -23,7 +22,7 @@ const ParticipantList = (props) => {
             return (
               <button
                 className="participant"
-                onClick={onClickUserInfo}
+                onClick={onClickUserInfo(participant.userNickname)}
                 key={index}
               >
                 <div className="profile">
@@ -37,7 +36,7 @@ const ParticipantList = (props) => {
             return (
               <button
                 className="participant"
-                onClick={onClickUserInfo}
+                onClick={onClickUserInfo(participant.userNickname)}
                 key={index}
               >
                 <div className="profile">

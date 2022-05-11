@@ -3,7 +3,7 @@ import { signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { deleteLogout } from "../api/members";
 import { FailResponse } from "../api/failResponse";
-import Modal from "./modals/userInfoModal";
+import UserInfoModal from "./modals/userInfoModal";
 import { getMyInfo } from "../api/members";
 import { useDispatch, useSelector } from "react-redux";
 import FixedRequestAlarm from "./fixedRequestAlarm";
@@ -178,7 +178,10 @@ const NavigationBar = () => {
                     </div>
                   </button>
 
-                  <Modal open={modalOpen} close={closeModal}></Modal>
+                  <UserInfoModal
+                    open={modalOpen}
+                    close={closeModal}
+                  ></UserInfoModal>
 
                   <button
                     className="btn_signout"
