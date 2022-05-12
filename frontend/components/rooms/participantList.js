@@ -4,7 +4,7 @@ const ParticipantList = (props) => {
   const dispatch = useDispatch();
 
   const onClickUserInfo = (userNickname) => {
-    props.participantListOpenModal(); // 다른 회원 프로필 보기 modal open
+    props.participantListOpenModal();
 
     dispatch({
       type: "SAVENICKNAME",
@@ -18,11 +18,12 @@ const ParticipantList = (props) => {
     <>
       {props.participantArr.length !== 0 ? (
         props.participantArr.map((participant, index) => {
+          // 방장이라면
           if (participant.userNickname === props.host) {
             return (
               <button
                 className="participant"
-                onClick={onClickUserInfo(participant.userNickname)}
+                onClick={() => onClickUserInfo(participant.userNickname)}
                 key={index}
               >
                 <div className="profile">
@@ -36,7 +37,7 @@ const ParticipantList = (props) => {
             return (
               <button
                 className="participant"
-                onClick={onClickUserInfo(participant.userNickname)}
+                onClick={() => onClickUserInfo(participant.userNickname)}
                 key={index}
               >
                 <div className="profile">

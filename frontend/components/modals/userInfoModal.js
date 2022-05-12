@@ -64,9 +64,10 @@ const UserInfoModal = (props) => {
     <>
       <div className={props.open ? "openModal modal" : "modal"}>
         <div className="userinfo-modal-body">
-          <button className="exit-button" onClick={props.close}>
-            &times;
-          </button>
+          <div className="header">
+            <button onClick={props.close}>&times;</button>
+          </div>
+
           <div className="profile-body">
             <img src={imageSrc} className="pf-image"></img>
             <div className="pf-nickName">{nickname}</div>
@@ -80,6 +81,9 @@ const UserInfoModal = (props) => {
                 );
               })}
             </div>
+          </div>
+
+          <div className="buttons">
             {props.info === "other" ? (
               <button className="next-button" onClick={props.close}>
                 나가기
@@ -113,38 +117,43 @@ const UserInfoModal = (props) => {
           animation: modal-bg-show 0.3s; // 스르륵 효과
         }
 
-        .room-modal-body {
-          width: 70%;
-          height: 85%;
+        .userinfo-modal-body {
+          width: 30%;
+          height: 80%;
           border-radius: 22px;
           background-color: white;
           display: flex;
           flex-direction: column;
           align-items: center;
-          padding: 20px 30px;
+          padding: 10px 15px;
           /* overflow: auto; */
         }
 
-        .exit-button {
+        .header {
+          width: 100%;
+          position: relative;
+        }
+
+        .header button {
           position: absolute;
-          top: 15px;
-          right: 15px;
-          width: 30px;
-          font-size: 21px;
-          font-weight: 700;
-          text-align: center;
+          top: 1px;
+          right: 1px;
           color: #999;
-          background-color: transparent;
+          font-size: 2rem;
+          font-weight: bold;
+          background-color: white;
+          border: none;
+          cursor: pointer;
         }
 
         .profile-body {
           width: 100%;
-          height: 495px;
+          /* height: 495px; */ // 수정 필요
+          margin-top: 20px;
           display: flex;
           flex-direction: column;
           justify-content: center;
           align-items: center;
-          border-top: 1px solid #dee2e6;
         }
 
         .pf-image {
@@ -175,9 +184,15 @@ const UserInfoModal = (props) => {
           margin: 5px;
         }
 
+        .buttons {
+          display: flex;
+          flex-direction: column;
+        }
+
         .next-button {
           width: 300px;
           height: 40px;
+          border: none;
           border-radius: 20px;
           background-color: #00555f;
           color: white;
