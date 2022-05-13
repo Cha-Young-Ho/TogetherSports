@@ -113,4 +113,11 @@ public class RoomController {
 
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/api/room/count")
+    public ResponseEntity getRoomCountJPQL(){
+        Response response = roomService.getRoomCount();
+        return ResponseEntity.ok(response);
+    }
+
 }
