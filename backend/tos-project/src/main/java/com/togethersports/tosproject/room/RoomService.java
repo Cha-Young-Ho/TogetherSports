@@ -34,10 +34,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 /**
  * <h1>RoomService</h1>
@@ -403,7 +400,15 @@ public class RoomService {
 
     }
 
+    // 참여할 수 있는 방 개수 조회
+    public Response<?> getRoomCount(){
 
+        Long count = roomRepository.getAvailableRoomCount();
+
+
+        return Response.of(CommonCode.GOOD_REQUEST, CountOfAvailableRoom.builder().count(count).build());
+
+    }
 
 
 }
