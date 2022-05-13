@@ -1,8 +1,11 @@
+
 package com.togethersports.tosproject.room;
 
 import com.togethersports.tosproject.chat.ChatController;
 import com.togethersports.tosproject.chat.dto.MessageOfDelegate;
 import com.togethersports.tosproject.chat.dto.MessageOfKickOut;
+import com.togethersports.tosproject.chat.dto.MessageOfLeave;
+import com.togethersports.tosproject.chat.dto.MessageOfParticipate;
 import com.togethersports.tosproject.common.code.CommonCode;
 import com.togethersports.tosproject.common.dto.Response;
 import com.togethersports.tosproject.common.util.ParsingEntityUtils;
@@ -20,21 +23,19 @@ import com.togethersports.tosproject.user.UserService;
 import com.togethersports.tosproject.user.dto.UserOfOtherInfo;
 import com.togethersports.tosproject.user.exception.NotEnteredInformationException;
 import com.togethersports.tosproject.user.exception.UserNotFoundException;
+
+
+
+
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
-
 /**
  * <h1>RoomService</h1>
  * <p>
@@ -47,7 +48,6 @@ import java.util.stream.Collectors;
  * @author younghoCha
  */
 
-@Slf4j
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -64,8 +64,7 @@ public class RoomService {
     public void createRoom(User user, RoomOfCreate roomOfCreate){
 
         //요청 유저의 엔티티 찾기
-        User userEntity = userRepository.findById(user.getId())
-                .orElseThrow(() -> new UsernameNotFoundException("해당 유저를 찾을 수 없습니다."));
+        User userEntity = findUserEntityById(user.getId());
 
         //추가 정보 입력했는지 확인
         if(userEntity.getNickname() == null){
@@ -102,8 +101,7 @@ public class RoomService {
     //방 설명 페이지 조회
     public RoomOfInfo getRoomInfo(User user, Long roomId){
 
-        Room roomEntity = roomRepository.findById(roomId)
-                .orElseThrow(() -> new NotFoundRoomException("해당 방을 찾을 수 없습니다."));
+        Room roomEntity = findRoomEntityById(roomId);
 
         //List<RoomImage> -> List<ImageOfRoomInfo>
         List<ImageOfRoomInfo> imageOfRoomInfos =
@@ -127,8 +125,7 @@ public class RoomService {
 
     //방 수정
     public void modifyRoomInfo(RoomOfUpdate roomOfUpdate){
-        Room roomEntity = roomRepository.findById(roomOfUpdate.getId())
-                .orElseThrow(() -> new NotFoundRoomException("해당 방을 찾을 수 없습니다."));
+        Room roomEntity = findRoomEntityById(roomOfUpdate.getId());
 
         //방 인원
         //ToDo 방 인원 체크 로직 추가해야함(참여 인원 > 변경 최대 인원 -> 변경 불가)
@@ -154,9 +151,12 @@ public class RoomService {
     }
 
     public RoomOfParticipate participateRoom(User currentUser, Long roomId){
-        Room roomEntity = roomRepository.findById(roomId)
-                .orElseThrow(() -> new NotFoundRoomException("해당 방을 찾을 수 없습니다."));
 
+        UserAndRoomOfService userAndRoomEntity =
+                findEntityById(currentUser.getId(), roomId);
+
+        Room roomEntity = userAndRoomEntity.getRoom();
+        User userEntity = userAndRoomEntity.getUser();
         //인원이 가득찬 경우
         if(roomEntity.getParticipantCount() >= roomEntity.getLimitPeopleCount()){
             return RoomOfParticipate.builder()
@@ -178,6 +178,14 @@ public class RoomService {
             // 참가 인원 추가
             roomEntity.participate();
         }
+
+        Response response = Response.of(RoomCode.ENTER_USER_TO_ROOM,
+                MessageOfParticipate.builder()
+                        .participateUserId(userEntity.getId())
+                        .participateUserNickname(userEntity.getNickname())
+                        .build());
+        chatController.sendServerMessage(roomEntity.getId(), "enter", response);
+
         // 정상적으로 참여가 가능한 경우
         return RoomOfParticipate.builder()
                 .status(RoomCode.PARTICIPATE_ROOM)
@@ -202,8 +210,7 @@ public class RoomService {
     }
 
     public RoomsOfMyRoom getMyRoom(User currentUser){
-        User userEntity = userRepository.findById(currentUser.getId())
-                .orElseThrow(() -> new UserNotFoundException());
+        User userEntity = findUserEntityById(currentUser.getId());
 
         List<Room> hostingRoomEntities = userEntity.getHostingRooms();
 
@@ -236,25 +243,25 @@ public class RoomService {
                 .imminentRooms(parsingEntityUtils.parsingRoomToRoomOfList(imminentRoomEntities))
                 .build();
 
-
-
     }
 
 
     //방장 위임
     public Response delegate(User currentUser, Long roomId, Long targetUserId){
-        log.info("delegate 실행");
+
+
+        UserAndRoomOfService userAndRoomEntity = findEntityById(currentUser.getId(), roomId);
+
+
         // 해당 방 찾기
-        Room roomEntity = roomRepository.findById(roomId)
-                .orElseThrow(() -> new NotFoundRoomException("해당하는 방을 찾을 수 없습니다."));
+        Room roomEntity = userAndRoomEntity.getRoom();
 
         // 요청 유저 찾기.
-        User requestUser = userRepository.findById(currentUser.getId())
-                .orElseThrow(() -> new UserNotFoundException("해당하는 유저를 찾을 수 없습니다."));
+        User requestUser = userAndRoomEntity.getUser();
+
 
         // 위임 받는 유저 찾기.
-        User delegatedUser = userRepository.findById(targetUserId)
-                        .orElseThrow(() -> new UserNotFoundException());
+        User delegatedUser = findUserEntityById(targetUserId);
 
         // 요청 유저가 방장인지 확인
         if(requestUser.getId() != roomEntity.getHost().getId()){
@@ -277,7 +284,7 @@ public class RoomService {
                 .afterHostId(delegatedUser.getId())
                 .afterHostNickname(delegatedUser.getNickname()).build());
         // 소켓 통신, 정보 발행
-        chatController.sendServerMessage(1L, delegatedUser, "delegate", response);
+        chatController.sendServerMessage(1L, "delegate", response);
 
         return response;
 
@@ -286,18 +293,17 @@ public class RoomService {
 
     // 강퇴
     public Response kickOut(User currentUser, Long roomId, Long targetUserId){
-        log.info("kickOut 실행");
+
+
+        UserAndRoomOfService userAndRoomEntity = findEntityById(currentUser.getId(), roomId);
         // 해당 방 찾기
-        Room roomEntity = roomRepository.findById(roomId)
-                .orElseThrow(() -> new NotFoundRoomException("해당하는 방을 찾을 수 없습니다."));
+        Room roomEntity = userAndRoomEntity.getRoom();
 
         // 요청 유저 찾기.
-        User requestUser = userRepository.findById(currentUser.getId())
-                .orElseThrow(() -> new UserNotFoundException("해당하는 유저를 찾을 수 없습니다."));
+        User requestUser = userAndRoomEntity.getUser();
 
         // 위임 받는 유저 찾기.
-        User kickedOutUser = userRepository.findById(targetUserId)
-                .orElseThrow(() -> new UserNotFoundException());
+        User kickedOutUser = findUserEntityById(targetUserId);
 
         // 요청 유저가 방장인지 확인
         if(requestUser.getId() != roomEntity.getHost().getId()){
@@ -311,7 +317,7 @@ public class RoomService {
         }
 
         // 강퇴
-        participantService.kickUser(kickedOutUser.getId());
+        participantService.kickUser(kickedOutUser.getId(), roomEntity.getId());
 
         // 방 인원 수 1명 줄이기
         roomEntity.leave();
@@ -323,11 +329,41 @@ public class RoomService {
                 .kickedUserNickname(kickedOutUser.getNickname())
                 .build());
         // 소켓 통신, 정보 발행
-        chatController.sendServerMessage(1L, kickedOutUser, "kickOut", response);
+        chatController.sendServerMessage(1L, "kickOut", response);
 
         return response;
 
 
+    }
+    //방 나가기
+    public Response out(User currentUser, Long roomId){
+
+        UserAndRoomOfService userAndRoomEntity = findEntityById(currentUser.getId(), roomId);
+
+        User userEntity = userAndRoomEntity.getUser();
+        Room roomEntity = userAndRoomEntity.getRoom();
+
+        // 요청자가 방에 참가했는지 확인
+        if(!getAttendance(userEntity.getId(), 1L)){
+            // 해당 유저가 방에 참가하지 않았을 경우
+            return Response.of(CommonCode.BAD_REQUEST, null);
+        }
+
+        //나가기 처리(DB 삭제)
+        participantService.out(userEntity, roomEntity);
+
+        //방 인원수 줄이기
+        roomEntity.leave();
+
+        // 응답 메세지 생성
+        Response response = Response.of(
+                RoomCode.USER_OUT_FROM_ROOM, MessageOfLeave.builder()
+                                .userId(userEntity.getId())
+                                .userNickname(userEntity.getNickname())
+                        .build());
+        // 소켓 통신, 정보 발행
+        chatController.sendServerMessage(1L,"out", response);
+        return response;
     }
 
     //시간 정렬을 위한 스태틱클래스
@@ -338,6 +374,40 @@ public class RoomService {
 
             return o1.getStartAppointmentDate().compareTo(o2.getStartAppointmentDate());
         }
+    }
+    // 유저 엔티티 찾기
+    public User findUserEntityById(Long userId){
+
+        return  userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundRoomException("해당 방을 찾을 수 없습니다."));
+    }
+    // 룸 엔티티 찾기
+    public Room findRoomEntityById(Long roomId){
+
+        return roomRepository.findById(roomId)
+                .orElseThrow(() -> new UserNotFoundException("해당 유저를 찾을 수 없습니다."));
+
+    }
+    // 유저 + 룸 엔티티 찾기
+    public UserAndRoomOfService findEntityById(Long userId, Long roomId){
+        User userEntity = findUserEntityById(userId);
+        Room roomEntity = findRoomEntityById(roomId);
+
+        return UserAndRoomOfService.builder()
+                .room(roomEntity)
+                .user(userEntity)
+                .build();
+
+    }
+
+    // 참여할 수 있는 방 개수 조회
+    public Response<?> getRoomCount(){
+
+        Long count = roomRepository.getAvailableRoomCount();
+
+
+        return Response.of(CommonCode.GOOD_REQUEST, CountOfAvailableRoom.builder().count(count).build());
+
     }
 
 
