@@ -7,39 +7,39 @@ import { FailResponse } from "../../api/failResponse";
 const UserInfoModal = (props) => {
   const myInfo = useSelector((state) => state.myInfoReducer);
 
-  // 다른 회원 정보 조회를 위한 nickname
+  // participantList 에서 조회 선택된 회원의 닉네임 (내정보조회, 다른회원정보조회 모두 가능)
   const userNickname = useSelector(
     (state) => state.saveNicknameReducer.userNickname
   );
 
   // 모달에 필요한 데이터들
   const [imageSrc, setImageSrc] = useState("");
-  const [nickname, setNickname] = useState("심쿵이");
-  const [mannerPoint, setMannerPoint] = useState("100");
-  const [interest, setInterest] = useState(["놀기", "물어뜯기"]);
-  const [gender, setGender] = useState("female");
-  const [activeAreas, setActiveAreas] = useState(["대구시 달서구 진천동"]);
+  const [nickname, setNickname] = useState("");
+  const [mannerPoint, setMannerPoint] = useState("");
+  const [interest, setInterest] = useState([]);
+  const [gender, setGender] = useState("");
+  const [activeAreas, setActiveAreas] = useState([]);
 
   useEffect(() => {
     // 다른 회원 정보 조회
-    if (props.info === "other") {
+    if (myInfo.userNickname !== userNickname) {
       if (props.open) {
-        // getOtherInfo(userNickname)
-        //   .then((res) => {
-        //     if (res.status.code === 5000) {
-        //       setNickname(res.content.userNickname);
-        //       setMannerPoint(res.content.mannerPoint);
-        //       setInterest(res.content.interests);
-        //       setImageSrc(res.content.userProfileImagePath);
-        //       setGender(res.content.gender);
-        //       setActiveAreas(res.content.activeAreas);
-        //     }
-        //   })
-        //   .catch((error) => {
-        //     FailResponse(error.response.data.status.code);
-        //     props.close();
-        //   });
-        // return;
+        getOtherInfo(userNickname)
+          .then((res) => {
+            if (res.status.code === 5000) {
+              setNickname(res.content.userNickname);
+              setMannerPoint(res.content.mannerPoint);
+              setInterest(res.content.interests);
+              setImageSrc(res.content.userProfileImagePath);
+              setGender(res.content.gender);
+              setActiveAreas(res.content.activeAreas);
+            }
+          })
+          .catch((error) => {
+            FailResponse(error.response.data.status.code);
+            props.close();
+          });
+        return;
       }
     }
     // 내 정보 조회 및 익명의 유저 정보 조회
@@ -50,7 +50,7 @@ const UserInfoModal = (props) => {
         return;
       }
 
-      // 내정보 조회?
+      // 내정보 조회
       setImageSrc(myInfo.userProfileImagePath);
       setNickname(myInfo.userNickname);
       setMannerPoint(myInfo.mannerPoint);
@@ -84,13 +84,18 @@ const UserInfoModal = (props) => {
           </div>
 
           <div className="buttons">
-            {props.info === "other" ? (
-              <button className="next-button" onClick={props.close}>
-                나가기
-              </button>
+            {myInfo.userNickname !== userNickname ? (
+              <div>
+                <button className="delegate-button" onClick={props.close}>
+                  방장 위임하기
+                </button>
+                <button className="expulsion-button" onClick={props.close}>
+                  이 방에서 내보내기
+                </button>
+              </div>
             ) : (
               <Link href="/usermodification">
-                <button className="next-button" onClick={props.close}>
+                <button className="modify-button" onClick={props.close}>
                   회원 정보 수정하기
                 </button>
               </Link>
@@ -189,7 +194,13 @@ const UserInfoModal = (props) => {
           flex-direction: column;
         }
 
-        .next-button {
+        .buttons > div {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .delegate-button,
+        .modify-button {
           width: 300px;
           height: 40px;
           border: none;

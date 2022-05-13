@@ -252,7 +252,6 @@ const Room = () => {
                 <UserInfoModal
                   open={participantListModalOpen}
                   close={participantListCloseModal}
-                  info={"other"}
                 />
               </div>
             </div>
