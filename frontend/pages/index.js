@@ -1,6 +1,5 @@
 import React from "react";
 import Banner from "../components/main/banner";
-// import HotRoom from "../components/hotRoom";
 import Footer from "../components/main/footer";
 import Head from "next/head";
 import Main1 from "../components/main/main1";
@@ -24,8 +23,6 @@ export default function Home() {
             <button className="fadein">🔥방 생성하러 가기🔥</button>
           </Link>
         </div>
-
-        {/* <HotRoom /> */}
         <Footer />
       </div>
       <style jsx>{`

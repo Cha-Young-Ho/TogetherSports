@@ -81,8 +81,8 @@ const Chatting = () => {
     //   ],
   ]);
 
-  let sockJS = new SockJS("http://localhost:8080/api/websocket");
-  let client = StompJS.over(sockJS);
+  const sockJS = new SockJS("http://localhost:8080/api/websocket");
+  const client = StompJS.over(sockJS);
 
   const connect = () => {
     client.connect(
