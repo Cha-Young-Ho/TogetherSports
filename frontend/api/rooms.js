@@ -7,7 +7,7 @@ import axios from "axios";
 // GET
 
 // 방 설명 페이지 조회
-const getRoomInfo = async (roomId) => {
+const getRoomInfo = (roomId) => {
   const promise =
     localStorage.getItem("accessToken") === null
       ? axios.get(`http://localhost:8080/api/rooms/${roomId}/info`)
@@ -25,7 +25,7 @@ const getRoomInfo = async (roomId) => {
 };
 
 // 방 상세 페이지 조회
-const getRoomDetail = async (roomId) => {
+const getRoomDetail = (roomId) => {
   const promise =
     localStorage.getItem("accessToken") === null
       ? axios.get(`http://localhost:8080/api/rooms/${roomId}/detail`)
@@ -43,7 +43,7 @@ const getRoomDetail = async (roomId) => {
 };
 
 // 방 목록 페이지 조회
-const getRoomList = async (
+const getRoomList = (
   roomTitle,
   roomContent,
   area,
@@ -120,7 +120,7 @@ const getRoomList = async (
 };
 
 // 최상위(시) 행정구역 조회
-const getRootLocations = async () => {
+const getRootLocations = () => {
   const promise = axios.get(`http://localhost:8080/locations`);
 
   const dataPromise = promise.then((res) => res.data);
@@ -129,7 +129,7 @@ const getRootLocations = async () => {
 };
 
 // 하위(시 이하) 행정구역 조회
-const getChildLocations = async (name) => {
+const getChildLocations = (name) => {
   const promise = axios.get(
     `http://localhost:8080/locations/parent/name?${name}`
   );
@@ -139,7 +139,7 @@ const getChildLocations = async (name) => {
   return dataPromise;
 };
 
-const getChatInfo = async (roomSequenceId) => {
+const getChatInfo = (roomSequenceId) => {
   const promise =
     localStorage.getItem("accessToken") === null
       ? axios.get(`http://localhost:8080/api/room/${roomSequenceId}/chat`)
@@ -159,7 +159,7 @@ const getChatInfo = async (roomSequenceId) => {
 // POST
 
 // 방 생성
-const postCreateRoom = async (
+const postCreateRoom = (
   roomTitle,
   roomContent,
   roomArea,
@@ -211,7 +211,7 @@ const postCreateRoom = async (
 };
 
 // 마이룸 정보
-const getMyRoomInfo = async () => {
+const getMyRoomInfo = () => {
   const promise =
     localStorage.getItem("accessToken") === null
       ? axios.get(`http://localhost:8080/api/room/myroom`)
@@ -231,7 +231,7 @@ const getMyRoomInfo = async () => {
 // PUT
 
 // 방 수정
-const postUpdateRoom = async (
+const postUpdateRoom = (
   roomTitle,
   roomContent,
   roomArea,
@@ -282,7 +282,7 @@ const postUpdateRoom = async (
 // DELETE
 
 // 방 삭제
-const deleteRoom = async (roomSequenceId) => {
+const deleteRoom = (roomSequenceId) => {
   const promise =
     localStorage.getItem("accessToken") === null
       ? axios.delete(`http://localhost:8080/api/room/${roomSequenceId}`)

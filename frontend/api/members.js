@@ -7,7 +7,7 @@ import axios from "axios";
 // GET
 
 // 닉네임 중복확인
-const getNicknameDuplicationCheck = async (nickname) => {
+const getNicknameDuplicationCheck = (nickname) => {
   const promise =
     localStorage.getItem("accessToken") === null
       ? axios.get("http://localhost:8080/api/user/duplication/nickname", {
@@ -31,7 +31,7 @@ const getNicknameDuplicationCheck = async (nickname) => {
 };
 
 // 내 정보 조회
-const getMyInfo = async () => {
+const getMyInfo = () => {
   const promise =
     localStorage.getItem("accessToken") === null
       ? axios.get("http://localhost:8080/api/user")
@@ -49,7 +49,7 @@ const getMyInfo = async () => {
 };
 
 // 다른 회원 정보 조회
-const getOtherInfo = async (nickname) => {
+const getOtherInfo = (nickname) => {
   const promise =
     localStorage.getItem("accessToken") === null
       ? axios.get("http://localhost:8080/api/other", {
@@ -76,7 +76,7 @@ const getOtherInfo = async (nickname) => {
 // POST
 
 // 회원 추가정보입력 요청 및 회원 정보 수정
-const postUserRequest = async (
+const postUserRequest = (
   userNickname,
   userBirth,
   activeAreas,
@@ -126,7 +126,7 @@ const postUserRequest = async (
 };
 
 // 로그아웃 요청
-const deleteLogout = async () => {
+const deleteLogout = () => {
   const promise =
     localStorage.getItem("accessToken") === null
       ? axios.post("http://localhost:8080/api/logout", {

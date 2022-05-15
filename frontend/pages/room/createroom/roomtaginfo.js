@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
+import { useSelector } from "react-redux";
 import { postCreateRoom } from "../../../api/rooms";
 import { FailResponse } from "../../../api/failResponse";
 import RoomInfoNavBar from "../../../components/roomInfoNavBar";
