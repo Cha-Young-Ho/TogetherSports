@@ -1,7 +1,20 @@
 import TextLogo from "./textLogo";
 
 const Main1 = () => {
+  // 이미지로 대체
   const sports = [
+    "축구",
+    "야구",
+    "농구",
+    "당구",
+    "탁구",
+    "헬스",
+    "자전거",
+    "골프",
+    "등산",
+    "런닝",
+    "배드민턴",
+    "기타",
     "축구",
     "야구",
     "농구",
@@ -23,22 +36,16 @@ const Main1 = () => {
 
         <div className="line"></div>
 
-        <div className="sports">
-          {sports.map((sport, index) => {
-            if (index % 2 === 0) {
+        <div className="slider">
+          <div className="slide-track">
+            {sports.map((sport, index) => {
               return (
-                <div key={index} className="sport odd">
+                <div key={index} className="slide">
                   {sport}
                 </div>
               );
-            } else {
-              return (
-                <div key={index} className="sport even">
-                  {sport}
-                </div>
-              );
-            }
-          })}
+            })}
+          </div>
         </div>
 
         <div className="text">
@@ -69,21 +76,34 @@ const Main1 = () => {
           width: 32px;
           height: 2px;
           background-color: black;
-          margin-bottom: 30px;
-        }
-
-        .sports {
-          width: 65%;
-          display: flex;
-          flex-direction: row;
-          justify-content: space-between;
-          align-items: center;
           margin-bottom: 40px;
         }
 
-        .sport {
-          width: 160px;
-          height: 160px;
+        @keyframes scroll {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(calc(-150px * 12));
+          }
+        }
+
+        .slider {
+          width: 100%;
+          margin-bottom: 40px;
+          overflow: hidden;
+          position: relative;
+        }
+
+        .slide-track {
+          animation: scroll 25s linear infinite;
+          display: flex;
+          width: calc(150px * 24);
+        }
+
+        .slide {
+          width: 150px;
+          height: 150px;
           border: none;
           border-radius: 10px;
           font-size: 2rem;
@@ -91,13 +111,7 @@ const Main1 = () => {
           display: flex;
           justify-content: center;
           align-items: center;
-        }
-
-        .odd {
-          background-color: rgba(0, 0, 0, 0.5);
-        }
-
-        .even {
+          /* margin: 0 100px; */
           background-color: #67a74d;
         }
 

@@ -29,7 +29,7 @@ const Main2 = () => {
 
             <div className="info-text" {...animatedItem3}>
               <p>
-                현재 <b>123</b>개의 방에서
+                현재 <b>{}</b>개의 방에서
               </p>
               <p>같이 운동할 사람을 구하는 중 !</p>
             </div>
