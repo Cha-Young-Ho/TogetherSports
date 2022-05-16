@@ -4,11 +4,12 @@ import { useSelector } from "react-redux";
 import UserInfoNavBar from "../../../components/userInfoNavBar";
 import { FailResponse } from "../../../api/failResponse";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 let activeAreas = []; // 서버에 보낼 데이터를 담는 변수
 const ActiveArea = () => {
   const userRequestInfo = useSelector((state) => state.userRequestReducer);
-
+  const router = useRouter();
   // 위치 태그
   const [tagAreas, setTagAreas] = useState([]);
 
@@ -46,6 +47,15 @@ const ActiveArea = () => {
 
   // 카카오 지도 한번만 렌더링
   useEffect(() => {
+    if (
+      userRequestInfo.userNickname === "" &&
+      !userRequestInfo.interests.length
+    ) {
+      alert("비정상적인 접근입니다.");
+      router.replace("/");
+      return;
+    }
+
     getMap();
   }, []);
 
