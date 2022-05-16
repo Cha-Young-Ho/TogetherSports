@@ -72,6 +72,8 @@ const RoomModal = (props) => {
         }
       });
 
+      console.log(startAppointmentDate.substr(0, 10));
+
       // 위치 정보 받아오기
       kakao.maps.load(() => {
         const container = document.getElementById("map"),
@@ -185,11 +187,11 @@ const RoomModal = (props) => {
                   <p>{`${startAppointmentDate.substr(
                     11,
                     2
-                  )}시 ${startAppointmentDate.substr(-2)}분 ~`}</p>
+                  )}시 ${startAppointmentDate.substr(14, 2)}분 ~`}</p>
                   <p>{`${endAppointmentDate.substr(
                     11,
                     2
-                  )}시 ${endAppointmentDate.substr(-2)}분`}</p>
+                  )}시 ${endAppointmentDate.substr(14, 2)}분`}</p>
                 </div>
               </div>
 

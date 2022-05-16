@@ -147,7 +147,7 @@ const Room = () => {
         FailResponse(res.status.code);
       }
     });
-  });
+  }, []);
 
   return (
     <>
