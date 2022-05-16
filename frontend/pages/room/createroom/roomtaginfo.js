@@ -43,8 +43,6 @@ const RoomTagInfo = () => {
 
   // 이미지 배열에 order 추가하기
   const addOrder = (arr, index) => {
-    if (arr.length === 0) return setRoomImages(null); // 이미지 없을 시 예외처리
-
     const thumbnail = [];
 
     for (let i = 0; i < arr.length; i++) {
@@ -84,7 +82,8 @@ const RoomTagInfo = () => {
 
   // 예외 처리 및 서버에 방 생성 요청
   const createRoom = (e) => {
-    addOrder(roomImages, thumbnailIndex);
+    if (roomImages === []) setRoomImages(null);
+    else addOrder(roomImages, thumbnailIndex);
 
     // 필수입력정보들이 입력되지 않으면
     if (

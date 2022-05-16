@@ -59,7 +59,18 @@ const RoomModal = (props) => {
             (endAppointmentDate = res.content.endAppointmentDate)
           );
           setViewCount((viewCount = res.content.viewCount));
-          setRoomImages((roomImages = res.content.roomImages));
+
+          // null 인지 빈 배열인지 뭔지 수정 할 수도
+          // 방 이미지 설정된 게 없으면 기본이미지 설정
+          setRoomImages(
+            (roomImages =
+              res.content.roomImages === null
+                ? {
+                    order: 0,
+                    imagePath: "logo-sign.png",
+                  }
+                : res.content.roomImages)
+          );
         } else {
           FailResponse(res.status.code);
         }
