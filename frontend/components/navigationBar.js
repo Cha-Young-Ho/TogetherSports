@@ -12,7 +12,9 @@ const NavigationBar = () => {
   const dispatch = useDispatch();
 
   // 로그인 상태 임을 판별하는 변수
-  const [loginData, setLoginData] = useState(false);
+  const loginStatus = useSelector(
+    (state) => state.loginStatusChangeReducer.loginStatus
+  );
 
   // 로그인 시 저장되는 데이터
   const [myinfo, setMyinfo] = useState(
@@ -64,22 +66,31 @@ const NavigationBar = () => {
               isInformationRequired: res.content.isInformationRequired,
             },
           });
-
-          setLoginData(true);
-
           console.log("Nav : Client got this info = " + myinfo);
         } else {
-          setLoginData(true);
           FailResponse(res.status.code);
         }
+
+        dispatch({
+          type: "CHANGELOGINSTATUS",
+          payload: {
+            loginStatus: "true",
+          },
+        });
       })
       .catch((error) => {
-        setLoginData(false);
         if (error.response) {
+          dispatch({
+            type: "CHANGELOGINSTATUS",
+            payload: {
+              loginStatus: "false",
+            },
+          });
+
           FailResponse(error.response.data.status.code);
         }
       });
-  }, []);
+  }, [loginStatus]);
 
   // 로그아웃 버튼 클릭
   const ClickLogout = () => {
@@ -89,7 +100,13 @@ const NavigationBar = () => {
         if (res.status.code === 5000) {
           localStorage.removeItem("accessToken");
           localStorage.removeItem("refreshToken");
-          setLoginData(false);
+
+          dispatch({
+            type: "CHANGELOGINSTATUS",
+            payload: {
+              loginStatus: "false",
+            },
+          });
 
           dispatch({
             type: "SAVEMYINFO",
@@ -143,7 +160,7 @@ const NavigationBar = () => {
           </div>
           <div>
             <div className="sign">
-              {!loginData ? (
+              {loginStatus === "false" ? (
                 <>
                   <Link href="/login">
                     <div className="tag">로그인</div>
@@ -180,7 +197,11 @@ const NavigationBar = () => {
           </div>
         </div>
       </div>
-      {loginData && myinfo.isInformationRequired ? <FixedRequestAlarm /> : ""}
+      {loginStatus === "true" && myinfo.isInformationRequired ? (
+        <FixedRequestAlarm />
+      ) : (
+        ""
+      )}
 
       <style jsx>{`
         .header {

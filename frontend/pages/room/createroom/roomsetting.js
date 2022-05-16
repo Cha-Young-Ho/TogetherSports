@@ -2,7 +2,6 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import RoomInfoNavBar from "../../../components/roomInfoNavBar";
-import { BrowserRouter } from "react-router-dom";
 
 const RoomSetting = () => {
   const dispatch = useDispatch();

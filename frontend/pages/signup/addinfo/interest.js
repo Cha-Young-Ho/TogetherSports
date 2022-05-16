@@ -1,11 +1,14 @@
 import Link from "next/link";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import UserInfoNavBar from "../../../components/userInfoNavBar";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 const Interest = () => {
   const dispatch = useDispatch();
+  const preInputDatas = useSelector((state) => state.userRequestReducer);
+  const router = useRouter();
   const [interests, setInterests] = useState({});
   const interestArray = [
     "축구",
@@ -61,6 +64,13 @@ const Interest = () => {
       },
     });
   };
+
+  useEffect(() => {
+    if (preInputDatas.userNickname === "") {
+      alert("비정상적인 접근입니다.");
+      router.replace("/");
+    }
+  }, []);
 
   return (
     <>

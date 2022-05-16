@@ -2,86 +2,87 @@ import StompJS from "stompjs";
 import SockJS from "sockjs-client";
 import { useState, useEffect } from "react";
 import { postRefreshToken } from "../api/etc";
+import { getChatInfo } from "../api/rooms";
 
 const Chatting = () => {
   const [messageToServer, setMessageToServer] = useState("");
   const [showingMessages, setShowingMessages] = useState([
-    [
-      {
-        userId: "me",
-        nickname: "동동이",
-        userProfileImagePath: "/base_profileImage.jpg",
-        content: {
-          message: "안녕하세요",
-          sendAt: "2022-12-11T13:05",
-        },
-      },
-      {
-        userId: "me",
-        nickname: "동동이",
-        userProfileImagePath: "/base_profileImage.jpg",
-        content: {
-          message: "안녕하세요",
-          sendAt: "2022-12-11T13:05",
-        },
-      },
-    ],
-    [
-      {
-        userId: "me2",
-        nickname: "아리",
-        userProfileImagePath: "/base_profileImage.jpg",
-        content: {
-          message:
-            "감사해요ㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁ",
-          sendAt: "2022-12-11T13:05",
-        },
-      },
-      {
-        userId: "me2",
-        nickname: "아빠",
-        userProfileImagePath: "/base_profileImage.jpg",
-        content: {
-          message: "잘있어요",
-          sendAt: "2022-12-11T13:05",
-        },
-      },
-      {
-        userId: "me2",
-        nickname: "엄마",
-        userProfileImagePath: "/base_profileImage.jpg",
-        content: {
-          message: "다시만나요",
-          sendAt: "2022-12-11T13:05",
-        },
-      },
-    ],
-    [
-      {
-        userId: "me",
-        nickname: "동동이",
-        userProfileImagePath: "/base_profileImage.jpg",
-        content: {
-          message: "안녕하세요",
-          sendAt: "2022-12-11T13:05",
-        },
-      },
-    ],
-    [
-      {
-        userId: "me2",
-        nickname: "아리",
-        userProfileImagePath: "/base_profileImage.jpg",
-        content: {
-          message: "감사해요",
-          sendAt: "2022-12-11T13:05",
-        },
-      },
-    ],
+    //   [
+    //     {
+    //       userId: "me",
+    //       nickname: "동동이",
+    //       userProfileImagePath: "/base_profileImage.jpg",
+    //       content: {
+    //         message: "안녕하세요",
+    //         sendAt: "2022-12-11T13:05",
+    //       },
+    //     },
+    //     {
+    //       userId: "me",
+    //       nickname: "동동이",
+    //       userProfileImagePath: "/base_profileImage.jpg",
+    //       content: {
+    //         message: "안녕하세요",
+    //         sendAt: "2022-12-11T13:05",
+    //       },
+    //     },
+    //   ],
+    //   [
+    //     {
+    //       userId: "me2",
+    //       nickname: "아리",
+    //       userProfileImagePath: "/base_profileImage.jpg",
+    //       content: {
+    //         message:
+    //           "감사해요ㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁ",
+    //         sendAt: "2022-12-11T13:05",
+    //       },
+    //     },
+    //     {
+    //       userId: "me2",
+    //       nickname: "아빠",
+    //       userProfileImagePath: "/base_profileImage.jpg",
+    //       content: {
+    //         message: "잘있어요",
+    //         sendAt: "2022-12-11T13:05",
+    //       },
+    //     },
+    //     {
+    //       userId: "me2",
+    //       nickname: "엄마",
+    //       userProfileImagePath: "/base_profileImage.jpg",
+    //       content: {
+    //         message: "다시만나요",
+    //         sendAt: "2022-12-11T13:05",
+    //       },
+    //     },
+    //   ],
+    //   [
+    //     {
+    //       userId: "me",
+    //       nickname: "동동이",
+    //       userProfileImagePath: "/base_profileImage.jpg",
+    //       content: {
+    //         message: "안녕하세요",
+    //         sendAt: "2022-12-11T13:05",
+    //       },
+    //     },
+    //   ],
+    //   [
+    //     {
+    //       userId: "me2",
+    //       nickname: "아리",
+    //       userProfileImagePath: "/base_profileImage.jpg",
+    //       content: {
+    //         message: "감사해요",
+    //         sendAt: "2022-12-11T13:05",
+    //       },
+    //     },
+    //   ],
   ]);
 
-  let sockJS = new SockJS("http://localhost:8080/api/websocket");
-  let client = StompJS.over(sockJS);
+  const sockJS = new SockJS("http://localhost:8080/api/websocket");
+  const client = StompJS.over(sockJS);
 
   const connect = () => {
     client.connect(
@@ -122,8 +123,9 @@ const Chatting = () => {
         console.log(error);
         postRefreshToken(localStorage.getItem("refreshToken")).then((res) => {
           if (res.status.code === 5000) {
-            localStorage.setItem("accessToken", res.accessToken);
-            console.log("액세스 토큰 재발급 완료");
+            localStorage.setItem("accessToken", res.content.accessToken);
+            localStorage.setItem("refreshToken", res.content.refreshToken);
+            console.log("두 토큰 재발급 완료");
           } else {
             console.log("토큰 재발급 실패, 토큰 삭제...");
             localStorage.removeItem("accessToken");
@@ -142,15 +144,20 @@ const Chatting = () => {
     e.preventDefault();
     client.send(
       "/api/room/1/chat",
-      {},
+      { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
       JSON.stringify({
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         message: messageToServer,
+        roomId: "temp",
       })
     );
   };
 
   useEffect(() => {
+    getChatInfo().then((res) => {
+      if (res.status.code === 5000) {
+      }
+    });
+
     connect();
   }, []);
 

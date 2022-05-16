@@ -56,10 +56,15 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
                 .orderBy(sortRoomList(pageable))
                 .fetch();
 
+        
+
 
         return afterTreatment(result);
 
     }
+
+
+
     //방 제목 검색
     private BooleanExpression eqTitle(String searchTitle){
         return searchTitle == null ? null : room.roomTitle.contains(searchTitle);
@@ -187,6 +192,8 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
         return new PageImpl<>(rooms);
 
     }
+
+
 
 
 }

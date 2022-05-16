@@ -12,14 +12,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
 /**
  * <h1>RoomController</h1>
  * <p>
  *     방과 관련된 요청에 대한 컨트롤러
  * </p>
- * @author younghocha
+ * @author younghoCha
  */
-@Slf4j
+
 @RequiredArgsConstructor
 @RestController
 public class RoomController {
@@ -55,6 +56,7 @@ public class RoomController {
 
     @GetMapping("/api/room")
     public ResponseEntity<Response> getRoomList(FieldsOfRoomList fieldsOfRoomList, Pageable pageable){
+
 
 
         return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, roomService.roomFields(fieldsOfRoomList, pageable)));
@@ -104,4 +106,18 @@ public class RoomController {
 
         return ResponseEntity.ok(response);
     }
+    //방 나가기
+    @DeleteMapping("/api/room/{roomId}/user")
+    public ResponseEntity out(@CurrentUser User user, @PathVariable Long roomId){
+        Response response = roomService.out(user, roomId);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/api/room/count")
+    public ResponseEntity getRoomCountJPQL(){
+        Response response = roomService.getRoomCount();
+        return ResponseEntity.ok(response);
+    }
+
 }
