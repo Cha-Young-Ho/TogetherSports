@@ -7,7 +7,23 @@ const SetRoomImages = (props) => {
   const [imagePreview, setImagePreview] = useState([]); // 프리뷰를 담을 배열
   const [thumbnailIndex, setThumbnailIndex] = useState(0); // 대표사진을 설정할 인덱스
 
-  // 상위 컴포넌트로 이미지 전달
+  // roomtaginfo, modifyroommodal
+  useEffect(() => {
+    if (props.getImageData) {
+      props.getImageData(roomImage);
+      return;
+    }
+  }, [roomImage]);
+
+  // roomtaginfo, modifyroommodal
+  useEffect(() => {
+    if (props.getThumbnailData) {
+      props.getThumbnailData(thumbnailIndex);
+      return;
+    }
+  }, [thumbnailIndex]);
+
+  // modifyroommodal
   useEffect(() => {
     if (props.setData) {
       setRoomImage(props.setData());
@@ -18,20 +34,7 @@ const SetRoomImages = (props) => {
     }
   }, []);
 
-  useEffect(() => {
-    if (props.getImageData) {
-      props.getImageData(roomImage);
-      return;
-    }
-  }, [roomImage]);
-
-  useEffect(() => {
-    if (props.getThumbnailData) {
-      props.getThumbnailData(thumbnailIndex);
-      return;
-    }
-  }, [thumbnailIndex]);
-
+  // modifyroommodal
   useEffect(() => {
     if (props.getPreview) {
       props.getPreview(imagePreview);

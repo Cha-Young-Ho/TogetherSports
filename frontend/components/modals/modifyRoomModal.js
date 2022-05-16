@@ -10,7 +10,7 @@ const ModifyRoomModal = (props) => {
   const [limitPeopleCount, setLimitPeopleCount] = useState("");
 
   // post 하기위한 정보들
-  const [roomArea, setRoomArea] = useState({});
+  const [roomArea, setRoomArea] = useState("");
   const [exercise, setExercise] = useState("");
   const [startAppointmentDate, setStartAppointmentDate] = useState("");
   const [endAppointmentDate, setEndAppointmentDate] = useState("");
@@ -96,7 +96,8 @@ const ModifyRoomModal = (props) => {
 
   // 완료 버튼 클릭 시
   const clickDoneBtn = () => {
-    addOrder(roomImages, thumbnailIndex);
+    if (roomImages === []) setRoomImages(null);
+    else addOrder(roomImages, thumbnailIndex);
 
     if (roomTitle === "" || limitPeopleCount === "") {
       alert("입력이 올바르지 않은 정보가 있습니다");
@@ -106,7 +107,6 @@ const ModifyRoomModal = (props) => {
 
     if (roomContent === "") setRoomContent(null);
     if (tags.length === 0) setTags(null);
-    if (roomImages.length === 0) setRoomImages(null);
 
     postUpdateRoom(
       roomTitle,
@@ -151,12 +151,12 @@ const ModifyRoomModal = (props) => {
   };
 
   // 방에 대한 정보 조회
+  // 방에 대한 기본 설정된 데이터들을 불러와야 함
   useEffect(() => {
     if (props.open) {
       getRoomInfo(props.sequenceId)
         .then((res) => {
           if (res.status.code === 5000) {
-            console.log(res.status.message);
             //초기값 받아오기
             setRoomTitle(res.content.roomTitle);
             setRoomContent(res.content.roomContent);
@@ -166,7 +166,7 @@ const ModifyRoomModal = (props) => {
             setStartAppointmentDate(res.content.startAppointmentDate);
             setEndAppointmentDate(res.content.endAppointmentDate);
             setImagePreview(
-              (imagePreview = res.content.roomImages.imageSource.map(preview))
+              (imagePreview = res.content.roomImages.imagePath.map(preview))
             );
             setLimitPeopleCount(res.content.limitPeopleCount);
           }
@@ -220,10 +220,10 @@ const ModifyRoomModal = (props) => {
             <div className="picture-wrapper">
               <SetRoomImages
                 getImageData={getImageData}
-                setPreview={setPreview}
-                getPreview={getPreview}
-                setData={setData}
                 getThumbnailData={getThumbnailIndex}
+                getPreview={getPreview}
+                setPreview={setPreview}
+                setData={setData}
               />
             </div>
 
