@@ -29,7 +29,7 @@ const getRoomDetail = (roomId) => {
   const promise =
     localStorage.getItem("accessToken") === null
       ? axios.get(`http://localhost:8080/api/rooms/${roomId}/detail`)
-      : axios.get(`http://localhost:8080/api/rooms/${roomId}/info`, {
+      : axios.get(`http://localhost:8080/api/rooms/${roomId}/detail`, {
           headers: {
             "Content-type": "application/json; charset=UTF-8",
             Accept: "*/*",

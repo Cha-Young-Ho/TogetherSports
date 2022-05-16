@@ -6,9 +6,6 @@ import { FailResponse } from "../../../api/failResponse";
 import RoomInfoNavBar from "../../../components/roomInfoNavBar";
 import SetRoomImages from "../../../components/rooms/setRoomImages";
 
-/* 수정 필요 */
-// 1. 완료 버튼 클릭 시, 새로 만들어진 방으로 이동
-
 const RoomTagInfo = () => {
   const roomInfo = useSelector((state) => state.createRoomReducer);
 
@@ -46,6 +43,8 @@ const RoomTagInfo = () => {
 
   // 이미지 배열에 order 추가하기
   const addOrder = (arr, index) => {
+    if (arr.length === 0) return setRoomImages(null); // 이미지 없을 시 예외처리
+
     const thumbnail = [];
 
     for (let i = 0; i < arr.length; i++) {
@@ -103,7 +102,6 @@ const RoomTagInfo = () => {
 
     if (roomContent === "") setRoomContent(null);
     if (tags.length === 0) setTags(null);
-    if (roomImages.length === 0) setRoomImages(null);
     // 정상적으로 다 입력돼있으면 방 생성 요청
     else {
       postCreateRoom(
