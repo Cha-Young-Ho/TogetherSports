@@ -1,4 +1,52 @@
 import { postRefreshToken } from "./etc";
+import { getMyInfo } from "../api/members";
+
+const getInfoMethod = () => {
+  getMyInfo()
+    .then((res) => {
+      if (res.status.code === 5000) {
+        dispatch({
+          type: "SAVEMYINFO",
+          payload: {
+            userEmail: res.content.userEmail,
+            userName: res.content.userName,
+            userNickname: res.content.userNickname,
+            userBirth: res.content.userBirth,
+            gender: res.content.gender,
+            userProfileImagePath:
+              res.content.userProfileImagePath === ""
+                ? "/base_profileImage.jpg"
+                : res.content.userProfileImagePath,
+            activeAreas: res.content.activeAreas.map((el) => el),
+            interests: res.content.interests.map((el) => el),
+            mannerPoint: res.content.mannerPoint,
+            isInformationRequired: res.content.isInformationRequired,
+          },
+        });
+      } else {
+        FailResponse(res.status.code);
+      }
+
+      dispatch({
+        type: "CHANGELOGINSTATUS",
+        payload: {
+          loginStatus: "true",
+        },
+      });
+    })
+    .catch((error) => {
+      if (error.response) {
+        dispatch({
+          type: "CHANGELOGINSTATUS",
+          payload: {
+            loginStatus: "false",
+          },
+        });
+
+        FailResponse(error.response.data.status.code);
+      }
+    });
+};
 
 // fail response를 switch를 통해 관리
 const FailResponse = (codeNumber) => {
@@ -36,7 +84,8 @@ const FailResponse = (codeNumber) => {
       console.log("변조된 토큰입니다.");
       postRefreshToken(localStorage.getItem("refreshToken")).then((res) => {
         if (res.status.code === 5000) {
-          localStorage.setItem("accessToken", res.accessToken);
+          localStorage.setItem("accessToken", res.content.accessToken);
+          getInfoMethod();
         } else {
           localStorage.removeItem("accessToken");
           localStorage.removeItem("refreshToken");
@@ -48,6 +97,7 @@ const FailResponse = (codeNumber) => {
       postRefreshToken(localStorage.getItem("refreshToken")).then((res) => {
         if (res.status.code === 5000) {
           localStorage.setItem("accessToken", res.content.accessToken);
+          getInfoMethod();
         } else {
           localStorage.removeItem("accessToken");
           localStorage.removeItem("refreshToken");

@@ -11,9 +11,9 @@ const FilteredRooms = () => {
   const selectedTypeButtons = ["최신순", "임박한 시간순", "참여자순"];
   const [selectedSortType, setSelectedSortType] = useState("최신순");
 
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const [size, setSize] = useState(10);
-  const [sort, setSort] = useState("updateTime_DESC");
+  const [sort, setSort] = useState("updateTime,DESC");
 
   // 스크롤 위치값
   const [scrollY, setScrollY] = useState(0);
@@ -110,13 +110,13 @@ const FilteredRooms = () => {
     console.log(name);
     switch (name) {
       case "최신순":
-        setSort("updateTime_DESC");
+        setSort("updateTime,DESC");
         break;
       case "임박한 시간순":
-        setSort("start_DESC");
+        setSort("start,DESC");
         break;
       case "참여자순":
-        setSort("participant_DESC");
+        setSort("participant,DESC");
         break;
     }
   };
@@ -225,14 +225,14 @@ const FilteredRooms = () => {
         roomFilteringData.containTimeClosing,
         roomFilteringData.containNoAdmittance,
         roomFilteringData.requiredPeopleCount,
-        1,
+        0,
         10,
         sort
       )
         .then((res) => {
           if (res.status.code === 5000) {
             setEachRoomInfo(res.content.content);
-            setPage(2);
+            setPage(1);
           }
         })
         .catch((error) => {
@@ -249,7 +249,7 @@ const FilteredRooms = () => {
   useEffect(() => {
     setPage(1);
     setSize(10);
-    setSort("updateTime_DESC");
+    setSort("updateTime,DESC");
     setSelectedSortType("최신순");
   }, [changeDectection.reset]);
 
@@ -270,13 +270,13 @@ const FilteredRooms = () => {
         roomFilteringData.containTimeClosing,
         roomFilteringData.containNoAdmittance,
         roomFilteringData.requiredPeopleCount,
-        1,
+        page,
         10,
         sort
       )
         .then((res) => {
           if (res.status.code === 5000) {
-            setEachRoomInfo(res.content.content);
+            setEachRoomInfo((prev) => [...prev, res.content.content]);
             setPage(page + 1);
           }
         })
