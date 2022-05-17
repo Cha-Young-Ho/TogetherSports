@@ -14,42 +14,32 @@ const UserInfoModal = (props) => {
 
   // 모달에 필요한 데이터들
   const [imageSrc, setImageSrc] = useState("/base_profileImage.jpg");
-  const [nickname, setNickname] = useState("피렐라");
-  const [mannerPoint, setMannerPoint] = useState("10");
-  const [interest, setInterest] = useState([
-    "축구",
-    "야구",
-    "배드민턴",
-    "자전거",
-    "기타",
-  ]);
-  const [gender, setGender] = useState("male");
-  const [activeAreas, setActiveAreas] = useState([
-    "서울시 서초구 서초동",
-    "대구시 달서구 진천동",
-    "대구시 달서구 송현동",
-  ]);
+  const [nickname, setNickname] = useState("");
+  const [mannerPoint, setMannerPoint] = useState("");
+  const [interest, setInterest] = useState([]);
+  const [gender, setGender] = useState("");
+  const [activeAreas, setActiveAreas] = useState([]);
 
   useEffect(() => {
     // 다른 회원 정보 조회
     if (myInfo.userNickname !== userNickname) {
       if (props.open) {
-        // getOtherInfo(userNickname)
-        //   .then((res) => {
-        //     if (res.status.code === 5000) {
-        //       setNickname(res.content.userNickname);
-        //       setMannerPoint(res.content.mannerPoint);
-        //       setInterest(res.content.interests);
-        //       setImageSrc(res.content.userProfileImagePath);
-        //       setGender(res.content.gender);
-        //       setActiveAreas(res.content.activeAreas);
-        //     }
-        //   })
-        //   .catch((error) => {
-        //     FailResponse(error.response.data.status.code);
-        //     props.close();
-        //   });
-        // return;
+        getOtherInfo(userNickname)
+          .then((res) => {
+            if (res.status.code === 5000) {
+              setNickname(res.content.userNickname);
+              setMannerPoint(res.content.mannerPoint);
+              setInterest(res.content.interests);
+              setImageSrc(res.content.userProfileImagePath);
+              setGender(res.content.gender);
+              setActiveAreas(res.content.activeAreas);
+            }
+          })
+          .catch((error) => {
+            FailResponse(error.response.data.status.code);
+            props.close();
+          });
+        return;
       }
     }
     // 내 정보 조회 및 익명의 유저 정보 조회
@@ -75,17 +65,6 @@ const UserInfoModal = (props) => {
       <div className={props.open ? "openModal modal" : "modal"}>
         <div className="userinfo-modal-body">
           <div className="header">
-            {gender === "male" ? (
-              <div className="header-text">
-                {`${nickname} 님의 프로필`}
-                <span style={{ color: "#00a6ed" }}>♂️</span>
-              </div>
-            ) : (
-              <div className="header-text">
-                {`${nickname} 님의 프로필`}
-                <span style={{ color: "#f70a8d" }}>♀️</span>
-              </div>
-            )}
             <button onClick={props.close}>&times;</button>
           </div>
 
@@ -114,23 +93,41 @@ const UserInfoModal = (props) => {
             </div>
 
             <div className="right-section">
+              {gender === "male" ? (
+                <div className="pf-nickName">
+                  <div>
+                    {nickname}
+                    <span style={{ color: "#00a6ed" }}>♂️</span>
+                  </div>
+                  <div>님의 프로필</div>
+                </div>
+              ) : (
+                <div className="pf-nickName">
+                  <div>
+                    {nickname}
+                    <span style={{ color: "#f70a8d" }}>♀️</span>
+                  </div>
+                  <div>님의 프로필</div>
+                </div>
+              )}
+
               <div className="pf-mannerPoint">
                 {`❤️ ${mannerPoint}`}
-                <div>
-                  <button>➕</button>
-                  <button>➖</button>
-                </div>
+                {myInfo.userNickname === userNickname ? (
+                  <></>
+                ) : (
+                  <div>
+                    <button>➕</button>
+                    <button>➖</button>
+                  </div>
+                )}
               </div>
 
               <div className="pf-interest">
                 <p>관심 종목</p>
                 <div className="interests">
                   {interest.map((exercise, index) => {
-                    return (
-                      <div key={index} className="pf-exercise">
-                        {exercise}
-                      </div>
-                    );
+                    return <div key={index}>{exercise}</div>;
                   })}
                 </div>
               </div>
@@ -139,11 +136,7 @@ const UserInfoModal = (props) => {
                 <p>활동 지역</p>
                 <div className="areas">
                   {activeAreas.map((area, index) => {
-                    return (
-                      <div key={index} className="pf-area">
-                        {area}
-                      </div>
-                    );
+                    return <div key={index}>{area}</div>;
                   })}
                 </div>
               </div>
@@ -171,16 +164,18 @@ const UserInfoModal = (props) => {
         }
 
         .userinfo-modal-body {
-          width: 1000px;
-          height: 600px;
+          min-width: 680px;
+          width: 45%;
+          min-height: 410px;
           border-radius: 22px;
           background-color: white;
           box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
           display: flex;
           flex-direction: column;
+          justify-content: center;
           align-items: center;
-          padding: 20px;
-          overflow: auto;
+          padding: 15px;
+          /* overflow: auto; */
         }
 
         .header {
@@ -188,10 +183,10 @@ const UserInfoModal = (props) => {
           position: relative;
         }
 
-        .header button {
+        .header > button {
           position: absolute;
-          top: 1px;
-          right: 1px;
+          top: 0px;
+          right: 0px;
           color: #999;
           font-size: 3rem;
           background-color: white;
@@ -199,28 +194,19 @@ const UserInfoModal = (props) => {
           cursor: pointer;
         }
 
-        .header-text {
-          font-size: 3rem;
-          font-weight: bold;
-          margin: 10px;
-        }
-
-        .header-text > span {
-          margin-left: 5px;
-        }
-
         .section {
           width: 100%;
           display: flex;
           flex-direction: row;
+          justify-content: space-between;
         }
 
         .left-section {
-          width: 35%;
-          height: 100%;
-          margin: 10px 30px 10px 10px;
+          width: 40%;
           display: flex;
           flex-direction: column;
+          justify-content: center;
+          align-items: center;
         }
 
         .pf-image {
@@ -234,12 +220,12 @@ const UserInfoModal = (props) => {
         }
 
         .buttons {
+          width: 100%;
           display: flex;
           flex-direction: column;
         }
 
         .buttons > div {
-          width: 100%;
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -248,42 +234,75 @@ const UserInfoModal = (props) => {
         .delegate-button,
         .expulsion-button,
         .modify-button {
-          width: 300px;
-          height: 45px;
+          width: 100%;
+          height: 40px;
           border: none;
           border-radius: 20px;
           background-color: #00555f;
           color: white;
-          font-weight: 200px;
-          font-size: 1.7rem;
+          font-size: 1.5rem;
           cursor: pointer;
         }
 
         .delegate-button {
-          margin-bottom: 20px;
+          margin-bottom: 10px;
         }
 
         .expulsion-button {
           background-color: #d8d8d8;
         }
 
+        .right-section {
+          width: 55%;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+        }
+
+        .pf-nickName {
+          display: flex;
+          flex-direction: row;
+          margin-bottom: 20px;
+        }
+
+        .pf-nickName > div {
+          font-size: 1.6rem;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .pf-nickName > div:nth-child(1) {
+          padding: 5px 15px;
+          border-radius: 10px;
+          border: solid 1px #e2e2e2;
+          background-color: #fff;
+          font-weight: bold;
+          margin-right: 10px;
+        }
+
+        .pf-nickName span {
+          margin-left: 5px;
+        }
+
         .pf-mannerPoint {
-          font-size: 5rem;
+          font-size: 2rem;
           font-weight: bold;
           display: flex;
           flex-direction: row;
-          margin-bottom: 40px;
+          align-items: center;
+          margin-bottom: 20px;
         }
 
         .pf-mannerPoint > div {
           margin-left: 20px;
           display: flex;
           flex-direction: row;
-          align-items: center;
         }
 
         .pf-mannerPoint button {
-          font-size: 2.5rem;
+          font-size: 2rem;
+          font-weight: bold;
           border: none;
           background-color: white;
           margin-right: 10px;
@@ -294,33 +313,43 @@ const UserInfoModal = (props) => {
         .pf-activearea {
           display: flex;
           flex-direction: column;
-          margin-bottom: 40px;
+        }
+
+        .pf-interest {
+          margin-bottom: 20px;
         }
 
         .pf-interest > p,
         .pf-activearea > p {
-          font-size: 2.6rem;
+          font-size: 1.6rem;
           font-weight: bold;
-          margin-bottom: 20px;
+          margin-bottom: 10px;
         }
 
-        .interests,
-        .areas {
+        .interests {
           display: flex;
           flex-direction: row;
         }
 
-        .interests div,
-        .areas div {
+        .interests div {
           display: flex;
           align-items: center;
-          height: 35px;
-          padding: 10px;
+          padding: 5px 10px;
           margin-right: 10px;
           border-radius: 6px;
           background-color: #efefef;
-          font-size: 1.5rem;
-          font-weight: bold;
+          font-size: 1.3rem;
+        }
+
+        .areas div {
+          display: flex;
+          justify-content: center;
+          width: 210px;
+          margin-bottom: 5px;
+          padding: 5px 10px;
+          border-radius: 6px;
+          background-color: #efefef;
+          font-size: 1.3rem;
         }
 
         @keyframes modal-show {
