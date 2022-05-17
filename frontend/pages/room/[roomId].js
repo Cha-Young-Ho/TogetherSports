@@ -5,13 +5,16 @@ import Calendar from "../../components/calendar/calendar";
 import ParticipantList from "../../components/rooms/participantList";
 import UserInfoModal from "../../components/modals/userInfoModal";
 import ModifyRoomModal from "../../components/modals/modifyRoomModal";
-import { useSelector } from "react-redux";
 import Chatting from "../../components/chatting";
 import { getRoomDetail } from "../../api/rooms";
+import { useRouter } from "next/router";
+import { useDispatch } from "react-redux";
 
 const Room = () => {
-  const getRoomId = useSelector((state) => state.saveRoomIdReducer);
-  const roomId = getRoomId.roomId;
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const { roomId } = router.query;
+  const [chatOpen, setChatOpen] = useState(false);
 
   // 방 정보에 대한 필드
   const [creatorNickName, setCreatorNickName] = useState(""); // 방 생성자
@@ -121,33 +124,50 @@ const Room = () => {
   }, []);
 
   useEffect(() => {
-    getRoomDetail(roomId).then((res) => {
-      if (res.status.code === 5000) {
-        const roomInfo = res.content.roomOfInfo;
+    if (roomId) {
+      getRoomDetail(roomId)
+        .then((res) => {
+          if (res.status.code === 5000) {
+            const roomInfo = res.content.roomOfInfo;
 
-        setCreatorNickName((creatorNickName = roomInfo.creatorNickName));
-        setHost((host = roomInfo.host));
-        setRoomTitle((roomTitle = roomInfo.roomTitle));
-        setRoomContent((roomContent = roomInfo.roomContent));
-        setRoomArea((roomArea = roomInfo.roomArea));
-        setLimitPeopleCount((limitPeopleCount = roomInfo.limitPeopleCount));
-        setParticipantCount((participantCount = roomInfo.participantCount));
-        setExercise((exercise = roomInfo.exercise));
-        setTags((tags = roomInfo.tags));
-        setStartAppointmentDate(
-          (startAppointmentDate = roomInfo.startAppointmentDate)
-        );
-        setEndAppointmentDate(
-          (endAppointmentDate = roomInfo.endAppointmentDate)
-        );
-        setViewCount((viewCount = roomInfo.viewCount));
-        setRoomImages((roomImages = roomInfo.roomImages));
-        setParticipants((participants = res.content.participants));
-      } else {
-        FailResponse(res.status.code);
-      }
-    });
-  });
+            setCreatorNickName((creatorNickName = roomInfo.creatorNickName));
+            setHost((host = roomInfo.host));
+            setRoomTitle((roomTitle = roomInfo.roomTitle));
+            setRoomContent((roomContent = roomInfo.roomContent));
+            setRoomArea((roomArea = roomInfo.roomArea));
+            setLimitPeopleCount((limitPeopleCount = roomInfo.limitPeopleCount));
+            setParticipantCount((participantCount = roomInfo.participantCount));
+            setExercise((exercise = roomInfo.exercise));
+            setTags((tags = roomInfo.tags));
+            setStartAppointmentDate(
+              (startAppointmentDate = roomInfo.startAppointmentDate)
+            );
+            setEndAppointmentDate(
+              (endAppointmentDate = roomInfo.endAppointmentDate)
+            );
+            setViewCount((viewCount = roomInfo.viewCount));
+            setRoomImages((roomImages = roomInfo.roomImages));
+            setParticipants((participants = res.content.participants));
+          } else {
+            FailResponse(res.status.code);
+          }
+        })
+        .catch((error) => {
+          if (error.response) {
+            FailResponse(error.response.data.status.code);
+          }
+        });
+
+      dispatch({
+        type: "SAVEROOMID",
+        payload: {
+          roomId: roomId,
+        },
+      });
+
+      setChatOpen(true);
+    }
+  }, [roomId]);
 
   return (
     <>
@@ -188,7 +208,7 @@ const Room = () => {
                 <ModifyRoomModal
                   open={modifyModalOpen}
                   close={closeModifyModal}
-                  sequenceId={"test"}
+                  roomId={roomId}
                 ></ModifyRoomModal>
               </div>
             </div>
@@ -262,7 +282,7 @@ const Room = () => {
                   <p>{`ID : ${host}님의 방`}</p>
                 </div>
 
-                <Chatting />
+                <Chatting chatOpen={chatOpen} />
               </div>
             </div>
           </div>

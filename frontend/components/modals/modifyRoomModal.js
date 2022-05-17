@@ -4,18 +4,19 @@ import { getRoomInfo, postUpdateRoom } from "../../api/rooms";
 import FailResponse from "../../api/failResponse";
 
 const ModifyRoomModal = (props) => {
-  // 방 제목, 설명, 인원
-  const [roomTitle, setRoomTitle] = useState("");
-  const [roomContent, setRoomContent] = useState("");
-  const [limitPeopleCount, setLimitPeopleCount] = useState("");
-
-  // post 하기위한 정보들
-  const [roomArea, setRoomArea] = useState({});
+  // post 하기위한 기타 정보들
+  const [roomId, setRoomId] = useState("");
+  const [roomArea, setRoomArea] = useState("");
   const [exercise, setExercise] = useState("");
   const [startAppointmentDate, setStartAppointmentDate] = useState("");
   const [endAppointmentDate, setEndAppointmentDate] = useState("");
 
-  // 서버로 보내기 위한 방 이미지 정보(확장자, 원본주소)
+  // content에 포함되는 정보들
+  const [roomTitle, setRoomTitle] = useState("");
+  const [limitPeopleCount, setLimitPeopleCount] = useState("");
+  const [roomContent, setRoomContent] = useState("");
+
+  // 서버로 보내기 위한 방 이미지 정보(순서, 확장자, 원본주소)
   const [roomImages, setRoomImages] = useState([]);
   const [thumbnailIndex, setThumbnailIndex] = useState(0);
   const getImageData = (imageData) => {
@@ -77,9 +78,7 @@ const ModifyRoomModal = (props) => {
       }
     }
 
-    for (let i = 0; i < arr.length; i++) {
-      arr[i].order = i + 1;
-    }
+    for (let i = 0; i < arr.length; i++) arr[i].order = i + 1;
 
     return setRoomImages((roomImages = thumbnail.concat(arr)));
   };
@@ -96,7 +95,8 @@ const ModifyRoomModal = (props) => {
 
   // 완료 버튼 클릭 시
   const clickDoneBtn = () => {
-    addOrder(roomImages, thumbnailIndex);
+    if (roomImages === []) setRoomImages(null);
+    else addOrder(roomImages, thumbnailIndex);
 
     if (roomTitle === "" || limitPeopleCount === "") {
       alert("입력이 올바르지 않은 정보가 있습니다");
@@ -106,7 +106,6 @@ const ModifyRoomModal = (props) => {
 
     if (roomContent === "") setRoomContent(null);
     if (tags.length === 0) setTags(null);
-    if (roomImages.length === 0) setRoomImages(null);
 
     postUpdateRoom(
       roomTitle,
@@ -151,24 +150,31 @@ const ModifyRoomModal = (props) => {
   };
 
   // 방에 대한 정보 조회
+  // 방에 대한 기본 설정된 데이터들을 불러와야 함
   useEffect(() => {
     if (props.open) {
-      getRoomInfo(props.sequenceId)
+      getRoomInfo(props.roomId)
         .then((res) => {
           if (res.status.code === 5000) {
-            console.log(res.status.message);
             //초기값 받아오기
-            setRoomTitle(res.content.roomTitle);
-            setRoomContent(res.content.roomContent);
-            setRoomArea(res.content.roomArea);
-            setExercise(res.content.exercise);
-            setTags(res.content.tags);
-            setStartAppointmentDate(res.content.startAppointmentDate);
-            setEndAppointmentDate(res.content.endAppointmentDate);
-            setImagePreview(
-              (imagePreview = res.content.roomImages.imageSource.map(preview))
+            setRoomId((roomId = res.content.roomId));
+            setRoomTitle((roomTitle = res.content.roomTitle));
+            setRoomContent((roomContent = res.content.roomContent));
+            setRoomArea((roomArea = res.content.roomArea));
+            setLimitPeopleCount(
+              (limitPeopleCount = res.content.limitPeopleCount)
             );
-            setLimitPeopleCount(res.content.limitPeopleCount);
+            setExercise((exercise = res.content.exercise));
+            setTags((tags = res.content.tags));
+            setStartAppointmentDate(
+              (startAppointmentDate = res.content.startAppointmentDate)
+            );
+            setEndAppointmentDate(
+              (endAppointmentDate = res.content.endAppointmentDate)
+            );
+            setImagePreview(
+              (imagePreview = res.content.roomImages.imagePath.map(preview))
+            );
           }
         })
         .catch((error) => {
@@ -220,10 +226,10 @@ const ModifyRoomModal = (props) => {
             <div className="picture-wrapper">
               <SetRoomImages
                 getImageData={getImageData}
-                setPreview={setPreview}
-                getPreview={getPreview}
-                setData={setData}
                 getThumbnailData={getThumbnailIndex}
+                getPreview={getPreview}
+                setPreview={setPreview}
+                setData={setData}
               />
             </div>
 
@@ -297,7 +303,8 @@ const ModifyRoomModal = (props) => {
         }
 
         .box-container {
-          width: 48%;
+          min-width: 720px;
+          width: 50%;
           height: 85%;
           padding: 40px 50px;
           border-radius: 10px;

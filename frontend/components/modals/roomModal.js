@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Calendar from "../calendar/calendar";
-import { getRoomInfo } from "../../api/rooms";
+import { getRoomInfo, postEnterRoom } from "../../api/rooms";
 import ImageSlide from "../imageSlide";
 import router from "next/router";
 import { useDispatch } from "react-redux";
@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 /* roomList에서 받은 각 room들의 roomId를 props로 받기 */
 const RoomModal = (props) => {
   const dispatch = useDispatch();
+  const [getInfoDone, setGetInfoDone] = useState(false); // 방 정보를 다 받아왔는지 여부 체크
   const [mapLoaded, setMapLoaded] = useState(false); // 지도 로드 동기화
 
   /* response content 담을 변수들 */
@@ -16,41 +17,33 @@ const RoomModal = (props) => {
   const [host, setHost] = useState(""); // 방장
   const [roomTitle, setRoomTitle] = useState("");
   const [roomContent, setRoomContent] = useState("");
-  const [area, setArea] = useState("서울 송파구 올림픽로 19-2");
+  const [roomArea, setRoomArea] = useState("");
   const [limitPeopleCount, setLimitPeopleCount] = useState("");
   const [participantCount, setParticipantCount] = useState("");
   const [exercise, setExercise] = useState("");
   const [tags, setTags] = useState([]);
   const [startAppointmentDate, setStartAppointmentDate] = useState("");
   const [endAppointmentDate, setEndAppointmentDate] = useState("");
-  const [viewCount, setViewCount] = useState("5");
-  const [roomImages, setRoomImages] = useState([
-    {
-      // test를 위한 임시 데이터
-      order: -1,
-      imagePath: "logo-sign.png",
-    },
-  ]);
+  const [viewCount, setViewCount] = useState("");
+  const [roomImages, setRoomImages] = useState([]);
 
   useEffect(() => {
     const script = document.createElement("script");
     script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAOMAP_APPKEY}&autoload=false&libraries=services`;
     document.head.appendChild(script);
-    setMapLoaded(true);
   }, []);
 
   useEffect(() => {
-    if (props.open && mapLoaded) {
-      console.log(props.roomID);
+    if (props.open) {
       // 방 정보 받아오기
-      getRoomInfo(props.roomID).then((res) => {
+      getRoomInfo(props.roomId).then((res) => {
         if (res.status.code === 5000) {
           setRoomId((roomId = res.content.roomId));
           setCreatorNickName((creatorNickName = res.content.creatorNickName));
           setHost((host = res.content.host));
           setRoomTitle((roomTitle = res.content.roomTitle));
           setRoomContent((roomContent = res.content.roomContent));
-          setArea((area = res.content.area));
+          setRoomArea((roomArea = res.content.roomArea));
           setLimitPeopleCount(
             (limitPeopleCount = res.content.limitPeopleCount)
           );
@@ -66,15 +59,34 @@ const RoomModal = (props) => {
             (endAppointmentDate = res.content.endAppointmentDate)
           );
           setViewCount((viewCount = res.content.viewCount));
-          setRoomImages((roomImages = res.content.roomImages));
+          setRoomImages(
+            (roomImages =
+              res.content.roomImages === null
+                ? {
+                    order: 0,
+                    imagePath: "logo-sign.png",
+                  }
+                : res.content.roomImages)
+          );
         } else {
           FailResponse(res.status.code);
         }
       });
 
+      if (roomArea !== "") setGetInfoDone(true);
+    }
+  }, [props.open]);
+
+  useEffect(() => {
+    if (getInfoDone === true) setMapLoaded(true);
+  }, [getInfoDone]);
+
+  useEffect(() => {
+    if (mapLoaded) {
       // 위치 정보 받아오기
       kakao.maps.load(() => {
         const container = document.getElementById("map"),
+          // 기본 좌표 = 서울시청
           options = {
             center: new kakao.maps.LatLng(
               37.56682420062817,
@@ -87,7 +99,7 @@ const RoomModal = (props) => {
         const geocoder = new kakao.maps.services.Geocoder(); // 주소-좌표 변환 객체 생성
 
         // 주소로 좌표를 검색
-        geocoder.addressSearch(`${area}`, function (result, status) {
+        geocoder.addressSearch(`${roomArea}`, function (result, status) {
           if (status === kakao.maps.services.Status.OK) {
             const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
 
@@ -110,32 +122,35 @@ const RoomModal = (props) => {
         });
       });
     }
-  }, [props.open]);
+  }, [mapLoaded]);
 
-  // 방에 참가
   const enterRoom = (e) => {
-    // 참가 버튼을 누르는 순간 API요청을 한번 더 해서 참여가능여부 판단
-    getRoomInfo(props.roomId).then((res) => {
-      if (res.status.code === 5000) {
-        if (res.content.participantCount === res.content.limitPeopleCount) {
-          e.preventDefault();
-          alert("인원이 가득 차서 참가할 수 없습니다.");
+    postEnterRoom(roomId)
+      .then((res) => {
+        if (res.status.code === 1209) {
+          router.push(`/room/${roomId}`);
           return;
         }
-      } else {
-        FailResponse(res.status.code);
-      }
-    });
 
-    // 위의 상황이 아니라면 방에 참가
-    dispatch({
-      type: "SAVEROOMID",
-      payload: {
-        roomId: roomId,
-      },
-    });
+        if (res.status.code === 1201) {
+          e.preventDefault();
+          alert(res.status.message);
+          return;
+        }
 
-    router.push("/room/room");
+        if (res.status.code === 1202) {
+          e.preventDefault();
+          alert(res.status.message);
+          return;
+          // FailResponse(res.status.code);
+          // return;
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          FailResponse(error.response.data.status.code);
+        }
+      });
   };
 
   return (
@@ -185,11 +200,11 @@ const RoomModal = (props) => {
                   <p>{`${startAppointmentDate.substr(
                     11,
                     2
-                  )}시 ${startAppointmentDate.substr(-2)}분 ~`}</p>
+                  )}시 ${startAppointmentDate.substr(14, 2)}분 ~`}</p>
                   <p>{`${endAppointmentDate.substr(
                     11,
                     2
-                  )}시 ${endAppointmentDate.substr(-2)}분`}</p>
+                  )}시 ${endAppointmentDate.substr(14, 2)}분`}</p>
                 </div>
               </div>
 
@@ -208,7 +223,7 @@ const RoomModal = (props) => {
               <div className="location">
                 <p>위치 정보</p>
                 <div></div>
-                <p className="address-info">{area}</p>
+                <p className="address-info">{roomArea}</p>
                 <div id="map"></div>
               </div>
             </div>
@@ -260,6 +275,7 @@ const RoomModal = (props) => {
         }
 
         .room-modal-body {
+          min-width: 1050px;
           width: 70%;
           height: 85%;
           border-radius: 22px;

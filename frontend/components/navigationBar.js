@@ -17,9 +17,7 @@ const NavigationBar = () => {
   );
 
   // 로그인 시 저장되는 데이터
-  const [myinfo, setMyinfo] = useState(
-    useSelector((state) => state.myInfoReducer)
-  );
+  const myinfo = useSelector((state) => state.myInfoReducer);
 
   // 유저 프로필 클릭 시 뜨는 팝업 창 관리 state
   const [modalOpen, setModalOpen] = useState(false);
@@ -38,19 +36,6 @@ const NavigationBar = () => {
         if (res.status.code === 5000) {
           console.log("*Nav : Success Login Info Request *");
 
-          setMyinfo({
-            userEmail: res.content.userEmail,
-            userName: res.content.userName,
-            userNickname: res.content.userNickname,
-            userBirth: res.content.userBirth,
-            gender: res.content.gender,
-            userProfileImagePath: res.content.userProfileImagePath,
-            activeAreas: res.content.activeAreas.map((el) => el),
-            interests: res.content.interests.map((el) => el),
-            mannerPoint: res.content.mannerPoint,
-            isInformationRequired: res.content.isInformationRequired,
-          });
-
           dispatch({
             type: "SAVEMYINFO",
             payload: {
@@ -59,7 +44,10 @@ const NavigationBar = () => {
               userNickname: res.content.userNickname,
               userBirth: res.content.userBirth,
               gender: res.content.gender,
-              userProfileImagePath: res.content.userProfileImagePath,
+              userProfileImagePath:
+                res.content.userProfileImagePath === ""
+                  ? "/base_profileImage.jpg"
+                  : res.content.userProfileImagePath,
               activeAreas: res.content.activeAreas.map((el) => el),
               interests: res.content.interests.map((el) => el),
               mannerPoint: res.content.mannerPoint,
@@ -71,12 +59,12 @@ const NavigationBar = () => {
           FailResponse(res.status.code);
         }
 
-        dispatch({
-          type: "CHANGELOGINSTATUS",
-          payload: {
-            loginStatus: "true",
-          },
-        });
+        // dispatch({
+        //   type: "CHANGELOGINSTATUS",
+        //   payload: {
+        //     loginStatus: "true",
+        //   },
+        // });
       })
       .catch((error) => {
         if (error.response) {
@@ -148,13 +136,13 @@ const NavigationBar = () => {
             </div>
             <div className="category">
               <Link href="/room/roomlist">
-                <div className="tag">일정목록</div>
+                <div className="tag">방 목록</div>
               </Link>
               <Link href="/myroom">
-                <div className="tag">내일정</div>
+                <div className="tag">내 일정</div>
               </Link>
               <Link href="/room/createroom/roomsetting">
-                <div className="tag">방생성</div>
+                <div className="tag">방 생성</div>
               </Link>
             </div>
           </div>
@@ -171,7 +159,7 @@ const NavigationBar = () => {
                   <button className="user-box" onClick={openModal}>
                     <img
                       className="ProfileImage"
-                      src={myinfo.userProfileImagePath}
+                      src={`/images/${myinfo.userProfileImagePath}`}
                     ></img>
                     <div className="logOn">
                       {`${myinfo.userNickname}`} 님 반갑습니다!
@@ -197,7 +185,7 @@ const NavigationBar = () => {
           </div>
         </div>
       </div>
-      {loginStatus === "true" && myinfo.isInformationRequired ? (
+      {loginStatus === "true" && myinfo.isInformationRequired === "true" ? (
         <FixedRequestAlarm />
       ) : (
         ""
