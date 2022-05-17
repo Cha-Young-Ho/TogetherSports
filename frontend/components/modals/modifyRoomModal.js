@@ -4,18 +4,19 @@ import { getRoomInfo, postUpdateRoom } from "../../api/rooms";
 import FailResponse from "../../api/failResponse";
 
 const ModifyRoomModal = (props) => {
-  // 방 제목, 설명, 인원
-  const [roomTitle, setRoomTitle] = useState("");
-  const [roomContent, setRoomContent] = useState("");
-  const [limitPeopleCount, setLimitPeopleCount] = useState("");
-
-  // post 하기위한 정보들
+  // post 하기위한 기타 정보들
+  const [roomId, setRoomId] = useState("");
   const [roomArea, setRoomArea] = useState("");
   const [exercise, setExercise] = useState("");
   const [startAppointmentDate, setStartAppointmentDate] = useState("");
   const [endAppointmentDate, setEndAppointmentDate] = useState("");
 
-  // 서버로 보내기 위한 방 이미지 정보(확장자, 원본주소)
+  // content에 포함되는 정보들
+  const [roomTitle, setRoomTitle] = useState("");
+  const [limitPeopleCount, setLimitPeopleCount] = useState("");
+  const [roomContent, setRoomContent] = useState("");
+
+  // 서버로 보내기 위한 방 이미지 정보(순서, 확장자, 원본주소)
   const [roomImages, setRoomImages] = useState([]);
   const [thumbnailIndex, setThumbnailIndex] = useState(0);
   const getImageData = (imageData) => {
@@ -77,9 +78,7 @@ const ModifyRoomModal = (props) => {
       }
     }
 
-    for (let i = 0; i < arr.length; i++) {
-      arr[i].order = i + 1;
-    }
+    for (let i = 0; i < arr.length; i++) arr[i].order = i + 1;
 
     return setRoomImages((roomImages = thumbnail.concat(arr)));
   };
@@ -154,21 +153,28 @@ const ModifyRoomModal = (props) => {
   // 방에 대한 기본 설정된 데이터들을 불러와야 함
   useEffect(() => {
     if (props.open) {
-      getRoomInfo(props.sequenceId)
+      getRoomInfo(props.roomId)
         .then((res) => {
           if (res.status.code === 5000) {
             //초기값 받아오기
-            setRoomTitle(res.content.roomTitle);
-            setRoomContent(res.content.roomContent);
-            setRoomArea(res.content.roomArea);
-            setExercise(res.content.exercise);
-            setTags(res.content.tags);
-            setStartAppointmentDate(res.content.startAppointmentDate);
-            setEndAppointmentDate(res.content.endAppointmentDate);
+            setRoomId((roomId = res.content.roomId));
+            setRoomTitle((roomTitle = res.content.roomTitle));
+            setRoomContent((roomContent = res.content.roomContent));
+            setRoomArea((roomArea = res.content.roomArea));
+            setLimitPeopleCount(
+              (limitPeopleCount = res.content.limitPeopleCount)
+            );
+            setExercise((exercise = res.content.exercise));
+            setTags((tags = res.content.tags));
+            setStartAppointmentDate(
+              (startAppointmentDate = res.content.startAppointmentDate)
+            );
+            setEndAppointmentDate(
+              (endAppointmentDate = res.content.endAppointmentDate)
+            );
             setImagePreview(
               (imagePreview = res.content.roomImages.imagePath.map(preview))
             );
-            setLimitPeopleCount(res.content.limitPeopleCount);
           }
         })
         .catch((error) => {

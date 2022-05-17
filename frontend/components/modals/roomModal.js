@@ -16,21 +16,15 @@ const RoomModal = (props) => {
   const [host, setHost] = useState(""); // 방장
   const [roomTitle, setRoomTitle] = useState("");
   const [roomContent, setRoomContent] = useState("");
-  const [area, setArea] = useState("서울 송파구 올림픽로 19-2");
+  const [roomArea, setRoomArea] = useState("");
   const [limitPeopleCount, setLimitPeopleCount] = useState("");
   const [participantCount, setParticipantCount] = useState("");
   const [exercise, setExercise] = useState("");
   const [tags, setTags] = useState([]);
   const [startAppointmentDate, setStartAppointmentDate] = useState("");
   const [endAppointmentDate, setEndAppointmentDate] = useState("");
-  const [viewCount, setViewCount] = useState("5");
-  const [roomImages, setRoomImages] = useState([
-    {
-      // test를 위한 임시 데이터
-      order: -1,
-      imagePath: "logo-sign.png",
-    },
-  ]);
+  const [viewCount, setViewCount] = useState("");
+  const [roomImages, setRoomImages] = useState([]);
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -39,103 +33,109 @@ const RoomModal = (props) => {
     setMapLoaded(true);
   }, []);
 
+  const getRoomInfoFunc = async (id) => {
+    // 방 정보 받아오기
+    getRoomInfo(id).then((res) => {
+      if (res.status.code === 5000) {
+        setRoomId((roomId = res.content.roomId));
+        setCreatorNickName((creatorNickName = res.content.creatorNickName));
+        setHost((host = res.content.host));
+        setRoomTitle((roomTitle = res.content.roomTitle));
+        setRoomContent((roomContent = res.content.roomContent));
+        setRoomArea((roomArea = res.content.roomArea));
+        setLimitPeopleCount((limitPeopleCount = res.content.limitPeopleCount));
+        setParticipantCount((participantCount = res.content.participantCount));
+        setExercise((exercise = res.content.exercise));
+        setTags((tags = res.content.tags));
+        setStartAppointmentDate(
+          (startAppointmentDate = res.content.startAppointmentDate)
+        );
+        setEndAppointmentDate(
+          (endAppointmentDate = res.content.endAppointmentDate)
+        );
+        setViewCount((viewCount = res.content.viewCount));
+        setRoomImages(
+          (roomImages =
+            res.content.roomImages === null
+              ? {
+                  order: 0,
+                  imagePath: "logo-sign.png",
+                }
+              : res.content.roomImages)
+        );
+      } else {
+        FailResponse(res.status.code);
+      }
+    });
+  };
+
   useEffect(() => {
     if (props.open && mapLoaded) {
-      console.log(props.roomID);
-      // 방 정보 받아오기
-      getRoomInfo(props.roomID).then((res) => {
-        if (res.status.code === 5000) {
-          setRoomId((roomId = res.content.roomId));
-          setCreatorNickName((creatorNickName = res.content.creatorNickName));
-          setHost((host = res.content.host));
-          setRoomTitle((roomTitle = res.content.roomTitle));
-          setRoomContent((roomContent = res.content.roomContent));
-          setArea((area = res.content.area));
-          setLimitPeopleCount(
-            (limitPeopleCount = res.content.limitPeopleCount)
-          );
-          setParticipantCount(
-            (participantCount = res.content.participantCount)
-          );
-          setExercise((exercise = res.content.exercise));
-          setTags((tags = res.content.tags));
-          setStartAppointmentDate(
-            (startAppointmentDate = res.content.startAppointmentDate)
-          );
-          setEndAppointmentDate(
-            (endAppointmentDate = res.content.endAppointmentDate)
-          );
-          setViewCount((viewCount = res.content.viewCount));
-          setRoomImages((roomImages = res.content.roomImages));
-        } else {
-          FailResponse(res.status.code);
-        }
-      });
+      // 방 정보 (위치 정보)를 받고 난 후에 지도에 주소 뿌리기
+      getRoomInfoFunc(props.roomID).then(() => {
+        // 위치 정보 받아오기
+        kakao.maps.load(() => {
+          const container = document.getElementById("map"),
+            options = {
+              center: new kakao.maps.LatLng(
+                37.56682420062817,
+                126.97864093976689
+              ),
+              level: 4,
+            };
 
-      console.log(startAppointmentDate.substr(0, 10));
+          const map = new kakao.maps.Map(container, options); // 지도 생성
+          const geocoder = new kakao.maps.services.Geocoder(); // 주소-좌표 변환 객체 생성
 
-      // 위치 정보 받아오기
-      kakao.maps.load(() => {
-        const container = document.getElementById("map"),
-          options = {
-            center: new kakao.maps.LatLng(
-              37.56682420062817,
-              126.97864093976689
-            ),
-            level: 4,
-          };
+          // 주소로 좌표를 검색
+          geocoder.addressSearch(`${roomArea}`, function (result, status) {
+            if (status === kakao.maps.services.Status.OK) {
+              const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
 
-        const map = new kakao.maps.Map(container, options); // 지도 생성
-        const geocoder = new kakao.maps.services.Geocoder(); // 주소-좌표 변환 객체 생성
+              // 위치에 마커 표시
+              const marker = new kakao.maps.Marker({
+                map: map,
+                position: coords,
+              });
 
-        // 주소로 좌표를 검색
-        geocoder.addressSearch(`${area}`, function (result, status) {
-          if (status === kakao.maps.services.Status.OK) {
-            const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+              // 인포윈도우로 장소에 대한 설명을 표시
+              const infowindow = new kakao.maps.InfoWindow({
+                content:
+                  '<div style="width:150px;text-align:center;padding:6px 0;">만남의 장소</div>',
+              });
+              infowindow.open(map, marker);
 
-            // 위치에 마커 표시
-            const marker = new kakao.maps.Marker({
-              map: map,
-              position: coords,
-            });
-
-            // 인포윈도우로 장소에 대한 설명을 표시
-            const infowindow = new kakao.maps.InfoWindow({
-              content:
-                '<div style="width:150px;text-align:center;padding:6px 0;">만남의 장소</div>',
-            });
-            infowindow.open(map, marker);
-
-            // 지도의 중심을 결과값으로 받은 위치로 이동
-            map.setCenter(coords);
-          }
+              // 지도의 중심을 결과값으로 받은 위치로 이동
+              map.setCenter(coords);
+            }
+          });
         });
       });
     }
   }, [props.open]);
 
-  // 방에 참가
   const enterRoom = (e) => {
     // 참가 버튼을 누르는 순간 API요청을 한번 더 해서 참여가능여부 판단
-    getRoomInfo(props.roomId).then((res) => {
+    getRoomInfo(roomId).then((res) => {
       if (res.status.code === 5000) {
-        if (res.content.participantCount === res.content.limitPeopleCount) {
+        if (res.content.participantCount >= res.content.limitPeopleCount) {
           e.preventDefault();
           alert("인원이 가득 차서 참가할 수 없습니다.");
           return;
         }
       } else {
         FailResponse(res.status.code);
+        return;
       }
     });
 
     // 위의 상황이 아니라면 방에 참가
-    dispatch({
-      type: "SAVEROOMID",
-      payload: {
-        roomId: roomId,
-      },
-    });
+    // dispatch({
+    //   type: "SAVEROOMID",
+    //   payload: {
+    //     roomId: roomId,
+    //   },
+    // });
 
     router.push(`/room/${roomId}`);
   };
@@ -210,7 +210,7 @@ const RoomModal = (props) => {
               <div className="location">
                 <p>위치 정보</p>
                 <div></div>
-                <p className="address-info">{area}</p>
+                <p className="address-info">{roomArea}</p>
                 <div id="map"></div>
               </div>
             </div>

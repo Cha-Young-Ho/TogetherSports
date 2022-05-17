@@ -148,7 +148,7 @@ const NavigationBar = () => {
           </div>
           <div>
             <div className="sign">
-              {loginStatus === "true" ? (
+              {loginStatus === "false" ? (
                 <>
                   <Link href="/login">
                     <div className="tag">로그인</div>
