@@ -60,49 +60,55 @@ const RoomModal = (props) => {
   }, []);
 
   useEffect(() => {
-    // 방 정보 받아오기
-    getRoomInfo(props.roomId).then((res) => {
-      if (res.status.code === 5000) {
-        setRoomId((roomId = res.content.roomId));
-        setCreatorNickName((creatorNickName = res.content.creatorNickName));
-        setHost((host = res.content.host));
-        setRoomTitle((roomTitle = res.content.roomTitle));
-        setRoomContent((roomContent = res.content.roomContent));
-        setRoomArea((roomArea = res.content.roomArea));
-        setLimitPeopleCount((limitPeopleCount = res.content.limitPeopleCount));
-        setParticipantCount((participantCount = res.content.participantCount));
-        setExercise((exercise = res.content.exercise));
-        setTags((tags = res.content.tags));
-        setStartAppointmentDate(
-          (startAppointmentDate = res.content.startAppointmentDate)
-        );
-        setEndAppointmentDate(
-          (endAppointmentDate = res.content.endAppointmentDate)
-        );
-        setViewCount((viewCount = res.content.viewCount));
-        setRoomImages(
-          (roomImages =
-            res.content.roomImages === null
-              ? {
-                  order: 0,
-                  imagePath: "logo-sign.png",
-                }
-              : res.content.roomImages)
-        );
-      } else {
-        FailResponse(res.status.code);
-      }
-    });
+    if (props.open) {
+      // 방 정보 받아오기
+      getRoomInfo(props.roomId).then((res) => {
+        if (res.status.code === 5000) {
+          setRoomId((roomId = res.content.roomId));
+          setCreatorNickName((creatorNickName = res.content.creatorNickName));
+          setHost((host = res.content.host));
+          setRoomTitle((roomTitle = res.content.roomTitle));
+          setRoomContent((roomContent = res.content.roomContent));
+          setRoomArea((roomArea = res.content.roomArea));
+          setLimitPeopleCount(
+            (limitPeopleCount = res.content.limitPeopleCount)
+          );
+          setParticipantCount(
+            (participantCount = res.content.participantCount)
+          );
+          setExercise((exercise = res.content.exercise));
+          setTags((tags = res.content.tags));
+          setStartAppointmentDate(
+            (startAppointmentDate = res.content.startAppointmentDate)
+          );
+          setEndAppointmentDate(
+            (endAppointmentDate = res.content.endAppointmentDate)
+          );
+          setViewCount((viewCount = res.content.viewCount));
+          setRoomImages(
+            (roomImages =
+              res.content.roomImages === null
+                ? {
+                    order: 0,
+                    imagePath: "logo-sign.png",
+                  }
+                : res.content.roomImages)
+          );
+        } else {
+          FailResponse(res.status.code);
+        }
+      });
 
-    setGetInfoDone(true);
-  });
+      if (roomArea !== "") setGetInfoDone(true);
+    }
+  }, [props.open]);
 
   useEffect(() => {
-    if (getInfoDone) setMapLoaded(true);
+    if (getInfoDone === true) setMapLoaded(true);
   }, [getInfoDone]);
 
   useEffect(() => {
-    if (props.open && mapLoaded) {
+    if (mapLoaded) {
       // 위치 정보 받아오기
       kakao.maps.load(() => {
         const container = document.getElementById("map"),
@@ -141,7 +147,7 @@ const RoomModal = (props) => {
         });
       });
     }
-  }, [props.open]);
+  }, [mapLoaded]);
 
   return (
     <>
@@ -265,6 +271,7 @@ const RoomModal = (props) => {
         }
 
         .room-modal-body {
+          min-width: 1050px;
           width: 70%;
           height: 85%;
           border-radius: 22px;

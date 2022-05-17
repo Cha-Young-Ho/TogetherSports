@@ -339,7 +339,7 @@ const FilteredRooms = () => {
             <RoomModal
               open={roomExplainModalOpen}
               close={closeRoomExplainModal}
-              roomID={roomID}
+              roomId={roomID}
             ></RoomModal>
           </div>
         </div>

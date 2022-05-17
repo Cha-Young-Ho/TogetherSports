@@ -303,7 +303,8 @@ const ModifyRoomModal = (props) => {
         }
 
         .box-container {
-          width: 48%;
+          min-width: 720px;
+          width: 50%;
           height: 85%;
           padding: 40px 50px;
           border-radius: 10px;
