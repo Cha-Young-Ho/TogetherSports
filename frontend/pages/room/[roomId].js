@@ -208,7 +208,7 @@ const Room = () => {
                 <ModifyRoomModal
                   open={modifyModalOpen}
                   close={closeModifyModal}
-                  sequenceId={"test"}
+                  roomId={roomId}
                 ></ModifyRoomModal>
               </div>
             </div>

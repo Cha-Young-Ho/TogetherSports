@@ -159,7 +159,7 @@ const NavigationBar = () => {
                   <button className="user-box" onClick={openModal}>
                     <img
                       className="ProfileImage"
-                      src={myinfo.userProfileImagePath}
+                      src={`/images/${myinfo.userProfileImagePath}`}
                     ></img>
                     <div className="logOn">
                       {`${myinfo.userNickname}`} 님 반갑습니다!

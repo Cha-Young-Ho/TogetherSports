@@ -41,7 +41,7 @@ const RoomShowingBox = (props) => {
             src={
               props.datas.roomImagePath === ""
                 ? "/base_profileImage.jpg"
-                : `localhost:8080/${props.datas.roomImagePath}`
+                : `/images/${props.datas.roomImagePath}`
             }
           ></img>
           <div className="tags">
