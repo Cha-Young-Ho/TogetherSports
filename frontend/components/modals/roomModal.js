@@ -16,15 +16,21 @@ const RoomModal = (props) => {
   const [host, setHost] = useState(""); // 방장
   const [roomTitle, setRoomTitle] = useState("");
   const [roomContent, setRoomContent] = useState("");
-  const [roomArea, setRoomArea] = useState("");
+  const [area, setArea] = useState("서울 송파구 올림픽로 19-2");
   const [limitPeopleCount, setLimitPeopleCount] = useState("");
   const [participantCount, setParticipantCount] = useState("");
   const [exercise, setExercise] = useState("");
   const [tags, setTags] = useState([]);
   const [startAppointmentDate, setStartAppointmentDate] = useState("");
   const [endAppointmentDate, setEndAppointmentDate] = useState("");
-  const [viewCount, setViewCount] = useState("");
-  const [roomImages, setRoomImages] = useState([]);
+  const [viewCount, setViewCount] = useState("5");
+  const [roomImages, setRoomImages] = useState([
+    {
+      // test를 위한 임시 데이터
+      order: -1,
+      imagePath: "logo-sign.png",
+    },
+  ]);
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -35,6 +41,7 @@ const RoomModal = (props) => {
 
   useEffect(() => {
     if (props.open && mapLoaded) {
+      console.log(props.roomID);
       // 방 정보 받아오기
       getRoomInfo(props.roomID).then((res) => {
         if (res.status.code === 5000) {
@@ -43,7 +50,7 @@ const RoomModal = (props) => {
           setHost((host = res.content.host));
           setRoomTitle((roomTitle = res.content.roomTitle));
           setRoomContent((roomContent = res.content.roomContent));
-          setRoomArea((roomArea = res.content.roomArea));
+          setArea((area = res.content.area));
           setLimitPeopleCount(
             (limitPeopleCount = res.content.limitPeopleCount)
           );
@@ -59,27 +66,17 @@ const RoomModal = (props) => {
             (endAppointmentDate = res.content.endAppointmentDate)
           );
           setViewCount((viewCount = res.content.viewCount));
-
-          // null 인지 빈 배열인지 뭔지 수정 할 수도
-          // 방 이미지 설정된 게 없으면 기본이미지 설정
-          setRoomImages(
-            (roomImages =
-              res.content.roomImages === null
-                ? {
-                    order: 0,
-                    imagePath: "logo-sign.png",
-                  }
-                : res.content.roomImages)
-          );
+          setRoomImages((roomImages = res.content.roomImages));
         } else {
           FailResponse(res.status.code);
         }
       });
 
+      console.log(startAppointmentDate.substr(0, 10));
+
       // 위치 정보 받아오기
       kakao.maps.load(() => {
         const container = document.getElementById("map"),
-          // 기본 좌표 = 서울시청
           options = {
             center: new kakao.maps.LatLng(
               37.56682420062817,
@@ -92,7 +89,7 @@ const RoomModal = (props) => {
         const geocoder = new kakao.maps.services.Geocoder(); // 주소-좌표 변환 객체 생성
 
         // 주소로 좌표를 검색
-        geocoder.addressSearch(`${roomArea}`, function (result, status) {
+        geocoder.addressSearch(`${area}`, function (result, status) {
           if (status === kakao.maps.services.Status.OK) {
             const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
 
@@ -140,7 +137,7 @@ const RoomModal = (props) => {
       },
     });
 
-    router.push("/room/room");
+    router.push(`/room/${roomId}`);
   };
 
   return (
@@ -213,7 +210,7 @@ const RoomModal = (props) => {
               <div className="location">
                 <p>위치 정보</p>
                 <div></div>
-                <p className="address-info">{roomArea}</p>
+                <p className="address-info">{area}</p>
                 <div id="map"></div>
               </div>
             </div>
