@@ -59,12 +59,12 @@ const NavigationBar = () => {
           FailResponse(res.status.code);
         }
 
-        dispatch({
-          type: "CHANGELOGINSTATUS",
-          payload: {
-            loginStatus: "true",
-          },
-        });
+        // dispatch({
+        //   type: "CHANGELOGINSTATUS",
+        //   payload: {
+        //     loginStatus: "true",
+        //   },
+        // });
       })
       .catch((error) => {
         if (error.response) {
@@ -148,7 +148,7 @@ const NavigationBar = () => {
           </div>
           <div>
             <div className="sign">
-              {loginStatus === "true" ? (
+              {loginStatus === "false" ? (
                 <>
                   <Link href="/login">
                     <div className="tag">로그인</div>

@@ -99,6 +99,42 @@ const getRoomList = (
   return dataPromise;
 };
 
+// 방 참가 가능 여부
+const getAvailability = (roomId) => {
+  const promise =
+    localStorage.getItem("accessToken") === null
+      ? axios.get(`http://localhost:8080/api/rooms/${roomId}/attendance`)
+      : axios.get(`http://localhost:8080/api/rooms/${roomId}/attendance`, {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            Accept: "*/*",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        });
+
+  const dataPromise = promise.then((res) => res.data);
+
+  return dataPromise;
+};
+
+// 마이룸 정보
+const getMyRoomInfo = () => {
+  const promise =
+    localStorage.getItem("accessToken") === null
+      ? axios.get(`http://localhost:8080/api/room/myroom`)
+      : axios.get(`http://localhost:8080/api/room/myroom`, {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            Accept: "*/*",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        });
+
+  const dataPromise = promise.then((res) => res.data);
+
+  return dataPromise;
+};
+
 // 최상위(시) 행정구역 조회
 const getRootLocations = () => {
   const promise = axios.get(`http://localhost:8080/locations`);
@@ -190,12 +226,12 @@ const postCreateRoom = (
   return dataPromise;
 };
 
-// 마이룸 정보
-const getMyRoomInfo = () => {
+// 방 참가 요청
+const postEnterRoom = (roomId) => {
   const promise =
     localStorage.getItem("accessToken") === null
-      ? axios.get(`http://localhost:8080/api/room/myroom`)
-      : axios.get(`http://localhost:8080/api/room/myroom`, {
+      ? axios.post(`http://localhost:8080/api/room/${roomId}/user`)
+      : axios.post(`http://localhost:8080/api/room/${roomId}/user`, {
           headers: {
             "Content-type": "application/json; charset=UTF-8",
             Accept: "*/*",
@@ -290,7 +326,9 @@ export {
   getChildLocations,
   getChatInfo,
   getMyRoomInfo,
+  getAvailability,
   postUpdateRoom,
   postCreateRoom,
+  postEnterRoom,
   deleteRoom,
 };

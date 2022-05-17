@@ -8,10 +8,13 @@ import ModifyRoomModal from "../../components/modals/modifyRoomModal";
 import Chatting from "../../components/chatting";
 import { getRoomDetail } from "../../api/rooms";
 import { useRouter } from "next/router";
+import { useDispatch } from "react-redux";
 
 const Room = () => {
   const router = useRouter();
+  const dispatch = useDispatch();
   const { roomId } = router.query;
+  const [chatOpen, setChatOpen] = useState(false);
 
   // 방 정보에 대한 필드
   const [creatorNickName, setCreatorNickName] = useState(""); // 방 생성자
@@ -154,6 +157,15 @@ const Room = () => {
             FailResponse(error.response.data.status.code);
           }
         });
+
+      dispatch({
+        type: "SAVEROOMID",
+        payload: {
+          roomId: roomId,
+        },
+      });
+
+      setChatOpen(true);
     }
   }, [roomId]);
 
@@ -271,7 +283,7 @@ const Room = () => {
                   <p>{`ID : ${host}님의 방`}</p>
                 </div>
 
-                <Chatting roomId={roomId} />
+                <Chatting chatOpen={chatOpen} />
               </div>
             </div>
           </div>

@@ -1,22 +1,31 @@
-import { getRoomInfo } from "../../api/rooms";
+import { getAvailability } from "../../api/rooms";
 import router from "next/router";
 
 const RoomShowingBox = (props) => {
   // 해당 방에 이미 참가중인지 여부 체크
   const isAttendance = () => {
-    getRoomInfo(props.datas.roomId).then((res) => {
-      if (res.status.code === 5000) {
-        // 이미 참가중이라면 바로 방 상세 페이지로 이동
-        if (res.content.attendance) {
-          router.push("/room/room");
+    getAvailability(props.datas.roomId)
+      .then((res) => {
+        if (res.status.code === 1210 && res.content.attendance === "false") {
+          // 이미 참가중이라면 바로 방 상세 페이지로 이동
+          router.push(`/room/${props.datas.roomId}`);
+          return;
+          // 아니라면 방 설명 페이지 (roomModal) 띄우기
         }
-        // 아니라면 방 설명 페이지 (roomModal) 띄우기
-        else {
+
+        if (res.status.code === 1214 && res.content.attendance === "true") {
           props.setRoomID ? props.setRoomID(props.datas.roomId) : "";
           props.openRoomExplainModal ? props.openRoomExplainModal() : "";
+          return;
         }
-      }
-    });
+
+        alert("알 수 없는 오류입니다.");
+      })
+      .catch((error) => {
+        if (error.response) {
+          FailResponse(error.response.data.status.code);
+        }
+      });
   };
 
   return (
