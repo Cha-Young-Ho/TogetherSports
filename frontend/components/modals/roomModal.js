@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 /* roomList에서 받은 각 room들의 roomId를 props로 받기 */
 const RoomModal = (props) => {
   const dispatch = useDispatch();
+  const [getInfoDone, setGetInfoDone] = useState(false); // 방 정보를 다 받아왔는지 여부 체크
   const [mapLoaded, setMapLoaded] = useState(false); // 지도 로드 동기화
 
   /* response content 담을 변수들 */
@@ -26,16 +27,41 @@ const RoomModal = (props) => {
   const [viewCount, setViewCount] = useState("");
   const [roomImages, setRoomImages] = useState([]);
 
+  const enterRoom = (e) => {
+    // 참가 버튼을 누르는 순간 API요청을 한번 더 해서 참여가능여부 판단
+    getRoomInfo(roomId).then((res) => {
+      if (res.status.code === 5000) {
+        if (res.content.participantCount >= res.content.limitPeopleCount) {
+          e.preventDefault();
+          alert("인원이 가득 차서 참가할 수 없습니다.");
+          return;
+        }
+      } else {
+        FailResponse(res.status.code);
+        return;
+      }
+    });
+
+    // 위의 상황이 아니라면 방에 참가
+    // dispatch({
+    //   type: "SAVEROOMID",
+    //   payload: {
+    //     roomId: roomId,
+    //   },
+    // });
+
+    router.push(`/room/${roomId}`);
+  };
+
   useEffect(() => {
     const script = document.createElement("script");
     script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAOMAP_APPKEY}&autoload=false&libraries=services`;
     document.head.appendChild(script);
-    setMapLoaded(true);
   }, []);
 
-  const getRoomInfoFunc = async (id) => {
+  useEffect(() => {
     // 방 정보 받아오기
-    getRoomInfo(id).then((res) => {
+    getRoomInfo(props.roomId).then((res) => {
       if (res.status.code === 5000) {
         setRoomId((roomId = res.content.roomId));
         setCreatorNickName((creatorNickName = res.content.creatorNickName));
@@ -67,78 +93,55 @@ const RoomModal = (props) => {
         FailResponse(res.status.code);
       }
     });
-  };
+
+    setGetInfoDone(true);
+  });
+
+  useEffect(() => {
+    if (getInfoDone) setMapLoaded(true);
+  }, [getInfoDone]);
 
   useEffect(() => {
     if (props.open && mapLoaded) {
-      // 방 정보 (위치 정보)를 받고 난 후에 지도에 주소 뿌리기
-      getRoomInfoFunc(props.roomID).then(() => {
-        // 위치 정보 받아오기
-        kakao.maps.load(() => {
-          const container = document.getElementById("map"),
-            options = {
-              center: new kakao.maps.LatLng(
-                37.56682420062817,
-                126.97864093976689
-              ),
-              level: 4,
-            };
+      // 위치 정보 받아오기
+      kakao.maps.load(() => {
+        const container = document.getElementById("map"),
+          options = {
+            center: new kakao.maps.LatLng(
+              37.56682420062817,
+              126.97864093976689
+            ),
+            level: 4,
+          };
 
-          const map = new kakao.maps.Map(container, options); // 지도 생성
-          const geocoder = new kakao.maps.services.Geocoder(); // 주소-좌표 변환 객체 생성
+        const map = new kakao.maps.Map(container, options); // 지도 생성
+        const geocoder = new kakao.maps.services.Geocoder(); // 주소-좌표 변환 객체 생성
 
-          // 주소로 좌표를 검색
-          geocoder.addressSearch(`${roomArea}`, function (result, status) {
-            if (status === kakao.maps.services.Status.OK) {
-              const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+        // 주소로 좌표를 검색
+        geocoder.addressSearch(`${roomArea}`, function (result, status) {
+          if (status === kakao.maps.services.Status.OK) {
+            const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
 
-              // 위치에 마커 표시
-              const marker = new kakao.maps.Marker({
-                map: map,
-                position: coords,
-              });
+            // 위치에 마커 표시
+            const marker = new kakao.maps.Marker({
+              map: map,
+              position: coords,
+            });
 
-              // 인포윈도우로 장소에 대한 설명을 표시
-              const infowindow = new kakao.maps.InfoWindow({
-                content:
-                  '<div style="width:150px;text-align:center;padding:6px 0;">만남의 장소</div>',
-              });
-              infowindow.open(map, marker);
+            // 인포윈도우로 장소에 대한 설명을 표시
+            const infowindow = new kakao.maps.InfoWindow({
+              content:
+                '<div style="width:150px;text-align:center;padding:6px 0;">만남의 장소</div>',
+            });
+            infowindow.open(map, marker);
 
-              // 지도의 중심을 결과값으로 받은 위치로 이동
-              map.setCenter(coords);
-            }
-          });
+            // 지도의 중심을 결과값으로 받은 위치로 이동
+            map.setCenter(coords);
+          }
         });
       });
     }
   }, [props.open]);
-
-  const enterRoom = (e) => {
-    // 참가 버튼을 누르는 순간 API요청을 한번 더 해서 참여가능여부 판단
-    getRoomInfo(roomId).then((res) => {
-      if (res.status.code === 5000) {
-        if (res.content.participantCount >= res.content.limitPeopleCount) {
-          e.preventDefault();
-          alert("인원이 가득 차서 참가할 수 없습니다.");
-          return;
-        }
-      } else {
-        FailResponse(res.status.code);
-        return;
-      }
-    });
-
-    // 위의 상황이 아니라면 방에 참가
-    // dispatch({
-    //   type: "SAVEROOMID",
-    //   payload: {
-    //     roomId: roomId,
-    //   },
-    // });
-
-    router.push(`/room/${roomId}`);
-  };
 
   return (
     <>
