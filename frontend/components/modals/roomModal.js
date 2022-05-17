@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Calendar from "../calendar/calendar";
-import { getRoomInfo } from "../../api/rooms";
+import { getRoomInfo, postEnterRoom } from "../../api/rooms";
 import ImageSlide from "../imageSlide";
 import router from "next/router";
 import { useDispatch } from "react-redux";
@@ -26,32 +26,6 @@ const RoomModal = (props) => {
   const [endAppointmentDate, setEndAppointmentDate] = useState("");
   const [viewCount, setViewCount] = useState("");
   const [roomImages, setRoomImages] = useState([]);
-
-  const enterRoom = (e) => {
-    // 참가 버튼을 누르는 순간 API요청을 한번 더 해서 참여가능여부 판단
-    getRoomInfo(roomId).then((res) => {
-      if (res.status.code === 5000) {
-        if (res.content.participantCount >= res.content.limitPeopleCount) {
-          e.preventDefault();
-          alert("인원이 가득 차서 참가할 수 없습니다.");
-          return;
-        }
-      } else {
-        FailResponse(res.status.code);
-        return;
-      }
-    });
-
-    // 위의 상황이 아니라면 방에 참가
-    // dispatch({
-    //   type: "SAVEROOMID",
-    //   payload: {
-    //     roomId: roomId,
-    //   },
-    // });
-
-    router.push(`/room/${roomId}`);
-  };
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -112,6 +86,7 @@ const RoomModal = (props) => {
       // 위치 정보 받아오기
       kakao.maps.load(() => {
         const container = document.getElementById("map"),
+          // 기본 좌표 = 서울시청
           options = {
             center: new kakao.maps.LatLng(
               37.56682420062817,
@@ -148,6 +123,35 @@ const RoomModal = (props) => {
       });
     }
   }, [mapLoaded]);
+
+  const enterRoom = (e) => {
+    postEnterRoom(roomId)
+      .then((res) => {
+        if (res.status.code === 1209) {
+          router.push(`/room/${roomId}`);
+          return;
+        }
+
+        if (res.status.code === 1201) {
+          e.preventDefault();
+          alert(res.status.message);
+          return;
+        }
+
+        if (res.status.code === 1202) {
+          e.preventDefault();
+          alert(res.status.message);
+          return;
+          // FailResponse(res.status.code);
+          // return;
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          FailResponse(error.response.data.status.code);
+        }
+      });
+  };
 
   return (
     <>

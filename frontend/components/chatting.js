@@ -3,8 +3,10 @@ import SockJS from "sockjs-client";
 import { useState, useEffect } from "react";
 import { postRefreshToken } from "../api/etc";
 import { getChatInfo } from "../api/rooms";
+import { useSelector } from "react-redux";
 
-const Chatting = (roomId) => {
+const Chatting = ({ chatOpen }) => {
+  const roomId = useSelector((state) => state.saveRoomIdReducer.roomId);
   const [messageToServer, setMessageToServer] = useState("");
   const [showingMessages, setShowingMessages] = useState([
     //   [
@@ -142,24 +144,28 @@ const Chatting = (roomId) => {
 
   const onSubmitMessage = (e) => {
     e.preventDefault();
-    client.send(
-      `/api/room/${roomId}/chat`,
-      { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
-      JSON.stringify({
-        message: messageToServer,
-        roomId: "temp",
-      })
-    );
+    if (chatOpen && roomId !== "") {
+      client.send(
+        `/api/room/${roomId}/chat`,
+        { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
+        JSON.stringify({
+          message: messageToServer,
+          roomId: `${roomId}`,
+        })
+      );
+    }
   };
 
   useEffect(() => {
-    getChatInfo().then((res) => {
-      if (res.status.code === 5000) {
-      }
-    });
+    if (chatOpen && roomId !== "") {
+      // getChatInfo().then((res) => {
+      //   if (res.status.code === 5000) {
+      //   }
+      // });
 
-    connect();
-  }, []);
+      connect();
+    }
+  }, [roomId]);
 
   useEffect(() => {
     document.getElementsByClassName("dialog")[0].scrollTop =
