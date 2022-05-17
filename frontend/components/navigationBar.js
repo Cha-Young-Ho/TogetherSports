@@ -148,7 +148,7 @@ const NavigationBar = () => {
           </div>
           <div>
             <div className="sign">
-              {!loginStatus ? (
+              {loginStatus === "true" ? (
                 <>
                   <Link href="/login">
                     <div className="tag">로그인</div>
@@ -185,7 +185,11 @@ const NavigationBar = () => {
           </div>
         </div>
       </div>
-      {loginStatus && myinfo.isInformationRequired ? <FixedRequestAlarm /> : ""}
+      {loginStatus === "true" && myinfo.isInformationRequired === "true" ? (
+        <FixedRequestAlarm />
+      ) : (
+        ""
+      )}
 
       <style jsx>{`
         .header {
