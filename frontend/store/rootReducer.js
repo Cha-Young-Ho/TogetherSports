@@ -26,7 +26,7 @@ const myInfoInitialState = {
   activeAreas: [],
   interests: [],
   mannerPoint: "",
-  isInformationRequired: "true",
+  isInformationRequired: "false",
 };
 
 // 닉네임 저장 초기값
@@ -291,7 +291,7 @@ const loginStatusChangeReducer = (
   }
 };
 
-// 방 설명페이지에서 방 상세페이지로 넘어가기 위한 roomId 저장 reducer
+// 방 번호 저장(chatting 참여를 위해)
 const saveRoomIdReducer = (state = saveRoomId, action) => {
   switch (action.type) {
     case SAVEROOMID:
