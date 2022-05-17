@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 /* roomList에서 받은 각 room들의 roomId를 props로 받기 */
 const RoomModal = (props) => {
   const dispatch = useDispatch();
+  const [getInfoDone, setGetInfoDone] = useState(false); // 방 정보를 다 받아왔는지 여부 체크
   const [mapLoaded, setMapLoaded] = useState(false); // 지도 로드 동기화
 
   /* response content 담을 변수들 */
@@ -30,13 +31,12 @@ const RoomModal = (props) => {
     const script = document.createElement("script");
     script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAOMAP_APPKEY}&autoload=false&libraries=services`;
     document.head.appendChild(script);
-    setMapLoaded(true);
   }, []);
 
   useEffect(() => {
-    if (props.open && mapLoaded) {
+    if (props.open) {
       // 방 정보 받아오기
-      getRoomInfo(props.roomID).then((res) => {
+      getRoomInfo(props.roomId).then((res) => {
         if (res.status.code === 5000) {
           setRoomId((roomId = res.content.roomId));
           setCreatorNickName((creatorNickName = res.content.creatorNickName));
@@ -59,12 +59,30 @@ const RoomModal = (props) => {
             (endAppointmentDate = res.content.endAppointmentDate)
           );
           setViewCount((viewCount = res.content.viewCount));
-          setRoomImages((roomImages = res.content.roomImages));
+          setRoomImages(
+            (roomImages =
+              res.content.roomImages === null
+                ? {
+                    order: 0,
+                    imagePath: "logo-sign.png",
+                  }
+                : res.content.roomImages)
+          );
         } else {
           FailResponse(res.status.code);
         }
       });
 
+      if (roomArea !== "") setGetInfoDone(true);
+    }
+  }, [props.open]);
+
+  useEffect(() => {
+    if (getInfoDone === true) setMapLoaded(true);
+  }, [getInfoDone]);
+
+  useEffect(() => {
+    if (mapLoaded) {
       // 위치 정보 받아오기
       kakao.maps.load(() => {
         const container = document.getElementById("map"),
@@ -104,7 +122,7 @@ const RoomModal = (props) => {
         });
       });
     }
-  }, [props.open]);
+  }, [mapLoaded]);
 
   const enterRoom = (e) => {
     postEnterRoom(roomId)
@@ -257,6 +275,7 @@ const RoomModal = (props) => {
         }
 
         .room-modal-body {
+          min-width: 1050px;
           width: 70%;
           height: 85%;
           border-radius: 22px;

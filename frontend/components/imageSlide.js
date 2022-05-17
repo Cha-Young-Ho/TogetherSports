@@ -36,7 +36,7 @@ const ImageSlide = (props) => {
                     props.imageArr.length
                   }`}</div>
                   <div className="image-container">
-                    <img src={`/${image.imagePath}`} />
+                    <img src={`/images/${image.imagePath}`} />
                   </div>
                 </div>
               );
