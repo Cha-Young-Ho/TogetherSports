@@ -6,6 +6,7 @@ import ParticipantList from "../../components/rooms/participantList";
 import UserInfoModal from "../../components/modals/userInfoModal";
 import ModifyRoomModal from "../../components/modals/modifyRoomModal";
 import Chatting from "../../components/chatting";
+import FailResponse from "../../api/failResponse";
 import { getRoomDetail } from "../../api/rooms";
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";

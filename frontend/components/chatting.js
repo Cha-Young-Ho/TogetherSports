@@ -95,7 +95,6 @@ const Chatting = ({ chatOpen }) => {
           (data) => {
             const newMessage = JSON.parse(data.body);
             const msgLen = showingMessages.length;
-
             if (
               msgLen &&
               newMessage.userId === showingMessages[msgLen - 1][0].userId
@@ -110,12 +109,10 @@ const Chatting = ({ chatOpen }) => {
                   sendAt: newMessage.content.sendAt,
                 },
               });
-
               setShowingMessages(temp);
             } else {
               setShowingMessages((prev) => [...prev, newMessage]);
             }
-
             setMessageToServer("");
           },
           { Authorization: `Bearer ${localStorage.getItem("accessToken")}` }
@@ -144,16 +141,14 @@ const Chatting = ({ chatOpen }) => {
 
   const onSubmitMessage = (e) => {
     e.preventDefault();
-    if (chatOpen && roomId !== "") {
-      client.send(
-        `/api/room/${roomId}/chat`,
-        { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
-        JSON.stringify({
-          message: messageToServer,
-          roomId: `${roomId}`,
-        })
-      );
-    }
+    client.send(
+      `/api/room/${roomId}/chat`,
+      { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
+      JSON.stringify({
+        message: messageToServer,
+        roomId: `${roomId}`,
+      })
+    );
   };
 
   useEffect(() => {
