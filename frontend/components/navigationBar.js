@@ -59,12 +59,12 @@ const NavigationBar = () => {
           FailResponse(res.status.code);
         }
 
-        // dispatch({
-        //   type: "CHANGELOGINSTATUS",
-        //   payload: {
-        //     loginStatus: "true",
-        //   },
-        // });
+        dispatch({
+          type: "CHANGELOGINSTATUS",
+          payload: {
+            loginStatus: "true",
+          },
+        });
       })
       .catch((error) => {
         if (error.response) {

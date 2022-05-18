@@ -6,6 +6,7 @@ import ParticipantList from "../../components/rooms/participantList";
 import UserInfoModal from "../../components/modals/userInfoModal";
 import ModifyRoomModal from "../../components/modals/modifyRoomModal";
 import Chatting from "../../components/chatting";
+import FailResponse from "../../api/failResponse";
 import { getRoomDetail } from "../../api/rooms";
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
@@ -148,6 +149,18 @@ const Room = () => {
             setViewCount((viewCount = roomInfo.viewCount));
             setRoomImages((roomImages = roomInfo.roomImages));
             setParticipants((participants = res.content.participants));
+
+            dispatch({
+              type: SAVEROOMDATE,
+              payload: {
+                appointmentDate: `${
+                  startAppointmentDate[8] === "0"
+                    ? startAppointmentDate.substr(0, 8) +
+                      startAppointmentDate[9]
+                    : startAppointmentDate.substr(0, 10)
+                }`,
+              },
+            });
           } else {
             FailResponse(res.status.code);
           }
@@ -221,12 +234,7 @@ const Room = () => {
               </div>
               <div className="calendar">
                 <Calendar
-                  clickDateOptionFunction={`${
-                    startAppointmentDate[8] === "0"
-                      ? startAppointmentDate.substr(0, 8) +
-                        startAppointmentDate[9]
-                      : startAppointmentDate.substr(0, 10)
-                  }`}
+                  clickDateOptionFunction={true}
                   moveDateButtonOptionFunction={true}
                 />
               </div>

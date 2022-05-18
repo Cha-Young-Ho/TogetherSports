@@ -6,14 +6,14 @@ const RoomShowingBox = (props) => {
   const isAttendance = () => {
     getAvailability(props.datas.roomId)
       .then((res) => {
-        if (res.status.code === 1210 && res.content.attendance === "false") {
+        if (res.status.code === 1214 && res.content.attendance) {
           // 이미 참가중이라면 바로 방 상세 페이지로 이동
           router.push(`/room/${props.datas.roomId}`);
           return;
           // 아니라면 방 설명 페이지 (roomModal) 띄우기
         }
 
-        if (res.status.code === 1214 && res.content.attendance === "true") {
+        if (res.status.code === 1210 && !res.content.attendance) {
           props.setRoomID ? props.setRoomID(props.datas.roomId) : "";
           props.openRoomExplainModal ? props.openRoomExplainModal() : "";
           return;
