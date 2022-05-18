@@ -71,7 +71,7 @@ const RoomModal = (props) => {
 
           // 캘린더 컴포넌트 date 변경
           dispatch({
-            type: SAVEROOMDATE,
+            type: "SAVEROOMDATE",
             payload: {
               appointmentDate: `${
                 startAppointmentDate[8] === "0"
@@ -80,17 +80,17 @@ const RoomModal = (props) => {
               }`,
             },
           });
+
+          setGetInfoDone(true);
         } else {
           FailResponse(res.status.code);
         }
       });
-
-      if (roomArea !== "") setGetInfoDone(true);
     }
   }, [props.open]);
 
   useEffect(() => {
-    if (getInfoDone === true) setMapLoaded(true);
+    if (getInfoDone) setMapLoaded(true);
   }, [getInfoDone]);
 
   useEffect(() => {
@@ -112,6 +112,7 @@ const RoomModal = (props) => {
 
         // 주소로 좌표를 검색
         geocoder.addressSearch(`${roomArea}`, function (result, status) {
+          console.log(roomArea);
           if (status === kakao.maps.services.Status.OK) {
             const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
 
