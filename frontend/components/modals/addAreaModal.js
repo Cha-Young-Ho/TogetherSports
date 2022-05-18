@@ -129,7 +129,7 @@ const AddAreaModal = (props) => {
           }
         });
     }
-  }, props.open);
+  }, [props.open]);
 
   useEffect(() => {
     resetButton();
