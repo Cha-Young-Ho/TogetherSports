@@ -7,7 +7,7 @@ import UserInfoModal from "../../components/modals/userInfoModal";
 import ModifyRoomModal from "../../components/modals/modifyRoomModal";
 import Chatting from "../../components/chatting";
 import FailResponse from "../../api/failResponse";
-import { getRoomDetail, leaveRoom } from "../../api/rooms";
+import { getRoomDetail, leaveRoom, deleteRoom } from "../../api/rooms";
 import { getMyInfo } from "../../api/members";
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
@@ -94,6 +94,26 @@ const Room = () => {
       .then((res) => {
         if (res.status.code === 1203) {
           alert("방을 성공적으로 나갔습니다 !"); // 임시 텍스트
+          router.push("/room/roomlist"); // 방 목록 페이지로 이동
+        } else {
+          FailResponse(res.status.code);
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          FailResponse(error.response.data.status.code);
+        }
+      });
+
+    router.push("/room/roomlist"); // test를 위한 임시 라우팅
+  };
+
+  // 방 삭제하기
+  const onDeleteRoom = () => {
+    deleteRoom(roomId)
+      .then((res) => {
+        if (res.status.code === 5000) {
+          alert("방을 성공적으로 삭제하였습니다 !"); // 임시 텍스트
           router.push("/room/roomlist"); // 방 목록 페이지로 이동
         } else {
           FailResponse(res.status.code);
@@ -380,6 +400,12 @@ const Room = () => {
           <div className="long-line"></div>
           <div id="map"></div>
         </div>
+
+        {myNickname === host ? (
+          <button className="button-deleteRoom">방 삭제하기</button>
+        ) : (
+          <></>
+        )}
       </div>
       <style jsx>{`
         .container {
@@ -698,6 +724,20 @@ const Room = () => {
           border: solid 1px #e8e8e8;
           border-radius: 10px;
           background-color: #f2f2f2;
+        }
+
+        .button-deleteRoom {
+          width: 250px;
+          height: 40px;
+          border: none;
+          border-radius: 20px;
+          font-size: 1.6rem;
+          font-weight: bold;
+          letter-spacing: 1px;
+          color: white;
+          background-color: #00555f;
+          margin-bottom: 60px;
+          cursor: pointer;
         }
       `}</style>
     </>
