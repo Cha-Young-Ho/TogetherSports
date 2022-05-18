@@ -1,8 +1,12 @@
 import moment from "moment";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import WeekWrapper from "./weekWrapper";
 
 const Calendar = (props) => {
+  const optioningDate = useSelector(
+    (state) => state.saveRoomDateReducer.appointmentDate
+  );
   // 선택된 날
   const [curSelectedDate, setCurSelectedDate] = useState("");
 
@@ -23,14 +27,18 @@ const Calendar = (props) => {
   useEffect(() => {
     if (props.clickDateOptionFunction) {
       setClickDateOption(true);
-
-      setCurSelectedDate(props.clickDateOptionFunction);
     }
 
     if (props.moveDateButtonOptionFunction) {
       setMoveDateButtonOption(true);
     }
   }, []);
+
+  useEffect(() => {
+    if (optioningDate) {
+      setCurSelectedDate(optioningDate);
+    }
+  }, [optioningDate]);
 
   //이번 년도, 이번 달
   const [curYear, setCurYear] = useState(moment().year());

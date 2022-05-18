@@ -66,7 +66,6 @@ const FailResponse = (codeNumber) => {
       break;
     case 1102:
       alert("추가정보가 입력되지 않은 유저입니다.");
-      router.replace("/signup/addinfo/personalinfo");
       break;
     case 1103:
       alert("중복된 닉네임이 있습니다.");
@@ -76,6 +75,36 @@ const FailResponse = (codeNumber) => {
       break;
     case 1200:
       alert("해당 방을 찾을 수 없습니다.");
+      break;
+    case 1201:
+      alert("인원이 가득 찼습니다.");
+      break;
+    case 1202:
+      alert("예정 시간이 지난 방입니다.");
+      break;
+    case 1203:
+      alert("누군가 방을 나갔습니다.");
+      break;
+    case 1204:
+      alert("누군가 강퇴당했습니다.");
+      break;
+    case 1205:
+      alert("누군가 모임에 참여했습니다!");
+      break;
+    case 1206:
+      alert("누군가 채팅을 보냈습니다.");
+      break;
+    case 1207:
+      alert("방 정보가 업데이트 되었습니다.");
+      break;
+    case 1208:
+      alert("방장이 변경 되었습니다.");
+      break;
+    case 1209:
+      alert("방에 참가 완료했습니다.");
+      break;
+    case 1210:
+      alert("방에 참가 실패했습니다.");
       break;
     case 1300:
       console.log("토큰이 존재하지 않습니다.");
@@ -118,6 +147,9 @@ const FailResponse = (codeNumber) => {
       break;
     case 1307:
       alert("유효하지 않은 리프레시 토큰입니다.");
+      break;
+    case 1400:
+      alert("해당 행정구역은 하위 행정구역이 없습니다.");
       break;
     default:
       alert("알 수 없는 이유로 실패했습니다.");
