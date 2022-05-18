@@ -1,16 +1,30 @@
 import TextLogo from "./textLogo";
 import Link from "next/link";
 import useScrollFadeIn from "./useScrollFadeIn";
-
-/* 수정 필요 */
-// 1. 명세 후에 현재 모집중인 방의 개수 입력 필요
-// 2. 회원가입 버튼 누를 때 이미 회원인지 아닌지 판단에 따라 다른 link로 보내기
+import { getRoomCount } from "../../api/etc";
+import { useEffect, useState } from "react";
+import { FailResponse } from "../../api/failResponse";
 
 const Main2 = () => {
   const animatedItem1 = useScrollFadeIn("up", 0.5, 0.1);
   const animatedItem2 = useScrollFadeIn("up", 0.5, 0.3);
   const animatedItem3 = useScrollFadeIn("up", 0.5, 0.5);
   const animatedItem4 = useScrollFadeIn("up", 0.5, 0.1);
+
+  const [roomCount, setRoomCount] = useState(0);
+
+  useEffect(() => {
+    getRoomCount()
+      .then((res) => {
+        if (res.status.code === 5000) {
+          setRoomCount((roomCount = res.content.count));
+        }
+      })
+      .catch((error) => {
+        FailResponse(error.response.data.status.code);
+        return;
+      });
+  });
 
   return (
     <>
@@ -29,7 +43,7 @@ const Main2 = () => {
 
             <div className="info-text" {...animatedItem3}>
               <p>
-                현재 <b>{}</b>개의 방에서
+                현재 <b>{roomCount}</b>개의 방에서
               </p>
               <p>같이 운동할 사람을 구하는 중 !</p>
             </div>
