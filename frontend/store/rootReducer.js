@@ -80,12 +80,19 @@ const loginStatusChangeInitialState = {
 };
 
 // roomID 초기값
-const saveRoomId = {
+const saveRoomIdInitialState = {
   roomId: "",
 };
 
-const saveRoomDate = {
+// 캘린더용 날짜 저장 초기값
+const saveRoomDateInitialState = {
   appointmentDate: "",
+};
+
+// 활동 지역 초기값
+const saveActiveAreaInitialState = {
+  activeAreas: [],
+  tagAreas: [],
 };
 
 // 오타 방지용
@@ -113,6 +120,8 @@ const RESETALLDATAS = "RESETALLDATAS";
 const CHANGELOGINSTATUS = "CHANGELOGINSTATUS";
 const SAVEROOMID = "SAVEROOMID";
 const SAVEROOMDATE = "SAVEROOMDATE";
+const SAVEACTIVEAREA = "SAVEACTIVEAREA";
+const SAVETAGAREAS = "SAVETAGAREAS";
 
 // 유저 회원정보추가입력 정보 reducer
 const userRequestReducer = (state = signupInitialState, action) => {
@@ -297,7 +306,7 @@ const loginStatusChangeReducer = (
 };
 
 // 방 번호 저장(chatting 참여를 위해)
-const saveRoomIdReducer = (state = saveRoomId, action) => {
+const saveRoomIdReducer = (state = saveRoomIdInitialState, action) => {
   switch (action.type) {
     case SAVEROOMID:
       return {
@@ -310,12 +319,30 @@ const saveRoomIdReducer = (state = saveRoomId, action) => {
 };
 
 // 방 날짜 정보 저장
-const saveRoomDateReducer = (state = saveRoomDate, action) => {
+const saveRoomDateReducer = (state = saveRoomDateInitialState, action) => {
   switch (action.type) {
     case SAVEROOMDATE:
       return {
         ...state,
         appointmentDate: action.payload.appointmentDate,
+      };
+    default:
+      return state;
+  }
+};
+
+// 활동지역 정보 관련 저장
+const saveActiveAreaReducer = (state = saveActiveAreaInitialState, action) => {
+  switch (action.type) {
+    case SAVEACTIVEAREA:
+      return {
+        ...state,
+        activeAreas: action.payload.activeAreas,
+      };
+    case SAVETAGAREAS:
+      return {
+        ...state,
+        tagAreas: action.payload.tagAreas,
       };
     default:
       return state;
@@ -333,6 +360,7 @@ const rootReducer = combineReducers({
   loginStatusChangeReducer,
   saveRoomIdReducer,
   saveRoomDateReducer,
+  saveActiveAreaReducer,
 });
 
 const makeStore = () => createStore(rootReducer, composeWithDevTools());
