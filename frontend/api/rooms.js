@@ -302,19 +302,34 @@ const postUpdateRoom = (
 // DELETE
 
 // 방 삭제
-const deleteRoom = (roomSequenceId) => {
+const deleteRoom = (roomId) => {
   const promise =
     localStorage.getItem("accessToken") === null
-      ? axios.delete(`http://localhost:8080/api/room/${roomSequenceId}`)
-      : axios.delete(`http://localhost:8080/api/room/${roomSequenceId}`, {
+      ? axios.delete(`http://localhost:8080/api/room/${roomId}`)
+      : axios.delete(`http://localhost:8080/api/room/${roomId}`, {
           headers: {
             "Content-type": "application/json; charset=UTF-8",
             Accept: "*/*",
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
-          // params: {
-          //   roomSequenceId: roomSequenceId,
-          // },
+        });
+
+  const dataPromise = promise.then((res) => res.data);
+
+  return dataPromise;
+};
+
+// 방 나가기
+const leaveRoom = (roomId) => {
+  const promise =
+    localStorage.getItem("accessToken") === null
+      ? axios.delete(`http://localhost:8080/api/room/${roomId}/user`)
+      : axios.delete(`http://localhost:8080/api/room/${roomId}/user`, {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            Accept: "*/*",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
         });
 
   const dataPromise = promise.then((res) => res.data);
@@ -335,4 +350,5 @@ export {
   postCreateRoom,
   postEnterRoom,
   deleteRoom,
+  leaveRoom,
 };
