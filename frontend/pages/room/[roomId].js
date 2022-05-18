@@ -18,19 +18,18 @@ const Room = () => {
   const { roomId } = router.query;
   const [chatOpen, setChatOpen] = useState(false);
 
-  // 방 정보에 대한 필드
-  const [creatorNickName, setCreatorNickName] = useState(""); // 방 생성자
-  const [host, setHost] = useState("짱구"); // 방장
-  const [roomTitle, setRoomTitle] = useState("");
   const [roomContent, setRoomContent] = useState("");
-  const [roomArea, setRoomArea] = useState("서울 송파구 올림픽로 19-2"); // 임시 데이터
-  const [limitPeopleCount, setLimitPeopleCount] = useState("");
-  const [participantCount, setParticipantCount] = useState("");
+  const [roomTitle, setRoomTitle] = useState("");
+  const [roomArea, setRoomArea] = useState("");
   const [exercise, setExercise] = useState("");
-  const [tags, setTags] = useState([]);
+  const [limitPeopleCount, setLimitPeopleCount] = useState(0);
+  const [participantCount, setParticipantCount] = useState(0);
   const [startAppointmentDate, setStartAppointmentDate] = useState("");
   const [endAppointmentDate, setEndAppointmentDate] = useState("");
-  const [viewCount, setViewCount] = useState("");
+  const [createdTime, setCreatedTime] = useState("");
+  const [updatedTime, setUpdatedTime] = useState("");
+  const [host, setHost] = useState("짱구");
+  const [creatorNickName, setCreatorNickName] = useState("");
   const [roomImages, setRoomImages] = useState([
     {
       // 임시 데이터
@@ -38,26 +37,34 @@ const Room = () => {
       imagePath: "logo-sign.png",
     },
   ]);
+  const [tags, setTags] = useState([]);
+  const [viewCount, setViewCount] = useState(0);
+
+  // 안쓸 것 같지만 일단 받아오는 데이터
+  // const [roomId, setRoomId] = useState(0);
+  // const [attendance, setAttendance] = useState(false);
 
   // 참가자 목록에 대한 필드
   const [participants, setParticipants] = useState([
     {
       // 임시 데이터
+      id: 1,
       userNickname: "짱구",
       mannerPoint: 10,
-      activeAreas: ["서울특별시 강남구 강남동"],
-      userProfileImagePath: "",
-      interests: ["축구", "야구", "농구"],
       gender: "male",
+      activeAreas: ["서울특별시 강남구 강남동"],
+      interests: ["축구", "야구", "농구"],
+      userProfileImagePath: "",
     },
     {
       // 임시 데이터
+      id: 2,
       userNickname: "짱아",
       mannerPoint: 10,
-      activeAreas: ["서울특별시 강남구 강남동"],
-      userProfileImagePath: "",
-      interests: ["축구", "야구", "농구"],
       gender: "female",
+      activeAreas: ["서울특별시 강남구 강남동"],
+      interests: ["축구", "야구", "농구"],
+      userProfileImagePath: "",
     },
   ]);
 
@@ -135,23 +142,28 @@ const Room = () => {
           if (res.status.code === 5000) {
             const roomInfo = res.content.roomOfInfo;
 
-            setCreatorNickName((creatorNickName = roomInfo.creatorNickName));
-            setHost((host = roomInfo.host));
-            setRoomTitle((roomTitle = roomInfo.roomTitle));
+            // setRoomId(roomId = roomInfo.roomId);
             setRoomContent((roomContent = roomInfo.roomContent));
+            setRoomTitle((roomTitle = roomInfo.roomTitle));
             setRoomArea((roomArea = roomInfo.roomArea));
+            setExercise((exercise = roomInfo.exercise));
             setLimitPeopleCount((limitPeopleCount = roomInfo.limitPeopleCount));
             setParticipantCount((participantCount = roomInfo.participantCount));
-            setExercise((exercise = roomInfo.exercise));
-            setTags((tags = roomInfo.tags));
             setStartAppointmentDate(
               (startAppointmentDate = roomInfo.startAppointmentDate)
             );
             setEndAppointmentDate(
               (endAppointmentDate = roomInfo.endAppointmentDate)
             );
-            setViewCount((viewCount = roomInfo.viewCount));
+            setCreatedTime((createdTime = roomInfo.createdTime));
+            setUpdatedTime((updatedTime = roomInfo.updatedTime));
+            setHost((host = roomInfo.host));
+            setCreatorNickName((creatorNickName = roomInfo.creatorNickName));
             setRoomImages((roomImages = roomInfo.roomImages));
+            setTags((tags = roomInfo.tags));
+            setViewCount((viewCount = roomInfo.viewCount));
+            // setAttendance(attendance = roomInfo.attendance);
+
             setParticipants((participants = res.content.participants));
 
             dispatch({
@@ -193,7 +205,12 @@ const Room = () => {
           <div className="header">
             <div className="viewCount">
               <p>{`조회수 : ${viewCount}`}</p>
-              {/* <p>{`생성일시 : ${}`}</p> */}
+              <p>{`생성 일시 : ${createdTime}`}</p>
+              {updatedTime === "" ? (
+                <></>
+              ) : (
+                <p>{`최근 수정 : ${updatedTime}`}</p>
+              )}
             </div>
 
             <div className="long-line"></div>
