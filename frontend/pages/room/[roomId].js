@@ -151,13 +151,13 @@ const Room = () => {
             setParticipants((participants = res.content.participants));
 
             dispatch({
-              type: SAVEROOMDATE,
+              type: "SAVEROOMDATE",
               payload: {
                 appointmentDate: `${
-                  startAppointmentDate[8] === "0"
-                    ? startAppointmentDate.substr(0, 8) +
-                      startAppointmentDate[9]
-                    : startAppointmentDate.substr(0, 10)
+                  roomInfo.startAppointmentDate[8] === "0"
+                    ? roomInfo.startAppointmentDate.substr(0, 8) +
+                      roomInfo.startAppointmentDate[9]
+                    : roomInfo.startAppointmentDate.substr(0, 10)
                 }`,
               },
             });

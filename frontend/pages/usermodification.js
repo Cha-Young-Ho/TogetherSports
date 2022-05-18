@@ -264,6 +264,7 @@ const UserModification = () => {
     // 마커 클릭 시, 해당 지역 삭제
     kakao.maps.event.addListener(marker, "click", function () {
       marker.setMap(null); // 지도에서 마커제거
+
       searchAddrFromCoords(geocoder, position, function (result, status) {
         if (status === kakao.maps.services.Status.OK) {
           const area = result[0].address_name;
@@ -291,6 +292,10 @@ const UserModification = () => {
   // 좌표를 통해 행정동 주소 정보 요청
   const searchAddrFromCoords = (geocoder, coords, callback) => {
     geocoder.coord2RegionCode(coords.getLng(), coords.getLat(), callback);
+  };
+
+  const deleteAreaButton = (e) => {
+    setTagAreas((prev) => prev.filter((el) => el !== e.target.id));
   };
 
   // 예외처리 및 수정버튼
@@ -403,6 +408,12 @@ const UserModification = () => {
 
   // 초기값 세팅
   useEffect(() => {
+    // if (userInfo.gender === "") {
+    //   alert("등록된 유저 정보가 없습니다.");
+    //   window.history.back();
+    //   return;
+    // }
+
     // 관심 종목 세팅
     for (const exercise of userInfo.interests) {
       setInterests((prev) => ({
@@ -549,7 +560,10 @@ const UserModification = () => {
               .map((area, index) => {
                 return (
                   <div key={index} className="tag">
-                    {area}
+                    <p>{area}</p>
+                    <button onClick={deleteAreaButton} id={area}>
+                      &times;
+                    </button>
                   </div>
                 );
               })}
@@ -605,7 +619,6 @@ const UserModification = () => {
           display: flex;
           flex-direction: column;
           width: 100%;
-          height: 500px;
         }
 
         .contents {
@@ -854,6 +867,14 @@ const UserModification = () => {
           display: flex;
           justify-content: center;
           align-items: center;
+        }
+
+        .tag button{
+          margin-left: 10px;
+          border: none;
+          background-color: #e0e0e0;
+          color: black;
+          cursor: pointer;
         }
 
         .button-tag-delete {

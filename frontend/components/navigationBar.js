@@ -185,7 +185,7 @@ const NavigationBar = () => {
           </div>
         </div>
       </div>
-      {loginStatus === "true" && myinfo.isInformationRequired === "true" ? (
+      {loginStatus === "true" && myinfo.isInformationRequired ? (
         <FixedRequestAlarm />
       ) : (
         ""
