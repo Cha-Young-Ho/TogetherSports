@@ -68,6 +68,18 @@ const RoomModal = (props) => {
                   }
                 : res.content.roomImages)
           );
+
+          // 캘린더 컴포넌트 date 변경
+          dispatch({
+            type: SAVEROOMDATE,
+            payload: {
+              appointmentDate: `${
+                startAppointmentDate[8] === "0"
+                  ? startAppointmentDate.substr(0, 8) + startAppointmentDate[9]
+                  : startAppointmentDate.substr(0, 10)
+              }`,
+            },
+          });
         } else {
           FailResponse(res.status.code);
         }
@@ -210,12 +222,7 @@ const RoomModal = (props) => {
 
               <div className="calendar">
                 <Calendar
-                  clickDateOptionFunction={`${
-                    startAppointmentDate[8] === "0"
-                      ? startAppointmentDate.substr(0, 8) +
-                        startAppointmentDate[9]
-                      : startAppointmentDate.substr(0, 10)
-                  }`}
+                  clickDateOptionFunction={true}
                   moveDateButtonOptionFunction={true}
                 />
               </div>

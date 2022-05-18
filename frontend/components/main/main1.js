@@ -1,32 +1,31 @@
 import TextLogo from "./textLogo";
 
 const Main1 = () => {
-  // 이미지로 대체
   const sports = [
-    "축구",
-    "야구",
-    "농구",
-    "당구",
-    "탁구",
-    "헬스",
-    "자전거",
-    "골프",
-    "등산",
-    "런닝",
-    "배드민턴",
-    "기타",
-    "축구",
-    "야구",
-    "농구",
-    "당구",
-    "탁구",
-    "헬스",
-    "자전거",
-    "골프",
-    "등산",
-    "런닝",
-    "배드민턴",
-    "기타",
+    "soccer.png",
+    "baseball.png",
+    "basketball.png",
+    "billiards.png",
+    "tableTennis.png",
+    "health.png",
+    "bicycle.png",
+    "golf.png",
+    "hiking.png",
+    "running.png",
+    "badminton.png",
+    "etc.png",
+    "soccer.png",
+    "baseball.png",
+    "basketball.png",
+    "billiards.png",
+    "tableTennis.png",
+    "health.png",
+    "bicycle.png",
+    "golf.png",
+    "hiking.png",
+    "running.png",
+    "badminton.png",
+    "etc.png",
   ];
 
   return (
@@ -41,7 +40,7 @@ const Main1 = () => {
             {sports.map((sport, index) => {
               return (
                 <div key={index} className="slide">
-                  {sport}
+                  <img src={`/${sport}`}></img>
                 </div>
               );
             })}
@@ -84,7 +83,7 @@ const Main1 = () => {
             transform: translateX(0);
           }
           100% {
-            transform: translateX(calc(-150px * 12));
+            transform: translateX(calc(-250px * 12));
           }
         }
 
@@ -96,14 +95,15 @@ const Main1 = () => {
         }
 
         .slide-track {
-          animation: scroll 25s linear infinite;
+          animation: scroll 30s linear infinite;
           display: flex;
-          width: calc(150px * 24);
+          width: calc(250px * 24);
         }
 
         .slide {
           width: 150px;
           height: 150px;
+          margin-right: 100px;
           border: none;
           border-radius: 10px;
           font-size: 2rem;
@@ -113,6 +113,11 @@ const Main1 = () => {
           align-items: center;
           /* margin: 0 100px; */
           background-color: #67a74d;
+        }
+
+        .slide img {
+          width: 150px;
+          height: 150px;
         }
 
         .text {

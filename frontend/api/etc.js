@@ -41,6 +41,20 @@ const getNavBar = () => {
   return dataPromise;
 };
 
+// 메인페이지 방 개수 조회
+const getRoomCount = () => {
+  const promise = axios.get("http://localhost:8080/api/room/count", {
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+      Accept: "*/*",
+    },
+  });
+
+  const dataPromise = promise.then((res) => res.data);
+
+  return dataPromise;
+};
+
 // POST
 
 // 액세스 토큰 발급
@@ -72,4 +86,4 @@ const postRefreshToken = (refreshToken) => {
 
 // DELETE
 
-export { getPopulariyRooms, getNavBar, postRefreshToken };
+export { getPopulariyRooms, getNavBar, getRoomCount, postRefreshToken };
