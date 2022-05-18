@@ -7,10 +7,11 @@ import UserInfoModal from "../../components/modals/userInfoModal";
 import ModifyRoomModal from "../../components/modals/modifyRoomModal";
 import Chatting from "../../components/chatting";
 import FailResponse from "../../api/failResponse";
-import { getRoomDetail } from "../../api/rooms";
+import { getRoomDetail, leaveRoom } from "../../api/rooms";
 import { getMyInfo } from "../../api/members";
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
+import AlarmModal from "../../components/modals/alarmModal";
 
 const Room = () => {
   const router = useRouter();
@@ -69,26 +70,42 @@ const Room = () => {
   ]);
 
   // 내가 방장인지 아닌지 확인하기 위한 변수
-  const [myNickname, setMyNickname] = useState("");
+  const [myNickname, setMyNickname] = useState("짱구");
 
   // 방 수정하기
   const [modifyModalOpen, setModifyModalOpen] = useState(false);
-  const openModifyModal = () => {
-    setModifyModalOpen(true);
-  };
-  const closeModifyModal = () => {
-    setModifyModalOpen(false);
-  };
+  const openModifyModal = () => setModifyModalOpen(true);
+  const closeModifyModal = () => setModifyModalOpen(false);
 
   // 접속자 목록 modal 관련 데이터
   const [participantListModalOpen, setParticipantListModalOpen] =
     useState(false);
+  const participantListOpenModal = () => setParticipantListModalOpen(true);
+  const participantListCloseModal = () => setParticipantListModalOpen(false);
 
-  const participantListOpenModal = () => {
-    setParticipantListModalOpen(true);
-  };
-  const participantListCloseModal = () => {
-    setParticipantListModalOpen(false);
+  // 방 나가기 여부 재차 확인 modal 관련 데이터
+  const [alarmModalOpen, setAlarmModalOpen] = useState(false);
+  const openAlarmModal = () => setAlarmModalOpen(true);
+  const closeAlarmModal = () => setAlarmModalOpen(false);
+
+  // 방 나가기
+  const onLeaveRoom = () => {
+    leaveRoom(roomId)
+      .then((res) => {
+        if (res.status.code === 1203) {
+          alert("방을 성공적으로 나갔습니다 !"); // 임시 텍스트
+          router.push("/room/roomlist"); // 방 목록 페이지로 이동
+        } else {
+          FailResponse(res.status.code);
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          FailResponse(error.response.data.status.code);
+        }
+      });
+
+    router.push("/room/roomlist"); // test를 위한 임시 라우팅
   };
 
   const onLoadKakaoMap = () => {
@@ -135,6 +152,7 @@ const Room = () => {
     mapScript.addEventListener("load", onLoadKakaoMap);
   }, []);
 
+  // 방 정보 얻기
   useEffect(() => {
     if (roomId) {
       getRoomDetail(roomId)
@@ -198,6 +216,23 @@ const Room = () => {
     }
   }, [roomId]);
 
+  // 내 정보 얻기 (방장 확인용)
+  useEffect(() => {
+    getMyInfo()
+      .then((res) => {
+        if (res.status.code === 5000) {
+          setMyNickname((myNickname = res.content.userNickname));
+        } else {
+          FailResponse(res.status.code);
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          FailResponse(error.response.data.status.code);
+        }
+      });
+  });
+
   return (
     <>
       <div className="container">
@@ -240,9 +275,18 @@ const Room = () => {
                   <></>
                 )}
 
-                <Link href="/room/roomlist">
-                  <button className="button-exit">나가기</button>
-                </Link>
+                <button className="button-leave" onClick={openAlarmModal}>
+                  나가기
+                </button>
+
+                <AlarmModal
+                  open={alarmModalOpen}
+                  close={closeAlarmModal}
+                  content={"정말 방을 나가시겠습니까?"}
+                  result={onLeaveRoom}
+                  leftButton={"예"}
+                  rightButton={"아니오"}
+                ></AlarmModal>
 
                 <ModifyRoomModal
                   open={modifyModalOpen}
@@ -420,7 +464,7 @@ const Room = () => {
         }
 
         .button-modify,
-        .button-exit {
+        .button-leave {
           width: 125px;
           height: 35px;
           border: none;
@@ -436,7 +480,7 @@ const Room = () => {
           margin-right: 10px;
         }
 
-        .button-exit {
+        .button-leave {
           background-color: #00555f;
         }
 

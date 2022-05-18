@@ -322,6 +322,24 @@ const deleteRoom = (roomSequenceId) => {
   return dataPromise;
 };
 
+// 방 나가기
+const leaveRoom = (roomId) => {
+  const promise =
+    localStorage.getItem("accessToken") === null
+      ? axios.delete(`http://localhost:8080/api/room/${roomId}/user`)
+      : axios.delete(`http://localhost:8080/api/room/${roomId}/user`, {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            Accept: "*/*",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        });
+
+  const dataPromise = promise.then((res) => res.data);
+
+  return dataPromise;
+};
+
 export {
   getRoomInfo,
   getRoomDetail,
@@ -335,4 +353,5 @@ export {
   postCreateRoom,
   postEnterRoom,
   deleteRoom,
+  leaveRoom,
 };
