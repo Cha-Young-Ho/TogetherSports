@@ -28,6 +28,7 @@ import com.togethersports.tosproject.user.exception.UserNotFoundException;
 
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -47,7 +48,7 @@ import java.util.stream.Collectors;
  *
  * @author younghoCha
  */
-
+@Slf4j
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -113,13 +114,15 @@ public class RoomService {
         //조회수 증가
         roomEntity.plusViewCount();
 
-        //요청자의 참여 여부 확인
-        if(user == null){
-            return RoomOfInfo.of(roomEntity, imageOfRoomInfos, tag, false);
-        }
 
         boolean attendance = getAttendance(user.getId(), roomId);
-        return RoomOfInfo.of(roomEntity, imageOfRoomInfos, tag, attendance);
+
+        //요청자의 참여 여부 확인
+        if(attendance){
+            return RoomOfInfo.of(roomEntity, imageOfRoomInfos, tag);
+        }
+
+        return RoomOfInfo.of(roomEntity, imageOfRoomInfos, tag);
 
     }
 
@@ -156,21 +159,21 @@ public class RoomService {
                 findEntityById(currentUser.getId(), roomId);
 
         Room roomEntity = userAndRoomEntity.getRoom();
+
         User userEntity = userAndRoomEntity.getUser();
+
         //인원이 가득찬 경우
         if(roomEntity.getParticipantCount() >= roomEntity.getLimitPeopleCount()){
             return RoomOfParticipate.builder()
                     .status(RoomCode.FULL_ROOM)
                     .build();
         }
-
         //시간이 지난 방인 경우
         if(roomEntity.getEndAppointmentDate().isBefore(LocalDateTime.now())){
             return RoomOfParticipate.builder()
                     .status(RoomCode.TIME_OUT_ROOM)
                     .build();
         }
-
         // 참가 저장
         boolean isParticipation = participantService.save(currentUser, roomEntity);
         // 참가한 경우
@@ -184,21 +187,23 @@ public class RoomService {
                         .participateUserId(userEntity.getId())
                         .participateUserNickname(userEntity.getNickname())
                         .build());
+
         chatController.sendServerMessage(roomEntity.getId(), "enter", response);
 
         // 정상적으로 참여가 가능한 경우
         return RoomOfParticipate.builder()
-                .status(RoomCode.PARTICIPATE_ROOM)
+                .status(RoomCode.SUCCESS_PARTICIPATE_ROOM)
                 .roomOfInfo(getRoomInfo(currentUser, roomId))
-                .participates(getParticipantsInfo(roomEntity.getParticipants()))
+                .participants(getParticipantsInfo(roomEntity.getParticipants()))
                 .build();
     }
 
     public List<UserOfOtherInfo> getParticipantsInfo(List<Participant> participantList){
         List<UserOfOtherInfo> userOfOtherInfoList = new ArrayList<>();
 
-        for (Participant user : participantList){
-            userOfOtherInfoList.add(userService.getOtherInfo(user.getId()));
+        for (Participant participant : participantList){
+            log.info("participant id = {}", participant.getUser().getId());
+            userOfOtherInfoList.add(userService.getOtherInfo(participant.getUser().getId()));
         }
 
         return userOfOtherInfoList;
@@ -379,13 +384,13 @@ public class RoomService {
     public User findUserEntityById(Long userId){
 
         return  userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundRoomException("해당 방을 찾을 수 없습니다."));
+                .orElseThrow(() -> new UserNotFoundException("해당 유저를 찾을 수 없습니다."));
     }
     // 룸 엔티티 찾기
     public Room findRoomEntityById(Long roomId){
 
         return roomRepository.findById(roomId)
-                .orElseThrow(() -> new UserNotFoundException("해당 유저를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundRoomException("해당 방을 찾을 수 없습니다."));
 
     }
     // 유저 + 룸 엔티티 찾기
@@ -409,6 +414,21 @@ public class RoomService {
         return Response.of(CommonCode.GOOD_REQUEST, CountOfAvailableRoom.builder().count(count).build());
 
     }
+    //운동 대기방 조회
+    public Response<?> getRoomDetailInfo(Long roomId, User user){
+
+        UserAndRoomOfService userAndRoomOfService = findEntityById(user.getId(), roomId);
+
+        return Response.of(CommonCode.GOOD_REQUEST,
+                RoomOfParticipate.builder()
+                        .status(RoomCode.SUCCESS_PARTICIPATE_ROOM)
+                        .roomOfInfo(getRoomInfo(userAndRoomOfService.getUser(), roomId))
+                        .participants(getParticipantsInfo(userAndRoomOfService.getRoom().getParticipants()))
+                        .build()
+                );
+
+    }
+
 
 
 }

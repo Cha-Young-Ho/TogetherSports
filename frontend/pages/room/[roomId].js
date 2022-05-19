@@ -7,10 +7,12 @@ import UserInfoModal from "../../components/modals/userInfoModal";
 import ModifyRoomModal from "../../components/modals/modifyRoomModal";
 import Chatting from "../../components/chatting";
 import FailResponse from "../../api/failResponse";
-import { getRoomDetail } from "../../api/rooms";
+import { getRoomDetail, leaveRoom, deleteRoom } from "../../api/rooms";
+import { getMyInfo } from "../../api/members";
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
 import Map from "../../components/Map";
+import AlarmModal from "../../components/modals/alarmModal";
 
 const Room = () => {
   const router = useRouter();
@@ -18,19 +20,18 @@ const Room = () => {
   const { roomId } = router.query;
   const [chatOpen, setChatOpen] = useState(false);
 
-  // 방 정보에 대한 필드
-  const [creatorNickName, setCreatorNickName] = useState(""); // 방 생성자
-  const [host, setHost] = useState("짱구"); // 방장
-  const [roomTitle, setRoomTitle] = useState("");
   const [roomContent, setRoomContent] = useState("");
-  const [roomArea, setRoomArea] = useState("서울 송파구 올림픽로 19-2"); // 임시 데이터
-  const [limitPeopleCount, setLimitPeopleCount] = useState("");
-  const [participantCount, setParticipantCount] = useState("");
+  const [roomTitle, setRoomTitle] = useState("");
+  const [roomArea, setRoomArea] = useState("");
   const [exercise, setExercise] = useState("");
-  const [tags, setTags] = useState([]);
+  const [limitPeopleCount, setLimitPeopleCount] = useState(0);
+  const [participantCount, setParticipantCount] = useState(0);
   const [startAppointmentDate, setStartAppointmentDate] = useState("");
   const [endAppointmentDate, setEndAppointmentDate] = useState("");
-  const [viewCount, setViewCount] = useState("");
+  const [createdTime, setCreatedTime] = useState("");
+  const [updatedTime, setUpdatedTime] = useState("");
+  const [host, setHost] = useState("짱구");
+  const [creatorNickName, setCreatorNickName] = useState("");
   const [roomImages, setRoomImages] = useState([
     {
       // 임시 데이터
@@ -38,47 +39,94 @@ const Room = () => {
       imagePath: "logo-sign.png",
     },
   ]);
+  const [tags, setTags] = useState([]);
+  const [viewCount, setViewCount] = useState(0);
+
+  // 안쓸 것 같지만 일단 받아오는 데이터
+  // const [roomId, setRoomId] = useState(0);
+  // const [attendance, setAttendance] = useState(false);
 
   // 참가자 목록에 대한 필드
   const [participants, setParticipants] = useState([
     {
       // 임시 데이터
+      id: 1,
       userNickname: "짱구",
       mannerPoint: 10,
-      activeAreas: ["서울특별시 강남구 강남동"],
-      userProfileImagePath: "",
-      interests: ["축구", "야구", "농구"],
       gender: "male",
+      activeAreas: ["서울특별시 강남구 강남동"],
+      interests: ["축구", "야구", "농구"],
+      userProfileImagePath: "",
     },
     {
       // 임시 데이터
+      id: 2,
       userNickname: "짱아",
       mannerPoint: 10,
-      activeAreas: ["서울특별시 강남구 강남동"],
-      userProfileImagePath: "",
-      interests: ["축구", "야구", "농구"],
       gender: "female",
+      activeAreas: ["서울특별시 강남구 강남동"],
+      interests: ["축구", "야구", "농구"],
+      userProfileImagePath: "",
     },
   ]);
 
+  // 내가 방장인지 아닌지 확인하기 위한 변수
+  const [myNickname, setMyNickname] = useState("짱구");
+
   // 방 수정하기
   const [modifyModalOpen, setModifyModalOpen] = useState(false);
-  const openModifyModal = () => {
-    setModifyModalOpen(true);
-  };
-  const closeModifyModal = () => {
-    setModifyModalOpen(false);
-  };
+  const openModifyModal = () => setModifyModalOpen(true);
+  const closeModifyModal = () => setModifyModalOpen(false);
 
   // 접속자 목록 modal 관련 데이터
   const [participantListModalOpen, setParticipantListModalOpen] =
     useState(false);
+  const participantListOpenModal = () => setParticipantListModalOpen(true);
+  const participantListCloseModal = () => setParticipantListModalOpen(false);
 
-  const participantListOpenModal = () => {
-    setParticipantListModalOpen(true);
+  // 방 나가기 여부 재차 확인 modal 관련 데이터
+  const [alarmModalOpen, setAlarmModalOpen] = useState(false);
+  const openAlarmModal = () => setAlarmModalOpen(true);
+  const closeAlarmModal = () => setAlarmModalOpen(false);
+
+  // 방 나가기
+  const onLeaveRoom = () => {
+    leaveRoom(roomId)
+      .then((res) => {
+        if (res.status.code === 1203) {
+          alert("방을 성공적으로 나갔습니다 !"); // 임시 텍스트
+          router.push("/room/roomlist"); // 방 목록 페이지로 이동
+        } else {
+          FailResponse(res.status.code);
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          FailResponse(error.response.data.status.code);
+        }
+      });
+
+    router.push("/room/roomlist"); // test를 위한 임시 라우팅
   };
-  const participantListCloseModal = () => {
-    setParticipantListModalOpen(false);
+
+  // 방 삭제하기
+  const onDeleteRoom = () => {
+    deleteRoom(roomId)
+      .then((res) => {
+        if (res.status.code === 5000) {
+          alert("방을 성공적으로 삭제하였습니다 !"); // 임시 텍스트
+          router.push("/room/roomlist"); // 방 목록 페이지로 이동
+        } else {
+          FailResponse(res.status.code);
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          FailResponse(error.response.data.status.code);
+        }
+      });
+
+    router.push("/room/roomlist"); // test를 위한 임시 라우팅
   };
 
   useEffect(() => {
@@ -88,23 +136,28 @@ const Room = () => {
           if (res.status.code === 5000) {
             const roomInfo = res.content.roomOfInfo;
 
-            setCreatorNickName((creatorNickName = roomInfo.creatorNickName));
-            setHost((host = roomInfo.host));
-            setRoomTitle((roomTitle = roomInfo.roomTitle));
+            // setRoomId(roomId = roomInfo.roomId);
             setRoomContent((roomContent = roomInfo.roomContent));
+            setRoomTitle((roomTitle = roomInfo.roomTitle));
             setRoomArea((roomArea = roomInfo.roomArea));
+            setExercise((exercise = roomInfo.exercise));
             setLimitPeopleCount((limitPeopleCount = roomInfo.limitPeopleCount));
             setParticipantCount((participantCount = roomInfo.participantCount));
-            setExercise((exercise = roomInfo.exercise));
-            setTags((tags = roomInfo.tags));
             setStartAppointmentDate(
               (startAppointmentDate = roomInfo.startAppointmentDate)
             );
             setEndAppointmentDate(
               (endAppointmentDate = roomInfo.endAppointmentDate)
             );
-            setViewCount((viewCount = roomInfo.viewCount));
+            setCreatedTime((createdTime = roomInfo.createdTime));
+            setUpdatedTime((updatedTime = roomInfo.updatedTime));
+            setHost((host = roomInfo.host));
+            setCreatorNickName((creatorNickName = roomInfo.creatorNickName));
             setRoomImages((roomImages = roomInfo.roomImages));
+            setTags((tags = roomInfo.tags));
+            setViewCount((viewCount = roomInfo.viewCount));
+            // setAttendance(attendance = roomInfo.attendance);
+
             setParticipants((participants = res.content.participants));
 
             dispatch({
@@ -146,6 +199,23 @@ const Room = () => {
     }
   }, [roomId]);
 
+  // 내 정보 얻기 (방장 확인용)
+  useEffect(() => {
+    getMyInfo()
+      .then((res) => {
+        if (res.status.code === 5000) {
+          setMyNickname((myNickname = res.content.userNickname));
+        } else {
+          FailResponse(res.status.code);
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          FailResponse(error.response.data.status.code);
+        }
+      });
+  });
+
   return (
     <>
       <div className="container">
@@ -153,7 +223,12 @@ const Room = () => {
           <div className="header">
             <div className="viewCount">
               <p>{`조회수 : ${viewCount}`}</p>
-              {/* <p>{`생성일시 : 2022년 4월 23일 PM 2 : 15`}</p> */}
+              <p>{`생성 일시 : ${createdTime}`}</p>
+              {updatedTime === "" ? (
+                <></>
+              ) : (
+                <p>{`최근 수정 : ${updatedTime}`}</p>
+              )}
             </div>
 
             <div className="long-line"></div>
@@ -175,12 +250,26 @@ const Room = () => {
             <div className="title">
               <p>{roomTitle}</p>
               <div>
-                <button className="button-modify" onClick={openModifyModal}>
-                  수정하기
+                {myNickname === host ? (
+                  <button className="button-modify" onClick={openModifyModal}>
+                    수정하기
+                  </button>
+                ) : (
+                  <></>
+                )}
+
+                <button className="button-leave" onClick={openAlarmModal}>
+                  나가기
                 </button>
-                <Link href="/room/roomlist">
-                  <button className="button-exit">나가기</button>
-                </Link>
+
+                <AlarmModal
+                  open={alarmModalOpen}
+                  close={closeAlarmModal}
+                  content={"정말 방을 나가시겠습니까?"}
+                  result={onLeaveRoom}
+                  leftButton={"예"}
+                  rightButton={"아니오"}
+                ></AlarmModal>
 
                 <ModifyRoomModal
                   open={modifyModalOpen}
@@ -276,6 +365,12 @@ const Room = () => {
             <Map setPOM={"true"} />
           </div>
         </div>
+
+        {myNickname === host ? (
+          <button className="button-deleteRoom">방 삭제하기</button>
+        ) : (
+          <></>
+        )}
       </div>
       <style jsx>{`
         .container {
@@ -360,7 +455,7 @@ const Room = () => {
         }
 
         .button-modify,
-        .button-exit {
+        .button-leave {
           width: 125px;
           height: 35px;
           border: none;
@@ -376,7 +471,7 @@ const Room = () => {
           margin-right: 10px;
         }
 
-        .button-exit {
+        .button-leave {
           background-color: #00555f;
         }
 
@@ -594,6 +689,20 @@ const Room = () => {
           border: solid 1px #e8e8e8;
           border-radius: 10px;
           background-color: #f2f2f2;
+        }
+
+        .button-deleteRoom {
+          width: 250px;
+          height: 40px;
+          border: none;
+          border-radius: 20px;
+          font-size: 1.6rem;
+          font-weight: bold;
+          letter-spacing: 1px;
+          color: white;
+          background-color: #00555f;
+          margin-bottom: 60px;
+          cursor: pointer;
         }
       `}</style>
     </>

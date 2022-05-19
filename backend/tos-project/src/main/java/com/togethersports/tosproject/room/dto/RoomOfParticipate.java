@@ -16,7 +16,9 @@ public class RoomOfParticipate {
 
     RoomOfInfo roomOfInfo;
 
-    List<UserOfOtherInfo> participates;
+    List<UserOfOtherInfo> participants;
+
+
 
 
 }

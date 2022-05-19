@@ -14,6 +14,7 @@ import com.togethersports.tosproject.user.exception.NicknameDuplicationException
 import com.togethersports.tosproject.user.exception.NotEnteredInformationException;
 import com.togethersports.tosproject.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -156,6 +157,7 @@ public class UserService {
     }
 
     public void checkInformation(User user){
+
         if(user.isInformationRequired()){
             throw new NotEnteredInformationException("추가 정보를 입력하지 않은 계정입니다.");
         }

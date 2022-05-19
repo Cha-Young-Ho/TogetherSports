@@ -24,7 +24,7 @@ const AlarmModal = (props) => {
         {props.open ? (
           <section>
             <div className="modal-body">
-              <img className="logo-image" src="logo-alarm-modal.png"></img>
+              <img className="logo-image" src="/logo-alarm-modal.png"></img>
               <div className="content">{props.content}</div>
               <div className="buttons">
                 <button className="left-button" onClick={props.result}>

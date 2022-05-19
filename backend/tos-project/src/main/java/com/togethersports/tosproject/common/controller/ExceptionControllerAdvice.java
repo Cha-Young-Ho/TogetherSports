@@ -47,7 +47,6 @@ public class ExceptionControllerAdvice {
     // non User found exception
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<Response> handleUserNotFountException() {
-        log.info("ex 실행됨");
         return ResponseEntity.badRequest().body(Response.of(UserCode.USER_NOT_FOUNT, null));
     }
 
