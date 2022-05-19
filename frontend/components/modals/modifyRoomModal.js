@@ -44,7 +44,7 @@ const ModifyRoomModal = (props) => {
 
   // 태그 선택 함수
   const onClickTag = (e) => {
-    if (e.target.classList[2] === "tag-clicked") {
+    if (e.target.classList[3] === "tag-clicked") {
       e.target.classList.remove("tag-clicked");
       setTags((prev) =>
         prev.filter((el) => {
@@ -59,6 +59,27 @@ const ModifyRoomModal = (props) => {
         e.target.classList.add("tag-clicked");
         setTags((prev) => [...prev, e.target.innerText]);
       }
+    }
+  };
+
+  // 이미 설정된 태그들에 대해 선택처리
+  const setPrevTags = (tagName) => {
+    let index = 0;
+
+    if (tagsAge.some((tag) => tag === tagName)) {
+      index = tagsAge.indexOf(tagName);
+      const tagAge = document.getElementsByClassName("tag-age");
+      tagAge[index].classList.add("tag-clicked");
+    }
+    if (tagsLevel.some((tag) => tag === tagName)) {
+      index = tagsLevel.indexOf(tagName);
+      const tagLevel = document.getElementsByClassName("tag-level");
+      tagLevel[index].classList.add("tag-clicked");
+    }
+    if (tagsGender.some((tag) => tag === tagName)) {
+      index = tagsGender.indexOf(tagName);
+      const tagGender = document.getElementsByClassName("tag-gender");
+      tagGender[index].classList.add("tag-clicked");
     }
   };
 
@@ -149,8 +170,7 @@ const ModifyRoomModal = (props) => {
     setRoomContent(e.target.value);
   };
 
-  // 방에 대한 정보 조회
-  // 방에 대한 기본 설정된 데이터들을 불러와야 함
+  // 방에 대한 기본 설정된 데이터들을 불러오기
   useEffect(() => {
     if (props.open) {
       getRoomInfo(props.roomId)
@@ -182,6 +202,8 @@ const ModifyRoomModal = (props) => {
           return;
         });
     }
+
+    if (tags.length) tags.map((tag) => setPrevTags(tag));
   }, [props.open]);
 
   return (
@@ -239,7 +261,11 @@ const ModifyRoomModal = (props) => {
                 <div className="tags-age">
                   {tagsAge.map((age, index) => {
                     return (
-                      <div className="tag" onClick={onClickTag} key={index}>
+                      <div
+                        className="tag tag-age"
+                        onClick={onClickTag}
+                        key={index}
+                      >
                         {age}
                       </div>
                     );
@@ -249,7 +275,11 @@ const ModifyRoomModal = (props) => {
                 <div className="tags-level-gender">
                   {tagsLevel.map((level, index) => {
                     return (
-                      <div className="tag" onClick={onClickTag} key={index}>
+                      <div
+                        className="tag tag-level"
+                        onClick={onClickTag}
+                        key={index}
+                      >
                         {level}
                       </div>
                     );
@@ -257,7 +287,11 @@ const ModifyRoomModal = (props) => {
 
                   {tagsGender.map((gender, index) => {
                     return (
-                      <div className="tag" onClick={onClickTag} key={index}>
+                      <div
+                        className="tag tag-gender"
+                        onClick={onClickTag}
+                        key={index}
+                      >
                         {gender}
                       </div>
                     );
