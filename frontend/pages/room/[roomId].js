@@ -10,6 +10,7 @@ import FailResponse from "../../api/failResponse";
 import { getRoomDetail } from "../../api/rooms";
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
+import Map from "../../components/Map";
 
 const Room = () => {
   const router = useRouter();
@@ -80,50 +81,6 @@ const Room = () => {
     setParticipantListModalOpen(false);
   };
 
-  const onLoadKakaoMap = () => {
-    kakao.maps.load(() => {
-      const container = document.getElementById("map"),
-        options = {
-          center: new kakao.maps.LatLng(37.56682420062817, 126.97864093976689),
-          level: 4,
-        };
-
-      const map = new kakao.maps.Map(container, options); // 지도 생성
-      const geocoder = new kakao.maps.services.Geocoder(); // 주소-좌표 변환 객체 생성
-
-      // 주소로 좌표를 검색
-      geocoder.addressSearch(`${roomArea}`, function (result, status) {
-        if (status === kakao.maps.services.Status.OK) {
-          const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-
-          // 위치에 마커 표시
-          const marker = new kakao.maps.Marker({
-            map: map,
-            position: coords,
-          });
-
-          // 인포윈도우로 장소에 대한 설명을 표시
-          const infowindow = new kakao.maps.InfoWindow({
-            content:
-              '<div style="width:150px;text-align:center;padding:6px 0;">만남의 장소</div>',
-          });
-          infowindow.open(map, marker);
-
-          // 지도의 중심을 결과값으로 받은 위치로 이동
-          map.setCenter(coords);
-        }
-      });
-    });
-  };
-
-  useEffect(() => {
-    const mapScript = document.createElement("script");
-    mapScript.async = true;
-    mapScript.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAOMAP_APPKEY}&autoload=false&libraries=services`;
-    document.head.appendChild(mapScript);
-    mapScript.addEventListener("load", onLoadKakaoMap);
-  }, []);
-
   useEffect(() => {
     if (roomId) {
       getRoomDetail(roomId)
@@ -159,6 +116,13 @@ const Room = () => {
                       roomInfo.startAppointmentDate[9]
                     : roomInfo.startAppointmentDate.substr(0, 10)
                 }`,
+              },
+            });
+
+            dispatch({
+              type: "SAVEPOM",
+              payload: {
+                placeOfMeeting: roomArea,
               },
             });
           } else {
@@ -308,7 +272,9 @@ const Room = () => {
             <p>{roomArea}</p>
           </div>
           <div className="long-line"></div>
-          <div id="map"></div>
+          <div className="map-wrapper">
+            <Map setPOM={"true"} />
+          </div>
         </div>
       </div>
       <style jsx>{`
@@ -622,7 +588,7 @@ const Room = () => {
           font-size: 2.5rem;
         }
 
-        #map {
+        .map-wrapper {
           width: 1200px;
           height: 420px;
           border: solid 1px #e8e8e8;

@@ -1,14 +1,16 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-const Map = () => {
+const Map = (props) => {
   const dispatch = useDispatch();
+  const placeOfMeeting = useSelector(
+    (state) => state.saveActiveAreaReducer.placeOfMeeting
+  );
+  const preAreaInfo = useSelector(
+    (state) => state.saveActiveAreaReducer.activeAreas
+  );
   const [activeAreas, setActiveAreas] = useState([]);
   const [tagAreas, setTagAreas] = useState([]);
-
-  useEffect(() => {
-    getMap();
-  }, []);
 
   const changeActiveAreas = (data) => {
     dispatch({
@@ -45,6 +47,34 @@ const Map = () => {
       };
       const map = new kakao.maps.Map(container, options); // 지도 생성
       const geocoder = new kakao.maps.services.Geocoder(); // 주소-좌표 변환 객체 생성
+
+      if (props.setPOM === "true") {
+        // 주소로 좌표를 검색
+        geocoder.addressSearch(`${placeOfMeeting}`, function (result, status) {
+          if (status === kakao.maps.services.Status.OK) {
+            const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+
+            // 위치에 마커 표시
+            const marker = new kakao.maps.Marker({
+              map: map,
+              position: coords,
+            });
+
+            // 인포윈도우로 장소에 대한 설명을 표시
+            const infowindow = new kakao.maps.InfoWindow({
+              content:
+                '<div style="width:150px;text-align:center;padding:6px 0;">만남의 장소</div>',
+            });
+            infowindow.open(map, marker);
+
+            // 지도의 중심을 결과값으로 받은 위치로 이동
+            map.setCenter(coords);
+          }
+        });
+
+        return;
+      }
+
       const marker = new kakao.maps.Marker(); // 클릭한 위치를 표시할 마커 생성
 
       getCenter(map); // 지도의 중심좌표 얻기
@@ -74,17 +104,39 @@ const Map = () => {
   };
 
   const getArea = (map, geocoder) => {
+    //기존 위치정보가 있는 경우
+    if (preAreaInfo.length) {
+      preAreaInfo.forEach((area) => {
+        const markerPosition = new kakao.maps.LatLng(
+          area.longitude,
+          area.latitude
+        );
+
+        const marker = new kakao.maps.Marker({
+          map: map,
+          position: new kakao.maps.LatLng(markerPosition),
+        });
+
+        marker.setPosition(markerPosition);
+        marker.setMap(map);
+      });
+    }
+
     kakao.maps.event.addListener(map, "click", function (mouseEvent) {
       searchAddrFromCoords(
         geocoder,
         mouseEvent.latLng,
         function (result, status) {
           if (status === kakao.maps.services.Status.OK) {
-            const area = result[0].address_name;
+            const area = {
+              location: result[0].address_name,
+              latitude: mouseEvent.latLng.La,
+              longitude: mouseEvent.latLng.Ma,
+            };
 
             // 중복되는 지역 여부 체크
             const checkAreaDuplication = (element) => {
-              if (element === area) return true;
+              if (element.location === area.location) return true;
             };
 
             // 지역 설정 개수 최대 5개 제한
@@ -94,12 +146,12 @@ const Map = () => {
 
                 setActiveAreas((prev) => (activeAreas = [...prev, area]));
                 changeActiveAreas(activeAreas);
-                // console.log("active", activeAreas, "nextAreas", nextAreas);
+
+                setTagAreas((prev) => (tagAreas = [...prev, area]));
+                changeTagAreas(tagAreas);
               } else {
                 alert("해당 지역은 이미 선택되었습니다.");
               }
-              setTagAreas((prev) => (tagAreas = [...prev, area]));
-              changeTagAreas(tagAreas);
             } else {
               alert("최대 설정 가능한 개수를 초과하였습니다!");
             }
@@ -124,25 +176,28 @@ const Map = () => {
       marker.setMap(null); // 지도에서 마커제거
       searchAddrFromCoords(geocoder, position, function (result, status) {
         if (status === kakao.maps.services.Status.OK) {
-          const area = result[0].address_name;
+          const area = {
+            location: result[0].address_name,
+            latitude: position.La,
+            longitude: position.Ma,
+          };
 
           // 태그목록에서 해당 지역 삭제
           setTagAreas(
             (prev) =>
               (tagAreas = prev.filter((el) => {
-                return el !== area;
+                return el.location !== area.location;
               }))
           );
           changeTagAreas(tagAreas);
 
           // 배열에서 클릭된 마커의 지역 인덱스 찾기
           const index = activeAreas.findIndex(function (element) {
-            return element === area;
+            return element.location === area.location;
           });
 
           if (index !== -1) {
-            setActiveAreas((prev) => (activeAreas = prev.splice(index, 1)));
-            changeActiveAreas(activeAreas);
+            activeAreas.splice(index, 1);
           }
         }
       });
@@ -154,16 +209,62 @@ const Map = () => {
     geocoder.coord2RegionCode(coords.getLng(), coords.getLat(), callback);
   };
 
+  useEffect(() => {
+    if (props.setPOM === "true") {
+      if (placeOfMeeting !== "") {
+        getMap();
+      }
+    } else if (!props.setPOM) {
+      getMap();
+    }
+  }, [placeOfMeeting]);
+
   return (
     <>
       <div id="map" />
+      {!props.setPOM ? (
+        <div className="tags">
+          {tagAreas.map((area, index) => {
+            return (
+              <div key={index} className="tag">
+                <p>{area.location}</p>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        ""
+      )}
+
       <style jsx>{`
         #map {
-          width: 800px;
-          height: 500px;
-          margin: 30px 0;
+          width: 100%;
+          height: 100%;
+          /* margin: 30px 0; */
           border-radius: 10px;
           border: solid 1px #e8e8e8;
+        }
+
+        .tags {
+          width: 800px;
+          align-items: left;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+        }
+
+        .tag {
+          width: 180px;
+          height: 24px;
+          padding: 5px;
+          margin: 5px;
+          border: none;
+          border-radius: 10px;
+          background-color: #e0e0e0;
+          color: #747474;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
       `}</style>
     </>

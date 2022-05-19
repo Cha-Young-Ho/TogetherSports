@@ -91,8 +91,20 @@ const saveRoomDateInitialState = {
 
 // 활동 지역 초기값
 const saveActiveAreaInitialState = {
-  activeAreas: [],
+  activeAreas: [
+    // {
+    //   location: "대구 달서구 월배로 11길 33",
+    //   latitude: 128.55852581779735,
+    //   longitude: 35.828258292333956,
+    // },
+    // {
+    //   location: "대구 달서구 월배로 11길 33",
+    //   latitude: 128.54185331387004,
+    //   longitude: 35.84959643998648,
+    // },
+  ],
   tagAreas: [],
+  placeOfMeeting: "",
 };
 
 // 오타 방지용
@@ -122,6 +134,7 @@ const SAVEROOMID = "SAVEROOMID";
 const SAVEROOMDATE = "SAVEROOMDATE";
 const SAVEACTIVEAREA = "SAVEACTIVEAREA";
 const SAVETAGAREAS = "SAVETAGAREAS";
+const SAVEPOM = "SAVEPOM";
 
 // 유저 회원정보추가입력 정보 reducer
 const userRequestReducer = (state = signupInitialState, action) => {
@@ -343,6 +356,11 @@ const saveActiveAreaReducer = (state = saveActiveAreaInitialState, action) => {
       return {
         ...state,
         tagAreas: action.payload.tagAreas,
+      };
+    case SAVEPOM:
+      return {
+        ...state,
+        placeOfMeeting: action.payload.placeOfMeeting,
       };
     default:
       return state;
