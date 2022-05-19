@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 @Getter
 public class RoomBaseEntity {
-    @JsonIgnore
+
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdTime;

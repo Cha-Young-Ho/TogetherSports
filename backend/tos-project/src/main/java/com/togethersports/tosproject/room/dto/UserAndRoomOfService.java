@@ -12,4 +12,5 @@ import lombok.Getter;
 public class UserAndRoomOfService {
     private User user;
     private Room room;
+
 }

@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
  * </p>
  * @author younghoCha
  */
-
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class RoomController {
@@ -37,7 +37,7 @@ public class RoomController {
 
     }
 
-    @GetMapping("/api/room/{roomId}")
+    @GetMapping("/api/rooms/{roomId}/info")
     public ResponseEntity<Response> getRoomInfo(@CurrentUser User user, @PathVariable Long roomId){
 
         RoomOfInfo roomOfInfo = roomService.getRoomInfo(user, roomId);
@@ -56,9 +56,6 @@ public class RoomController {
 
     @GetMapping("/api/room")
     public ResponseEntity<Response> getRoomList(FieldsOfRoomList fieldsOfRoomList, Pageable pageable){
-
-
-
         return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, roomService.roomFields(fieldsOfRoomList, pageable)));
 
     }
@@ -73,11 +70,11 @@ public class RoomController {
         }
         // 시간이 지난 방
         if(room.getStatus() == RoomCode.TIME_OUT_ROOM){
-            return ResponseEntity.ok(Response.of(RoomCode.TIME_OUT_ROOM, null));
+            return ResponseEntity.ok(Response.of(RoomCode.TIME_OUT_ROOM,null));
         }
 
         // 참가 완료
-        return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, room));
+        return ResponseEntity.ok(Response.of(RoomCode.SUCCESS_PARTICIPATE_ROOM, null));
     }
 
     @GetMapping("/api/room/myroom")
@@ -85,7 +82,6 @@ public class RoomController {
         RoomsOfMyRoom rooms = roomService.getMyRoom(user);
 
         return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, rooms));
-
     }
 
     //방장 위임
@@ -119,5 +115,29 @@ public class RoomController {
         Response response = roomService.getRoomCount();
         return ResponseEntity.ok(response);
     }
+
+    //운동 대기방 조회
+    @GetMapping("/api/rooms/{roomId}/detail")
+    public ResponseEntity getRoomDetailInfo(@PathVariable Long roomId, @CurrentUser User user){
+        log.info("room id {} - user id {}", roomId, user.getId());
+        Response response = roomService.getRoomDetailInfo(roomId, user);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/api/rooms/{roomId}/attendance")
+    public ResponseEntity getRoomAttendance(@PathVariable Long roomId, @CurrentUser User user){
+        boolean attendance = roomService.getAttendance(user.getId(), roomId);
+
+        if(attendance){
+            Response response = Response.of(RoomCode.PARTICIPATING_ROOM, AttendanceOfRoom.builder().attendance(attendance).build());
+            return ResponseEntity.ok(response);
+        }
+
+        Response response = Response.of(RoomCode.NOT_PARTICIPATE_ROOM, AttendanceOfRoom.builder().attendance(attendance).build());
+
+        return ResponseEntity.ok(response);
+    }
+
+
 
 }

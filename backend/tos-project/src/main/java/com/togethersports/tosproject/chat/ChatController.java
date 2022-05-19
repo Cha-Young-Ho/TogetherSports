@@ -8,6 +8,7 @@ import com.togethersports.tosproject.common.dto.Response;
 import com.togethersports.tosproject.participant.ParticipantService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.MessageHeaders;
@@ -29,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
  * </p>
  * @author younghoCha
  */
-
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class ChatController {
@@ -64,6 +65,7 @@ public class ChatController {
 
         // 새로운 사용자가 들어왔을 시, 발행
         if(command.equals("enter")){
+
             sendingOperations.convertAndSend("topic/room/"+roomId+"/chat", response);
             return;
         }
