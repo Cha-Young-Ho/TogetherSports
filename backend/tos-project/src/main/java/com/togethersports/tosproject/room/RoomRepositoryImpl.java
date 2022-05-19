@@ -9,6 +9,7 @@ import com.togethersports.tosproject.common.util.ParsingEntityUtils;
 import com.togethersports.tosproject.room.dto.FieldsOfRoomList;
 import com.togethersports.tosproject.room.dto.RoomOfList;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +32,7 @@ import static com.togethersports.tosproject.tag.QTag.tag1;
  * @author younghoCha
  */
 
+@Slf4j
 @RequiredArgsConstructor
 public class RoomRepositoryImpl implements RoomRepositoryCustom{
 
@@ -46,7 +48,7 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
                 .where(eqInterests(
                     fieldsOfRoomList.getExercise()),
                     eqArea(fieldsOfRoomList.getArea()),
-                    participateCount(fieldsOfRoomList.getParticipantCount(), fieldsOfRoomList.isContainNoAdmittance()),
+                    participateCount(fieldsOfRoomList.getRequiredPeopleCount(), fieldsOfRoomList.isContainNoAdmittance()),
                     betweenTime(fieldsOfRoomList.getStartAppointmentDate(), fieldsOfRoomList.getEndAppointmentDate(), fieldsOfRoomList.isContainTimeClosing()),
                     eqTitle(fieldsOfRoomList.getRoomTitle()),
                     eqContent(fieldsOfRoomList.getRoomContent())
@@ -95,6 +97,7 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
         BooleanBuilder booleanBuilder = new BooleanBuilder();
 
         for (String interest : interests){
+            log.info("interests = {}", interest);
             booleanBuilder.or(room.exercise.eq(interest));
         }
 
@@ -139,17 +142,17 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
             }
 
             // 인원 검색을 했을 때
-            return room.limitPeopleCount.gt(room.participantCount.add(participantCount));
+            return room.limitPeopleCount.goe(room.participantCount.add(participantCount));
 
         }
 
         /*입장 마감 안보기 시,*/
         // 인원 검색을 하지 않았을 때
         if(participantCount == null){
-            return room.limitPeopleCount.gt(room.participantCount);
+            return room.limitPeopleCount.goe(room.participantCount);
         }
         // 인원 검색을 했을 때
-        return room.limitPeopleCount.gt(room.participantCount.add(participantCount));
+        return room.limitPeopleCount.goe(room.participantCount.add(participantCount));
 
     }
 

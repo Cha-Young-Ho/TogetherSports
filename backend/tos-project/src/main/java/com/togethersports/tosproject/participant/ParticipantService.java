@@ -4,6 +4,7 @@ package com.togethersports.tosproject.participant;
 import com.togethersports.tosproject.participant.exception.NotParticipateRoomException;
 import com.togethersports.tosproject.room.Room;
 import com.togethersports.tosproject.room.RoomRepository;
+import com.togethersports.tosproject.room.dto.UserAndRoomOfService;
 import com.togethersports.tosproject.room.exception.NotFoundRoomException;
 import com.togethersports.tosproject.user.User;
 import com.togethersports.tosproject.user.UserRepository;
@@ -48,6 +49,11 @@ public class ParticipantService {
     }
 
     public boolean checkAttendance(User user, Room room){
+        log.info("user id = {}", user.getId());
+        log.info("11 room id = {}", room.getId());
+        boolean attendance = participantRepository.existsByUserAndRoom(user, room);
+
+        log.info("attendance = {}", attendance);
         return participantRepository.existsByUserAndRoom(user, room);
     }
 
@@ -57,27 +63,36 @@ public class ParticipantService {
                 .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new NotFoundRoomException("해당하는 방을 찾을 수 없습니다."));
+        log.info("user = {}", user.getId());
+        log.info("room = {}", roomId);
+        log.info("여이걍");
+        log.info("boolean = {}", participantRepository.existsByUserAndRoom(user, room));
 
         return participantRepository.existsByUserAndRoom(user, room);
     }
 
     public void kickUser(Long kickedUserId, Long roomId){
-        Participant user = participantRepository.findByUserIdAndRoomId(kickedUserId, roomId)
+        User userEntity = findUserEntityById(kickedUserId);
+        Room roomEntity = findRoomEntityById(roomId);
+        Participant user = participantRepository.findByUserAndRoom(userEntity, roomEntity)
                 .orElseThrow(() -> new UserNotFoundException("해당하는 사용자를 찾을 수 없어, 강퇴할 수 없습니다."));
+
         participantRepository.delete(user);
     }
 
     public void out(User user, Room room){
-        Participant participant = participantRepository.findByUserIdAndRoomId(user.getId(), room.getId())
-                .orElseThrow(() -> new NotParticipateRoomException("해당하는 방에 참여하지 않았습니다."));
 
-        participantRepository.delete(participant);
+        Participant participantEntity = participantRepository.findByUserAndRoom(user, room)
+                .orElseThrow(() -> new NotParticipateRoomException("해당 방에 참여하지 않은 유저입니다."));
+
+        participantRepository.delete(participantEntity);
     }
 
     @Transactional
     public void verifySession(String sessionId, Long roomId, Long userId){
-
-        Participant participantEntity = participantRepository.findByUserIdAndRoomId(userId, roomId)
+        User userEntity = findUserEntityById(userId);
+        Room roomEntity = findRoomEntityById(roomId);
+        Participant participantEntity = participantRepository.findByUserAndRoom(userEntity, roomEntity)
                 .orElseThrow(() -> new NotParticipateRoomException("해당 방에 참여하지 않은 유저입니다."));
 
         participantEntity.updateSessionId(sessionId);
@@ -86,12 +101,39 @@ public class ParticipantService {
 
     }
 
-    @Transactional
-    public String getSessionid(){
-        Participant participant = participantRepository.findByUserIdAndRoomId(1L, 1L)
-                .orElseThrow(() -> new NotParticipateRoomException());
+//    @Transactional
+//    public String getSessionid(){
+//
+//
+//        Participant participant = participantRepository.findByUserIdAndRoomId(1L, 1L)
+//                .orElseThrow(() -> new NotParticipateRoomException());
+//
+//        return participant.getSocketSessionId();
+//    }
 
-        return participant.getSocketSessionId();
+    // 유저 엔티티 찾기
+    public User findUserEntityById(Long userId){
+
+        return  userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundRoomException("해당 방을 찾을 수 없습니다."));
+    }
+    // 룸 엔티티 찾기
+    public Room findRoomEntityById(Long roomId){
+
+        return roomRepository.findById(roomId)
+                .orElseThrow(() -> new UserNotFoundException("해당 유저를 찾을 수 없습니다."));
+
+    }
+    // 유저 + 룸 엔티티 찾기
+    public UserAndRoomOfService findEntityById(Long userId, Long roomId){
+        User userEntity = findUserEntityById(userId);
+        Room roomEntity = findRoomEntityById(roomId);
+
+        return UserAndRoomOfService.builder()
+                .room(roomEntity)
+                .user(userEntity)
+                .build();
+
     }
 
 }

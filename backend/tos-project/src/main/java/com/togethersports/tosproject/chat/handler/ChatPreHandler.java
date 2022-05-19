@@ -46,6 +46,8 @@ public class ChatPreHandler implements ChannelInterceptor {
         String authorizationHeader = String.valueOf(headerAccessor.getNativeHeader("Authorization"));
         StompCommand command = headerAccessor.getCommand();
 
+        log.info("커맨드 = {}", command);
+
 //        List<GrantedAuthority> authorities = new ArrayList<>();
 //        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 //        Authentication auth = new UsernamePasswordAuthenticationToken(1L, 1L, authorities);
@@ -55,8 +57,8 @@ public class ChatPreHandler implements ChannelInterceptor {
 
         // 소켓 연결
         if(command.equals(StompCommand.CONNECT)){
-            Long roomId= 1L;
-            log.info("Connect 작동");
+            Long roomId= 2L;
+            log.info("연결부분!!");
 
             //JWT 인증 및 참여 여부 확인
             verifySend(authorizationHeader, roomId, message);
@@ -73,7 +75,9 @@ public class ChatPreHandler implements ChannelInterceptor {
 
         // SEND, SUBSCRIBE 일 경우
         if(command.equals(StompCommand.SEND) || command.equals(StompCommand.SUBSCRIBE)){
-            Long roomId = 1L;
+            Long roomId = 2L;
+
+            log.info("command = {}", command);
             //Long roomId = Long.valueOf(map.getFirst("roomId"));
             // JWT 인증 및 참여 여부 확인
 
@@ -82,7 +86,7 @@ public class ChatPreHandler implements ChannelInterceptor {
 
         if(command.equals(StompCommand.DISCONNECT)){
             // 세션 연결 해제 메세지 생성
-
+            log.info("디스컨넥트 요청옴");
             // 세션 정보 지우기
 
             // 구독 정보 없애기
@@ -116,16 +120,19 @@ public class ChatPreHandler implements ChannelInterceptor {
         return participantService.checkAttendance(userId, roomId);
     }
     public Message<?> verifySend(String token, Long roomId, Message message){
+
         //토큰 검증
         User user = verifyJwt(token);
 
         //해당 방에 참가했는지 확인
         //참가하지 않은 경우 거부 응답
-        if(!verifyParticipate(user.getId(), roomId)){
+        boolean abc = verifyParticipate(user.getId(), roomId);
+        if(!abc){
 
             //메세지 생성 및 send
             throw new NotParticipateRoomException("Auth");
         }
+
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(message);
         headerAccessor.setHeader("userId", user.getId());
 
