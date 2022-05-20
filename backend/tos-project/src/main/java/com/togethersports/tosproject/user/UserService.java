@@ -98,7 +98,7 @@ public class UserService {
         //다른 회원 정보 조회 DTO 리턴
         return UserOfOtherInfo.builder()
                 .id(userEntity.getId())
-                .activeAreas(parsingEntityUtils.parsingAreasEntityToString(userEntity.getActiveAreas()))
+                .activeAreas(userEntity.getActiveAreas())
                 .gender(userEntity.getGender())
                 .interests(parsingEntityUtils.parsingInterestsEntityToString(userEntity.getInterests()))
                 .userNickname(userEntity.getNickname())
@@ -118,11 +118,11 @@ public class UserService {
         User findUser = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("사용자가 존재하지 않습니다."));
 
-        List<ActiveArea> activeAreas = parsingEntityUtils.parsingStringToActivesEntity(userOfModifyInfo.getActiveAreas());
+
         List<Interest> interests = parsingEntityUtils.parsingStringToInterestsEntity(userOfModifyInfo.getInterests());
         if(userOfModifyInfo.getUserProfileImage().getImageSource() == null){
 
-            findUser.updateUser(userOfModifyInfo, activeAreas, interests, "http://localhost:8080/Users/chayeongho/Desktop/스크린샷 2022-04-13 오후 6.51.46.png");
+            findUser.updateUser(userOfModifyInfo, interests, "http://localhost:8080/Users/chayeongho/Desktop/스크린샷 2022-04-13 오후 6.51.46.png");
             return;
         }
 
@@ -131,20 +131,20 @@ public class UserService {
         String fileName = nameGenerator.generateRandomName().concat(".")
                 .concat(userOfModifyInfo.getUserProfileImage().getUserProfileExtension());
         String imagePath = storageService.store(imageSource, fileName);
-        findUser.updateUser(userOfModifyInfo, activeAreas, interests, imagePath);
+        findUser.updateUser(userOfModifyInfo, interests, imagePath);
     }
 
     public UserOfMyInfo getMyInfo(Long id){
         User user =  userRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("해당 사용자가 존재하지 않습니다."));
 
-        List<String> parsedAreaList = parsingEntityUtils.parsingAreasEntityToString(user.getActiveAreas());
+
         List<String> parsedInterestList = parsingEntityUtils.parsingInterestsEntityToString(user.getInterests());
 
        return UserOfMyInfo.builder()
                .id(user.getId())
                .userBirth(user.getUserBirth())
-               .activeAreas(parsedAreaList)
+               .activeAreas(user.getActiveAreas())
                .userProfileImagePath(user.getUserProfileImage())
                .userEmail(user.getEmail())
                .mannerPoint(user.getMannerPoint())

@@ -6,7 +6,6 @@ import com.togethersports.tosproject.chat.dto.ClientMessage;
 import com.togethersports.tosproject.common.code.CommonCode;
 import com.togethersports.tosproject.common.dto.Response;
 import com.togethersports.tosproject.participant.ParticipantService;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
  * </p>
  * @author younghoCha
  */
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -87,7 +87,6 @@ public class ChatController {
             sendingOperations.convertAndSend("/topic/room/" + roomId + "/chat", response);
             return;
         }
-
 
         sendingOperations.convertAndSend("/topic/room/"+roomId+"/chat", "서버에서 보낸 메세지");
     }

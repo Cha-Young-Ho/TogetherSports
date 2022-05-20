@@ -349,10 +349,12 @@ public class RoomService {
         Room roomEntity = userAndRoomEntity.getRoom();
 
         // 요청자가 방에 참가했는지 확인
-        if(!getAttendance(userEntity.getId(), 1L)){
+        if(!getAttendance(userEntity.getId(), roomEntity.getId())){
             // 해당 유저가 방에 참가하지 않았을 경우
-            return Response.of(CommonCode.BAD_REQUEST, null);
+            return Response.of(RoomCode.NOT_PARTICIPATE_ROOM, null);
         }
+
+        //방장 위임 처리
 
         //나가기 처리(DB 삭제)
         participantService.out(userEntity, roomEntity);

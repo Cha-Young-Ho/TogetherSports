@@ -1,7 +1,7 @@
 package com.togethersports.tosproject.common.dto;
 
 import com.togethersports.tosproject.chat.code.ChatCode;
-import com.togethersports.tosproject.common.code.ResponseCode;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,7 +12,7 @@ import lombok.Setter;
  */
 @Setter
 @Getter
-public class Response<T> {
+public class WsResponse<T> {
 
     // 요청 처리 후 추가 메시지에 대한 내용
     private Status status;
@@ -22,22 +22,24 @@ public class Response<T> {
     @Getter
     @Setter
     private static class Status {
+        private String type;
         private int code;
         private String message;
     }
 
     /**
      * 응답 코드와 내용으로 응답 객체를 생성한다.
-     * @param responseCode 응답코드, 메시지를 가지는 ResponseCode 구현체
+     * @param chatCode 응답코드, 메시지를 가지는 ResponseCode 구현체
      * @param content 본문 내용
      * @return response 본문 전체 객체
      */
-    public static<T> Response<T> of(ResponseCode responseCode, T content) {
-        Response<T> response = new Response<>();
+    public static<T> WsResponse<T> of(ChatCode chatCode, T content) {
+        WsResponse<T> response = new WsResponse<>();
 
         Status status = new Status();
-        status.setCode(responseCode.getCode());
-        status.setMessage(responseCode.getMessage());
+        status.setCode(chatCode.getCode());
+        status.setMessage(chatCode.getMessage());
+        status.setType(chatCode.getType());
 
         response.setStatus(status);
         response.setContent(content);
