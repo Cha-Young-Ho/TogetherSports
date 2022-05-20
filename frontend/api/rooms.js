@@ -251,10 +251,12 @@ const postEnterRoom = (roomId) => {
 // PUT
 
 // 방 수정
-const postUpdateRoom = (
+const updateRoom = (
+  roomId,
   roomTitle,
   roomContent,
   roomArea,
+  limitPeopleCount,
   exercise,
   tags,
   startAppointmentDate,
@@ -264,9 +266,11 @@ const postUpdateRoom = (
   const promise =
     localStorage.getItem("accessToken") === null
       ? axios.put("http://localhost:8080/api/room", {
+          roomId: roomId,
           roomTitle: roomTitle,
           roomContent: roomContent,
           roomArea: roomArea,
+          limitPeopleCount: limitPeopleCount,
           exercise: exercise,
           tags: tags,
           startAppointmentDate: startAppointmentDate,
@@ -276,9 +280,11 @@ const postUpdateRoom = (
       : axios.put(
           "http://localhost:8080/api/room",
           {
+            roomId: roomId,
             roomTitle: roomTitle,
             roomContent: roomContent,
             roomArea: roomArea,
+            limitPeopleCount: limitPeopleCount,
             exercise: exercise,
             tags: tags,
             startAppointmentDate: startAppointmentDate,
@@ -346,7 +352,7 @@ export {
   getChatInfo,
   getMyRoomInfo,
   getAvailability,
-  postUpdateRoom,
+  updateRoom,
   postCreateRoom,
   postEnterRoom,
   deleteRoom,
