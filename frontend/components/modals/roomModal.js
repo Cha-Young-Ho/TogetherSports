@@ -224,6 +224,10 @@ const RoomModal = (props) => {
         </div>
       </div>
       <style jsx>{`
+        textarea:focus {
+          outline: none;
+        }
+
         .modal {
           display: none;
           position: fixed;

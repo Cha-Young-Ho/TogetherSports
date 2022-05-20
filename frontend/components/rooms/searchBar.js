@@ -51,6 +51,10 @@ const SearchBar = () => {
         </div>
       </div>
       <style jsx>{`
+        input:focus {
+          outline: none;
+        }
+
         .search-wrapper {
           width: 100%;
           min-width: 1190px;

@@ -365,6 +365,10 @@ const Filter = () => {
       </div>
 
       <style jsx>{`
+        input:focus {
+          outline: none;
+        }
+
         .filter-wrapper {
           width: 100%;
           max-width: 1920px;

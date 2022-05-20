@@ -253,6 +253,10 @@ const RoomSetting = () => {
         </Link>
       </div>
       <style jsx>{`
+        input:focus {
+          outline: none;
+        }
+
         .container {
           width: 100%;
           display: flex;

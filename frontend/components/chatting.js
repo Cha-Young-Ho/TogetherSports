@@ -82,7 +82,7 @@ const Chatting = ({ chatOpen }) => {
     //     },
     //   ],
   ]);
-  
+
   // console.log("소켓 연결 됨");
   // const sockJS = new SockJS("http://localhost:8080/api/websocket");
   // const client = StompJS.over(sockJS);
@@ -232,6 +232,10 @@ const Chatting = ({ chatOpen }) => {
         </form>
       </div>
       <style jsx>{`
+        input:focus {
+          outline: none;
+        }
+
         .chatting {
           width: 100%;
           height: 433px;
