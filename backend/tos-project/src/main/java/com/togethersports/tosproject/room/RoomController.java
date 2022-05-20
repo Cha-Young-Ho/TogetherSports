@@ -40,7 +40,7 @@ public class RoomController {
     @GetMapping("/api/rooms/{roomId}/info")
     public ResponseEntity<Response> getRoomInfo(@CurrentUser User user, @PathVariable Long roomId){
 
-        RoomOfInfo roomOfInfo = roomService.getRoomInfo(user, roomId);
+        RoomOfInfo roomOfInfo = roomService.getRoomInfo(roomId);
 
         return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, roomOfInfo));
     }

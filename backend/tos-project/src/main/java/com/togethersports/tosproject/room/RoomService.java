@@ -2,12 +2,14 @@
 package com.togethersports.tosproject.room;
 
 import com.togethersports.tosproject.chat.ChatController;
+import com.togethersports.tosproject.chat.code.ChatCode;
 import com.togethersports.tosproject.chat.dto.MessageOfDelegate;
 import com.togethersports.tosproject.chat.dto.MessageOfKickOut;
 import com.togethersports.tosproject.chat.dto.MessageOfLeave;
 import com.togethersports.tosproject.chat.dto.MessageOfParticipate;
 import com.togethersports.tosproject.common.code.CommonCode;
 import com.togethersports.tosproject.common.dto.Response;
+import com.togethersports.tosproject.common.dto.WsResponse;
 import com.togethersports.tosproject.common.util.ParsingEntityUtils;
 import com.togethersports.tosproject.image.RoomImageService;
 import com.togethersports.tosproject.participant.Participant;
@@ -100,7 +102,7 @@ public class RoomService {
     }
 
     //방 설명 페이지 조회
-    public RoomOfInfo getRoomInfo(User user, Long roomId){
+    public RoomOfInfo getRoomInfo(Long roomId){
 
         Room roomEntity = findRoomEntityById(roomId);
 
@@ -114,19 +116,12 @@ public class RoomService {
         //조회수 증가
         roomEntity.plusViewCount();
 
-
-        boolean attendance = getAttendance(user.getId(), roomId);
-
-        //요청자의 참여 여부 확인
-        if(attendance){
-            return RoomOfInfo.of(roomEntity, imageOfRoomInfos, tag);
-        }
-
         return RoomOfInfo.of(roomEntity, imageOfRoomInfos, tag);
 
     }
 
     //방 수정
+    @Transactional
     public void modifyRoomInfo(RoomOfUpdate roomOfUpdate){
         Room roomEntity = findRoomEntityById(roomOfUpdate.getId());
 
@@ -145,14 +140,25 @@ public class RoomService {
         //-- update Room Entity --
         roomEntity.updateRoom(roomOfUpdate);
 
+        //WS 메세지 생성
+        WsResponse wsResponse = WsResponse.of(ChatCode.SYSTEM_ROOM_UPDATED,
+                getRoomInfo(roomEntity.getId())
+                );
+
+        //WS 메세지 보내기
+        sendMessage(roomEntity.getId(), wsResponse);
+
+
     }
 
+    //방 필터링 조회
     public Page<RoomOfList> roomFields(FieldsOfRoomList fieldsOfRoomList, Pageable pageable){
         Page<RoomOfList> list = roomRepository.searchAll(fieldsOfRoomList, pageable);
 
         return list;
     }
 
+    //방 참가
     public RoomOfParticipate participateRoom(User currentUser, Long roomId){
 
         UserAndRoomOfService userAndRoomEntity =
@@ -182,18 +188,24 @@ public class RoomService {
             roomEntity.participate();
         }
 
-        Response response = Response.of(RoomCode.ENTER_USER_TO_ROOM,
+        //WS 메세지 생성
+        WsResponse wsResponse = WsResponse.of(ChatCode.SYSTEM_USER_ENTER,
                 MessageOfParticipate.builder()
-                        .participateUserId(userEntity.getId())
-                        .participateUserNickname(userEntity.getNickname())
+                        .id(userEntity.getId())
+                        .mannerPoint(userEntity.getMannerPoint())
+                        .nickname(userEntity.getNickname())
+                        .gender(userEntity.getGender())
                         .build());
 
-        chatController.sendServerMessage(roomEntity.getId(), "enter", response);
+        //WS 메세지 보내기
+        sendMessage(roomEntity.getId(), wsResponse);
+
 
         // 정상적으로 참여가 가능한 경우
+        // HTTP 응답 메세지 생성
         return RoomOfParticipate.builder()
                 .status(RoomCode.SUCCESS_PARTICIPATE_ROOM)
-                .roomOfInfo(getRoomInfo(currentUser, roomId))
+                .roomOfInfo(getRoomInfo(roomId))
                 .participants(getParticipantsInfo(roomEntity.getParticipants()))
                 .build();
     }
@@ -202,7 +214,6 @@ public class RoomService {
         List<UserOfOtherInfo> userOfOtherInfoList = new ArrayList<>();
 
         for (Participant participant : participantList){
-            log.info("participant id = {}", participant.getUser().getId());
             userOfOtherInfoList.add(userService.getOtherInfo(participant.getUser().getId()));
         }
 
@@ -282,14 +293,29 @@ public class RoomService {
         // 방장 위임
         roomEntity.updateHost(delegatedUser);
 
-        // 응답 메세지 생성
+
+        //WS 메세지 생성
+        WsResponse wsResponse = WsResponse.of(ChatCode.SYSTEM_USER_DELEGATED,
+                MessageOfDelegate.builder()
+                        .beforeHostId(requestUser.getId())
+                        .beforeHostNickname(requestUser.getNickname())
+                        .afterHostId(delegatedUser.getId())
+                        .afterHostNickname(delegatedUser.getNickname())
+                        .build());
+
+        //WS 메세지 보내기
+        sendMessage(roomEntity.getId(), wsResponse);
+
+
+
+        // HTTP 응답 메세지 생성
         Response response = Response.of(RoomCode.DELEGATE,MessageOfDelegate.builder()
                 .beforeHostId(requestUser.getId())
                 .beforeHostNickname(requestUser.getNickname())
                 .afterHostId(delegatedUser.getId())
                 .afterHostNickname(delegatedUser.getNickname()).build());
-        // 소켓 통신, 정보 발행
-        chatController.sendServerMessage(1L, "delegate", response);
+
+
 
         return response;
 
@@ -327,18 +353,30 @@ public class RoomService {
         // 방 인원 수 1명 줄이기
         roomEntity.leave();
 
-        // 응답 메세지 생성
+
+        //WS 메세지 생성
+        WsResponse wsResponse = WsResponse.of(ChatCode.SYSTEM_USER_KICKED_OUT,
+                MessageOfKickOut.builder()
+                        .id(kickedOutUser.getId())
+                        .mannerPoint(kickedOutUser.getMannerPoint())
+                        .userNickname(kickedOutUser.getNickname())
+                        .build());
+
+        //WS 메세지 보내기
+        sendMessage(roomEntity.getId(), wsResponse);
+
+
+
+
+        // HTTP 응답 메세지 생성
         Response response = Response.of(
                 RoomCode.KICKED_OUT, MessageOfKickOut.builder()
-                .kickedUserId(kickedOutUser.getId())
-                .kickedUserNickname(kickedOutUser.getNickname())
+                .id(kickedOutUser.getId())
+                .userNickname(kickedOutUser.getNickname())
+                .mannerPoint(kickedOutUser.getMannerPoint())
                 .build());
-        // 소켓 통신, 정보 발행
-        chatController.sendServerMessage(1L, "kickOut", response);
 
         return response;
-
-
     }
     //방 나가기
     public Response out(User currentUser, Long roomId){
@@ -362,14 +400,25 @@ public class RoomService {
         //방 인원수 줄이기
         roomEntity.leave();
 
-        // 응답 메세지 생성
+        //메세지 body 생성
+        MessageOfLeave messageBody = MessageOfLeave.builder()
+                .id(userEntity.getId())
+                .mannerPoint(userEntity.getMannerPoint())
+                .userNickname(userEntity.getNickname())
+                .gender(userEntity.getGender())
+                .build();
+        //WS 메세지 생성
+        WsResponse wsResponse = WsResponse.of(ChatCode.SYSTEM_USER_OUT,
+                messageBody);
+
+        //WS 메세지 보내기
+        sendMessage(roomEntity.getId(), wsResponse);
+
+        // HTTP 응답 메세지 생성
         Response response = Response.of(
-                RoomCode.USER_OUT_FROM_ROOM, MessageOfLeave.builder()
-                                .userId(userEntity.getId())
-                                .userNickname(userEntity.getNickname())
-                        .build());
+                RoomCode.USER_OUT_FROM_ROOM, messageBody);
         // 소켓 통신, 정보 발행
-        chatController.sendServerMessage(1L,"out", response);
+
         return response;
     }
 
@@ -424,11 +473,17 @@ public class RoomService {
         return Response.of(CommonCode.GOOD_REQUEST,
                 RoomOfParticipate.builder()
                         .status(RoomCode.SUCCESS_PARTICIPATE_ROOM)
-                        .roomOfInfo(getRoomInfo(userAndRoomOfService.getUser(), roomId))
+                        .roomOfInfo(getRoomInfo(roomId))
                         .participants(getParticipantsInfo(userAndRoomOfService.getRoom().getParticipants()))
                         .build()
                 );
 
+    }
+
+    // 메세지 발행
+    public void sendMessage(Long roomId, WsResponse response){
+
+        chatController.sendServerMessage(roomId, response);
     }
 
 
