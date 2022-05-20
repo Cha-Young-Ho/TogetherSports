@@ -33,10 +33,14 @@ public class ActiveArea {
     @Column(name = "USER_ID")
     private String userId;
 
-
+    @Column(name = "LOCATION")
     private String location; // 지역 주소 명
-    private Long latitude;
-    private Long longitude;
+
+    @Column(name = "LATITUDE", precision = 100, scale = 100)
+    private double latitude;
+
+    @Column(name = "LONGITUDE", precision = 100, scale = 100)
+    private double longitude;
 
     // 활동 지역 엔티티를 생성자 및 빌더로 직접 접근해서 생성하는 것은 불가능 반드시 특정 메소드 사용하도록 강제
     @Builder(access = AccessLevel.PRIVATE)

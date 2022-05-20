@@ -26,6 +26,7 @@ public enum RoomCode implements ResponseCode {
     PARTICIPATING_ROOM(1214, "이미 참여하고 있는 방입니다.");
 
 
+
     private final int code;
     private final String message;
 
