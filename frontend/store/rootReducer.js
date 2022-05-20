@@ -84,10 +84,6 @@ const saveRoomId = {
   roomId: "",
 };
 
-const saveRoomDate = {
-  appointmentDate: "",
-};
-
 // 오타 방지용
 const PERSONALINFO = "PERSONALINFO";
 const INTERESTS = "INTERESTS";
@@ -112,7 +108,6 @@ const SETREQUIREDPPLCOUNT = "SETREQUIREDPPLCOUNT";
 const RESETALLDATAS = "RESETALLDATAS";
 const CHANGELOGINSTATUS = "CHANGELOGINSTATUS";
 const SAVEROOMID = "SAVEROOMID";
-const SAVEROOMDATE = "SAVEROOMDATE";
 
 // 유저 회원정보추가입력 정보 reducer
 const userRequestReducer = (state = signupInitialState, action) => {
@@ -309,19 +304,6 @@ const saveRoomIdReducer = (state = saveRoomId, action) => {
   }
 };
 
-// 방 날짜 정보 저장
-const saveRoomDateReducer = (state = saveRoomDate, action) => {
-  switch (action.type) {
-    case SAVEROOMDATE:
-      return {
-        ...state,
-        appointmentDate: action.payload.appointmentDate,
-      };
-    default:
-      return state;
-  }
-};
-
 // rootReducer로 모든 reducer Combine
 const rootReducer = combineReducers({
   userRequestReducer,
@@ -332,7 +314,6 @@ const rootReducer = combineReducers({
   filteringButtonClickDetectionReducer,
   loginStatusChangeReducer,
   saveRoomIdReducer,
-  saveRoomDateReducer,
 });
 
 const makeStore = () => createStore(rootReducer, composeWithDevTools());

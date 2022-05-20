@@ -74,7 +74,7 @@ public class CustomLogoutHandler implements LogoutHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        log.info("map = {}", map);
         return map;
     }
 
@@ -97,6 +97,7 @@ public class CustomLogoutHandler implements LogoutHandler {
             PrintWriter writer = response.getWriter();
             writer.write(objectMapper.writeValueAsString(responseValue));
         }
+        log.info("response = {}", response);
         return response;
     }
 

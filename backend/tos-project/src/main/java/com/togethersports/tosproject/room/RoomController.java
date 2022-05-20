@@ -40,7 +40,7 @@ public class RoomController {
     @GetMapping("/api/rooms/{roomId}/info")
     public ResponseEntity<Response> getRoomInfo(@CurrentUser User user, @PathVariable Long roomId){
 
-        RoomOfInfo roomOfInfo = roomService.getRoomInfo(user, roomId);
+        RoomOfInfo roomOfInfo = roomService.getRoomInfo(roomId);
 
         return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, roomOfInfo));
     }
@@ -110,6 +110,7 @@ public class RoomController {
         return ResponseEntity.ok(response);
     }
 
+    //구하고있는 방 전체 개수 조회
     @GetMapping("/api/room/count")
     public ResponseEntity getRoomCountJPQL(){
         Response response = roomService.getRoomCount();
@@ -124,6 +125,7 @@ public class RoomController {
         return ResponseEntity.ok(response);
     }
 
+    //해당 방 참여 여부 조회
     @GetMapping("/api/rooms/{roomId}/attendance")
     public ResponseEntity getRoomAttendance(@PathVariable Long roomId, @CurrentUser User user){
         boolean attendance = roomService.getAttendance(user.getId(), roomId);

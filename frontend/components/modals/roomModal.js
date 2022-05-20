@@ -4,12 +4,11 @@ import { getRoomInfo, postEnterRoom } from "../../api/rooms";
 import ImageSlide from "../imageSlide";
 import router from "next/router";
 import { useDispatch } from "react-redux";
+import Map from "../Map";
 
 /* roomList에서 받은 각 room들의 roomId를 props로 받기 */
 const RoomModal = (props) => {
   const dispatch = useDispatch();
-  const [getInfoDone, setGetInfoDone] = useState(false); // 방 정보를 다 받아왔는지 여부 체크
-  const [mapLoaded, setMapLoaded] = useState(false); // 지도 로드 동기화
 
   /* response content 담을 변수들 */
   const [roomId, setRoomId] = useState(""); // 참여페이지로 넘어가기 위한 roomId
@@ -28,13 +27,15 @@ const RoomModal = (props) => {
   const [roomImages, setRoomImages] = useState([]);
 
   useEffect(() => {
-    const script = document.createElement("script");
-    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAOMAP_APPKEY}&autoload=false&libraries=services`;
-    document.head.appendChild(script);
-  }, []);
-
-  useEffect(() => {
     if (props.open) {
+      // 테스트 용도
+      // dispatch({
+      //   type: "SAVEPOM",
+      //   payload: {
+      //     placeOfMeeting: "대구 달서구 월배로 11길 33",
+      //   },
+      // });
+
       // 방 정보 받아오기
       getRoomInfo(props.roomId).then((res) => {
         if (res.status.code === 5000) {
@@ -81,61 +82,18 @@ const RoomModal = (props) => {
             },
           });
 
-          setGetInfoDone(true);
+          dispatch({
+            type: "SAVEPOM",
+            payload: {
+              placeOfMeeting: roomArea,
+            },
+          });
         } else {
           FailResponse(res.status.code);
         }
       });
     }
   }, [props.open]);
-
-  useEffect(() => {
-    if (getInfoDone) setMapLoaded(true);
-  }, [getInfoDone]);
-
-  useEffect(() => {
-    if (mapLoaded) {
-      // 위치 정보 받아오기
-      kakao.maps.load(() => {
-        const container = document.getElementById("map"),
-          // 기본 좌표 = 서울시청
-          options = {
-            center: new kakao.maps.LatLng(
-              37.56682420062817,
-              126.97864093976689
-            ),
-            level: 4,
-          };
-
-        const map = new kakao.maps.Map(container, options); // 지도 생성
-        const geocoder = new kakao.maps.services.Geocoder(); // 주소-좌표 변환 객체 생성
-
-        // 주소로 좌표를 검색
-        geocoder.addressSearch(`${roomArea}`, function (result, status) {
-          console.log(roomArea);
-          if (status === kakao.maps.services.Status.OK) {
-            const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-
-            // 위치에 마커 표시
-            const marker = new kakao.maps.Marker({
-              map: map,
-              position: coords,
-            });
-
-            // 인포윈도우로 장소에 대한 설명을 표시
-            const infowindow = new kakao.maps.InfoWindow({
-              content:
-                '<div style="width:150px;text-align:center;padding:6px 0;">만남의 장소</div>',
-            });
-            infowindow.open(map, marker);
-
-            // 지도의 중심을 결과값으로 받은 위치로 이동
-            map.setCenter(coords);
-          }
-        });
-      });
-    }
-  }, [mapLoaded]);
 
   const enterRoom = (e) => {
     postEnterRoom(roomId)
@@ -232,7 +190,9 @@ const RoomModal = (props) => {
                 <p>위치 정보</p>
                 <div></div>
                 <p className="address-info">{roomArea}</p>
-                <div id="map"></div>
+                <div className="map-wrapper">
+                  <Map setPOM={"true"} />
+                </div>
               </div>
             </div>
 
@@ -434,7 +394,7 @@ const RoomModal = (props) => {
           border: solid 0.3px #707070;
         }
 
-        #map {
+        .map-wrapper {
           width: 100%;
           height: 100%;
           border-radius: 10px;

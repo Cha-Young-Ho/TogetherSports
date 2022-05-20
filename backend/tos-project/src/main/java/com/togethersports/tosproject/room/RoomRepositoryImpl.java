@@ -48,7 +48,7 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
                 .where(eqInterests(
                     fieldsOfRoomList.getExercise()),
                     eqArea(fieldsOfRoomList.getArea()),
-                    participateCount(fieldsOfRoomList.getRequiredPeopleCount(), fieldsOfRoomList.isContainNoAdmittance()),
+                    participateCount(fieldsOfRoomList.getParticipantCount(), fieldsOfRoomList.isContainNoAdmittance()),
                     betweenTime(fieldsOfRoomList.getStartAppointmentDate(), fieldsOfRoomList.getEndAppointmentDate(), fieldsOfRoomList.isContainTimeClosing()),
                     eqTitle(fieldsOfRoomList.getRoomTitle()),
                     eqContent(fieldsOfRoomList.getRoomContent())
