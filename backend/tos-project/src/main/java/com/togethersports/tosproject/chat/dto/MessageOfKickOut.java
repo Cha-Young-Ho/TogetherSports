@@ -12,6 +12,7 @@ import lombok.Getter;
 @Builder
 public class MessageOfKickOut {
 
-    private String kickedUserNickname;
-    private Long kickedUserId;
+    private Long id;
+    private String userNickname;
+    private int mannerPoint;
 }

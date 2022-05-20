@@ -1,6 +1,5 @@
 package com.togethersports.tosproject.user;
 
-import com.togethersports.tosproject.area.ActiveArea;
 import com.togethersports.tosproject.common.file.service.StorageService;
 import com.togethersports.tosproject.common.file.util.Base64Decoder;
 import com.togethersports.tosproject.common.file.util.NameGenerator;
@@ -14,7 +13,6 @@ import com.togethersports.tosproject.user.exception.NicknameDuplicationException
 import com.togethersports.tosproject.user.exception.NotEnteredInformationException;
 import com.togethersports.tosproject.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -153,7 +151,6 @@ public class UserService {
                .isInformationRequired(user.isInformationRequired())
                .userNickname(user.getNickname())
                .build();
-
     }
 
     public void checkInformation(User user){
