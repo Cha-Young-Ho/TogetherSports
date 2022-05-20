@@ -16,7 +16,7 @@ import javax.persistence.*;
  *     사용자가 활동 지역으로 선택한 주소를 저장하며 사용자별 최대 5개까지 지정될 수 있다.
  * </p>
  * <p>
- *     신규 활동 지역을 생성하려면 다음 메소드를 참조 {@link #createActiveArea(User, String)}
+ *     신규 활동 지역을 생성하려면 다음 메소드를 참조 {@link #createActiveArea(String)}
  * </p>
  * @see User
  * @author seunjeon
@@ -34,24 +34,31 @@ public class ActiveArea {
     private String userId;
 
 
-    private String address; // 지역 주소 명
+    private String location; // 지역 주소 명
+    private Long latitude;
+    private Long longitude;
 
     // 활동 지역 엔티티를 생성자 및 빌더로 직접 접근해서 생성하는 것은 불가능 반드시 특정 메소드 사용하도록 강제
     @Builder(access = AccessLevel.PRIVATE)
-    private ActiveArea(String address) {
-        this.address = address;
+    private ActiveArea(String location, Long latitude, Long longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.location = location;
+
     }
 
     protected ActiveArea() {}
 
     /**
      * 신규 활동 지역 엔티티를 생성한다. <br>
-     * @param address 활동 지역 주소명
+     * @param location 활동 지역 주소명
      * @return activeArea 활동 지역 엔티티
      */
-    public static ActiveArea createActiveArea(String address) {
+    public static ActiveArea createActiveArea(String location, Long latitude, Long longitude) {
         return ActiveArea.builder()
-                .address(address)
+                .location(location)
+                .longitude(longitude)
+                .latitude(latitude)
                 .build();
     }
 }

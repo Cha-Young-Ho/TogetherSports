@@ -26,15 +26,15 @@ import java.util.List;
 @Component
 public class ParsingEntityUtils {
 
-    // 문자열 리스트로 받은 "활동 지역"을 활동 지역 객체 리스트로 변환하는 메소드
-    public List<ActiveArea> parsingStringToActivesEntity(List<String> areaList){
-        List<ActiveArea> entityList = new ArrayList<>();
-
-        for (String area : areaList){
-            entityList.add(ActiveArea.createActiveArea(area));
-        }
-        return entityList;
-    }
+//    // 문자열 리스트로 받은 "활동 지역"을 활동 지역 객체 리스트로 변환하는 메소드
+//    public List<ActiveArea> parsingStringToActivesEntity(List<ActiveArea> areaList){
+//        List<ActiveArea> entityList = new ArrayList<>();
+//
+//        for (ActiveArea area : areaList){
+//            entityList.add(ActiveArea.createActiveArea(area));
+//        }
+//        return entityList;
+//    }
     // 문자열 리스트로 받은 "관심 종목"을 관심 종목 객체 리스트로 변환하는 메소드
     public List<Interest> parsingStringToInterestsEntity(List<String> interestsList){
         List<Interest> entityList = new ArrayList<>();
@@ -55,15 +55,15 @@ public class ParsingEntityUtils {
         return strList;
     }
 
-    public List<String> parsingAreasEntityToString(List<ActiveArea> activeAreaList){
-        List<String> strList = new ArrayList<>();
-
-        for(ActiveArea activeArea : activeAreaList){
-            strList.add(activeArea.getAddress());
-        }
-
-        return strList;
-    }
+//    public List<String> parsingAreasEntityToString(List<ActiveArea> activeAreaList){
+//        List<String> strList = new ArrayList<>();
+//
+//        for(ActiveArea activeArea : activeAreaList){
+//            strList.add(activeArea.getAddress());
+//        }
+//
+//        return strList;
+//    }
 
     public List<Tag> parsingStringToTagEntity(List<String> strList){
         List<Tag> tagList = new ArrayList<>();
