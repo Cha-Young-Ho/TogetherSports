@@ -33,60 +33,60 @@ const FilteredRooms = () => {
 
   // 현재 임시 데이터
   const [eachRoomInfo, setEachRoomInfo] = useState([
-    {
-      roomId: "121",
-      roomTitle: "축구 한판 뛰실분?",
-      limitPeopleCount: "22",
-      participantCount: "1",
-      tags: ["20대만", "고수만"],
-      startAppointmentDate: "2022-04-18T19:00",
-      roomImagePath: "",
-    },
-    {
-      roomId: "123",
-      roomTitle: "야구 한판 뛰실분?",
-      limitPeopleCount: "30",
-      participantCount: "1",
-      tags: ["20대만", "초보만"],
-      startAppointmentDate: "2022-04-19T22:30",
-      roomImagePath: "",
-    },
-    {
-      roomId: "121",
-      roomTitle: "축구 한판 뛰실분?",
-      limitPeopleCount: "22",
-      participantCount: "1",
-      tags: ["20대만", "고수만"],
-      startAppointmentDate: "2022-04-18T19:00",
-      roomImagePath: "",
-    },
-    {
-      roomId: "123",
-      roomTitle: "야구 한판 뛰실분?",
-      limitPeopleCount: "30",
-      participantCount: "1",
-      tags: ["20대만", "초보만"],
-      startAppointmentDate: "2022-04-19T22:30",
-      roomImagePath: "",
-    },
-    {
-      roomId: "121",
-      roomTitle: "축구 한판 뛰실분?",
-      limitPeopleCount: "22",
-      participantCount: "1",
-      tags: ["20대만", "고수만"],
-      startAppointmentDate: "2022-04-18T19:00",
-      roomImagePath: "",
-    },
-    {
-      roomId: "123",
-      roomTitle: "야구 한판 뛰실분?",
-      limitPeopleCount: "30",
-      participantCount: "1",
-      tags: ["20대만", "초보만"],
-      startAppointmentDate: "2022-04-19T22:30",
-      roomImagePath: "",
-    },
+    // {
+    //   roomId: "121",
+    //   roomTitle: "축구 한판 뛰실분?",
+    //   limitPeopleCount: "22",
+    //   participantCount: "1",
+    //   tags: ["20대만", "고수만"],
+    //   startAppointmentDate: "2022-04-18T19:00",
+    //   roomImagePath: "",
+    // },
+    // {
+    //   roomId: "123",
+    //   roomTitle: "야구 한판 뛰실분?",
+    //   limitPeopleCount: "30",
+    //   participantCount: "1",
+    //   tags: ["20대만", "초보만"],
+    //   startAppointmentDate: "2022-04-19T22:30",
+    //   roomImagePath: "",
+    // },
+    // {
+    //   roomId: "121",
+    //   roomTitle: "축구 한판 뛰실분?",
+    //   limitPeopleCount: "22",
+    //   participantCount: "1",
+    //   tags: ["20대만", "고수만"],
+    //   startAppointmentDate: "2022-04-18T19:00",
+    //   roomImagePath: "",
+    // },
+    // {
+    //   roomId: "123",
+    //   roomTitle: "야구 한판 뛰실분?",
+    //   limitPeopleCount: "30",
+    //   participantCount: "1",
+    //   tags: ["20대만", "초보만"],
+    //   startAppointmentDate: "2022-04-19T22:30",
+    //   roomImagePath: "",
+    // },
+    // {
+    //   roomId: "121",
+    //   roomTitle: "축구 한판 뛰실분?",
+    //   limitPeopleCount: "22",
+    //   participantCount: "1",
+    //   tags: ["20대만", "고수만"],
+    //   startAppointmentDate: "2022-04-18T19:00",
+    //   roomImagePath: "",
+    // },
+    // {
+    //   roomId: "123",
+    //   roomTitle: "야구 한판 뛰실분?",
+    //   limitPeopleCount: "30",
+    //   participantCount: "1",
+    //   tags: ["20대만", "초보만"],
+    //   startAppointmentDate: "2022-04-19T22:30",
+    //   roomImagePath: "",
+    // },
   ]);
 
   const openRoomExplainModal = () => {
@@ -320,9 +320,9 @@ const FilteredRooms = () => {
             })}
           </div>
           <div className="rooms-wrapper">
-            <div className="rooms-grid">
-              {eachRoomInfo.length !== 0 ? (
-                eachRoomInfo.map((datas, index) => {
+            {eachRoomInfo.length !== 0 ? (
+              <div className="rooms-grid">
+                {eachRoomInfo.map((datas, index) => {
                   return (
                     <RoomShowingBox
                       key={index}
@@ -331,11 +331,12 @@ const FilteredRooms = () => {
                       datas={datas}
                     />
                   );
-                })
-              ) : (
-                <></>
-              )}
-            </div>
+                })}
+              </div>
+            ) : (
+              <div className="emptyRooms">해당하는 방이 없습니다.</div>
+            )}
+
             <RoomModal
               open={roomExplainModalOpen}
               close={closeRoomExplainModal}
@@ -384,6 +385,16 @@ const FilteredRooms = () => {
           place-items: center;
           row-gap: 30px;
           margin-bottom: 100px;
+        }
+
+        .emptyRooms {
+          width: 100%;
+          height: 500px;
+          font-size: 5rem;
+          font-weight: bold;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
 
         .clicked {

@@ -82,42 +82,37 @@ const Chatting = ({ chatOpen }) => {
     //     },
     //   ],
   ]);
-  
-  // console.log("소켓 연결 됨");
-  // const sockJS = new SockJS("http://localhost:8080/api/websocket");
-  // const client = StompJS.over(sockJS);
 
   const connect = () => {
-    console.log("소켓 연결 됨");
     const sockJS = new SockJS("http://localhost:8080/api/websocket");
     const client = StompJS.over(sockJS);
     client.connect(
       { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
       () => {
         client.subscribe(
-          `/topic/room/2/chat`,
+          `/topic/room/${roomId}/chat`,
           (data) => {
-            // const newMessage = JSON.parse(data.body);
-            // const msgLen = showingMessages.length;
-            // if (
-            //   msgLen &&
-            //   newMessage.userId === showingMessages[msgLen - 1][0].userId
-            // ) {
-            //   const temp = [...showingMessages];
-            //   temp[temp.length - 1].push({
-            //     userId: newMessage.userId,
-            //     nickname: newMessage.nickname,
-            //     userProfileImagePath: newMessage.userProfileImagePath,
-            //     content: {
-            //       message: newMessage.content.message,
-            //       sendAt: newMessage.content.sendAt,
-            //     },
-            //   });
-            //   setShowingMessages(temp);
-            // } else {
-            //   setShowingMessages((prev) => [...prev, newMessage]);
-            // }
-            // setMessageToServer("");
+            const newMessage = JSON.parse(data.body);
+            const msgLen = showingMessages.length;
+            if (
+              msgLen &&
+              newMessage.userId === showingMessages[msgLen - 1][0].userId
+            ) {
+              const temp = [...showingMessages];
+              temp[temp.length - 1].push({
+                userId: newMessage.userId,
+                nickname: newMessage.nickname,
+                userProfileImagePath: newMessage.userProfileImagePath,
+                content: {
+                  message: newMessage.content.message,
+                  sendAt: newMessage.content.sendAt,
+                },
+              });
+              setShowingMessages(temp);
+            } else {
+              setShowingMessages((prev) => [...prev, newMessage]);
+            }
+            setMessageToServer("");
           },
           { Authorization: `Bearer ${localStorage.getItem("accessToken")}` }
         );
@@ -146,7 +141,7 @@ const Chatting = ({ chatOpen }) => {
   const onSubmitMessage = (e) => {
     e.preventDefault();
     client.send(
-      `/api/room/2/chat`,
+      `/api/room/${roomId}/chat`,
       { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
       JSON.stringify({
         message: messageToServer,
@@ -166,10 +161,10 @@ const Chatting = ({ chatOpen }) => {
     }
   }, [roomId]);
 
-  // useEffect(() => {
-  //   document.getElementsByClassName("dialog")[0].scrollTop =
-  //     document.getElementsByClassName("dialog")[0].scrollHeight;
-  // }, [showingMessages]);
+  useEffect(() => {
+    document.getElementsByClassName("dialog")[0].scrollTop =
+      document.getElementsByClassName("dialog")[0].scrollHeight;
+  }, [showingMessages]);
 
   return (
     <>
