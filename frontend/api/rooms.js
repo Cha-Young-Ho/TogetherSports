@@ -146,9 +146,7 @@ const getRootLocations = () => {
 
 // 하위(시 이하) 행정구역 조회
 const getChildLocations = (name) => {
-  const promise = axios.get(
-    `http://localhost:8080/locations/parent/name?${name}`
-  );
+  const promise = axios.get(`http://localhost:8080/locations/parent/${name}`);
 
   const dataPromise = promise.then((res) => res.data);
 

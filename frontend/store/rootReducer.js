@@ -80,8 +80,31 @@ const loginStatusChangeInitialState = {
 };
 
 // roomID 초기값
-const saveRoomId = {
+const saveRoomIdInitialState = {
   roomId: "",
+};
+
+// 캘린더용 날짜 저장 초기값
+const saveRoomDateInitialState = {
+  appointmentDate: "",
+};
+
+// 활동 지역 초기값
+const saveActiveAreaInitialState = {
+  activeAreas: [
+    // {
+    //   location: "대구 달서구 월배로 11길 33",
+    //   latitude: 128.55852581779735,
+    //   longitude: 35.828258292333956,
+    // },
+    // {
+    //   location: "대구 달서구 월배로 11길 33",
+    //   latitude: 128.54185331387004,
+    //   longitude: 35.84959643998648,
+    // },
+  ],
+  tagAreas: [],
+  placeOfMeeting: "",
 };
 
 // 오타 방지용
@@ -108,6 +131,10 @@ const SETREQUIREDPPLCOUNT = "SETREQUIREDPPLCOUNT";
 const RESETALLDATAS = "RESETALLDATAS";
 const CHANGELOGINSTATUS = "CHANGELOGINSTATUS";
 const SAVEROOMID = "SAVEROOMID";
+const SAVEROOMDATE = "SAVEROOMDATE";
+const SAVEACTIVEAREA = "SAVEACTIVEAREA";
+const SAVETAGAREAS = "SAVETAGAREAS";
+const SAVEPOM = "SAVEPOM";
 
 // 유저 회원정보추가입력 정보 reducer
 const userRequestReducer = (state = signupInitialState, action) => {
@@ -292,12 +319,48 @@ const loginStatusChangeReducer = (
 };
 
 // 방 번호 저장(chatting 참여를 위해)
-const saveRoomIdReducer = (state = saveRoomId, action) => {
+const saveRoomIdReducer = (state = saveRoomIdInitialState, action) => {
   switch (action.type) {
     case SAVEROOMID:
       return {
         ...state,
         roomId: action.payload.roomId,
+      };
+    default:
+      return state;
+  }
+};
+
+// 방 날짜 정보 저장
+const saveRoomDateReducer = (state = saveRoomDateInitialState, action) => {
+  switch (action.type) {
+    case SAVEROOMDATE:
+      return {
+        ...state,
+        appointmentDate: action.payload.appointmentDate,
+      };
+    default:
+      return state;
+  }
+};
+
+// 활동지역 정보 관련 저장
+const saveActiveAreaReducer = (state = saveActiveAreaInitialState, action) => {
+  switch (action.type) {
+    case SAVEACTIVEAREA:
+      return {
+        ...state,
+        activeAreas: action.payload.activeAreas,
+      };
+    case SAVETAGAREAS:
+      return {
+        ...state,
+        tagAreas: action.payload.tagAreas,
+      };
+    case SAVEPOM:
+      return {
+        ...state,
+        placeOfMeeting: action.payload.placeOfMeeting,
       };
     default:
       return state;
@@ -314,6 +377,8 @@ const rootReducer = combineReducers({
   filteringButtonClickDetectionReducer,
   loginStatusChangeReducer,
   saveRoomIdReducer,
+  saveRoomDateReducer,
+  saveActiveAreaReducer,
 });
 
 const makeStore = () => createStore(rootReducer, composeWithDevTools());
