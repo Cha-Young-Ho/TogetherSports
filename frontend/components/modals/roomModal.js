@@ -28,14 +28,6 @@ const RoomModal = (props) => {
 
   useEffect(() => {
     if (props.open) {
-      // 테스트 용도
-      // dispatch({
-      //   type: "SAVEPOM",
-      //   payload: {
-      //     placeOfMeeting: "대구 달서구 월배로 11길 33",
-      //   },
-      // });
-
       // 방 정보 받아오기
       getRoomInfo(props.roomId).then((res) => {
         if (res.status.code === 5000) {
