@@ -18,7 +18,7 @@ const Banner = () => {
         FailResponse(error.response.data.status.code);
         return;
       });
-  });
+  }, []);
 
   return (
     <>

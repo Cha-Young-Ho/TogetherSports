@@ -227,6 +227,10 @@ const Chatting = ({ chatOpen }) => {
         </form>
       </div>
       <style jsx>{`
+        input:focus {
+          outline: none;
+        }
+
         .chatting {
           width: 100%;
           height: 433px;

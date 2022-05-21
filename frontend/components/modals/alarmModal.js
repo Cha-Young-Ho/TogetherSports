@@ -22,20 +22,18 @@ const AlarmModal = (props) => {
     <>
       <div className={props.open ? "openModal modal" : "modal"}>
         {props.open ? (
-          <section>
-            <div className="modal-body">
-              <img className="logo-image" src="/logo-alarm-modal.png"></img>
-              <div className="content">{props.content}</div>
-              <div className="buttons">
-                <button className="left-button" onClick={props.result}>
-                  {props.leftButton}
-                </button>
-                <button className="right-button" onClick={props.close}>
-                  {props.rightButton}
-                </button>
-              </div>
+          <div className="modal-body">
+            <img className="logo-image" src="/logo-alarm-modal.png"></img>
+            <div className="content">{props.content}</div>
+            <div className="buttons">
+              <button className="left-button" onClick={props.result}>
+                {props.leftButton}
+              </button>
+              <button className="right-button" onClick={props.close}>
+                {props.rightButton}
+              </button>
             </div>
-          </section>
+          </div>
         ) : null}
       </div>
       <style jsx>{`
@@ -50,34 +48,21 @@ const AlarmModal = (props) => {
           background-color: rgba(0, 0, 0, 0.6);
         }
 
-        section {
-          width: 430px;
-          height: 240px;
-          width: 90%;
-          max-width: 450px;
-          margin: 0 auto;
-          border-radius: 22px;
-          background-color: #fff;
-          box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
-          /* 팝업이 열릴때 스르륵 열리는 효과 */
-          animation: modal-show 0.3s;
-          overflow: hidden;
-          display: table;
-          text-align: center;
-        }
-
         .modal.openModal {
           display: flex;
           align-items: center;
-          /* 팝업이 열릴때 스르륵 열리는 효과 */
-          animation: modal-bg-show 0.3s;
+          justify-content: center;
+          animation: modal-bg-show 0.3s; // 스르륵 효과
         }
 
         .modal-body {
-          width: 100%;
-          height: 100%;
-          display: table-cell;
-          vertical-align: middle;
+          width: 430px;
+          height: 240px;
+          padding: 20px;
+          border-radius: 22px;
+          background-color: white;
+          box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+          display: flex;
           flex-direction: column;
           justify-content: center;
           align-items: center;
@@ -85,34 +70,33 @@ const AlarmModal = (props) => {
 
         .logo-image,
         .buttons {
-          margin: 20px;
+          user-select: none;
         }
 
         .logo-image {
-          max-width: 21px;
-          max-height: 47px;
+          max-width: 25px;
+          max-height: 50px;
         }
 
         .content {
-          font-size: 20px;
-          margin: 0 20px 20px 20px;
+          font-size: 2rem;
+          margin: 20px 0;
         }
 
         .left-button,
         .right-button {
-          margin: 0 10px;
           width: 175px;
-          height: 50px;
+          height: 40px;
           border: none;
           border-radius: 25px;
           color: white;
-          font-size: 15px;
-          font-weight: 200px;
+          font-size: 1.5rem;
           cursor: pointer;
         }
 
         .left-button {
           background-color: #00555f;
+          margin-right: 20px;
         }
 
         .right-button {

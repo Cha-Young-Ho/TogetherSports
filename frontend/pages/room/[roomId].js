@@ -153,7 +153,15 @@ const Room = () => {
             setUpdatedTime((updatedTime = roomInfo.updatedTime));
             setHost((host = roomInfo.host));
             setCreatorNickName((creatorNickName = roomInfo.creatorNickName));
-            setRoomImages((roomImages = roomInfo.roomImages));
+            setRoomImages(
+              (roomImages =
+                roomInfo.roomImages === null
+                  ? {
+                      order: 0,
+                      imagePath: "logo-sign.png",
+                    }
+                  : roomInfo.roomImages)
+            );
             setTags((tags = roomInfo.tags));
             setViewCount((viewCount = roomInfo.viewCount));
             // setAttendance(attendance = roomInfo.attendance);
@@ -283,7 +291,11 @@ const Room = () => {
           <div className="sections">
             <div className="left-section">
               <div className="image">
-                <ImageSlide imageArr={roomImages} />
+                {roomImages.length !== 0 ? (
+                  <ImageSlide imageArr={roomImages} />
+                ) : (
+                  <></>
+                )}
               </div>
               <div className="calendar">
                 <Calendar

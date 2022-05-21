@@ -182,6 +182,10 @@ const SetRoomImages = (props) => {
         </div>
       </div>
       <style jsx>{`
+        input:focus {
+          outline: none;
+        }
+
         .content-images {
           width: 100%;
           display: flex;
