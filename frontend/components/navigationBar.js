@@ -43,14 +43,14 @@ const NavigationBar = () => {
               userName: res.content.userName,
               userNickname: res.content.userNickname,
               userBirth: res.content.userBirth,
-              gender: res.content.gender,
+              mannerPoint: res.content.mannerPoint,
+              activeAreas: res.content.activeAreas.map((el) => el),
               userProfileImagePath:
                 res.content.userProfileImagePath === ""
                   ? "/base_profileImage.jpg"
                   : res.content.userProfileImagePath,
-              activeAreas: res.content.activeAreas.map((el) => el),
               interests: res.content.interests.map((el) => el),
-              mannerPoint: res.content.mannerPoint,
+              gender: res.content.gender,
               isInformationRequired: res.content.isInformationRequired,
             },
           });
@@ -166,7 +166,11 @@ const NavigationBar = () => {
                     </div>
                   </button>
 
-                  <Modal open={modalOpen} close={closeModal}></Modal>
+                  <Modal
+                    open={modalOpen}
+                    close={closeModal}
+                    path={"navBar"}
+                  ></Modal>
 
                   <button
                     className="btn_signout"

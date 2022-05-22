@@ -21,11 +21,11 @@ const myInfoInitialState = {
   userName: "",
   userNickname: "익명",
   userBirth: "yyyy-mm-dd",
-  gender: "",
-  userProfileImagePath: "/base_profileImage.jpg",
+  mannerPoint: 0,
   activeAreas: [],
+  userProfileImagePath: "/base_profileImage.jpg",
   interests: [],
-  mannerPoint: "",
+  gender: "",
   isInformationRequired: "false",
 };
 
@@ -172,11 +172,11 @@ const myInfoReducer = (state = myInfoInitialState, action) => {
         userName: action.payload.userName,
         userNickname: action.payload.userNickname,
         userBirth: action.payload.userBirth,
-        gender: action.payload.gender,
-        userProfileImagePath: action.payload.userProfileImagePath,
-        activeAreas: action.payload.activeAreas.map((el) => el),
-        interests: action.payload.interests.map((el) => el),
         mannerPoint: action.payload.mannerPoint,
+        activeAreas: action.payload.activeAreas.map((el) => el),
+        userProfileImagePath: action.payload.userProfileImagePath,
+        interests: action.payload.interests.map((el) => el),
+        gender: action.payload.gender,
         isInformationRequired: action.payload.isInformationRequired,
       };
     default:
@@ -184,7 +184,7 @@ const myInfoReducer = (state = myInfoInitialState, action) => {
   }
 };
 
-// 타인 정보 확인 시 필요한 닉네임 저장 reducer
+// participantList -> userInfoModal 로 전달되는 닉네임 저장용 reducer
 const saveNicknameReducer = (state = saveNicknameInitialState, action) => {
   switch (action.type) {
     case SAVENICKNAME:
