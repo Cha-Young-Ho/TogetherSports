@@ -1,6 +1,7 @@
 import { combineReducers, createStore } from "redux";
 import { createWrapper } from "next-redux-wrapper";
 import { composeWithDevTools } from "redux-devtools-extension";
+import SockJS from "sockjs-client";
 
 // 회원정보추가입력 초기값
 const signupInitialState = {
@@ -107,6 +108,14 @@ const saveActiveAreaInitialState = {
   placeOfMeeting: "",
 };
 
+// 웹소켓 저장 초기값
+const saveWebSocketInitialState = {
+  sockJS: "",
+  //new SockJS("http://localhost:8080/api/websocket"),
+  client: "",
+  //StompJS.over(sockJS),
+};
+
 // 오타 방지용
 const PERSONALINFO = "PERSONALINFO";
 const INTERESTS = "INTERESTS";
@@ -135,6 +144,8 @@ const SAVEROOMDATE = "SAVEROOMDATE";
 const SAVEACTIVEAREA = "SAVEACTIVEAREA";
 const SAVETAGAREAS = "SAVETAGAREAS";
 const SAVEPOM = "SAVEPOM";
+const SAVEWEBSOCKET = "SAVEWEBSOCKET";
+const SAVECLIENT = "SAVECLIENT";
 
 // 유저 회원정보추가입력 정보 reducer
 const userRequestReducer = (state = signupInitialState, action) => {
@@ -367,6 +378,26 @@ const saveActiveAreaReducer = (state = saveActiveAreaInitialState, action) => {
   }
 };
 
+// 활동지역 정보 관련 저장
+const saveWebSocketReducer = (state = saveWebSocketInitialState, action) => {
+  switch (action.type) {
+    case SAVEWEBSOCKET:
+      return {
+        ...state,
+        sockJS: action.payload.sockJS,
+        //new SockJS("http://localhost:8080/api/websocket"),
+      };
+    case SAVECLIENT:
+      return {
+        ...state,
+        client: action.payload.client,
+        //StompJS.over(sockJS),
+      };
+    default:
+      return state;
+  }
+};
+
 // rootReducer로 모든 reducer Combine
 const rootReducer = combineReducers({
   userRequestReducer,
@@ -379,6 +410,7 @@ const rootReducer = combineReducers({
   saveRoomIdReducer,
   saveRoomDateReducer,
   saveActiveAreaReducer,
+  saveWebSocketReducer,
 });
 
 const makeStore = () => createStore(rootReducer, composeWithDevTools());

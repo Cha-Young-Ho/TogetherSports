@@ -140,6 +140,7 @@ const FilteredRooms = () => {
     )
       .then((res) => {
         if (res.status.code === 5000) {
+          //방이 없을때 처리 필요
           setEachRoomInfo(res.content.content);
           setPage(page + 1);
         }

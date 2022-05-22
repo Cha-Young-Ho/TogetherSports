@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 
 const Chatting = ({ chatOpen }) => {
   const roomId = useSelector((state) => state.saveRoomIdReducer.roomId);
+  const clientInfo = useSelector((state) => state.saveWebSocketReducer.client);
   const [messageToServer, setMessageToServer] = useState("");
   const [showingMessages, setShowingMessages] = useState([
     //   [
@@ -84,12 +85,10 @@ const Chatting = ({ chatOpen }) => {
   ]);
 
   const connect = () => {
-    const sockJS = new SockJS("http://localhost:8080/api/websocket");
-    const client = StompJS.over(sockJS);
-    client.connect(
+    clientInfo.connect(
       { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
       () => {
-        client.subscribe(
+        clientInfo.subscribe(
           `/topic/room/${roomId}/chat`,
           (data) => {
             const newMessage = JSON.parse(data.body);
@@ -110,7 +109,7 @@ const Chatting = ({ chatOpen }) => {
               });
               setShowingMessages(temp);
             } else {
-              setShowingMessages((prev) => [...prev, newMessage]);
+              setShowingMessages((prev) => [...prev, [newMessage]]);
             }
             setMessageToServer("");
           },
@@ -140,7 +139,7 @@ const Chatting = ({ chatOpen }) => {
 
   const onSubmitMessage = (e) => {
     e.preventDefault();
-    client.send(
+    clientInfo.send(
       `/api/room/${roomId}/chat`,
       { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
       JSON.stringify({
@@ -150,8 +149,12 @@ const Chatting = ({ chatOpen }) => {
     );
   };
 
+  const sessionTest = (e) => {
+    e.preventDefault();
+  };
+
   useEffect(() => {
-    if (chatOpen && roomId !== "") {
+    if (chatOpen && roomId !== "" && clientInfo) {
       // getChatInfo().then((res) => {
       //   if (res.status.code === 5000) {
       //   }
@@ -159,7 +162,7 @@ const Chatting = ({ chatOpen }) => {
 
       connect();
     }
-  }, [roomId]);
+  }, [roomId, clientInfo]);
 
   useEffect(() => {
     document.getElementsByClassName("dialog")[0].scrollTop =
@@ -226,6 +229,9 @@ const Chatting = ({ chatOpen }) => {
           </button>
         </form>
       </div>
+      <button onClick={sessionTest}>
+        <img src="/chatting-send-button.png" />
+      </button>
       <style jsx>{`
         input:focus {
           outline: none;
