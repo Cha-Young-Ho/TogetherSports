@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getOtherInfo } from "../../api/members";
 import { FailResponse } from "../../api/failResponse";
+import { patchDelegateHost, kickOutUser } from "../../api/rooms";
 
 const UserInfoModal = (props) => {
   // reducer에 저장된 내 정보 불러오기
@@ -20,6 +21,14 @@ const UserInfoModal = (props) => {
   const [interest, setInterest] = useState([]);
   const [gender, setGender] = useState("");
   const [activeAreas, setActiveAreas] = useState([]);
+
+  // 방장 위임하기
+  const delegateHostFunc = (userNickname) => {
+    patchDelegateHost(userNickname).then((res) => {});
+  };
+
+  // 유저 강퇴하기
+  const kickOutUserFunc = () => {};
 
   useEffect(() => {
     // 네비게이션에서 프로필 조회를 하는 경우 (무조건 내 정보 조회만)
@@ -100,10 +109,16 @@ const UserInfoModal = (props) => {
                   </Link>
                 ) : (
                   <div>
-                    <button className="delegate-button" onClick={props.close}>
+                    <button
+                      className="delegate-button"
+                      onClick={delegateHostFunc}
+                    >
                       방장 위임하기
                     </button>
-                    <button className="expulsion-button" onClick={props.close}>
+                    <button
+                      className="expulsion-button"
+                      onClick={kickOutUserFunc}
+                    >
                       이 방에서 내보내기
                     </button>
                   </div>
