@@ -250,9 +250,11 @@ const postEnterRoom = (roomId) => {
 
 // 방 수정
 const postUpdateRoom = (
+  roomId,
   roomTitle,
   roomContent,
   roomArea,
+  limitPeopleCount,
   exercise,
   tags,
   startAppointmentDate,
@@ -262,9 +264,11 @@ const postUpdateRoom = (
   const promise =
     localStorage.getItem("accessToken") === null
       ? axios.put("http://localhost:8080/api/room", {
+          roomId: roomId,
           roomTitle: roomTitle,
           roomContent: roomContent,
           roomArea: roomArea,
+          limitPeopleCount: limitPeopleCount,
           exercise: exercise,
           tags: tags,
           startAppointmentDate: startAppointmentDate,
@@ -274,14 +278,44 @@ const postUpdateRoom = (
       : axios.put(
           "http://localhost:8080/api/room",
           {
+            roomId: roomId,
             roomTitle: roomTitle,
             roomContent: roomContent,
             roomArea: roomArea,
+            limitPeopleCount: limitPeopleCount,
             exercise: exercise,
             tags: tags,
             startAppointmentDate: startAppointmentDate,
             endAppointmentDate: endAppointmentDate,
             roomImages: roomImages,
+          },
+          {
+            headers: {
+              "Content-type": "application/json; charset=UTF-8",
+              Accept: "*/*",
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+          }
+        );
+
+  const dataPromise = promise.then((res) => res.data);
+
+  return dataPromise;
+};
+
+// PATCH
+
+// 방장 위임
+const patchDelegateHost = (roomId, targetUserId) => {
+  const promise =
+    localStorage.getItem("accessToken") === null
+      ? axios.patch(`http://localhost:8080/api/room/${roomId}/user/delegate`, {
+          targetUserId: targetUserId,
+        })
+      : axios.patch(
+          `http://localhost:8080/api/room/${roomId}/user/delegate`,
+          {
+            targetUserId: targetUserId,
           },
           {
             headers: {
@@ -335,6 +369,32 @@ const leaveRoom = (roomId) => {
   return dataPromise;
 };
 
+// 유저 강퇴
+const kickOutUser = (roomId, targetUserId) => {
+  const promise =
+    localStorage.getItem("accessToken") === null
+      ? axios.delete(`http://localhost:8080/api/room/${roomId}/user/kick-out`, {
+          targetUserId: targetUserId,
+        })
+      : axios.delete(
+          `http://localhost:8080/api/room/${roomId}/user/kick-out`,
+          {
+            targetUserId: targetUserId,
+          },
+          {
+            headers: {
+              "Content-type": "application/json; charset=UTF-8",
+              Accept: "*/*",
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+          }
+        );
+
+  const dataPromise = promise.then((res) => res.data);
+
+  return dataPromise;
+};
+
 export {
   getRoomInfo,
   getRoomDetail,
@@ -347,6 +407,8 @@ export {
   postUpdateRoom,
   postCreateRoom,
   postEnterRoom,
+  patchDelegateHost,
   deleteRoom,
   leaveRoom,
+  kickOutUser,
 };

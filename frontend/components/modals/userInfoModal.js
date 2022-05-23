@@ -3,11 +3,13 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getOtherInfo } from "../../api/members";
 import { FailResponse } from "../../api/failResponse";
+import { patchDelegateHost, kickOutUser } from "../../api/rooms";
 
 const UserInfoModal = (props) => {
+  // reducer에 저장된 내 정보 불러오기
   const myInfo = useSelector((state) => state.myInfoReducer);
 
-  // participantList 에서 조회 선택된 회원의 닉네임 (내정보조회, 다른회원정보조회 모두 가능)
+  // 참여자목록에서 조회 선택된 회원의 닉네임 가져오기
   const userNickname = useSelector(
     (state) => state.saveNicknameReducer.userNickname
   );
@@ -15,48 +17,72 @@ const UserInfoModal = (props) => {
   // 모달에 필요한 데이터들
   const [imageSrc, setImageSrc] = useState("/base_profileImage.jpg");
   const [nickname, setNickname] = useState("");
-  const [mannerPoint, setMannerPoint] = useState("");
+  const [mannerPoint, setMannerPoint] = useState(0);
   const [interest, setInterest] = useState([]);
   const [gender, setGender] = useState("");
   const [activeAreas, setActiveAreas] = useState([]);
 
+  // 방장 위임하기
+  const delegateHostFunc = (userNickname) => {
+    patchDelegateHost(userNickname).then((res) => {});
+  };
+
+  // 유저 강퇴하기
+  const kickOutUserFunc = () => {};
+
   useEffect(() => {
-    // 다른 회원 정보 조회
-    if (myInfo.userNickname !== userNickname) {
-      if (props.open) {
-        getOtherInfo(userNickname)
-          .then((res) => {
-            if (res.status.code === 5000) {
-              setNickname(res.content.userNickname);
-              setMannerPoint(res.content.mannerPoint);
-              setInterest(res.content.interests);
-              setImageSrc(res.content.userProfileImagePath);
-              setGender(res.content.gender);
-              setActiveAreas(res.content.activeAreas);
-            }
-          })
-          .catch((error) => {
-            FailResponse(error.response.data.status.code);
-            props.close();
-          });
-        return;
-      }
-    }
-    // 내 정보 조회 및 익명의 유저 정보 조회
-    else {
+    // 네비게이션에서 프로필 조회를 하는 경우 (무조건 내 정보 조회만)
+    if (props.path === "navBar") {
+      // 회원 추가정보 입력이 완료되지 않은 경우
       if (props.open && myInfo.userNickname === "익명") {
         alert("회원 추가 정보가 없어 내 정보를 요청할 수 없습니다.");
         props.close();
         return;
       }
+      // 내 정보 조회
+      else {
+        setImageSrc((imageSrc = myInfo.userProfileImagePath));
+        setNickname((nickname = myInfo.userNickname));
+        setMannerPoint((mannerPoint = myInfo.mannerPoint));
+        setInterest((interest = myInfo.interests));
+        setGender((gender = myInfo.gender));
+        setActiveAreas((activeAreas = myInfo.activeAreas));
+      }
+    }
 
-      // 내정보 조회
-      setImageSrc(myInfo.userProfileImagePath);
-      setNickname(myInfo.userNickname);
-      setMannerPoint(myInfo.mannerPoint);
-      setInterest(myInfo.interests);
-      setGender(myInfo.gender);
-      setActiveAreas(myInfo.activeAreas);
+    // 운동 대기방의 참여자목록에서 프로필 조회를 하는 경우 (내 정보 조회, 다른 회원 정보 조회 모두 가능)
+    if (props.path === "partyList") {
+      // 다른 회원 정보 조회
+      if (myInfo.userNickname !== userNickname) {
+        if (props.open) {
+          getOtherInfo(userNickname)
+            .then((res) => {
+              if (res.status.code === 5000) {
+                setImageSrc((imageSrc = res.content.userProfileImagePath));
+                setNickname((nickname = res.content.userNickname));
+                setMannerPoint((mannerPoint = res.content.mannerPoint));
+                setInterest((interest = res.content.interests));
+                setGender((gender = res.content.gender));
+                setActiveAreas((activeAreas = res.content.activeAreas));
+              }
+            })
+            .catch((error) => {
+              FailResponse(error.response.data.status.code);
+              props.close();
+            });
+          // return;
+        }
+      }
+
+      // 내 정보 조회
+      if (myInfo.userNickname == userNickname) {
+        setImageSrc((imageSrc = myInfo.userProfileImagePath));
+        setNickname((nickname = myInfo.userNickname));
+        setMannerPoint((mannerPoint = myInfo.mannerPoint));
+        setInterest((interest = myInfo.interests));
+        setGender((gender = myInfo.gender));
+        setActiveAreas((activeAreas = myInfo.activeAreas));
+      }
     }
   }, [props.open]);
 
@@ -73,21 +99,29 @@ const UserInfoModal = (props) => {
               <img src={imageSrc} className="pf-image"></img>
 
               <div className="buttons">
-                {myInfo.userNickname !== userNickname ? (
-                  <div>
-                    <button className="delegate-button" onClick={props.close}>
-                      방장 위임하기
-                    </button>
-                    <button className="expulsion-button" onClick={props.close}>
-                      이 방에서 내보내기
-                    </button>
-                  </div>
-                ) : (
+                {(myInfo.userNickname === userNickname &&
+                  props.path === "partyList") ||
+                props.path === "navBar" ? (
                   <Link href="/usermodification">
                     <button className="modify-button" onClick={props.close}>
                       회원 정보 수정하기
                     </button>
                   </Link>
+                ) : (
+                  <div>
+                    <button
+                      className="delegate-button"
+                      onClick={delegateHostFunc}
+                    >
+                      방장 위임하기
+                    </button>
+                    <button
+                      className="expulsion-button"
+                      onClick={kickOutUserFunc}
+                    >
+                      이 방에서 내보내기
+                    </button>
+                  </div>
                 )}
               </div>
             </div>
@@ -113,7 +147,9 @@ const UserInfoModal = (props) => {
 
               <div className="pf-mannerPoint">
                 {`❤️ ${mannerPoint}`}
-                {myInfo.userNickname === userNickname ? (
+                {(props.path === "partyList" &&
+                  myInfo.userNickname === userNickname) ||
+                props.path === "navBar" ? (
                   <></>
                 ) : (
                   <div>
@@ -136,7 +172,7 @@ const UserInfoModal = (props) => {
                 <p>활동 지역</p>
                 <div className="areas">
                   {activeAreas.map((area, index) => {
-                    return <div key={index}>{area}</div>;
+                    return <div key={index}>{area.location}</div>;
                   })}
                 </div>
               </div>

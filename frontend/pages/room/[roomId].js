@@ -369,6 +369,7 @@ const Room = () => {
                 <UserInfoModal
                   open={participantListModalOpen}
                   close={participantListCloseModal}
+                  path={"partyList"}
                 />
               </div>
             </div>
