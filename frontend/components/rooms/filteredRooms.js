@@ -141,8 +141,10 @@ const FilteredRooms = () => {
       .then((res) => {
         if (res.status.code === 5000) {
           //방이 없을때 처리 필요
-          setEachRoomInfo(res.content.content);
-          setPage(page + 1);
+          if (res.content) {
+            setEachRoomInfo(res.content.content);
+            setPage(page + 1);
+          }
         }
       })
       .catch((error) => {
@@ -277,8 +279,10 @@ const FilteredRooms = () => {
       )
         .then((res) => {
           if (res.status.code === 5000) {
-            setEachRoomInfo((prev) => [...prev, res.content.content]);
-            setPage(page + 1);
+            if (res.content) {
+              setEachRoomInfo((prev) => [...prev, res.content.content]);
+              setPage(page + 1);
+            }
           }
         })
         .catch((error) => {

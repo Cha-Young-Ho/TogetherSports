@@ -2,8 +2,11 @@ import RoomShowingBox from "../components/rooms/roomShowingBox";
 import { useEffect, useRef, useState } from "react";
 import { getMyRoomInfo } from "../api/rooms";
 import { FailResponse } from "../api/failResponse";
+import { useSelector } from "react-redux";
 
 const MyRoom = () => {
+  const myInfo = useSelector((state) => state.myInfoReducer);
+
   const [imminentRooms, setImminentRooms] = useState([
     //   {
     //     roomId: 2,
@@ -374,6 +377,12 @@ const MyRoom = () => {
   };
 
   useEffect(() => {
+    if (myInfo.id === "") {
+      alert("해당 기능을 사용하기 위해선 추가정보 입력이 필요합니다.");
+      window.history.back();
+      return;
+    }
+
     getMyRoomInfo((res) => {
       if (res.status.code === 5000) {
         setImminentRooms(res.content.imminentRooms);

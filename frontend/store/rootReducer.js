@@ -18,6 +18,7 @@ const signupInitialState = {
 
 // 내 정보 초기값
 const myInfoInitialState = {
+  id: 0,
   userEmail: "",
   userName: "",
   userNickname: "익명",
@@ -92,18 +93,7 @@ const saveRoomDateInitialState = {
 
 // 활동 지역 초기값
 const saveActiveAreaInitialState = {
-  activeAreas: [
-    // {
-    //   location: "대구 달서구 월배로 11길 33",
-    //   latitude: 128.55852581779735,
-    //   longitude: 35.828258292333956,
-    // },
-    // {
-    //   location: "대구 달서구 월배로 11길 33",
-    //   latitude: 128.54185331387004,
-    //   longitude: 35.84959643998648,
-    // },
-  ],
+  activeAreas: [],
   tagAreas: [],
   placeOfMeeting: "",
 };
@@ -111,9 +101,7 @@ const saveActiveAreaInitialState = {
 // 웹소켓 저장 초기값
 const saveWebSocketInitialState = {
   sockJS: "",
-  //new SockJS("http://localhost:8080/api/websocket"),
   client: "",
-  //StompJS.over(sockJS),
 };
 
 // 오타 방지용
@@ -179,6 +167,7 @@ const myInfoReducer = (state = myInfoInitialState, action) => {
     case SAVEMYINFO:
       return {
         ...state,
+        id: action.payload.id,
         userEmail: action.payload.userEmail,
         userName: action.payload.userName,
         userNickname: action.payload.userNickname,

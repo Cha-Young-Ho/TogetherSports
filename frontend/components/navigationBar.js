@@ -39,6 +39,7 @@ const NavigationBar = () => {
           dispatch({
             type: "SAVEMYINFO",
             payload: {
+              id: res.content.id,
               userEmail: res.content.userEmail,
               userName: res.content.userName,
               userNickname: res.content.userNickname,
@@ -99,6 +100,7 @@ const NavigationBar = () => {
           dispatch({
             type: "SAVEMYINFO",
             payload: {
+              id: "",
               userEmail: "",
               userName: "",
               userNickname: "익명",

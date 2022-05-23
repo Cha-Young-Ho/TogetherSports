@@ -135,6 +135,15 @@ const Room = () => {
     router.push("/room/roomlist"); // test를 위한 임시 라우팅
   };
 
+  const updateRoomDataFunc = (content) => {
+    setRoomTitle(content.roomTitle);
+    setRoomContent(content.roomContent);
+    setLimitPeopleCount(content.limitPeopleCount);
+    setTags(content.tags);
+    setRoomImages(content.roomImages);
+    alert("방 정보가 변경되었습니다.");
+  };
+
   useEffect(() => {
     if (roomId) {
       getRoomDetail(roomId)
@@ -380,7 +389,10 @@ const Room = () => {
                   <p>{`ID : ${host}님의 방`}</p>
                 </div>
 
-                <Chatting chatOpen={chatOpen} />
+                <Chatting
+                  chatOpen={chatOpen}
+                  updateRoomDataFunc={updateRoomDataFunc}
+                />
               </div>
             </div>
           </div>
