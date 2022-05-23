@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
  * </p>
  * @author younghoCha
  */
-@Slf4j
+
 @RequiredArgsConstructor
 @RestController
 public class RoomController {
@@ -120,7 +120,7 @@ public class RoomController {
     //운동 대기방 조회
     @GetMapping("/api/rooms/{roomId}/detail")
     public ResponseEntity getRoomDetailInfo(@PathVariable Long roomId, @CurrentUser User user){
-        log.info("room id {} - user id {}", roomId, user.getId());
+
         Response response = roomService.getRoomDetailInfo(roomId, user);
         return ResponseEntity.ok(response);
     }

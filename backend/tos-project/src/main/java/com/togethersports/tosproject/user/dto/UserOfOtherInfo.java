@@ -18,6 +18,4 @@ public class UserOfOtherInfo {
     private List<ActiveArea> activeAreas;
     private List<String> interests;
     private String userProfileImagePath;
-
 }
-
