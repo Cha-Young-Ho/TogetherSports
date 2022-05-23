@@ -6,23 +6,6 @@ import axios from "axios";
 
 // GET
 
-// 인기있는 방 조회
-const getPopulariyRooms = () => {
-  const promise =
-    localStorage.getItem("accessToken") === null
-      ? axios.get("http://localhost:8080/api/rooms/popularity")
-      : axios.get("http://localhost:8080/api/rooms/popularity", {
-          headers: {
-            "Content-type": "application/json; charset=UTF-8",
-            Accept: "*/*",
-          },
-        });
-
-  const dataPromise = promise.then((res) => res.data);
-
-  return dataPromise;
-};
-
 // 네비게이션 바 요청
 const getNavBar = () => {
   const promise =
@@ -86,4 +69,4 @@ const postRefreshToken = (refreshToken) => {
 
 // DELETE
 
-export { getPopulariyRooms, getNavBar, getRoomCount, postRefreshToken };
+export { getNavBar, getRoomCount, postRefreshToken };

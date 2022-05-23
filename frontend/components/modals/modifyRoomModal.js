@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import SetRoomImages from "../rooms/setRoomImages";
-import { getRoomInfo, updateRoom } from "../../api/rooms";
+import { getRoomInfo, putUpdateRoom } from "../../api/rooms";
 import FailResponse from "../../api/failResponse";
 
 const ModifyRoomModal = (props) => {
@@ -117,7 +117,7 @@ const ModifyRoomModal = (props) => {
     if (roomContent === "") setRoomContent(null);
     if (tags.length === 0) setTags(null);
 
-    updateRoom(
+    putUpdateRoom(
       roomId,
       roomTitle,
       roomContent,

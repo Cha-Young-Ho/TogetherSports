@@ -249,7 +249,7 @@ const postEnterRoom = (roomId) => {
 // PUT
 
 // 방 수정
-const postUpdateRoom = (
+const putUpdateRoom = (
   roomId,
   roomTitle,
   roomContent,
@@ -352,7 +352,7 @@ const deleteRoom = (roomId) => {
 };
 
 // 방 나가기
-const leaveRoom = (roomId) => {
+const deleteLeaveRoom = (roomId) => {
   const promise =
     localStorage.getItem("accessToken") === null
       ? axios.delete(`http://localhost:8080/api/room/${roomId}/user`)
@@ -370,7 +370,7 @@ const leaveRoom = (roomId) => {
 };
 
 // 유저 강퇴
-const kickOutUser = (roomId, targetUserId) => {
+const deleteKickOutUser = (roomId, targetUserId) => {
   const promise =
     localStorage.getItem("accessToken") === null
       ? axios.delete(`http://localhost:8080/api/room/${roomId}/user/kick-out`, {
@@ -404,11 +404,11 @@ export {
   getChatInfo,
   getMyRoomInfo,
   getAvailability,
-  postUpdateRoom,
+  putUpdateRoom,
   postCreateRoom,
   postEnterRoom,
   patchDelegateHost,
   deleteRoom,
-  leaveRoom,
-  kickOutUser,
+  deleteLeaveRoom,
+  deleteKickOutUser,
 };
