@@ -1,4 +1,4 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getOtherInfo } from "../../api/members";
@@ -6,13 +6,16 @@ import { FailResponse } from "../../api/failResponse";
 import { patchDelegateHost, kickOutUser } from "../../api/rooms";
 
 const UserInfoModal = (props) => {
+  const dispatch = useDispatch();
+
   // reducer에 저장된 내 정보 불러오기
   const myInfo = useSelector((state) => state.myInfoReducer);
 
-  // 참여자목록에서 조회 선택된 회원의 닉네임 가져오기
+  // 참여자목록에서 조회 선택된 회원의 닉네임과 id
   const clickedUserNickname = useSelector(
     (state) => state.saveNicknameReducer.userNickname
   );
+  const [userId, setUserId] = useState(0);
 
   // 모달에 필요한 데이터들
   const [imageSrc, setImageSrc] = useState("/base_profileImage.jpg");
@@ -24,14 +27,21 @@ const UserInfoModal = (props) => {
 
   // 방장 위임하기
   const delegateHostFunc = () => {
-    patchDelegateHost(props.roomId, 여기서클릭된유저의id를받아야함)
+    patchDelegateHost(props.roomId, userId)
       .then((res) => {
         if (res.status.code === 1208) {
-          // 여기서 성공 response로 받는 값으로
-          // redux 방장 값 바꾸기
+          dispatch({
+            type: "SAVEROOMHOST",
+            payload: {
+              beforeHostNickname: res.content.beforeHostNickname,
+              beforeHostId: res.content.beforeHostId,
+              afterHostNickname: res.content.afterHostNickname,
+              afterHostId: res.content.afterHostId,
+            },
+          });
 
           console.log(res.status.message);
-          alert("방장이 변경되었습니다 !"); // 나중에 지울 것
+          alert("방장이 변경되었습니다 !"); // 임시 텍스트
 
           close();
         }
@@ -41,9 +51,6 @@ const UserInfoModal = (props) => {
         return;
       });
   };
-
-  // FLOW : 위임 버튼 누르면 patch 요청되고 거기의 매개변수로 roomId, 방장으로 위임선택된 사람의 id(email?)이 전달되고, 성공적으로 위임됐으면 response로 이전 방장닉넴/아디, 현재 방장닉넴/아디를 받게된다.
-  // 또한 response로 받은 이전방장과 현재방장을 redux에 담아서 채팅에 뿌려준다.
 
   // 유저 강퇴하기
   const kickOutUserFunc = () => {};
@@ -76,6 +83,7 @@ const UserInfoModal = (props) => {
           getOtherInfo(clickedUserNickname)
             .then((res) => {
               if (res.status.code === 5000) {
+                setUserId((userId = res.content.id));
                 setImageSrc((imageSrc = res.content.userProfileImagePath));
                 setNickname((nickname = res.content.userNickname));
                 setMannerPoint((mannerPoint = res.content.mannerPoint));

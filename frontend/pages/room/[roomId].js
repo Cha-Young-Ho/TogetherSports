@@ -109,7 +109,7 @@ const Room = () => {
     router.push("/room/roomlist"); // test를 위한 임시 라우팅
   };
 
-  // 방 삭제하기
+  // 방 삭제하기 -> 보류
   const onDeleteRoom = () => {
     deleteRoom(roomId)
       .then((res) => {

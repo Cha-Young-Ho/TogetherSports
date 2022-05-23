@@ -107,6 +107,14 @@ const saveActiveAreaInitialState = {
   placeOfMeeting: "",
 };
 
+// 방장 정보 저장 초기값
+const saveRoomHostInitialState = {
+  beforeHostNickname: "",
+  beforeHostId: 0,
+  afterHostNickname: "",
+  afterHostId: 0,
+};
+
 // 오타 방지용
 const PERSONALINFO = "PERSONALINFO";
 const INTERESTS = "INTERESTS";
@@ -135,6 +143,7 @@ const SAVEROOMDATE = "SAVEROOMDATE";
 const SAVEACTIVEAREA = "SAVEACTIVEAREA";
 const SAVETAGAREAS = "SAVETAGAREAS";
 const SAVEPOM = "SAVEPOM";
+const SAVEROOMHOST = "SAVEROOMHOST";
 
 // 유저 회원정보추가입력 정보 reducer
 const userRequestReducer = (state = signupInitialState, action) => {
@@ -367,6 +376,22 @@ const saveActiveAreaReducer = (state = saveActiveAreaInitialState, action) => {
   }
 };
 
+// 방장이 바뀌면 WS로 알리기위해 해당 내용 저장
+const saveRoomHostReducer = (state = saveRoomHostInitialState, action) => {
+  switch (action.type) {
+    case SAVEROOMHOST:
+      return {
+        ...state,
+        beforeHostNickname: action.payload.beforeHostNickname,
+        beforeHostId: action.payload.beforeHostId,
+        afterHostNickname: action.payload.afterHostNickname,
+        afterHostId: action.payload.afterHostId,
+      };
+    default:
+      return state;
+  }
+};
+
 // rootReducer로 모든 reducer Combine
 const rootReducer = combineReducers({
   userRequestReducer,
@@ -379,6 +404,7 @@ const rootReducer = combineReducers({
   saveRoomIdReducer,
   saveRoomDateReducer,
   saveActiveAreaReducer,
+  saveRoomHostReducer,
 });
 
 const makeStore = () => createStore(rootReducer, composeWithDevTools());
