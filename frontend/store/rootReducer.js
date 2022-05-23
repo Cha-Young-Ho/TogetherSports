@@ -1,6 +1,7 @@
 import { combineReducers, createStore } from "redux";
 import { createWrapper } from "next-redux-wrapper";
 import { composeWithDevTools } from "redux-devtools-extension";
+import SockJS from "sockjs-client";
 
 // 회원정보추가입력 초기값
 const signupInitialState = {
@@ -17,6 +18,7 @@ const signupInitialState = {
 
 // 내 정보 초기값
 const myInfoInitialState = {
+  id: 0,
   userEmail: "",
   userName: "",
   userNickname: "익명",
@@ -91,22 +93,17 @@ const saveRoomDateInitialState = {
 
 // 활동 지역 초기값
 const saveActiveAreaInitialState = {
-  activeAreas: [
-    // {
-    //   location: "대구 달서구 월배로 11길 33",
-    //   latitude: 128.55852581779735,
-    //   longitude: 35.828258292333956,
-    // },
-    // {
-    //   location: "대구 달서구 월배로 11길 33",
-    //   latitude: 128.54185331387004,
-    //   longitude: 35.84959643998648,
-    // },
-  ],
+  activeAreas: [],
   tagAreas: [],
   placeOfMeeting: "",
 };
 
+// 웹소켓 저장 초기값
+const saveWebSocketInitialState = {
+  sockJS: "",
+  client: "",
+};
+  
 // 방장 정보 저장 초기값
 const saveRoomHostInitialState = {
   beforeHostNickname: "",
@@ -143,6 +140,8 @@ const SAVEROOMDATE = "SAVEROOMDATE";
 const SAVEACTIVEAREA = "SAVEACTIVEAREA";
 const SAVETAGAREAS = "SAVETAGAREAS";
 const SAVEPOM = "SAVEPOM";
+const SAVEWEBSOCKET = "SAVEWEBSOCKET";
+const SAVECLIENT = "SAVECLIENT";
 const SAVEROOMHOST = "SAVEROOMHOST";
 
 // 유저 회원정보추가입력 정보 reducer
@@ -177,6 +176,7 @@ const myInfoReducer = (state = myInfoInitialState, action) => {
     case SAVEMYINFO:
       return {
         ...state,
+        id: action.payload.id,
         userEmail: action.payload.userEmail,
         userName: action.payload.userName,
         userNickname: action.payload.userNickname,
@@ -376,6 +376,24 @@ const saveActiveAreaReducer = (state = saveActiveAreaInitialState, action) => {
   }
 };
 
+// 활동지역 정보 관련 저장
+const saveWebSocketReducer = (state = saveWebSocketInitialState, action) => {
+  switch (action.type) {
+    case SAVEWEBSOCKET:
+      return {
+        ...state,
+        sockJS: action.payload.sockJS,
+      };
+    case SAVECLIENT:
+      return {
+        ...state,
+        client: action.payload.client,
+      };
+    default:
+      return state;
+  }
+};
+
 // 방장이 바뀌면 WS로 알리기위해 해당 내용 저장
 const saveRoomHostReducer = (state = saveRoomHostInitialState, action) => {
   switch (action.type) {
@@ -404,6 +422,7 @@ const rootReducer = combineReducers({
   saveRoomIdReducer,
   saveRoomDateReducer,
   saveActiveAreaReducer,
+  saveWebSocketReducer,
   saveRoomHostReducer,
 });
 

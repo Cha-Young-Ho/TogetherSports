@@ -10,9 +10,11 @@ import FailResponse from "../../api/failResponse";
 import { getRoomDetail, leaveRoom, deleteRoom } from "../../api/rooms";
 import { getMyInfo } from "../../api/members";
 import { useRouter } from "next/router";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Map from "../../components/Map";
 import AlarmModal from "../../components/modals/alarmModal";
+import StompJS from "stompjs";
+import SockJS from "sockjs-client";
 
 const Room = () => {
   const router = useRouter();
@@ -41,6 +43,10 @@ const Room = () => {
   ]);
   const [tags, setTags] = useState([]);
   const [viewCount, setViewCount] = useState(0);
+
+  const webSocketInfo = useSelector(
+    (state) => state.saveWebSocketReducer.sockJS
+  );
 
   // 안쓸 것 같지만 일단 받아오는 데이터
   // const [roomId, setRoomId] = useState(0);
@@ -127,6 +133,15 @@ const Room = () => {
       });
 
     router.push("/room/roomlist"); // test를 위한 임시 라우팅
+  };
+
+  const updateRoomDataFunc = (content) => {
+    setRoomTitle(content.roomTitle);
+    setRoomContent(content.roomContent);
+    setLimitPeopleCount(content.limitPeopleCount);
+    setTags(content.tags);
+    setRoomImages(content.roomImages);
+    alert("방 정보가 변경되었습니다.");
   };
 
   useEffect(() => {
@@ -222,7 +237,25 @@ const Room = () => {
           FailResponse(error.response.data.status.code);
         }
       });
-  });
+
+    dispatch({
+      type: "SAVEWEBSOCKET",
+      payload: {
+        sockJS: new SockJS("http://localhost:8080/api/websocket"),
+      },
+    });
+  }, []);
+
+  useEffect(() => {
+    if (webSocketInfo) {
+      dispatch({
+        type: "SAVECLIENT",
+        payload: {
+          client: StompJS.over(webSocketInfo),
+        },
+      });
+    }
+  }, [webSocketInfo]);
 
   return (
     <>
@@ -357,7 +390,10 @@ const Room = () => {
                   <p>{`ID : ${host}님의 방`}</p>
                 </div>
 
-                <Chatting chatOpen={chatOpen} />
+                <Chatting
+                  chatOpen={chatOpen}
+                  updateRoomDataFunc={updateRoomDataFunc}
+                />
               </div>
             </div>
           </div>
