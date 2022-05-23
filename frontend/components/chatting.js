@@ -1,12 +1,12 @@
-import StompJS from "stompjs";
-import SockJS from "sockjs-client";
 import { useState, useEffect } from "react";
 import { postRefreshToken } from "../api/etc";
 import { getChatInfo } from "../api/rooms";
 import { useSelector } from "react-redux";
 
-const Chatting = ({ chatOpen }) => {
+const Chatting = ({ chatOpen, updateRoomDataFunc }) => {
   const roomId = useSelector((state) => state.saveRoomIdReducer.roomId);
+  const clientInfo = useSelector((state) => state.saveWebSocketReducer.client);
+  const myID = useSelector((state) => state.myInfoReducer.id); // 수정필요
   const [messageToServer, setMessageToServer] = useState("");
   const [showingMessages, setShowingMessages] = useState([
     //   [
@@ -14,19 +14,15 @@ const Chatting = ({ chatOpen }) => {
     //       userId: "me",
     //       nickname: "동동이",
     //       userProfileImagePath: "/base_profileImage.jpg",
-    //       content: {
     //         message: "안녕하세요",
     //         sendAt: "2022-12-11T13:05",
-    //       },
     //     },
     //     {
     //       userId: "me",
     //       nickname: "동동이",
     //       userProfileImagePath: "/base_profileImage.jpg",
-    //       content: {
     //         message: "안녕하세요",
     //         sendAt: "2022-12-11T13:05",
-    //       },
     //     },
     //   ],
     // [
@@ -34,29 +30,23 @@ const Chatting = ({ chatOpen }) => {
     //     userId: "me2",
     //     nickname: "아리",
     //     userProfileImagePath: "/base_profileImage.jpg",
-    //     content: {
     //       message:
     //         "감사해요ㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁ",
     //       sendAt: "2022-12-11T13:05",
-    //     },
     //   },
     //   {
     //     userId: "me2",
     //     nickname: "아빠",
     //     userProfileImagePath: "/base_profileImage.jpg",
-    //     content: {
     //       message: "잘있어요",
     //       sendAt: "2022-12-11T13:05",
-    //     },
     //   },
     //   {
     //     userId: "me2",
     //     nickname: "엄마",
     //     userProfileImagePath: "/base_profileImage.jpg",
-    //     content: {
     //       message: "다시만나요",
     //       sendAt: "2022-12-11T13:05",
-    //     },
     //   },
     // ],
     // [
@@ -64,10 +54,8 @@ const Chatting = ({ chatOpen }) => {
     //     userId: "me",
     //     nickname: "동동이",
     //     userProfileImagePath: "/base_profileImage.jpg",
-    //     content: {
     //       message: "안녕하세요",
     //       sendAt: "2022-12-11T13:05",
-    //     },
     //   },
     // ],
     //   [
@@ -75,49 +63,22 @@ const Chatting = ({ chatOpen }) => {
     //       userId: "me2",
     //       nickname: "아리",
     //       userProfileImagePath: "/base_profileImage.jpg",
-    //       content: {
     //         message: "감사해요",
     //         sendAt: "2022-12-11T13:05",
-    //       },
     //     },
     //   ],
   ]);
-  
-  // console.log("소켓 연결 됨");
-  // const sockJS = new SockJS("http://localhost:8080/api/websocket");
-  // const client = StompJS.over(sockJS);
 
   const connect = () => {
-    console.log("소켓 연결 됨");
-    const sockJS = new SockJS("http://localhost:8080/api/websocket");
-    const client = StompJS.over(sockJS);
-    client.connect(
+    clientInfo.connect(
       { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
       () => {
-        client.subscribe(
-          `/topic/room/2/chat`,
+        clientInfo.subscribe(
+          `/topic/room/${roomId}/chat`,
           (data) => {
-            // const newMessage = JSON.parse(data.body);
-            // const msgLen = showingMessages.length;
-            // if (
-            //   msgLen &&
-            //   newMessage.userId === showingMessages[msgLen - 1][0].userId
-            // ) {
-            //   const temp = [...showingMessages];
-            //   temp[temp.length - 1].push({
-            //     userId: newMessage.userId,
-            //     nickname: newMessage.nickname,
-            //     userProfileImagePath: newMessage.userProfileImagePath,
-            //     content: {
-            //       message: newMessage.content.message,
-            //       sendAt: newMessage.content.sendAt,
-            //     },
-            //   });
-            //   setShowingMessages(temp);
-            // } else {
-            //   setShowingMessages((prev) => [...prev, newMessage]);
-            // }
-            // setMessageToServer("");
+            const newMessage = JSON.parse(data.body);
+
+            messageBranch(newMessage);
           },
           { Authorization: `Bearer ${localStorage.getItem("accessToken")}` }
         );
@@ -145,31 +106,69 @@ const Chatting = ({ chatOpen }) => {
 
   const onSubmitMessage = (e) => {
     e.preventDefault();
-    client.send(
-      `/api/room/2/chat`,
+    clientInfo.send(
+      `/api/room/${roomId}/chat`,
       { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
       JSON.stringify({
         message: messageToServer,
         roomId: `${roomId}`,
       })
     );
+
+    setMessageToServer("");
+  };
+
+  const sessionTest = (e) => {
+    e.preventDefault();
+  };
+
+  const messageBranch = (JSONBodys) => {
+    switch (JSONBodys.status.type) {
+      case "User":
+        const msgLen = showingMessages.length;
+
+        if (
+          msgLen &&
+          JSONBodys.content.userId === showingMessages[msgLen - 1][0].userId
+        ) {
+          const connectingMessage = [...showingMessages];
+          connectingMessage[connectingMessage.length - 1].push({
+            userId: JSONBodys.content.userId,
+            nickname: JSONBodys.content.nickname,
+            userProfileImagePath: JSONBodys.content.userProfileImagePath,
+            message: JSONBodys.content.message,
+            sendAt: JSONBodys.content.sendAt,
+          });
+          setShowingMessages(connectingMessage);
+        } else {
+          setShowingMessages((prev) => [...prev, [JSONBodys]]);
+        }
+        break;
+      case "System":
+        //alert(`${newMessage.content.nickname}님이 참여 했습니다.`);
+        break;
+      case "Room":
+        updateRoomDataFunc(JSONBodys.content);
+        break;
+    }
   };
 
   useEffect(() => {
-    if (chatOpen && roomId !== "") {
-      // getChatInfo().then((res) => {
-      //   if (res.status.code === 5000) {
-      //   }
-      // });
+    if (chatOpen && roomId !== "" && clientInfo) {
+      getChatInfo(roomId).then((res) => {
+        if (res.status.code === 5000) {
+          setShowingMessages(res.content.content);
+        }
+      });
 
       connect();
     }
-  }, [roomId]);
+  }, [roomId, clientInfo]);
 
-  // useEffect(() => {
-  //   document.getElementsByClassName("dialog")[0].scrollTop =
-  //     document.getElementsByClassName("dialog")[0].scrollHeight;
-  // }, [showingMessages]);
+  useEffect(() => {
+    document.getElementsByClassName("dialog")[0].scrollTop =
+      document.getElementsByClassName("dialog")[0].scrollHeight;
+  }, [showingMessages]);
 
   return (
     <>
@@ -178,8 +177,7 @@ const Chatting = ({ chatOpen }) => {
           <div className="messages">
             {showingMessages.length ? (
               showingMessages.map((messages) => {
-                // 내 메세지가 아닌 경우만 중복에 대해 처리필요
-                if (messages.length > 1 && messages[0].userId !== "me") {
+                if (messages.length > 1 && messages[0].userId !== myID) {
                   return messages.map((datas, index) => {
                     return index === messages.length - 1 ? (
                       <div key={index} className="other-message">
@@ -187,20 +185,20 @@ const Chatting = ({ chatOpen }) => {
                           className="msg-profileImg"
                           src={`${datas.userProfileImagePath}`}
                         ></img>
-                        <p>{datas.content.message}</p>
+                        <p>{datas.message}</p>
                       </div>
                     ) : (
                       <div key={index} className="dupID-message">
-                        <p>{datas.content.message}</p>
+                        <p>{datas.message}</p>
                       </div>
                     );
                   });
                 }
 
                 return messages.map((datas, index) => {
-                  return datas.userId === "me" ? (
+                  return datas.userId === myID ? (
                     <div key={index} className="my-message">
-                      <p>{datas.content.message}</p>
+                      <p>{datas.message}</p>
                     </div>
                   ) : (
                     <div key={index} className="other-message">
@@ -208,7 +206,7 @@ const Chatting = ({ chatOpen }) => {
                         className="msg-profileImg"
                         src={`${datas.userProfileImagePath}`}
                       ></img>
-                      <p>{datas.content.message}</p>
+                      <p>{datas.message}</p>
                     </div>
                   );
                 });
@@ -231,7 +229,14 @@ const Chatting = ({ chatOpen }) => {
           </button>
         </form>
       </div>
+      <button onClick={sessionTest}>
+        <img src="/chatting-send-button.png" />
+      </button>
       <style jsx>{`
+        input:focus {
+          outline: none;
+        }
+
         .chatting {
           width: 100%;
           height: 433px;

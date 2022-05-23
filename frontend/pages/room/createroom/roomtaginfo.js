@@ -202,6 +202,10 @@ const RoomTagInfo = () => {
         </div>
       </div>
       <style jsx>{`
+        textarea:focus {
+          outline: none;
+        }
+
         .container {
           width: 100%;
           display: flex;

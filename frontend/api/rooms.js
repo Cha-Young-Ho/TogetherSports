@@ -146,9 +146,7 @@ const getRootLocations = () => {
 
 // 하위(시 이하) 행정구역 조회
 const getChildLocations = (name) => {
-  const promise = axios.get(
-    `http://localhost:8080/locations/parent/name?${name}`
-  );
+  const promise = axios.get(`http://localhost:8080/locations/parent/${name}`);
 
   const dataPromise = promise.then((res) => res.data);
 
@@ -251,7 +249,7 @@ const postEnterRoom = (roomId) => {
 // PUT
 
 // 방 수정
-const updateRoom = (
+const postUpdateRoom = (
   roomId,
   roomTitle,
   roomContent,
@@ -305,6 +303,34 @@ const updateRoom = (
   return dataPromise;
 };
 
+// PATCH
+
+// 방장 위임
+const patchDelegateHost = (roomId, targetUserId) => {
+  const promise =
+    localStorage.getItem("accessToken") === null
+      ? axios.patch(`http://localhost:8080/api/room/${roomId}/user/delegate`, {
+          targetUserId: targetUserId,
+        })
+      : axios.patch(
+          `http://localhost:8080/api/room/${roomId}/user/delegate`,
+          {
+            targetUserId: targetUserId,
+          },
+          {
+            headers: {
+              "Content-type": "application/json; charset=UTF-8",
+              Accept: "*/*",
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+          }
+        );
+
+  const dataPromise = promise.then((res) => res.data);
+
+  return dataPromise;
+};
+
 // DELETE
 
 // 방 삭제
@@ -343,6 +369,32 @@ const leaveRoom = (roomId) => {
   return dataPromise;
 };
 
+// 유저 강퇴
+const kickOutUser = (roomId, targetUserId) => {
+  const promise =
+    localStorage.getItem("accessToken") === null
+      ? axios.delete(`http://localhost:8080/api/room/${roomId}/user/kick-out`, {
+          targetUserId: targetUserId,
+        })
+      : axios.delete(
+          `http://localhost:8080/api/room/${roomId}/user/kick-out`,
+          {
+            targetUserId: targetUserId,
+          },
+          {
+            headers: {
+              "Content-type": "application/json; charset=UTF-8",
+              Accept: "*/*",
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+          }
+        );
+
+  const dataPromise = promise.then((res) => res.data);
+
+  return dataPromise;
+};
+
 export {
   getRoomInfo,
   getRoomDetail,
@@ -352,9 +404,11 @@ export {
   getChatInfo,
   getMyRoomInfo,
   getAvailability,
-  updateRoom,
+  postUpdateRoom,
   postCreateRoom,
   postEnterRoom,
+  patchDelegateHost,
   deleteRoom,
   leaveRoom,
+  kickOutUser,
 };

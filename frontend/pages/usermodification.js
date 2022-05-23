@@ -456,6 +456,10 @@ const UserModification = () => {
         </div>
       </div>
       <style jsx>{`
+        input:focus {
+          outline: none;
+        }
+
         .container {
           width: 70%;
           min-width: 1000px;

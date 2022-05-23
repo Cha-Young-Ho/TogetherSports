@@ -1,6 +1,7 @@
 import { combineReducers, createStore } from "redux";
 import { createWrapper } from "next-redux-wrapper";
 import { composeWithDevTools } from "redux-devtools-extension";
+import SockJS from "sockjs-client";
 
 // 회원정보추가입력 초기값
 const signupInitialState = {
@@ -17,15 +18,16 @@ const signupInitialState = {
 
 // 내 정보 초기값
 const myInfoInitialState = {
+  id: 0,
   userEmail: "",
   userName: "",
   userNickname: "익명",
   userBirth: "yyyy-mm-dd",
-  gender: "",
-  userProfileImagePath: "/base_profileImage.jpg",
+  mannerPoint: 0,
   activeAreas: [],
+  userProfileImagePath: "/base_profileImage.jpg",
   interests: [],
-  mannerPoint: "",
+  gender: "",
   isInformationRequired: "false",
 };
 
@@ -91,20 +93,23 @@ const saveRoomDateInitialState = {
 
 // 활동 지역 초기값
 const saveActiveAreaInitialState = {
-  activeAreas: [
-    // {
-    //   location: "대구 달서구 월배로 11길 33",
-    //   latitude: 128.55852581779735,
-    //   longitude: 35.828258292333956,
-    // },
-    // {
-    //   location: "대구 달서구 월배로 11길 33",
-    //   latitude: 128.54185331387004,
-    //   longitude: 35.84959643998648,
-    // },
-  ],
+  activeAreas: [],
   tagAreas: [],
   placeOfMeeting: "",
+};
+
+// 웹소켓 저장 초기값
+const saveWebSocketInitialState = {
+  sockJS: "",
+  client: "",
+};
+
+// 방장 정보 저장 초기값
+const saveRoomHostInitialState = {
+  beforeHostNickname: "",
+  beforeHostId: 0,
+  afterHostNickname: "",
+  afterHostId: 0,
 };
 
 // 오타 방지용
@@ -135,6 +140,9 @@ const SAVEROOMDATE = "SAVEROOMDATE";
 const SAVEACTIVEAREA = "SAVEACTIVEAREA";
 const SAVETAGAREAS = "SAVETAGAREAS";
 const SAVEPOM = "SAVEPOM";
+const SAVEWEBSOCKET = "SAVEWEBSOCKET";
+const SAVECLIENT = "SAVECLIENT";
+const SAVEROOMHOST = "SAVEROOMHOST";
 
 // 유저 회원정보추가입력 정보 reducer
 const userRequestReducer = (state = signupInitialState, action) => {
@@ -168,15 +176,16 @@ const myInfoReducer = (state = myInfoInitialState, action) => {
     case SAVEMYINFO:
       return {
         ...state,
+        id: action.payload.id,
         userEmail: action.payload.userEmail,
         userName: action.payload.userName,
         userNickname: action.payload.userNickname,
         userBirth: action.payload.userBirth,
-        gender: action.payload.gender,
-        userProfileImagePath: action.payload.userProfileImagePath,
-        activeAreas: action.payload.activeAreas.map((el) => el),
-        interests: action.payload.interests.map((el) => el),
         mannerPoint: action.payload.mannerPoint,
+        activeAreas: action.payload.activeAreas.map((el) => el),
+        userProfileImagePath: action.payload.userProfileImagePath,
+        interests: action.payload.interests.map((el) => el),
+        gender: action.payload.gender,
         isInformationRequired: action.payload.isInformationRequired,
       };
     default:
@@ -184,7 +193,7 @@ const myInfoReducer = (state = myInfoInitialState, action) => {
   }
 };
 
-// 타인 정보 확인 시 필요한 닉네임 저장 reducer
+// participantList -> userInfoModal 로 전달되는 닉네임 저장용 reducer
 const saveNicknameReducer = (state = saveNicknameInitialState, action) => {
   switch (action.type) {
     case SAVENICKNAME:
@@ -367,6 +376,40 @@ const saveActiveAreaReducer = (state = saveActiveAreaInitialState, action) => {
   }
 };
 
+// 활동지역 정보 관련 저장
+const saveWebSocketReducer = (state = saveWebSocketInitialState, action) => {
+  switch (action.type) {
+    case SAVEWEBSOCKET:
+      return {
+        ...state,
+        sockJS: action.payload.sockJS,
+      };
+    case SAVECLIENT:
+      return {
+        ...state,
+        client: action.payload.client,
+      };
+    default:
+      return state;
+  }
+};
+
+// 방장이 바뀌면 WS로 알리기위해 해당 내용 저장
+const saveRoomHostReducer = (state = saveRoomHostInitialState, action) => {
+  switch (action.type) {
+    case SAVEROOMHOST:
+      return {
+        ...state,
+        beforeHostNickname: action.payload.beforeHostNickname,
+        beforeHostId: action.payload.beforeHostId,
+        afterHostNickname: action.payload.afterHostNickname,
+        afterHostId: action.payload.afterHostId,
+      };
+    default:
+      return state;
+  }
+};
+
 // rootReducer로 모든 reducer Combine
 const rootReducer = combineReducers({
   userRequestReducer,
@@ -379,6 +422,8 @@ const rootReducer = combineReducers({
   saveRoomIdReducer,
   saveRoomDateReducer,
   saveActiveAreaReducer,
+  saveWebSocketReducer,
+  saveRoomHostReducer,
 });
 
 const makeStore = () => createStore(rootReducer, composeWithDevTools());
