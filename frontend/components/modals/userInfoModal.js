@@ -1,4 +1,4 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getOtherInfo } from "../../api/members";
@@ -6,13 +6,16 @@ import { FailResponse } from "../../api/failResponse";
 import { patchDelegateHost, kickOutUser } from "../../api/rooms";
 
 const UserInfoModal = (props) => {
+  const dispatch = useDispatch();
+
   // reducer에 저장된 내 정보 불러오기
   const myInfo = useSelector((state) => state.myInfoReducer);
 
-  // 참여자목록에서 조회 선택된 회원의 닉네임 가져오기
-  const userNickname = useSelector(
+  // 참여자목록에서 조회 선택된 회원의 닉네임과 id
+  const clickedUserNickname = useSelector(
     (state) => state.saveNicknameReducer.userNickname
   );
+  const [userId, setUserId] = useState(0);
 
   // 모달에 필요한 데이터들
   const [imageSrc, setImageSrc] = useState("/base_profileImage.jpg");
@@ -23,8 +26,30 @@ const UserInfoModal = (props) => {
   const [activeAreas, setActiveAreas] = useState([]);
 
   // 방장 위임하기
-  const delegateHostFunc = (userNickname) => {
-    patchDelegateHost(userNickname).then((res) => {});
+  const delegateHostFunc = () => {
+    patchDelegateHost(props.roomId, userId)
+      .then((res) => {
+        if (res.status.code === 1208) {
+          dispatch({
+            type: "SAVEROOMHOST",
+            payload: {
+              beforeHostNickname: res.content.beforeHostNickname,
+              beforeHostId: res.content.beforeHostId,
+              afterHostNickname: res.content.afterHostNickname,
+              afterHostId: res.content.afterHostId,
+            },
+          });
+
+          console.log(res.status.message);
+          alert("방장이 변경되었습니다 !"); // 임시 텍스트
+
+          close();
+        }
+      })
+      .catch((error) => {
+        FailResponse(error.response.data.status.code);
+        return;
+      });
   };
 
   // 유저 강퇴하기
@@ -53,11 +78,12 @@ const UserInfoModal = (props) => {
     // 운동 대기방의 참여자목록에서 프로필 조회를 하는 경우 (내 정보 조회, 다른 회원 정보 조회 모두 가능)
     if (props.path === "partyList") {
       // 다른 회원 정보 조회
-      if (myInfo.userNickname !== userNickname) {
+      if (myInfo.userNickname !== clickedUserNickname) {
         if (props.open) {
-          getOtherInfo(userNickname)
+          getOtherInfo(clickedUserNickname)
             .then((res) => {
               if (res.status.code === 5000) {
+                setUserId((userId = res.content.id));
                 setImageSrc((imageSrc = res.content.userProfileImagePath));
                 setNickname((nickname = res.content.userNickname));
                 setMannerPoint((mannerPoint = res.content.mannerPoint));
@@ -75,7 +101,7 @@ const UserInfoModal = (props) => {
       }
 
       // 내 정보 조회
-      if (myInfo.userNickname == userNickname) {
+      if (myInfo.userNickname === clickedUserNickname) {
         setImageSrc((imageSrc = myInfo.userProfileImagePath));
         setNickname((nickname = myInfo.userNickname));
         setMannerPoint((mannerPoint = myInfo.mannerPoint));
@@ -99,7 +125,7 @@ const UserInfoModal = (props) => {
               <img src={imageSrc} className="pf-image"></img>
 
               <div className="buttons">
-                {(myInfo.userNickname === userNickname &&
+                {(myInfo.userNickname === clickedUserNickname &&
                   props.path === "partyList") ||
                 props.path === "navBar" ? (
                   <Link href="/usermodification">
@@ -148,7 +174,7 @@ const UserInfoModal = (props) => {
               <div className="pf-mannerPoint">
                 {`❤️ ${mannerPoint}`}
                 {(props.path === "partyList" &&
-                  myInfo.userNickname === userNickname) ||
+                  myInfo.userNickname === clickedUserNickname) ||
                 props.path === "navBar" ? (
                   <></>
                 ) : (

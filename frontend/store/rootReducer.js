@@ -103,6 +103,14 @@ const saveWebSocketInitialState = {
   sockJS: "",
   client: "",
 };
+  
+// 방장 정보 저장 초기값
+const saveRoomHostInitialState = {
+  beforeHostNickname: "",
+  beforeHostId: 0,
+  afterHostNickname: "",
+  afterHostId: 0,
+};
 
 // 오타 방지용
 const PERSONALINFO = "PERSONALINFO";
@@ -134,6 +142,7 @@ const SAVETAGAREAS = "SAVETAGAREAS";
 const SAVEPOM = "SAVEPOM";
 const SAVEWEBSOCKET = "SAVEWEBSOCKET";
 const SAVECLIENT = "SAVECLIENT";
+const SAVEROOMHOST = "SAVEROOMHOST";
 
 // 유저 회원정보추가입력 정보 reducer
 const userRequestReducer = (state = signupInitialState, action) => {
@@ -374,13 +383,27 @@ const saveWebSocketReducer = (state = saveWebSocketInitialState, action) => {
       return {
         ...state,
         sockJS: action.payload.sockJS,
-        //new SockJS("http://localhost:8080/api/websocket"),
       };
     case SAVECLIENT:
       return {
         ...state,
         client: action.payload.client,
-        //StompJS.over(sockJS),
+      };
+    default:
+      return state;
+  }
+};
+
+// 방장이 바뀌면 WS로 알리기위해 해당 내용 저장
+const saveRoomHostReducer = (state = saveRoomHostInitialState, action) => {
+  switch (action.type) {
+    case SAVEROOMHOST:
+      return {
+        ...state,
+        beforeHostNickname: action.payload.beforeHostNickname,
+        beforeHostId: action.payload.beforeHostId,
+        afterHostNickname: action.payload.afterHostNickname,
+        afterHostId: action.payload.afterHostId,
       };
     default:
       return state;
@@ -400,6 +423,7 @@ const rootReducer = combineReducers({
   saveRoomDateReducer,
   saveActiveAreaReducer,
   saveWebSocketReducer,
+  saveRoomHostReducer,
 });
 
 const makeStore = () => createStore(rootReducer, composeWithDevTools());

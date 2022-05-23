@@ -49,11 +49,9 @@ public class ParticipantService {
     }
 
     public boolean checkAttendance(User user, Room room){
-        log.info("user id = {}", user.getId());
-        log.info("11 room id = {}", room.getId());
         boolean attendance = participantRepository.existsByUserAndRoom(user, room);
 
-        log.info("attendance = {}", attendance);
+
         return participantRepository.existsByUserAndRoom(user, room);
     }
 
@@ -63,10 +61,6 @@ public class ParticipantService {
                 .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new NotFoundRoomException("해당하는 방을 찾을 수 없습니다."));
-        log.info("user = {}", user.getId());
-        log.info("room = {}", roomId);
-        log.info("여이걍");
-        log.info("boolean = {}", participantRepository.existsByUserAndRoom(user, room));
 
         return participantRepository.existsByUserAndRoom(user, room);
     }

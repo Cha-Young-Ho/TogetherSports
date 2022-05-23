@@ -1,6 +1,7 @@
 package com.togethersports.tosproject.chat;
 
 
+import com.togethersports.tosproject.chat.code.ChatCode;
 import com.togethersports.tosproject.chat.dto.ChatOfPubRoom;
 import com.togethersports.tosproject.chat.dto.ClientMessage;
 import com.togethersports.tosproject.common.code.CommonCode;
@@ -31,7 +32,6 @@ import org.springframework.web.bind.annotation.RestController;
  * @author younghoCha
  */
 
-@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class ChatController {
@@ -52,8 +52,10 @@ public class ChatController {
         // 메세지 저장
         ChatOfPubRoom pubMessage = chatService.saveChat(message, roomId);
 
+        WsResponse response = WsResponse.of(ChatCode.USER_CHAT_PUBLISH, pubMessage);
+
         // 메세지 전송
-       sendingOperations.convertAndSend("/topic/room/"+roomId+"/chat", pubMessage);
+       sendingOperations.convertAndSend("/topic/room/"+roomId+"/chat", response);
     }
 
     public void sendServerMessage(Long roomId, WsResponse response){
