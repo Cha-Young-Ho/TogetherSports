@@ -43,7 +43,7 @@ const UserInfoModal = (props) => {
           console.log(res.status.message);
           alert("방장이 변경되었습니다 !"); // 임시 텍스트
 
-          close();
+          props.close;
         }
       })
       .catch((error) => {
@@ -53,7 +53,21 @@ const UserInfoModal = (props) => {
   };
 
   // 유저 강퇴하기
-  const kickOutUserFunc = () => {};
+  const kickOutUserFunc = () => {
+    kickOutUser(props.roomId, userId)
+      .then((res) => {
+        if (res.status.code === 1204) {
+          console.log(res.status.message);
+          alert(`${res.content.userNickname} 님을 강퇴하였습니다.`);
+
+          props.close;
+        }
+      })
+      .catch((error) => {
+        FailResponse(error.response.data.status.code);
+        return;
+      });
+  };
 
   useEffect(() => {
     // 네비게이션에서 프로필 조회를 하는 경우 (무조건 내 정보 조회만)
