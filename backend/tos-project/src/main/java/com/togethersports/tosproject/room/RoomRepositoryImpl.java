@@ -32,7 +32,7 @@ import static com.togethersports.tosproject.tag.QTag.tag1;
  * @author younghoCha
  */
 
-@Slf4j
+
 @RequiredArgsConstructor
 public class RoomRepositoryImpl implements RoomRepositoryCustom{
 
@@ -97,7 +97,7 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
         BooleanBuilder booleanBuilder = new BooleanBuilder();
 
         for (String interest : interests){
-            log.info("interests = {}", interest);
+
             booleanBuilder.or(room.exercise.eq(interest));
         }
 

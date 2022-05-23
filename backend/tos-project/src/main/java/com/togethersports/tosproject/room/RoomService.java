@@ -50,7 +50,7 @@ import java.util.stream.Collectors;
  *
  * @author younghoCha
  */
-@Slf4j
+
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -141,7 +141,7 @@ public class RoomService {
         roomEntity.updateRoom(roomOfUpdate);
 
         //WS 메세지 생성
-        WsResponse wsResponse = WsResponse.of(ChatCode.SYSTEM_ROOM_UPDATED,
+        WsResponse wsResponse = WsResponse.of(ChatCode.ROOM_UPDATED,
                 getRoomInfo(roomEntity.getId())
                 );
 
@@ -285,7 +285,7 @@ public class RoomService {
         }
 
         // 요청자 및 위임받는 유저 방에 참여했는지 확인
-        if(!getAttendance(requestUser.getId(), 1L) && !getAttendance(delegatedUser.getId(), 1L)){
+        if(!getAttendance(requestUser.getId(), roomId) && !getAttendance(delegatedUser.getId(), roomId)){
             //둘 중 1명이 참여하지 않았을 경우
             return Response.of(CommonCode.BAD_REQUEST, null);
         }
@@ -342,7 +342,7 @@ public class RoomService {
         }
 
         // 요청자 및 위임받는 유저 방에 참여했는지 확인
-        if(!getAttendance(requestUser.getId(), 1L) && !getAttendance(kickedOutUser.getId(), 1L)){
+        if(!getAttendance(requestUser.getId(), roomId) && !getAttendance(kickedOutUser.getId(), roomId)){
             //둘 중 1명이 참여하지 않았을 경우
             return Response.of(CommonCode.BAD_REQUEST, null);
         }
@@ -358,7 +358,7 @@ public class RoomService {
         WsResponse wsResponse = WsResponse.of(ChatCode.SYSTEM_USER_KICKED_OUT,
                 MessageOfKickOut.builder()
                         .id(kickedOutUser.getId())
-                        .userNickname(kickedOutUser.getNickname())
+                        .nickname(kickedOutUser.getNickname())
                         .build());
 
         //WS 메세지 보내기
@@ -371,7 +371,7 @@ public class RoomService {
         Response response = Response.of(
                 RoomCode.KICKED_OUT, MessageOfKickOut.builder()
                 .id(kickedOutUser.getId())
-                .userNickname(kickedOutUser.getNickname())
+                .nickname(kickedOutUser.getNickname())
                 .build());
 
         return response;

@@ -1,5 +1,6 @@
 package com.togethersports.tosproject.chat.handler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.togethersports.tosproject.participant.ParticipantService;
 import com.togethersports.tosproject.participant.exception.NotParticipateRoomException;
 import com.togethersports.tosproject.security.jwt.JwtProperties;
@@ -20,6 +21,10 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.MultiValueMap;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <h1>ChatPreHandler</h1>
@@ -29,7 +34,7 @@ import org.springframework.stereotype.Component;
  * @author younghocha
  */
 
-@Slf4j
+
 @RequiredArgsConstructor
 @Component
 public class ChatPreHandler implements ChannelInterceptor {
@@ -45,20 +50,38 @@ public class ChatPreHandler implements ChannelInterceptor {
         // 헤더 토큰 얻기
         String authorizationHeader = String.valueOf(headerAccessor.getNativeHeader("Authorization"));
         StompCommand command = headerAccessor.getCommand();
+        ObjectMapper objectMapper = new ObjectMapper();
+        Object a = message.getPayload();
 
-        log.info("커맨드 = {}", command);
 
-//        List<GrantedAuthority> authorities = new ArrayList<>();
-//        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-//        Authentication auth = new UsernamePasswordAuthenticationToken(1L, 1L, authorities);
-//        SecurityContextHolder.getContext().setAuthentication(auth);
-//        headerAccessor.setUser(auth);
-//        log.info("message user id = {}", headerAccessor.getUser());
+       // MultiValueMap<String, String> map = objectMapper.convertValue(a, MultiValueMap.class);
+
+
+
+        /*
+            1. preHandler
+               * jwt 검증
+               * 해당 방 참여 검증 --------
+               * controller 에서 받을 메세지 타입으로 생성
+               * 예외 발생시 예외 throw
+
+            2. chat controller
+               * 메세지 -> 서비스 실행
+                    * 서비스에서 chat 저장s
+
+            3. out bound channel
+               * 메세지 브로드 캐스팅으로 넘기기
+
+            4. message broadcasting
+               * 메세지 보내기
+         */
 
         // 소켓 연결
         if(command.equals(StompCommand.CONNECT)){
-            Long roomId= 2L;
-            log.info("연결부분!!");
+            Long roomId = 1L;
+
+
+
 
             //JWT 인증 및 참여 여부 확인
             verifySend(authorizationHeader, roomId, message);
@@ -73,12 +96,13 @@ public class ChatPreHandler implements ChannelInterceptor {
             }
         }
 
+
         // SEND, SUBSCRIBE 일 경우
         if(command.equals(StompCommand.SEND) || command.equals(StompCommand.SUBSCRIBE)){
-            Long roomId = 2L;
 
-            log.info("command = {}", command);
-            //Long roomId = Long.valueOf(map.getFirst("roomId"));
+
+
+            Long roomId = 1L;
             // JWT 인증 및 참여 여부 확인
 
             return verifySend(authorizationHeader, roomId, message);
@@ -86,10 +110,16 @@ public class ChatPreHandler implements ChannelInterceptor {
 
         if(command.equals(StompCommand.DISCONNECT)){
             // 세션 연결 해제 메세지 생성
-            log.info("디스컨넥트 요청옴");
             // 세션 정보 지우기
 
             // 구독 정보 없애기
+
+
+        }
+
+        if (command.equals(StompCommand.UNSUBSCRIBE)) {
+
+
         }
         return message;
     }

@@ -54,9 +54,11 @@ public class ChatService {
         ChatMessage chatMessage = chatRepository.save(ChatMessage.of(message.getMessage(), userEntity, roomEntity));
 
         return ChatOfPubRoom.builder()
-                .userId(1L)
+                .userId(userEntity.getId())
+                .userProfileImagePath(userEntity.getUserProfileImage())
                 .nickname(userEntity.getNickname())
-                .content(ChatOfMessage.builder().message(message.getMessage()).sendAt(chatMessage.getSendAt()).build())
+                .message(chatMessage.getMessage())
+                .sendAt(chatMessage.getSendAt())
                 .build();
 
     }
@@ -114,9 +116,10 @@ public class ChatService {
                 .orElseThrow(() -> new UserNotFoundException());
 
         return ChatOfPubRoom.builder()
-                .userId(userId)
+                .userId(userEntity.getId())
+                .userProfileImagePath(userEntity.getUserProfileImage())
                 .nickname(userEntity.getNickname())
-                .content(ChatOfMessage.builder().message(message.getMessage()).sendAt(LocalDateTime.now()).build())
+                .message(message.getMessage())
                 .build();
     }
 
