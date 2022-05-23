@@ -346,6 +346,7 @@ const Room = () => {
                   open={participantListModalOpen}
                   close={participantListCloseModal}
                   path={"partyList"}
+                  roomId={roomId}
                 />
               </div>
             </div>

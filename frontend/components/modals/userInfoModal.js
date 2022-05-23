@@ -10,7 +10,7 @@ const UserInfoModal = (props) => {
   const myInfo = useSelector((state) => state.myInfoReducer);
 
   // 참여자목록에서 조회 선택된 회원의 닉네임 가져오기
-  const userNickname = useSelector(
+  const clickedUserNickname = useSelector(
     (state) => state.saveNicknameReducer.userNickname
   );
 
@@ -23,9 +23,27 @@ const UserInfoModal = (props) => {
   const [activeAreas, setActiveAreas] = useState([]);
 
   // 방장 위임하기
-  const delegateHostFunc = (userNickname) => {
-    patchDelegateHost(userNickname).then((res) => {});
+  const delegateHostFunc = () => {
+    patchDelegateHost(props.roomId, 여기서클릭된유저의id를받아야함)
+      .then((res) => {
+        if (res.status.code === 1208) {
+          // 여기서 성공 response로 받는 값으로
+          // redux 방장 값 바꾸기
+
+          console.log(res.status.message);
+          alert("방장이 변경되었습니다 !"); // 나중에 지울 것
+
+          close();
+        }
+      })
+      .catch((error) => {
+        FailResponse(error.response.data.status.code);
+        return;
+      });
   };
+
+  // FLOW : 위임 버튼 누르면 patch 요청되고 거기의 매개변수로 roomId, 방장으로 위임선택된 사람의 id(email?)이 전달되고, 성공적으로 위임됐으면 response로 이전 방장닉넴/아디, 현재 방장닉넴/아디를 받게된다.
+  // 또한 response로 받은 이전방장과 현재방장을 redux에 담아서 채팅에 뿌려준다.
 
   // 유저 강퇴하기
   const kickOutUserFunc = () => {};
@@ -53,9 +71,9 @@ const UserInfoModal = (props) => {
     // 운동 대기방의 참여자목록에서 프로필 조회를 하는 경우 (내 정보 조회, 다른 회원 정보 조회 모두 가능)
     if (props.path === "partyList") {
       // 다른 회원 정보 조회
-      if (myInfo.userNickname !== userNickname) {
+      if (myInfo.userNickname !== clickedUserNickname) {
         if (props.open) {
-          getOtherInfo(userNickname)
+          getOtherInfo(clickedUserNickname)
             .then((res) => {
               if (res.status.code === 5000) {
                 setImageSrc((imageSrc = res.content.userProfileImagePath));
@@ -75,7 +93,7 @@ const UserInfoModal = (props) => {
       }
 
       // 내 정보 조회
-      if (myInfo.userNickname == userNickname) {
+      if (myInfo.userNickname === clickedUserNickname) {
         setImageSrc((imageSrc = myInfo.userProfileImagePath));
         setNickname((nickname = myInfo.userNickname));
         setMannerPoint((mannerPoint = myInfo.mannerPoint));
@@ -99,7 +117,7 @@ const UserInfoModal = (props) => {
               <img src={imageSrc} className="pf-image"></img>
 
               <div className="buttons">
-                {(myInfo.userNickname === userNickname &&
+                {(myInfo.userNickname === clickedUserNickname &&
                   props.path === "partyList") ||
                 props.path === "navBar" ? (
                   <Link href="/usermodification">
@@ -148,7 +166,7 @@ const UserInfoModal = (props) => {
               <div className="pf-mannerPoint">
                 {`❤️ ${mannerPoint}`}
                 {(props.path === "partyList" &&
-                  myInfo.userNickname === userNickname) ||
+                  myInfo.userNickname === clickedUserNickname) ||
                 props.path === "navBar" ? (
                   <></>
                 ) : (
