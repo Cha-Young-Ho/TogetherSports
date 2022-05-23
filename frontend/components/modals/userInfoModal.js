@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getOtherInfo } from "../../api/members";
 import { FailResponse } from "../../api/failResponse";
-import { patchDelegateHost, kickOutUser } from "../../api/rooms";
+import { patchDelegateHost, deleteKickOutUser } from "../../api/rooms";
 
 const UserInfoModal = (props) => {
   const dispatch = useDispatch();
@@ -54,7 +54,7 @@ const UserInfoModal = (props) => {
 
   // 유저 강퇴하기
   const kickOutUserFunc = () => {
-    kickOutUser(props.roomId, userId)
+    deleteKickOutUser(props.roomId, userId)
       .then((res) => {
         if (res.status.code === 1204) {
           console.log(res.status.message);

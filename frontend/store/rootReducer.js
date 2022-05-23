@@ -103,7 +103,7 @@ const saveWebSocketInitialState = {
   sockJS: "",
   client: "",
 };
-  
+
 // 방장 정보 저장 초기값
 const saveRoomHostInitialState = {
   beforeHostNickname: "",

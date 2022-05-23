@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import SetRoomImages from "../rooms/setRoomImages";
-import { getRoomInfo, postUpdateRoom } from "../../api/rooms";
+import { getRoomInfo, putUpdateRoom } from "../../api/rooms";
 import FailResponse from "../../api/failResponse";
 
 const ModifyRoomModal = (props) => {
-  // post 하기위한 기타 정보들
+  // 요청 날리기위한 기타 정보들
   const [roomId, setRoomId] = useState("");
   const [roomArea, setRoomArea] = useState("");
   const [exercise, setExercise] = useState("");
@@ -16,18 +16,38 @@ const ModifyRoomModal = (props) => {
   const [limitPeopleCount, setLimitPeopleCount] = useState("");
   const [roomContent, setRoomContent] = useState("");
 
-  // 서버로 보내기 위한 방 이미지 정보(순서, 확장자, 원본주소)
+  /////////////////// 이미지 관련 ///////////////////
   const [roomImages, setRoomImages] = useState([]);
   const [thumbnailIndex, setThumbnailIndex] = useState(0);
-  const getImageData = (imageData) => {
-    setRoomImages(imageData);
+  const [imagePreview, setImagePreview] = useState([]); // 기존의 이미지들 프리뷰 표시할 변수
+
+  const getImageData = (imageData) => setRoomImages(imageData);
+  const getThumbnailIndex = (index) => setThumbnailIndex(index);
+  const setData = () => {
+    return roomImages;
+  };
+  const getPreview = (previewData) => setImagePreview(previewData);
+  const setPreview = () => {
+    return imagePreview;
   };
 
-  const getThumbnailIndex = (index) => {
-    setThumbnailIndex(index);
+  const addOrder = (arr, index) => {
+    const thumbnail = [];
+
+    for (let i = 0; i < arr.length; i++) {
+      if (i === index) {
+        arr[i].order = 0;
+        thumbnail.push(arr[i]);
+        arr.splice(i, 1);
+      }
+    }
+
+    for (let i = 0; i < arr.length; i++) arr[i].order = i + 1;
+
+    return setRoomImages((roomImages = thumbnail.concat(arr)));
   };
 
-  // 방 태그
+  /////////////////// 태그 관련 ///////////////////
   const [tags, setTags] = useState([]);
   const tagsAge = [
     "10대",
@@ -42,9 +62,9 @@ const ModifyRoomModal = (props) => {
   const tagsLevel = ["입문만", "초보만", "중수만", "고수만", "실력 무관"];
   const tagsGender = ["남자만", "여자만", "성별 무관"];
 
-  // 태그 선택 함수
+  // 태그 선택시
   const onClickTag = (e) => {
-    if (e.target.classList[2] === "tag-clicked") {
+    if (e.target.classList[3] === "tag-clicked") {
       e.target.classList.remove("tag-clicked");
       setTags((prev) =>
         prev.filter((el) => {
@@ -62,38 +82,28 @@ const ModifyRoomModal = (props) => {
     }
   };
 
-  const setData = () => {
-    return roomImages;
-  };
+  // 이미 설정된 태그들에 대해 선택처리
+  const setPrevTags = (tagName) => {
+    let index = 0;
 
-  // 이미지 배열에 order 추가하기
-  const addOrder = (arr, index) => {
-    const thumbnail = [];
-
-    for (let i = 0; i < arr.length; i++) {
-      if (i === index) {
-        arr[i].order = 0;
-        thumbnail.push(arr[i]);
-        arr.splice(i, 1);
-      }
+    if (tagsAge.some((tag) => tag === tagName)) {
+      index = tagsAge.indexOf(tagName);
+      const tagAge = document.getElementsByClassName("tag-age");
+      tagAge[index].classList.add("tag-clicked");
     }
-
-    for (let i = 0; i < arr.length; i++) arr[i].order = i + 1;
-
-    return setRoomImages((roomImages = thumbnail.concat(arr)));
+    if (tagsLevel.some((tag) => tag === tagName)) {
+      index = tagsLevel.indexOf(tagName);
+      const tagLevel = document.getElementsByClassName("tag-level");
+      tagLevel[index].classList.add("tag-clicked");
+    }
+    if (tagsGender.some((tag) => tag === tagName)) {
+      index = tagsGender.indexOf(tagName);
+      const tagGender = document.getElementsByClassName("tag-gender");
+      tagGender[index].classList.add("tag-clicked");
+    }
   };
 
-  // 화면에 표시되는 프리뷰 이미지
-  const [imagePreview, setImagePreview] = useState([]);
-  const getPreview = (previewData) => {
-    setImagePreview(previewData);
-  };
-
-  const setPreview = () => {
-    return imagePreview;
-  };
-
-  // 완료 버튼 클릭 시
+  // 수정 완료시
   const clickDoneBtn = () => {
     if (roomImages === []) setRoomImages(null);
     else addOrder(roomImages, thumbnailIndex);
@@ -107,10 +117,12 @@ const ModifyRoomModal = (props) => {
     if (roomContent === "") setRoomContent(null);
     if (tags.length === 0) setTags(null);
 
-    postUpdateRoom(
+    putUpdateRoom(
+      roomId,
       roomTitle,
       roomContent,
       roomArea,
+      limitPeopleCount,
       exercise,
       tags,
       startAppointmentDate,
@@ -133,24 +145,7 @@ const ModifyRoomModal = (props) => {
       });
   };
 
-  // 제목 인풋 변경사항
-  const changeTitle = (e) => {
-    setRoomTitle(e.target.value);
-  };
-
-  // 인원 수 변경사항
-  const changePplCnt = (e) => {
-    e.target.value = e.target.value.replace(/[^0-9]/g, "");
-    setLimitPeopleCount(e.target.value);
-  };
-
-  // 방 설명 변경사항
-  const changeContent = (e) => {
-    setRoomContent(e.target.value);
-  };
-
-  // 방에 대한 정보 조회
-  // 방에 대한 기본 설정된 데이터들을 불러와야 함
+  // 방에 대한 기본 설정된 데이터들을 불러오기
   useEffect(() => {
     if (props.open) {
       getRoomInfo(props.roomId)
@@ -172,9 +167,7 @@ const ModifyRoomModal = (props) => {
             setEndAppointmentDate(
               (endAppointmentDate = res.content.endAppointmentDate)
             );
-            setImagePreview(
-              (imagePreview = res.content.roomImages.imagePath.map(preview))
-            );
+            setRoomImages((roomImages = res.content.roomImages));
           }
         })
         .catch((error) => {
@@ -182,6 +175,12 @@ const ModifyRoomModal = (props) => {
           return;
         });
     }
+
+    if (tags.length) tags.map((tag) => setPrevTags(tag));
+    if (roomImages.length)
+      roomImages
+        .sort((a, b) => a.order - b.order)
+        .map((image) => setImagePreview([...imagePreview, image.imagePath]));
   }, [props.open]);
 
   return (
@@ -198,7 +197,7 @@ const ModifyRoomModal = (props) => {
                 minLength="1"
                 maxLength="20"
                 placeholder={roomTitle}
-                onChange={changeTitle}
+                onChange={(e) => setRoomTitle(e.target.value)}
               ></input>
             </div>
 
@@ -207,7 +206,10 @@ const ModifyRoomModal = (props) => {
               <input
                 type="text"
                 placeholder={limitPeopleCount}
-                onChange={changePplCnt}
+                onChange={(e) => {
+                  e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                  setLimitPeopleCount(e.target.value);
+                }}
               ></input>
               <p>명</p>
               <p className="notice">
@@ -218,7 +220,7 @@ const ModifyRoomModal = (props) => {
             <div className="roomNotice-wrapper">
               <p>방 설명 작성</p>
               <textarea
-                onChange={changeContent}
+                onChange={(e) => setRoomContent(e.target.value)}
                 defaultValue={roomContent}
               ></textarea>
             </div>
@@ -239,7 +241,11 @@ const ModifyRoomModal = (props) => {
                 <div className="tags-age">
                   {tagsAge.map((age, index) => {
                     return (
-                      <div className="tag" onClick={onClickTag} key={index}>
+                      <div
+                        className="tag tag-age"
+                        onClick={onClickTag}
+                        key={index}
+                      >
                         {age}
                       </div>
                     );
@@ -249,7 +255,11 @@ const ModifyRoomModal = (props) => {
                 <div className="tags-level-gender">
                   {tagsLevel.map((level, index) => {
                     return (
-                      <div className="tag" onClick={onClickTag} key={index}>
+                      <div
+                        className="tag tag-level"
+                        onClick={onClickTag}
+                        key={index}
+                      >
                         {level}
                       </div>
                     );
@@ -257,7 +267,11 @@ const ModifyRoomModal = (props) => {
 
                   {tagsGender.map((gender, index) => {
                     return (
-                      <div className="tag" onClick={onClickTag} key={index}>
+                      <div
+                        className="tag tag-gender"
+                        onClick={onClickTag}
+                        key={index}
+                      >
                         {gender}
                       </div>
                     );
@@ -282,6 +296,11 @@ const ModifyRoomModal = (props) => {
         p {
           font-size: 1.5rem;
           font-weight: bold;
+        }
+
+        input:focus,
+        textarea:focus {
+          outline: none;
         }
 
         .modal {

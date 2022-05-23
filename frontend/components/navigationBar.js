@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
-import { deleteLogout } from "../api/members";
+import { postLogOut } from "../api/members";
 import { FailResponse } from "../api/failResponse";
 import Modal from "./modals/userInfoModal";
 import { getMyInfo } from "../api/members";
@@ -83,7 +83,7 @@ const NavigationBar = () => {
 
   // 로그아웃 버튼 클릭
   const ClickLogout = () => {
-    deleteLogout()
+    postLogOut()
       .then((res) => {
         console.log(res.status.message);
         if (res.status.code === 5000) {

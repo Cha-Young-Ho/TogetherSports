@@ -7,7 +7,7 @@ import UserInfoModal from "../../components/modals/userInfoModal";
 import ModifyRoomModal from "../../components/modals/modifyRoomModal";
 import Chatting from "../../components/chatting";
 import FailResponse from "../../api/failResponse";
-import { getRoomDetail, leaveRoom, deleteRoom } from "../../api/rooms";
+import { getRoomDetail, deleteLeaveRoom, deleteRoom } from "../../api/rooms";
 import { getMyInfo } from "../../api/members";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
@@ -97,7 +97,7 @@ const Room = () => {
 
   // 방 나가기
   const onLeaveRoom = () => {
-    leaveRoom(roomId)
+    deleteLeaveRoom(roomId)
       .then((res) => {
         if (res.status.code === 1203) {
           alert("방을 성공적으로 나갔습니다 !"); // 임시 텍스트

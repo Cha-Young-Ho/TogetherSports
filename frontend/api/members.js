@@ -126,7 +126,7 @@ const postUserRequest = (
 };
 
 // 로그아웃 요청
-const deleteLogout = () => {
+const postLogOut = () => {
   const promise =
     localStorage.getItem("accessToken") === null
       ? axios.post("http://localhost:8080/api/logout", {
@@ -157,5 +157,5 @@ export {
   getMyInfo,
   getOtherInfo,
   postUserRequest,
-  deleteLogout,
+  postLogOut,
 };
