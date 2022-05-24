@@ -240,6 +240,7 @@ const RoomModal = (props) => {
 
         .room-modal-body {
           min-width: 1050px;
+          min-height: 600px;
           width: 70%;
           height: 85%;
           border-radius: 22px;
