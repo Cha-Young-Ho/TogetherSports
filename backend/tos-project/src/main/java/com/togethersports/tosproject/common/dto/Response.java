@@ -1,6 +1,5 @@
 package com.togethersports.tosproject.common.dto;
 
-import com.togethersports.tosproject.chat.code.ChatCode;
 import com.togethersports.tosproject.common.code.ResponseCode;
 import lombok.Getter;
 import lombok.Setter;

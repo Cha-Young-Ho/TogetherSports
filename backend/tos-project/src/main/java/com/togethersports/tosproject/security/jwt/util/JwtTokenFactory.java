@@ -47,7 +47,7 @@ public class JwtTokenFactory {
     }
 
     /**
-     * 액세스 토큰을 획득한다. 토큰 만료기간 및 공통되는 값은 application-jwt.yml 의 값을 이용한다.
+     * 액세스 토큰을 획득한다.
      *
      * @param user payload 에 담길 계정 정보
      * @return token 생성된 토큰 문자열
@@ -58,7 +58,7 @@ public class JwtTokenFactory {
     }
 
     /**
-     * 액세스 토큰을 생성한다. 토큰 만료기간 및 공통되는 값은 application-jwt.yml 의 값을 이용한다.
+     * 액세스 토큰을 생성한다.
      *
      * @param user payload 에 담길 계정 정보
      * @return token 생성된 토큰 문자열

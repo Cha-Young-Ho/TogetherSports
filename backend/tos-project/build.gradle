@@ -11,6 +11,11 @@ plugins {
 	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
+bootRun {
+	String activeProfile = System.properties['spring.profiles.active']
+	systemProperty "spring.profiles.active", activeProfile
+}
+
 group = 'com.togethersports'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
