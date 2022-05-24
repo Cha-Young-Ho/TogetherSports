@@ -141,10 +141,24 @@ const Chatting = ({ chatOpen, updateRoomDataFunc }) => {
         }
         break;
       case "System":
-        //alert(`${newMessage.content.nickname}님이 참여 했습니다.`);
+        systemMessageBranch(JSONBodys.status.code);
         break;
       case "Room":
         updateRoomDataFunc(JSONBodys.content);
+        break;
+    }
+  };
+
+  const systemMessageBranch = (code) => {
+    switch (code) {
+      case 1501: //입장
+        //alert(`${newMessage.content.nickname}님이 참여 했습니다.`);
+        break;
+      case 1502: //퇴장
+        break;
+      case 1503: //강퇴
+        break;
+      case 1504: //방장위임
         break;
     }
   };
