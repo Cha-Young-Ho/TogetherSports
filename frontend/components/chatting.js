@@ -118,10 +118,6 @@ const Chatting = ({ chatOpen, updateRoomDataFunc }) => {
     setMessageToServer("");
   };
 
-  const sessionTest = (e) => {
-    e.preventDefault();
-  };
-
   const messageBranch = (JSONBodys) => {
     switch (JSONBodys.status.type) {
       case "User":

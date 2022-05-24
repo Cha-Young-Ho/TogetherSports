@@ -17,7 +17,7 @@ const NavigationBar = () => {
   );
 
   // 로그인 시 저장되는 데이터
-  const myinfo = useSelector((state) => state.myInfoReducer);
+  const myInfo = useSelector((state) => state.myInfoReducer);
 
   // 유저 프로필 클릭 시 뜨는 팝업 창 관리 state
   const [modalOpen, setModalOpen] = useState(false);
@@ -55,7 +55,7 @@ const NavigationBar = () => {
               isInformationRequired: res.content.isInformationRequired,
             },
           });
-          console.log("Nav : Client got this info = " + myinfo);
+          console.log("Nav : Client got this info = " + myInfo);
         } else {
           FailResponse(res.status.code);
         }
@@ -138,13 +138,23 @@ const NavigationBar = () => {
             </div>
             <div className="category">
               <Link href="/room/roomlist">
-                <div className="tag">방 목록</div>
+                <button className="tag">방 목록</button>
               </Link>
               <Link href="/myroom">
-                <div className="tag">내 일정</div>
+                <button className="tag">내 일정</button>
               </Link>
               <Link href="/room/createroom/roomsetting">
-                <div className="tag">방 생성</div>
+                <button
+                  className="tag"
+                  onClick={(e) => {
+                    if (myInfo.userNickname === "익명") {
+                      e.preventDefault();
+                      alert("로그인 및 추가정보가 필요한 기능입니다.");
+                    }
+                  }}
+                >
+                  방 생성
+                </button>
               </Link>
             </div>
           </div>
@@ -153,7 +163,7 @@ const NavigationBar = () => {
               {loginStatus === "false" ? (
                 <>
                   <Link href="/login">
-                    <div className="tag">로그인</div>
+                    <button className="tag">로그인</button>
                   </Link>
                 </>
               ) : (
@@ -161,10 +171,10 @@ const NavigationBar = () => {
                   <button className="user-box" onClick={openModal}>
                     <img
                       className="ProfileImage"
-                      src={`/images/${myinfo.userProfileImagePath}`}
+                      src={`/images/${myInfo.userProfileImagePath}`}
                     ></img>
                     <div className="logOn">
-                      {`${myinfo.userNickname}`} 님 반갑습니다!
+                      {`${myInfo.userNickname}`} 님 반갑습니다!
                     </div>
                   </button>
 
@@ -191,7 +201,7 @@ const NavigationBar = () => {
           </div>
         </div>
       </div>
-      {loginStatus === "true" && myinfo.isInformationRequired ? (
+      {loginStatus === "true" && myInfo.isInformationRequired ? (
         <FixedRequestAlarm />
       ) : (
         ""
@@ -248,8 +258,11 @@ const NavigationBar = () => {
 
         .tag {
           padding: 2rem;
+          border: none;
+          background-color: inherit;
+          font-size: 1.5rem;
           cursor: pointer;
-          transition: 800ms ease all;
+          transition: 0.5s ease all;
         }
 
         .ProfileImage {

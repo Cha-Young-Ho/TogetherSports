@@ -8,7 +8,6 @@ import ModifyRoomModal from "../../components/modals/modifyRoomModal";
 import Chatting from "../../components/chatting";
 import FailResponse from "../../api/failResponse";
 import { getRoomDetail, deleteLeaveRoom, deleteRoom } from "../../api/rooms";
-import { getMyInfo } from "../../api/members";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import Map from "../../components/Map";
@@ -77,7 +76,7 @@ const Room = () => {
   ]);
 
   // 내가 방장인지 아닌지 확인하기 위한 변수
-  const [myNickname, setMyNickname] = useState("짱구");
+  const myNickname = useSelector((state) => state.myInfoReducer.userNickname);
 
   // 방 수정하기
   const [modifyModalOpen, setModifyModalOpen] = useState(false);
@@ -222,22 +221,7 @@ const Room = () => {
     }
   }, [roomId]);
 
-  // 내 정보 얻기 (방장 확인용)
   useEffect(() => {
-    getMyInfo()
-      .then((res) => {
-        if (res.status.code === 5000) {
-          setMyNickname((myNickname = res.content.userNickname));
-        } else {
-          FailResponse(res.status.code);
-        }
-      })
-      .catch((error) => {
-        if (error.response) {
-          FailResponse(error.response.data.status.code);
-        }
-      });
-
     dispatch({
       type: "SAVEWEBSOCKET",
       payload: {
