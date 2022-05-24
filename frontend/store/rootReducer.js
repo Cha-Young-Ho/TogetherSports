@@ -41,7 +41,7 @@ const createRoomInitialState = {
   roomTitle: "",
   roomContent: "",
   roomArea: "",
-  limitPeopleCount: "",
+  limitPeopleCount: 2,
   exercise: "",
   tags: [],
   startAppointmentDate: "",
@@ -65,8 +65,8 @@ const roomFilteringDataInitialState = {
   endDate: "",
   startTime: "",
   endTime: "",
-  page: "1",
-  size: "10",
+  page: 1,
+  size: 10,
   sort: "updateTime_DESC",
 };
 
@@ -83,7 +83,7 @@ const loginStatusChangeInitialState = {
 
 // roomID 초기값
 const saveRoomIdInitialState = {
-  roomId: "",
+  roomId: 0,
 };
 
 // 캘린더용 날짜 저장 초기값

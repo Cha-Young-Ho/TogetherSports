@@ -5,7 +5,7 @@ import FailResponse from "../../api/failResponse";
 
 const ModifyRoomModal = (props) => {
   // 요청 날리기위한 기타 정보들
-  const [roomId, setRoomId] = useState("");
+  const [roomId, setRoomId] = useState(0);
   const [roomArea, setRoomArea] = useState("");
   const [exercise, setExercise] = useState("");
   const [startAppointmentDate, setStartAppointmentDate] = useState("");
@@ -13,7 +13,7 @@ const ModifyRoomModal = (props) => {
 
   // content에 포함되는 정보들
   const [roomTitle, setRoomTitle] = useState("");
-  const [limitPeopleCount, setLimitPeopleCount] = useState("");
+  const [limitPeopleCount, setLimitPeopleCount] = useState(2); // 최소2명 이상
   const [roomContent, setRoomContent] = useState("");
 
   /////////////////// 이미지 관련 ///////////////////
@@ -108,7 +108,8 @@ const ModifyRoomModal = (props) => {
     if (roomImages === []) setRoomImages(null);
     else addOrder(roomImages, thumbnailIndex);
 
-    if (roomTitle === "" || limitPeopleCount === "") {
+    // 수정할 수도 있음 limitPeopleCount === "" 으로
+    if (roomTitle === "" || limitPeopleCount === 0) {
       alert("입력이 올바르지 않은 정보가 있습니다");
       e.preventDefault();
       return;

@@ -10,6 +10,9 @@ import { getRoomCount } from "../api/etc";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 
+/* 수정 필요 */
+// 방 생성하기 누를 때 로그인여부에 따라 막기
+
 export default function Home() {
   const dispatch = useDispatch();
 
