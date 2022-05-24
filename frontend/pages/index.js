@@ -6,8 +6,31 @@ import Main1 from "../components/main/main1";
 import Main2 from "../components/main/main2";
 import Main3 from "../components/main/main3";
 import Link from "next/link";
+import { getRoomCount } from "../api/etc";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
 
 export default function Home() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    getRoomCount()
+      .then((res) => {
+        if (res.status.code === 5000) {
+          dispatch({
+            type: "SAVEROOMCOUNT",
+            payload: {
+              roomCount: res.content.count,
+            },
+          });
+        }
+      })
+      .catch((error) => {
+        FailResponse(error.response.data.status.code);
+        return;
+      });
+  }, []);
+
   return (
     <>
       <Head>

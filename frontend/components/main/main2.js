@@ -1,9 +1,8 @@
 import TextLogo from "./textLogo";
 import Link from "next/link";
 import useScrollFadeIn from "./useScrollFadeIn";
-import { getRoomCount } from "../../api/etc";
 import { useEffect, useState } from "react";
-import { FailResponse } from "../../api/failResponse";
+import { useSelector } from "react-redux";
 
 const Main2 = () => {
   const animatedItem1 = useScrollFadeIn("up", 0.5, 0.1);
@@ -11,20 +10,9 @@ const Main2 = () => {
   const animatedItem3 = useScrollFadeIn("up", 0.5, 0.5);
   const animatedItem4 = useScrollFadeIn("up", 0.5, 0.1);
 
-  const [roomCount, setRoomCount] = useState(0);
-
-  useEffect(() => {
-    getRoomCount()
-      .then((res) => {
-        if (res.status.code === 5000) {
-          setRoomCount((roomCount = res.content.count));
-        }
-      })
-      .catch((error) => {
-        FailResponse(error.response.data.status.code);
-        return;
-      });
-  });
+  const roomCount = useSelector(
+    (state) => state.saveRoomCountReducer.roomCount
+  );
 
   return (
     <>
