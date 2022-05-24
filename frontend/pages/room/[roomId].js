@@ -26,8 +26,8 @@ const Room = () => {
   const [roomTitle, setRoomTitle] = useState("");
   const [roomArea, setRoomArea] = useState("");
   const [exercise, setExercise] = useState("");
-  const [limitPeopleCount, setLimitPeopleCount] = useState(0);
-  const [participantCount, setParticipantCount] = useState(0);
+  const [limitPeopleCount, setLimitPeopleCount] = useState(2);
+  const [participantCount, setParticipantCount] = useState(2);
   const [startAppointmentDate, setStartAppointmentDate] = useState("");
   const [endAppointmentDate, setEndAppointmentDate] = useState("");
   const [createdTime, setCreatedTime] = useState("");

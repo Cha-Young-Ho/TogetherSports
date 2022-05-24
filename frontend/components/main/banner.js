@@ -1,24 +1,12 @@
 import BannerRoomCount from "./bannerRoomCount";
 import Link from "next/link";
-import { getRoomCount } from "../../api/etc";
 import { useEffect, useState } from "react";
-import { FailResponse } from "../../api/failResponse";
+import { useSelector } from "react-redux";
 
 const Banner = () => {
-  const [roomCount, setRoomCount] = useState(0);
-
-  useEffect(() => {
-    getRoomCount()
-      .then((res) => {
-        if (res.status.code === 5000) {
-          setRoomCount((roomCount = res.content.count));
-        }
-      })
-      .catch((error) => {
-        FailResponse(error.response.data.status.code);
-        return;
-      });
-  }, []);
+  const roomCount = useSelector(
+    (state) => state.saveRoomCountReducer.roomCount
+  );
 
   return (
     <>

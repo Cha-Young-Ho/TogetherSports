@@ -1,8 +1,5 @@
-import UseScrollCount from "./useScrollCount";
-
 const BannerRoomCount = (props) => {
-  const roomCount = String(props.roomCount).split(""); // 현재 접속가능한 방의 개수 (한 글자씩 배열에 담음)
-  const animatedItem = UseScrollCount(Number(roomCount[0]), 0, 0.5);
+  const roomCount = String(props.roomCount).split("");
 
   return (
     <>
@@ -10,7 +7,7 @@ const BannerRoomCount = (props) => {
         return (
           <div key={index} className="count-wrapper">
             <div></div>
-            <span {...animatedItem}>{count}</span>
+            <span>{count}</span>
           </div>
         );
       })}

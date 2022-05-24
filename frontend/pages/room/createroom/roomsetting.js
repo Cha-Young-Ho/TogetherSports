@@ -12,7 +12,7 @@ const RoomSetting = () => {
   const [exercise, setExercise] = useState("");
 
   //인원
-  const [limitPeopleCount, setLimitPeopleCount] = useState("");
+  const [limitPeopleCount, setLimitPeopleCount] = useState(2);
 
   //지역
   const [roomArea, setRoomArea] = useState({
@@ -127,7 +127,7 @@ const RoomSetting = () => {
     if (
       roomTitle === "" ||
       exercise === "" ||
-      limitPeopleCount === "" ||
+      limitPeopleCount === 0 ||
       roomArea.area === "" ||
       roomArea.areaDetail === ""
     ) {

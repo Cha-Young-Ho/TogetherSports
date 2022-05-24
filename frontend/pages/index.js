@@ -6,8 +6,34 @@ import Main1 from "../components/main/main1";
 import Main2 from "../components/main/main2";
 import Main3 from "../components/main/main3";
 import Link from "next/link";
+import { getRoomCount } from "../api/etc";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+
+/* 수정 필요 */
+// 방 생성하기 누를 때 로그인여부에 따라 막기
 
 export default function Home() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    getRoomCount()
+      .then((res) => {
+        if (res.status.code === 5000) {
+          dispatch({
+            type: "SAVEROOMCOUNT",
+            payload: {
+              roomCount: res.content.count,
+            },
+          });
+        }
+      })
+      .catch((error) => {
+        FailResponse(error.response.data.status.code);
+        return;
+      });
+  }, []);
+
   return (
     <>
       <Head>

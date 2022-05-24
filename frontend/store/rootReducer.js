@@ -41,7 +41,7 @@ const createRoomInitialState = {
   roomTitle: "",
   roomContent: "",
   roomArea: "",
-  limitPeopleCount: "",
+  limitPeopleCount: 2,
   exercise: "",
   tags: [],
   startAppointmentDate: "",
@@ -65,8 +65,8 @@ const roomFilteringDataInitialState = {
   endDate: "",
   startTime: "",
   endTime: "",
-  page: "1",
-  size: "10",
+  page: 1,
+  size: 10,
   sort: "updateTime_DESC",
 };
 
@@ -83,7 +83,7 @@ const loginStatusChangeInitialState = {
 
 // roomID 초기값
 const saveRoomIdInitialState = {
-  roomId: "",
+  roomId: 0,
 };
 
 // 캘린더용 날짜 저장 초기값
@@ -110,6 +110,10 @@ const saveRoomHostInitialState = {
   beforeHostId: 0,
   afterHostNickname: "",
   afterHostId: 0,
+};
+
+const saveRoomCountInitialState = {
+  roomCount: 0,
 };
 
 // 오타 방지용
@@ -143,6 +147,7 @@ const SAVEPOM = "SAVEPOM";
 const SAVEWEBSOCKET = "SAVEWEBSOCKET";
 const SAVECLIENT = "SAVECLIENT";
 const SAVEROOMHOST = "SAVEROOMHOST";
+const SAVEROOMCOUNT = "SAVEROOMCOUNT";
 
 // 유저 회원정보추가입력 정보 reducer
 const userRequestReducer = (state = signupInitialState, action) => {
@@ -410,6 +415,16 @@ const saveRoomHostReducer = (state = saveRoomHostInitialState, action) => {
   }
 };
 
+// 메인페이지 방 개수 저장 reducer
+const saveRoomCountReducer = (state = saveRoomCountInitialState, action) => {
+  switch (action.type) {
+    case SAVEROOMCOUNT:
+      return { ...state, roomCount: action.payload.roomCount };
+    default:
+      return state;
+  }
+};
+
 // rootReducer로 모든 reducer Combine
 const rootReducer = combineReducers({
   userRequestReducer,
@@ -424,6 +439,7 @@ const rootReducer = combineReducers({
   saveActiveAreaReducer,
   saveWebSocketReducer,
   saveRoomHostReducer,
+  saveRoomCountReducer,
 });
 
 const makeStore = () => createStore(rootReducer, composeWithDevTools());

@@ -11,20 +11,49 @@ const RoomModal = (props) => {
   const dispatch = useDispatch();
 
   /* response content 담을 변수들 */
-  const [roomId, setRoomId] = useState(""); // 참여페이지로 넘어가기 위한 roomId
+  const [roomId, setRoomId] = useState(0); // 참여페이지로 넘어가기 위한 roomId
   const [creatorNickName, setCreatorNickName] = useState(""); // 방 생성자
   const [host, setHost] = useState(""); // 방장
   const [roomTitle, setRoomTitle] = useState("");
   const [roomContent, setRoomContent] = useState("");
   const [roomArea, setRoomArea] = useState("");
-  const [limitPeopleCount, setLimitPeopleCount] = useState("");
-  const [participantCount, setParticipantCount] = useState("");
+  const [limitPeopleCount, setLimitPeopleCount] = useState(2); // 초기값 수정할수도
+  const [participantCount, setParticipantCount] = useState(2);
   const [exercise, setExercise] = useState("");
   const [tags, setTags] = useState([]);
   const [startAppointmentDate, setStartAppointmentDate] = useState("");
   const [endAppointmentDate, setEndAppointmentDate] = useState("");
-  const [viewCount, setViewCount] = useState("");
+  const [viewCount, setViewCount] = useState(0);
   const [roomImages, setRoomImages] = useState([]);
+
+  const enterRoom = (e) => {
+    postEnterRoom(roomId)
+      .then((res) => {
+        if (res.status.code === 1209) {
+          router.push(`/room/${roomId}`);
+          return;
+        }
+
+        if (res.status.code === 1201) {
+          e.preventDefault();
+          alert(res.status.message);
+          return;
+        }
+
+        if (res.status.code === 1202) {
+          e.preventDefault();
+          alert(res.status.message);
+          return;
+          // FailResponse(res.status.code);
+          // return;
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          FailResponse(error.response.data.status.code);
+        }
+      });
+  };
 
   useEffect(() => {
     if (props.open) {
@@ -86,35 +115,6 @@ const RoomModal = (props) => {
       });
     }
   }, [props.open]);
-
-  const enterRoom = (e) => {
-    postEnterRoom(roomId)
-      .then((res) => {
-        if (res.status.code === 1209) {
-          router.push(`/room/${roomId}`);
-          return;
-        }
-
-        if (res.status.code === 1201) {
-          e.preventDefault();
-          alert(res.status.message);
-          return;
-        }
-
-        if (res.status.code === 1202) {
-          e.preventDefault();
-          alert(res.status.message);
-          return;
-          // FailResponse(res.status.code);
-          // return;
-        }
-      })
-      .catch((error) => {
-        if (error.response) {
-          FailResponse(error.response.data.status.code);
-        }
-      });
-  };
 
   return (
     <>
@@ -240,6 +240,7 @@ const RoomModal = (props) => {
 
         .room-modal-body {
           min-width: 1050px;
+          min-height: 600px;
           width: 70%;
           height: 85%;
           border-radius: 22px;
