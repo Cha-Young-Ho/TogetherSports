@@ -118,10 +118,6 @@ const Chatting = ({ chatOpen, updateRoomDataFunc }) => {
     setMessageToServer("");
   };
 
-  const sessionTest = (e) => {
-    e.preventDefault();
-  };
-
   const messageBranch = (JSONBodys) => {
     switch (JSONBodys.status.type) {
       case "User":
@@ -229,9 +225,6 @@ const Chatting = ({ chatOpen, updateRoomDataFunc }) => {
           </button>
         </form>
       </div>
-      <button onClick={sessionTest}>
-        <img src="/chatting-send-button.png" />
-      </button>
       <style jsx>{`
         input:focus {
           outline: none;

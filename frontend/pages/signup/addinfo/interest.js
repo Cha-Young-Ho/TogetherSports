@@ -11,22 +11,23 @@ const Interest = () => {
   const router = useRouter();
   const [interests, setInterests] = useState({});
   const interestArray = [
-    "축구",
-    "야구",
-    "농구",
-    "당구",
-    "탁구",
-    "헬스",
-    "자전거",
-    "골프",
-    "등산",
-    "런닝",
-    "배드민턴",
-    "기타종목",
+    { name: "축구", imgPath: "soccer.png" },
+    { name: "야구", imgPath: "baseball.png" },
+    { name: "농구", imgPath: "basketball.png" },
+    { name: "당구", imgPath: "billiards.png" },
+    { name: "탁구", imgPath: "tableTennis.png" },
+    { name: "헬스", imgPath: "health.png" },
+    { name: "자전거", imgPath: "bicycle.png" },
+    { name: "골프", imgPath: "golf.png" },
+    { name: "등산", imgPath: "hiking.png" },
+    { name: "런닝", imgPath: "running.png" },
+    { name: "배드민턴", imgPath: "badminton.png" },
+    { name: "기타종목", imgPath: "etc.png" },
   ];
 
-  const changeInterests = (e) => {
-    if (e.target.classList[2] === "clicked") {
+  const changeInterests = (e, exercise) => {
+    if (e.target.classList[1] === "clicked") {
+      e.target.src = `/${exercise.imgPath}`;
       e.target.classList.remove("clicked");
     } else {
       if (
@@ -37,12 +38,13 @@ const Interest = () => {
         alert("최대 5개 까지만 선택할 수 있습니다.");
         return;
       }
+      e.target.src = `/blur_${exercise.imgPath}`;
       e.target.classList.add("clicked");
     }
 
     setInterests((prev) => ({
       ...prev,
-      [e.target.innerText]: !interests[e.target.innerText],
+      [e.target.id]: !interests[e.target.id],
     }));
   };
 
@@ -68,7 +70,7 @@ const Interest = () => {
   useEffect(() => {
     if (preInputDatas.userNickname === "") {
       alert("비정상적인 접근입니다.");
-      router.replace("/");
+      window.history.back();
     }
   }, []);
 
@@ -89,9 +91,13 @@ const Interest = () => {
         <div className="grid-interest">
           {interestArray.map((exercise, index) => {
             return (
-              <div key={index} onClick={changeInterests} className="grid-items">
-                {exercise}
-              </div>
+              <button
+                key={index}
+                className="grid-items"
+                onClick={(e) => changeInterests(e, exercise)}
+              >
+                <img id={exercise.name} src={`/${exercise.imgPath}`} />
+              </button>
             );
           })}
         </div>
@@ -143,23 +149,23 @@ const Interest = () => {
         }
 
         .grid-items {
+          width: 100%;
+          height: 140px;
           display: flex;
           align-items: center;
           justify-content: center;
-          background-color: gray;
-          color: white;
+          border: none;
           border-radius: 10px;
-          font-size: 1.5rem;
         }
 
         .grid-items:hover {
           transition-duration: 0.5s;
           transform: scale(1.2);
-          background-color: #468f5b;
         }
 
-        .clicked {
-          background-color: #468f5b;
+        .grid-items img {
+          width: 100%;
+          height: 100%;
         }
 
         .button-wrapper {

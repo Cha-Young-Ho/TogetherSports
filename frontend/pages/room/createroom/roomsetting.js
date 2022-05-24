@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import RoomInfoNavBar from "../../../components/roomInfoNavBar";
 
 const RoomSetting = () => {
   const dispatch = useDispatch();
+  const myInfo = useSelector((state) => state.myInfoReducer.userNickname);
   //방 제목
   const [roomTitle, setRoomTitle] = useState("");
 
@@ -21,6 +22,11 @@ const RoomSetting = () => {
   });
 
   useEffect(() => {
+    if (myInfo === "익명") {
+      alert("추가 정보를 입력하지 않아 접속할 수 없습니다.");
+      window.history.back();
+    }
+
     getMap();
   }, []);
 
