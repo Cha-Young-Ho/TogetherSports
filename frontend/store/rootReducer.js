@@ -135,6 +135,11 @@ const roomRealTimeInfoInitialState = {
   participants: [],
 };
 
+// 방 설명 팝업에 쓰일 이미지 저장을 위한 초기값
+const saveRoomModalImagesInitialState = {
+  roomImages: [],
+};
+
 // 오타 방지용
 const PERSONALINFO = "PERSONALINFO";
 const INTERESTS = "INTERESTS";
@@ -169,6 +174,7 @@ const SAVEROOMHOST = "SAVEROOMHOST";
 const SAVEROOMCOUNT = "SAVEROOMCOUNT";
 const SAVEROOMINFOS = "SAVEROOMINFOS";
 const CHANGEHOST = "CHANGEHOST";
+const SAVEROOMMODALIMAGES = "SAVEROOMMODALIMAGES";
 
 // 유저 회원정보추가입력 정보 reducer
 const userRequestReducer = (state = signupInitialState, action) => {
@@ -482,6 +488,21 @@ const roomRealTimeInfoReducer = (
   }
 };
 
+const saveRoomModalImagesReducer = (
+  state = saveRoomModalImagesInitialState,
+  action
+) => {
+  switch (action.type) {
+    case SAVEROOMMODALIMAGES:
+      return {
+        ...state,
+        roomImages: action.payload.roomImages,
+      };
+    default:
+      return state;
+  }
+};
+
 // rootReducer로 모든 reducer Combine
 const rootReducer = combineReducers({
   userRequestReducer,
@@ -498,6 +519,7 @@ const rootReducer = combineReducers({
   saveRoomHostReducer,
   saveRoomCountReducer,
   roomRealTimeInfoReducer,
+  saveRoomModalImagesReducer,
 });
 
 const makeStore = () => createStore(rootReducer, composeWithDevTools());

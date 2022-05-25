@@ -208,7 +208,13 @@ const Room = () => {
                 updatedTime: roomInfo.updatedTime,
                 host: roomInfo.host,
                 creatorNickName: roomInfo.creatorNickName,
-                roomImages: roomInfo.roomImages,
+                roomImages:
+                  roomInfo.roomImages === null
+                    ? {
+                        order: 0,
+                        imagePath: "logo-sign.png",
+                      }
+                    : roomInfo.roomImages,
                 tags: roomInfo.tags,
                 viewCount: roomInfo.viewCount,
                 participants: roomInfo.participants,
@@ -341,7 +347,11 @@ const Room = () => {
           <div className="sections">
             <div className="left-section">
               <div className="image">
-                {roomImages.length !== 0 ? <ImageSlide /> : <></>}
+                {roomImages.length !== 0 ? (
+                  <ImageSlide path={"roomDetail"} />
+                ) : (
+                  <></>
+                )}
               </div>
               <div className="calendar">
                 <Calendar

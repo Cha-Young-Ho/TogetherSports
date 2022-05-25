@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
-const ImageSlide = () => {
+const ImageSlide = (props) => {
   const [slideIndex, setSlideIndex] = useState(1);
-  const imageArr = useSelector(
+  // 운동 대기방 페이지 이미지
+  const roomDetailImageArr = useSelector(
     (state) => state.roomRealTimeInfoReducer.roomImages
+  );
+  // 방 설명 팝업 이미지
+  const roomInfoImageArr = useSelector(
+    (state) => state.saveRoomModalImagesReducer.roomImages
   );
 
   useEffect(() => {
@@ -30,25 +35,37 @@ const ImageSlide = () => {
   return (
     <>
       <div className="slideshow-container">
-        {imageArr.length !== 0 ? (
-          imageArr
-            .sort((a, b) => a.order - b.order)
-            .map((image, index) => {
-              return (
-                <div className="slide fade" key={index}>
-                  <div className="number-text">{`${index + 1} / ${
-                    imageArr.length
-                  }`}</div>
-                  <div className="image-container">
-                    {/* <img src={`/images/${image.imagePath}`} /> */}
-                    <img src={`/${image.imagePath}`} />
+        {props.path === "roomInfo"
+          ? roomInfoImageArr
+              .sort((a, b) => a.order - b.order)
+              .map((image, index) => {
+                return (
+                  <div className="slide fade" key={index}>
+                    <div className="number-text">{`${index + 1} / ${
+                      roomInfoImageArr.length
+                    }`}</div>
+                    <div className="image-container">
+                      {/* <img src={`/images/${image.imagePath}`} /> */}
+                      <img src={`/${image.imagePath}`} />
+                    </div>
                   </div>
-                </div>
-              );
-            })
-        ) : (
-          <></>
-        )}
+                );
+              })
+          : roomDetailImageArr
+              .sort((a, b) => a.order - b.order)
+              .map((image, index) => {
+                return (
+                  <div className="slide fade" key={index}>
+                    <div className="number-text">{`${index + 1} / ${
+                      roomDetailImageArr.length
+                    }`}</div>
+                    <div className="image-container">
+                      {/* <img src={`/images/${image.imagePath}`} /> */}
+                      <img src={`/${image.imagePath}`} />
+                    </div>
+                  </div>
+                );
+              })}
 
         <div className="buttons">
           <button className="prev-button" onClick={() => onChangeImage(-1)}>
