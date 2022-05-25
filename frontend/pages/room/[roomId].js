@@ -18,62 +18,105 @@ import SockJS from "sockjs-client";
 const Room = () => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const { roomId } = router.query;
-  const [chatOpen, setChatOpen] = useState(false);
-
-  const [roomContent, setRoomContent] = useState("");
-  const [roomTitle, setRoomTitle] = useState("");
-  const [roomArea, setRoomArea] = useState("");
-  const [exercise, setExercise] = useState("");
-  const [limitPeopleCount, setLimitPeopleCount] = useState(2);
-  const [participantCount, setParticipantCount] = useState(2);
-  const [startAppointmentDate, setStartAppointmentDate] = useState("");
-  const [endAppointmentDate, setEndAppointmentDate] = useState("");
-  const [createdTime, setCreatedTime] = useState("");
-  const [updatedTime, setUpdatedTime] = useState("");
-  const [host, setHost] = useState("짱구");
-  const [creatorNickName, setCreatorNickName] = useState("");
-  const [roomImages, setRoomImages] = useState([
-    {
-      // 임시 데이터
-      order: -1,
-      imagePath: "logo-sign.png",
-    },
-  ]);
-  const [tags, setTags] = useState([]);
-  const [viewCount, setViewCount] = useState(0);
+  const roomTitle = useSelector(
+    (state) => state.roomRealTimeInfoReducer.roomTitle
+  );
+  const roomContent = useSelector(
+    (state) => state.roomRealTimeInfoReducer.roomContent
+  );
+  const roomArea = useSelector(
+    (state) => state.roomRealTimeInfoReducer.roomArea
+  );
+  const exercise = useSelector(
+    (state) => state.roomRealTimeInfoReducer.exercise
+  );
+  const participantCount = useSelector(
+    (state) => state.roomRealTimeInfoReducer.participantCount
+  );
+  const limitPeopleCount = useSelector(
+    (state) => state.roomRealTimeInfoReducer.limitPeopleCount
+  );
+  const startAppointmentDate = useSelector(
+    (state) => state.roomRealTimeInfoReducer.startAppointmentDate
+  );
+  const endAppointmentDate = useSelector(
+    (state) => state.roomRealTimeInfoReducer.endAppointmentDate
+  );
+  const createdTime = useSelector(
+    (state) => state.roomRealTimeInfoReducer.createdTime
+  );
+  const updatedTime = useSelector(
+    (state) => state.roomRealTimeInfoReducer.updatedTime
+  );
+  const creatorNickName = useSelector(
+    (state) => state.roomRealTimeInfoReducer.creatorNickName
+  );
+  const roomImages = useSelector(
+    (state) => state.roomRealTimeInfoReducer.roomImages
+  );
+  const host = useSelector((state) => state.roomRealTimeInfoReducer.host);
+  const tags = useSelector((state) => state.roomRealTimeInfoReducer.tags);
+  const viewCount = useSelector(
+    (state) => state.roomRealTimeInfoReducer.viewCount
+  );
+  const participants = useSelector(
+    (state) => state.roomRealTimeInfoReducer.participants
+  );
 
   const webSocketInfo = useSelector(
     (state) => state.saveWebSocketReducer.sockJS
   );
+  const { roomId } = router.query;
+  const [chatOpen, setChatOpen] = useState(false);
+  // const [roomContent, setRoomContent] = useState("");
+  // const [roomTitle, setRoomTitle] = useState("");
+  // const [roomArea, setRoomArea] = useState("");
+  // const [exercise, setExercise] = useState("");
+  // const [limitPeopleCount, setLimitPeopleCount] = useState(2);
+  // const [participantCount, setParticipantCount] = useState(2);
+  // const [startAppointmentDate, setStartAppointmentDate] = useState("");
+  // const [endAppointmentDate, setEndAppointmentDate] = useState("");
+  // const [createdTime, setCreatedTime] = useState("");
+  // const [updatedTime, setUpdatedTime] = useState("");
+  // const [host, setHost] = useState("짱구");
+  // const [creatorNickName, setCreatorNickName] = useState("");
+  // const [roomImages, setRoomImages] = useState([
+  //   {
+  //     // 임시 데이터
+  //     order: -1,
+  //     imagePath: "logo-sign.png",
+  //   },
+  // ]);
+  // const [tags, setTags] = useState([]);
+  // const [viewCount, setViewCount] = useState(0);
 
   // 안쓸 것 같지만 일단 받아오는 데이터
   // const [roomId, setRoomId] = useState(0);
   // const [attendance, setAttendance] = useState(false);
 
   // 참가자 목록에 대한 필드
-  const [participants, setParticipants] = useState([
-    {
-      // 임시 데이터
-      id: 1,
-      userNickname: "짱구",
-      mannerPoint: 10,
-      gender: "male",
-      activeAreas: ["서울특별시 강남구 강남동"],
-      interests: ["축구", "야구", "농구"],
-      userProfileImagePath: "",
-    },
-    {
-      // 임시 데이터
-      id: 2,
-      userNickname: "짱아",
-      mannerPoint: 10,
-      gender: "female",
-      activeAreas: ["서울특별시 강남구 강남동"],
-      interests: ["축구", "야구", "농구"],
-      userProfileImagePath: "",
-    },
-  ]);
+  // const [participants, setParticipants] = useState([
+  //   {
+  //     // 임시 데이터
+  //     id: 1,
+  //     userNickname: "짱구",
+  //     mannerPoint: 10,
+  //     gender: "male",
+  //     activeAreas: ["서울특별시 강남구 강남동"],
+  //     interests: ["축구", "야구", "농구"],
+  //     userProfileImagePath: "",
+  //   },
+  //   {
+  //     // 임시 데이터
+  //     id: 2,
+  //     userNickname: "짱아",
+  //     mannerPoint: 10,
+  //     gender: "female",
+  //     activeAreas: ["서울특별시 강남구 강남동"],
+  //     interests: ["축구", "야구", "농구"],
+  //     userProfileImagePath: "",
+  //   },
+  // ]);
 
   // 내가 방장인지 아닌지 확인하기 위한 변수
   const myNickname = useSelector((state) => state.myInfoReducer.userNickname);
@@ -111,7 +154,7 @@ const Room = () => {
         }
       });
 
-    router.push("/room/roomlist"); // test를 위한 임시 라우팅
+    // router.push("/room/roomlist"); // test를 위한 임시 라우팅
   };
 
   // 방 삭제하기 -> 보류
@@ -131,17 +174,17 @@ const Room = () => {
         }
       });
 
-    router.push("/room/roomlist"); // test를 위한 임시 라우팅
+    // router.push("/room/roomlist"); // test를 위한 임시 라우팅
   };
 
-  const updateRoomDataFunc = (content) => {
-    setRoomTitle(content.roomTitle);
-    setRoomContent(content.roomContent);
-    setLimitPeopleCount(content.limitPeopleCount);
-    setTags(content.tags);
-    setRoomImages(content.roomImages);
-    alert("방 정보가 변경되었습니다.");
-  };
+  // const updateRoomDataFunc = (content) => {
+  //   setRoomTitle(content.roomTitle);
+  //   setRoomContent(content.roomContent);
+  //   setLimitPeopleCount(content.limitPeopleCount);
+  //   setTags(content.tags);
+  //   setRoomImages(content.roomImages);
+  //   alert("방 정보가 변경되었습니다.");
+  // };
 
   useEffect(() => {
     if (roomId) {
@@ -150,37 +193,27 @@ const Room = () => {
           if (res.status.code === 5000) {
             const roomInfo = res.content.roomOfInfo;
 
-            // setRoomId(roomId = roomInfo.roomId);
-            setRoomContent((roomContent = roomInfo.roomContent));
-            setRoomTitle((roomTitle = roomInfo.roomTitle));
-            setRoomArea((roomArea = roomInfo.roomArea));
-            setExercise((exercise = roomInfo.exercise));
-            setLimitPeopleCount((limitPeopleCount = roomInfo.limitPeopleCount));
-            setParticipantCount((participantCount = roomInfo.participantCount));
-            setStartAppointmentDate(
-              (startAppointmentDate = roomInfo.startAppointmentDate)
-            );
-            setEndAppointmentDate(
-              (endAppointmentDate = roomInfo.endAppointmentDate)
-            );
-            setCreatedTime((createdTime = roomInfo.createdTime));
-            setUpdatedTime((updatedTime = roomInfo.updatedTime));
-            setHost((host = roomInfo.host));
-            setCreatorNickName((creatorNickName = roomInfo.creatorNickName));
-            setRoomImages(
-              (roomImages =
-                roomInfo.roomImages === null
-                  ? {
-                      order: 0,
-                      imagePath: "logo-sign.png",
-                    }
-                  : roomInfo.roomImages)
-            );
-            setTags((tags = roomInfo.tags));
-            setViewCount((viewCount = roomInfo.viewCount));
-            // setAttendance(attendance = roomInfo.attendance);
-
-            setParticipants((participants = res.content.participants));
+            dispatch({
+              type: "SAVEROOMINFOS",
+              payload: {
+                roomTitle: roomInfo.roomTitle,
+                roomContent: roomInfo.roomContent,
+                roomArea: roomInfo.roomArea,
+                exercise: roomInfo.exercise,
+                participantCount: roomInfo.participantCount,
+                limitPeopleCount: roomInfo.limitPeopleCount,
+                startAppointmentDate: roomInfo.startAppointmentDate,
+                endAppointmentDate: roomInfo.endAppointmentDate,
+                createdTime: roomInfo.createdTime,
+                updatedTime: roomInfo.updatedTime,
+                host: roomInfo.host,
+                creatorNickName: roomInfo.creatorNickName,
+                roomImages: roomInfo.roomImages,
+                tags: roomInfo.tags,
+                viewCount: roomInfo.viewCount,
+                participants: roomInfo.participants,
+              },
+            });
 
             dispatch({
               type: "SAVEROOMDATE",
@@ -197,7 +230,7 @@ const Room = () => {
             dispatch({
               type: "SAVEPOM",
               payload: {
-                placeOfMeeting: roomArea,
+                placeOfMeeting: roomInfo.roomArea,
               },
             });
           } else {
@@ -308,11 +341,7 @@ const Room = () => {
           <div className="sections">
             <div className="left-section">
               <div className="image">
-                {roomImages.length !== 0 ? (
-                  <ImageSlide imageArr={roomImages} />
-                ) : (
-                  <></>
-                )}
+                {roomImages.length !== 0 ? <ImageSlide /> : <></>}
               </div>
               <div className="calendar">
                 <Calendar
@@ -354,8 +383,6 @@ const Room = () => {
                 <div className="short-line"></div>
                 <div className="participants">
                   <ParticipantList
-                    participantArr={participants}
-                    host={host}
                     participantListOpenModal={participantListOpenModal}
                   />
                 </div>
@@ -376,7 +403,7 @@ const Room = () => {
 
                 <Chatting
                   chatOpen={chatOpen}
-                  updateRoomDataFunc={updateRoomDataFunc}
+                  // updateRoomDataFunc={updateRoomDataFunc}
                 />
               </div>
             </div>
