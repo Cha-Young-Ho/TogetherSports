@@ -9,6 +9,7 @@ import Link from "next/link";
 import { getRoomCount } from "../api/etc";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
+import { FailResponse } from "../api/failResponse";
 
 /* 수정 필요 */
 // 방 생성하기 누를 때 로그인여부에 따라 막기
@@ -29,8 +30,10 @@ export default function Home() {
         }
       })
       .catch((error) => {
-        FailResponse(error.response.data.status.code);
-        return;
+        if (error.response) {
+          FailResponse(error.response.data.status.code);
+          return;
+        }
       });
   }, []);
 

@@ -141,7 +141,17 @@ const NavigationBar = () => {
                 <button className="tag">방 목록</button>
               </Link>
               <Link href="/myroom">
-                <button className="tag">내 일정</button>
+                <button
+                  className="tag"
+                  onClick={(e) => {
+                    if (myInfo.userNickname === "익명") {
+                      e.preventDefault();
+                      alert("로그인 및 추가정보가 필요한 기능입니다.");
+                    }
+                  }}
+                >
+                  내 일정
+                </button>
               </Link>
               <Link href="/room/createroom/roomsetting">
                 <button

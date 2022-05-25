@@ -1,7 +1,11 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const ParticipantList = (props) => {
   const dispatch = useDispatch();
+  const host = useSelector((state) => state.roomRealTimeInfoReducer.host);
+  const participantArr = useSelector(
+    (state) => state.roomRealTimeInfoReducer.participants
+  );
 
   const onClickUserInfo = (userNickname) => {
     props.participantListOpenModal();
@@ -16,10 +20,10 @@ const ParticipantList = (props) => {
 
   return (
     <>
-      {props.participantArr.length !== 0 ? (
-        props.participantArr.map((participant, index) => {
+      {participantArr.length !== 0 ? (
+        participantArr.map((participant, index) => {
           // 방장이라면
-          if (participant.userNickname === props.host) {
+          if (participant.userNickname === host) {
             return (
               <button
                 className="participant"
