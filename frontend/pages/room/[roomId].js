@@ -350,7 +350,7 @@ const Room = () => {
               </div>
 
               <div className="participant-list">
-                <p>참여자 목록 (10/30)</p>
+                <p>{`참여자 목록 (${participantCount}/${limitPeopleCount})`}</p>
                 <div className="short-line"></div>
                 <div className="participants">
                   <ParticipantList
