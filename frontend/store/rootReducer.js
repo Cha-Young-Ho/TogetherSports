@@ -116,6 +116,25 @@ const saveRoomCountInitialState = {
   roomCount: 0,
 };
 
+const roomRealTimeInfoInitialState = {
+  roomTitle: "",
+  roomContent: "",
+  roomArea: "",
+  exercise: "",
+  participantCount: 0,
+  limitPeopleCount: 0,
+  startAppointmentDate: "",
+  endAppointmentDate: "",
+  createdTime: "",
+  updatedTime: "",
+  host: "",
+  creatorNickName: "",
+  roomImages: [],
+  tags: [],
+  viewCount: 0,
+  participants: [],
+};
+
 // 오타 방지용
 const PERSONALINFO = "PERSONALINFO";
 const INTERESTS = "INTERESTS";
@@ -148,6 +167,8 @@ const SAVEWEBSOCKET = "SAVEWEBSOCKET";
 const SAVECLIENT = "SAVECLIENT";
 const SAVEROOMHOST = "SAVEROOMHOST";
 const SAVEROOMCOUNT = "SAVEROOMCOUNT";
+const SAVEROOMINFOS = "SAVEROOMINFOS";
+const CHANGEHOST = "CHANGEHOST";
 
 // 유저 회원정보추가입력 정보 reducer
 const userRequestReducer = (state = signupInitialState, action) => {
@@ -425,6 +446,42 @@ const saveRoomCountReducer = (state = saveRoomCountInitialState, action) => {
   }
 };
 
+// 운동 대기방(채팅 포함) 방 정보 저장 reducer
+const roomRealTimeInfoReducer = (
+  state = roomRealTimeInfoInitialState,
+  action
+) => {
+  switch (action.type) {
+    case SAVEROOMINFOS:
+      return {
+        ...state,
+        roomTitle: action.payload.roomTitle,
+        roomContent: action.payload.roomContent,
+        roomArea: action.payload.roomArea,
+        exercise: action.payload.exercise,
+        participantCount: action.payload.participantCount,
+        limitPeopleCount: action.payload.limitPeopleCount,
+        startAppointmentDate: action.payload.startAppointmentDate,
+        endAppointmentDate: action.payload.endAppointmentDate,
+        createdTime: action.payload.createdTime,
+        updatedTime: action.payload.updatedTime,
+        host: action.payload.host,
+        creatorNickName: action.payload.createNickName,
+        roomImages: action.payload.roomImages,
+        tags: action.payload.tags,
+        viewCount: action.payload.viewCount,
+        participants: action.payload.participants,
+      };
+    case CHANGEHOST:
+      return {
+        ...state,
+        host: action.payload.host,
+      };
+    default:
+      return state;
+  }
+};
+
 // rootReducer로 모든 reducer Combine
 const rootReducer = combineReducers({
   userRequestReducer,
@@ -440,6 +497,7 @@ const rootReducer = combineReducers({
   saveWebSocketReducer,
   saveRoomHostReducer,
   saveRoomCountReducer,
+  roomRealTimeInfoReducer,
 });
 
 const makeStore = () => createStore(rootReducer, composeWithDevTools());

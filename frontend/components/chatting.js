@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
 import { postRefreshToken } from "../api/etc";
 import { getChatInfo } from "../api/rooms";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/router";
 
 const Chatting = ({ chatOpen, updateRoomDataFunc }) => {
+  const router = useRouter();
+  const dispatch = useDispatch();
   const roomId = useSelector((state) => state.saveRoomIdReducer.roomId);
   const clientInfo = useSelector((state) => state.saveWebSocketReducer.client);
   const myID = useSelector((state) => state.myInfoReducer.id); // 수정필요
@@ -141,7 +144,7 @@ const Chatting = ({ chatOpen, updateRoomDataFunc }) => {
         }
         break;
       case "System":
-        systemMessageBranch(JSONBodys.status.code);
+        systemMessageBranch(JSONBodys);
         break;
       case "Room":
         updateRoomDataFunc(JSONBodys.content);
@@ -149,16 +152,31 @@ const Chatting = ({ chatOpen, updateRoomDataFunc }) => {
     }
   };
 
-  const systemMessageBranch = (code) => {
-    switch (code) {
+  const systemMessageBranch = (JSONBodys) => {
+    switch (JSONBodys.status.code) {
       case 1501: //입장
-        //alert(`${newMessage.content.nickname}님이 참여 했습니다.`);
+        alert(`${JSONBodys.content.nickname}님이 참여했습니다.`);
         break;
       case 1502: //퇴장
+        alert(`${JSONBodys.content.nickname}님이 퇴장했습니다.`);
         break;
       case 1503: //강퇴
+        if (JSONBodys.content.id === myID) {
+          clientInfo.disconnect(() => alert("방장으로부터 강퇴되었습니다."));
+          router.replace("/");
+          return;
+        }
+
+        alert(`${nickname}님이 강퇴되었습니다.`);
         break;
       case 1504: //방장위임
+        dispatch({
+          type: "CHANGEHOST",
+          payload: {
+            host: JSONBodys.content.afterHostNickname,
+          },
+        });
+        alert("방장이 변경되었습니다.");
         break;
     }
   };
