@@ -52,12 +52,12 @@ const getMyInfo = () => {
 const getOtherInfo = (nickname) => {
   const promise =
     localStorage.getItem("accessToken") === null
-      ? axios.get("http://localhost:8080/api/other", {
+      ? axios.get("http://localhost:8080/api/user/", {
           params: {
             userNickname: nickname,
           },
         })
-      : axios.get("http://localhost:8080/api/other", {
+      : axios.get("http://localhost:8080/api/user/", {
           headers: {
             "Content-type": "application/json; charset=UTF-8",
             Accept: "*/*",
