@@ -208,7 +208,13 @@ const Room = () => {
                 updatedTime: roomInfo.updatedTime,
                 host: roomInfo.host,
                 creatorNickName: roomInfo.creatorNickName,
-                roomImages: roomInfo.roomImages,
+                roomImages:
+                  roomInfo.roomImages === null
+                    ? {
+                        order: 0,
+                        imagePath: "logo-sign.png",
+                      }
+                    : roomInfo.roomImages,
                 tags: roomInfo.tags,
                 viewCount: roomInfo.viewCount,
                 participants: res.content.participants,
@@ -341,7 +347,11 @@ const Room = () => {
           <div className="sections">
             <div className="left-section">
               <div className="image">
-                {roomImages.length !== 0 ? <ImageSlide /> : <></>}
+                {roomImages.length !== 0 ? (
+                  <ImageSlide path={"roomDetail"} />
+                ) : (
+                  <></>
+                )}
               </div>
               <div className="calendar">
                 <Calendar
@@ -379,7 +389,7 @@ const Room = () => {
               </div>
 
               <div className="participant-list">
-                <p>참여자 목록 (10/30)</p>
+                <p>{`참여자 목록 (${participantCount}/${limitPeopleCount})`}</p>
                 <div className="short-line"></div>
                 <div className="participants">
                   <ParticipantList

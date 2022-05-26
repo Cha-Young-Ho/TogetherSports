@@ -81,15 +81,28 @@ const RoomModal = (props) => {
             (endAppointmentDate = res.content.endAppointmentDate)
           );
           setViewCount((viewCount = res.content.viewCount));
-          setRoomImages(
-            (roomImages =
-              res.content.roomImages === null
-                ? {
-                    order: 0,
-                    imagePath: "logo-sign.png",
-                  }
-                : res.content.roomImages)
-          );
+          // setRoomImages(
+          //   (roomImages =
+          //     res.content.roomImages === null
+          //       ? {
+          //           order: 0,
+          //           imagePath: "logo-sign.png",
+          //         }
+          //       : res.content.roomImages)
+          // );
+
+          dispatch({
+            type: "SAVEROOMMODALIMAGES",
+            payload: {
+              roomImages:
+                res.content.roomImages === null
+                  ? {
+                      order: 0,
+                      imagePath: "logo-sign.png",
+                    }
+                  : res.content.roomImages,
+            },
+          });
 
           // 캘린더 컴포넌트 date 변경
           dispatch({
@@ -191,7 +204,7 @@ const RoomModal = (props) => {
             <div className="right-section">
               <div className="image">
                 {roomImages.length !== 0 ? (
-                  <ImageSlide imageArr={roomImages} />
+                  <ImageSlide path={"roomInfo"} />
                 ) : (
                   <></>
                 )}
