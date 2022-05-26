@@ -211,7 +211,7 @@ const Room = () => {
                 roomImages: roomInfo.roomImages,
                 tags: roomInfo.tags,
                 viewCount: roomInfo.viewCount,
-                participants: roomInfo.participants,
+                participants: res.content.participants,
               },
             });
 
