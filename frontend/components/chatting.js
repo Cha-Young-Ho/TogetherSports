@@ -74,7 +74,10 @@ const Chatting = ({ chatOpen, updateRoomDataFunc }) => {
 
   const connect = () => {
     clientInfo.connect(
-      { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
+      {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        roomId: `${roomId}`,
+      },
       () => {
         clientInfo.subscribe(
           `/topic/room/${roomId}/chat`,
@@ -83,7 +86,10 @@ const Chatting = ({ chatOpen, updateRoomDataFunc }) => {
 
             messageBranch(newMessage);
           },
-          { Authorization: `Bearer ${localStorage.getItem("accessToken")}` }
+          {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            roomId: `${roomId}`,
+          }
         );
       },
       (error) => {
@@ -111,10 +117,12 @@ const Chatting = ({ chatOpen, updateRoomDataFunc }) => {
     e.preventDefault();
     clientInfo.send(
       `/api/room/${roomId}/chat`,
-      { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
+      {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        roomId: `${roomId}`,
+      },
       JSON.stringify({
         message: messageToServer,
-        roomId: `${roomId}`,
       })
     );
 
@@ -140,7 +148,7 @@ const Chatting = ({ chatOpen, updateRoomDataFunc }) => {
           });
           setShowingMessages(connectingMessage);
         } else {
-          setShowingMessages((prev) => [...prev, [JSONBodys]]);
+          setShowingMessages((prev) => [...prev, [JSONBodys.content]]);
         }
         break;
       case "System":
@@ -185,7 +193,7 @@ const Chatting = ({ chatOpen, updateRoomDataFunc }) => {
     if (chatOpen && roomId !== "" && clientInfo) {
       getChatInfo(roomId).then((res) => {
         if (res.status.code === 5000) {
-          setShowingMessages(res.content.content);
+          setShowingMessages((prev) => [...prev, res.content.content]);
         }
       });
 
