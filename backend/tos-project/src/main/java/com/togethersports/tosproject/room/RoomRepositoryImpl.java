@@ -9,7 +9,6 @@ import com.togethersports.tosproject.common.util.ParsingEntityUtils;
 import com.togethersports.tosproject.room.dto.FieldsOfRoomList;
 import com.togethersports.tosproject.room.dto.RoomOfList;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -31,7 +30,6 @@ import static com.togethersports.tosproject.tag.QTag.tag1;
  * </p>
  * @author younghoCha
  */
-
 
 @RequiredArgsConstructor
 public class RoomRepositoryImpl implements RoomRepositoryCustom{

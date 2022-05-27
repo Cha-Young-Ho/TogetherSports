@@ -97,13 +97,11 @@ public class ChatService {
         Page<ChatMessage> chatEntityList = chatRepository.findByRoom(roomEntity, pageable);
         Page<ChatOfHistory> pageList = chatEntityList.map(
                 chat -> ChatOfHistory.builder()
-                        .messageContent(
-                                ChatOfMessage.builder()
-                                        .message(chat.getMessage())
-                                        .sendAt(chat.getSendAt()).build())
                         .nickname(chat.getUser().getNickname())
                         .userProfileImagePath(chat.getUser().getUserProfileImage())
                         .userId(chat.getUser().getId())
+                        .sendAt(chat.getSendAt())
+                        .message(chat.getMessage())
                         .build()
         );
 
