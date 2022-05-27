@@ -51,6 +51,7 @@ import java.util.stream.Collectors;
  * @author younghoCha
  */
 
+@Slf4j
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -86,7 +87,7 @@ public class RoomService {
 
         //방 저장
         Room room = roomRepository.save(roomEntity);
-
+        log.info("!@#!@#!@#room id = {}", room.getId());
         //-- Tag --
         //List<String>을 List<Tag>로 변환
         List<Tag> tagList = parsingEntityUtils.parsingStringToTagEntity(roomOfCreate.getTags());

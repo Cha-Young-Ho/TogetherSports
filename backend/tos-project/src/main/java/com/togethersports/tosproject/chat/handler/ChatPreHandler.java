@@ -78,7 +78,7 @@ public class ChatPreHandler implements ChannelInterceptor {
 
         // 소켓 연결
         if(command.equals(StompCommand.CONNECT)){
-            Long roomId = 1L;
+            Long roomId = 2L;
 
 
 
@@ -102,7 +102,7 @@ public class ChatPreHandler implements ChannelInterceptor {
 
 
 
-            Long roomId = 1L;
+            Long roomId = 2L;
             // JWT 인증 및 참여 여부 확인
 
             return verifySend(authorizationHeader, roomId, message);
