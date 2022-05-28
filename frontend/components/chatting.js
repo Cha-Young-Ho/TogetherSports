@@ -9,68 +9,62 @@ const Chatting = ({ chatOpen, updateRoomDataFunc }) => {
   const dispatch = useDispatch();
   const roomId = useSelector((state) => state.saveRoomIdReducer.roomId);
   const clientInfo = useSelector((state) => state.saveWebSocketReducer.client);
-  const myID = useSelector((state) => state.myInfoReducer.id); // 수정필요
+  const myID = useSelector((state) => state.myInfoReducer.id);
   const [messageToServer, setMessageToServer] = useState("");
   const [showingMessages, setShowingMessages] = useState([
-    //   [
-    //     {
-    //       userId: "me",
-    //       nickname: "동동이",
-    //       userProfileImagePath: "/base_profileImage.jpg",
-    //         message: "안녕하세요",
-    //         sendAt: "2022-12-11T13:05",
-    //     },
-    //     {
-    //       userId: "me",
-    //       nickname: "동동이",
-    //       userProfileImagePath: "/base_profileImage.jpg",
-    //         message: "안녕하세요",
-    //         sendAt: "2022-12-11T13:05",
-    //     },
-    //   ],
-    // [
-    //   {
-    //     userId: "me2",
-    //     nickname: "아리",
-    //     userProfileImagePath: "/base_profileImage.jpg",
-    //       message:
-    //         "감사해요ㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁ",
-    //       sendAt: "2022-12-11T13:05",
-    //   },
-    //   {
-    //     userId: "me2",
-    //     nickname: "아빠",
-    //     userProfileImagePath: "/base_profileImage.jpg",
-    //       message: "잘있어요",
-    //       sendAt: "2022-12-11T13:05",
-    //   },
-    //   {
-    //     userId: "me2",
-    //     nickname: "엄마",
-    //     userProfileImagePath: "/base_profileImage.jpg",
-    //       message: "다시만나요",
-    //       sendAt: "2022-12-11T13:05",
-    //   },
-    // ],
-    // [
-    //   {
-    //     userId: "me",
-    //     nickname: "동동이",
-    //     userProfileImagePath: "/base_profileImage.jpg",
-    //       message: "안녕하세요",
-    //       sendAt: "2022-12-11T13:05",
-    //   },
-    // ],
-    //   [
-    //     {
-    //       userId: "me2",
-    //       nickname: "아리",
-    //       userProfileImagePath: "/base_profileImage.jpg",
-    //         message: "감사해요",
-    //         sendAt: "2022-12-11T13:05",
-    //     },
-    //   ],
+    // {
+    //   userId: 0,
+    //   nickname: "동동이",
+    //   userProfileImagePath: "/base_profileImage.jpg",
+    //   message: "안녕하세요",
+    //   sendAt: "2022-12-11T13:05",
+    // },
+    // {
+    //   userId: 0,
+    //   nickname: "동동이",
+    //   userProfileImagePath: "/base_profileImage.jpg",
+    //   message: "안녕하세요",
+    //   sendAt: "2022-12-11T13:05",
+    // },
+    // {
+    //   userId: 1,
+    //   nickname: "아리",
+    //   userProfileImagePath: "/base_profileImage.jpg",
+    //   message:
+    //     "감사해요ㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁ",
+    //   sendAt: "2022-12-11T13:05",
+    // },
+    // {
+    //   userId: 1,
+    //   nickname: "아빠",
+    //   userProfileImagePath: "/base_profileImage.jpg",
+    //   message: "잘있어요",
+    //   sendAt: "2022-12-11T13:05",
+    // },
+    // {
+    //   userId: 2,
+    //   nickname: "엄마",
+    //   userProfileImagePath: "/base_profileImage.jpg",
+    //   message: "다시만나요",
+    //   sendAt: "2022-12-11T13:05",
+    // },
+    // {
+    //   userId: 1,
+    //   nickname: "동동이",
+    //   userProfileImagePath: "/base_profileImage.jpg",
+    //   message: "안녕하세요",
+    //   sendAt: "2022-12-11T13:05",
+    // },
+    // {
+    //   userId: 0,
+    //   nickname: "아리",
+    //   userProfileImagePath: "/base_profileImage.jpg",
+    //   message: "감사해요",
+    //   sendAt: "2022-12-11T13:05",
+    // },
   ]);
+
+  let preChattingID = 0;
 
   const connect = () => {
     clientInfo.connect(
@@ -132,24 +126,7 @@ const Chatting = ({ chatOpen, updateRoomDataFunc }) => {
   const messageBranch = (JSONBodys) => {
     switch (JSONBodys.status.type) {
       case "User":
-        const msgLen = showingMessages.length;
-
-        if (
-          msgLen &&
-          JSONBodys.content.userId === showingMessages[msgLen - 1][0].userId
-        ) {
-          const connectingMessage = [...showingMessages];
-          connectingMessage[connectingMessage.length - 1].push({
-            userId: JSONBodys.content.userId,
-            nickname: JSONBodys.content.nickname,
-            userProfileImagePath: JSONBodys.content.userProfileImagePath,
-            message: JSONBodys.content.message,
-            sendAt: JSONBodys.content.sendAt,
-          });
-          setShowingMessages(connectingMessage);
-        } else {
-          setShowingMessages((prev) => [...prev, [JSONBodys.content]]);
-        }
+        setShowingMessages((prev) => [...prev, JSONBodys.content]);
         break;
       case "System":
         systemMessageBranch(JSONBodys);
@@ -166,6 +143,12 @@ const Chatting = ({ chatOpen, updateRoomDataFunc }) => {
         alert(`${JSONBodys.content.nickname}님이 참여했습니다.`);
         break;
       case 1502: //퇴장
+        if (JSONBodys.content.id === myID) {
+          clientInfo.disconnect(() => alert("방에서 퇴장합니다."));
+          router.replace("/room/roomlist");
+          return;
+        }
+
         alert(`${JSONBodys.content.nickname}님이 퇴장했습니다.`);
         break;
       case 1503: //강퇴
@@ -212,40 +195,38 @@ const Chatting = ({ chatOpen, updateRoomDataFunc }) => {
         <div className="dialog">
           <div className="messages">
             {showingMessages.length ? (
-              showingMessages.map((messages) => {
-                if (messages.length > 1 && messages[0].userId !== myID) {
-                  return messages.map((datas, index) => {
-                    return index === messages.length - 1 ? (
-                      <div key={index} className="other-message">
-                        <img
-                          className="msg-profileImg"
-                          src={`${datas.userProfileImagePath}`}
-                        ></img>
-                        <p>{datas.message}</p>
-                      </div>
-                    ) : (
-                      <div key={index} className="dupID-message">
-                        <p>{datas.message}</p>
-                      </div>
-                    );
-                  });
+              showingMessages.map((messages, index) => {
+                // 내가 보낸 메세지 일 때
+                if (messages.userId === myID) {
+                  preChattingID = messages.userId;
+
+                  return (
+                    <div key={index} className="my-message">
+                      <p>{messages.message}</p>
+                    </div>
+                  );
                 }
 
-                return messages.map((datas, index) => {
-                  return datas.userId === myID ? (
-                    <div key={index} className="my-message">
-                      <p>{datas.message}</p>
+                // 다른 사람의 메세지 일 때
+                if (messages.userId === preChattingID) {
+                  return (
+                    <div key={index} className="dupID-message">
+                      <p>{messages.message}</p>
                     </div>
-                  ) : (
+                  );
+                } else {
+                  preChattingID = messages.userId;
+
+                  return (
                     <div key={index} className="other-message">
                       <img
                         className="msg-profileImg"
-                        src={`${datas.userProfileImagePath}`}
+                        src={`${messages.userProfileImagePath}`}
                       ></img>
-                      <p>{datas.message}</p>
+                      <p>{messages.message}</p>
                     </div>
                   );
-                });
+                }
               })
             ) : (
               <></>
