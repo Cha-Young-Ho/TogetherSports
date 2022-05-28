@@ -3,7 +3,7 @@ import Calendar from "../calendar/calendar";
 import { getRoomInfo, postEnterRoom } from "../../api/rooms";
 import ImageSlide from "../imageSlide";
 import router from "next/router";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Map from "../Map";
 
 /* roomList에서 받은 각 room들의 roomId를 props로 받기 */
@@ -24,7 +24,10 @@ const RoomModal = (props) => {
   const [startAppointmentDate, setStartAppointmentDate] = useState("");
   const [endAppointmentDate, setEndAppointmentDate] = useState("");
   const [viewCount, setViewCount] = useState(0);
-  const [roomImages, setRoomImages] = useState([]);
+  // const [roomImages, setRoomImages] = useState([]);
+  const roomImages = useSelector(
+    (state) => state.saveRoomModalImagesReducer.roomImages
+  );
 
   const enterRoom = (e) => {
     postEnterRoom(roomId)
