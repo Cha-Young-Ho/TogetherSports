@@ -142,8 +142,7 @@ const Room = () => {
     deleteLeaveRoom(roomId)
       .then((res) => {
         if (res.status.code === 1203) {
-          alert("방을 성공적으로 나갔습니다 !"); // 임시 텍스트
-          router.push("/room/roomlist"); // 방 목록 페이지로 이동
+          //router.push("/room/roomlist"); // 방 목록 페이지로 이동
         } else {
           FailResponse(res.status.code);
         }
