@@ -25,9 +25,6 @@ const RoomModal = (props) => {
   const [endAppointmentDate, setEndAppointmentDate] = useState("");
   const [viewCount, setViewCount] = useState(0);
   // const [roomImages, setRoomImages] = useState([]);
-  const roomImages = useSelector(
-    (state) => state.saveRoomModalImagesReducer.roomImages
-  );
 
   const enterRoom = (e) => {
     postEnterRoom(roomId)

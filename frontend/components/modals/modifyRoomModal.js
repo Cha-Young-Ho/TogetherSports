@@ -88,6 +88,7 @@ const ModifyRoomModal = (props) => {
   };
 
   // /////////////////// 이미지 관련 ///////////////////
+
   const getRoomImagesFromRedux = useSelector(
     (state) => state.roomRealTimeInfoReducer.roomImages
   );
@@ -97,12 +98,14 @@ const ModifyRoomModal = (props) => {
 
   const getImageData = (imageData) => setRoomImages(imageData);
   const getThumbnailIndex = (index) => setThumbnailIndex(index);
+  // 컴포넌트로 전달할 데이터
   const setData = () => {
-    return roomImages;
+    if (roomImages.length !== 0) return roomImages;
   };
   const getPreview = (previewData) => setImagePreview(previewData);
+  // 컴포넌트로 전달할 데이터
   const setPreview = () => {
-    return imagePreview;
+    if (imagePreview.length !== 0) return imagePreview;
   };
 
   const addOrder = (arr, index) => {
@@ -123,6 +126,7 @@ const ModifyRoomModal = (props) => {
 
   // 수정 완료시
   const clickDoneBtn = () => {
+    // 수정 필요
     if (roomImages === []) setRoomImages(null);
     else addOrder(roomImages, thumbnailIndex);
 
@@ -172,8 +176,17 @@ const ModifyRoomModal = (props) => {
 
   useEffect(() => {
     if (props.open) {
-      setRoomImages((roomImages = getRoomImagesFromRedux));
-      if (roomImages.length) roomImages.sort((a, b) => a.order - b.order);
+      // 사용자가 이미지를 하나라도 선택했다면
+      // 수정 할 수도
+      if (getRoomImagesFromRedux[0].imagePath !== "logo-sign.png") {
+        setRoomImages((roomImages = getRoomImagesFromRedux));
+        if (roomImages.length) roomImages.sort((a, b) => a.order - b.order);
+        setImagePreview(
+          (imagePreview = roomImages
+            .sort((a, b) => a.order - b.order)
+            .map((image) => image.imageSource))
+        );
+      }
     }
   }, [getRoomImagesFromRedux]);
 
