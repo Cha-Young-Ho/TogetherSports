@@ -24,7 +24,13 @@ const myInfoInitialState = {
   userNickname: "익명",
   userBirth: "yyyy-mm-dd",
   mannerPoint: 0,
-  activeAreas: [],
+  activeAreas: [
+    {
+      location: "서울특별시 서초구 서초동",
+      latitude: 128.52022280438544,
+      longitude: 35.8111943794032,
+    },
+  ],
   userProfileImagePath: "/base_profileImage.jpg",
   interests: [],
   gender: "",

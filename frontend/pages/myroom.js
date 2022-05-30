@@ -107,12 +107,6 @@ const MyRoom = () => {
   };
 
   useEffect(() => {
-    if (myInfo.userNickname === "익명") {
-      alert("해당 기능을 사용하기 위해선 추가정보 입력이 필요합니다.");
-      window.history.back();
-      return;
-    }
-
     getMyRoomInfo()
       .then((res) => {
         if (res.status.code === 5000) {

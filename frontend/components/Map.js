@@ -105,6 +105,8 @@ const Map = (props) => {
 
   const getArea = (map, geocoder) => {
     //기존 위치정보가 있는 경우
+
+    console.log(preAreaInfo);
     if (preAreaInfo.length) {
       preAreaInfo.forEach((area) => {
         const markerPosition = new kakao.maps.LatLng(

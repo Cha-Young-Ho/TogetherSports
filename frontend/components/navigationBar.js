@@ -220,7 +220,7 @@ const NavigationBar = () => {
           display: flex;
           justify-content: space-around;
           align-items: center;
-          height: 80px;
+          height: 82px;
           min-height: 8vh;
           border-bottom: 1px solid #e4e8eb;
           z-index: 90;
@@ -246,6 +246,7 @@ const NavigationBar = () => {
           width: 138px;
           display: flex;
           font-size: 2rem;
+          cursor: pointer;
         }
 
         .category {

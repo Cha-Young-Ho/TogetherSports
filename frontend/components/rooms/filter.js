@@ -44,9 +44,11 @@ const Filter = () => {
 
   const openEndCalendarModal = () => {
     setEndCalendarModalOpen(true);
+    document.body.style.overflow = "unset";
   };
   const closeEndCalendarModal = () => {
     setEndCalendarModalOpen(false);
+    document.body.style.overflow = "unset";
   };
 
   const openAreaModal = () => {
@@ -54,6 +56,7 @@ const Filter = () => {
   };
   const closeAreaModal = () => {
     setAreaModalOpen(false);
+    document.body.style.overflow = "unset";
   };
 
   // calendarModal의 시기 받아오기 위한 함수
