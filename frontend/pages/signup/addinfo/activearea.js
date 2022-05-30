@@ -44,17 +44,19 @@ const ActiveArea = () => {
         FailResponse(res.status.code);
       }
     });
+
+    window.location.replace("/");
   };
 
   useEffect(() => {
-    // if (
-    //   userRequestInfo.userNickname === "" &&
-    //   !userRequestInfo.interests.length
-    // ) {
-    //   alert("비정상적인 접근입니다.");
-    //   router.replace("/");
-    //   return;
-    // }
+    if (
+      userRequestInfo.userNickname === "" &&
+      !userRequestInfo.interests.length
+    ) {
+      alert("비정상적인 접근입니다.");
+      router.replace("/");
+      return;
+    }
   }, []);
 
   return (
@@ -78,9 +80,11 @@ const ActiveArea = () => {
           <Link href="/signup/addinfo/interest">
             <button className="prev-button">이전</button>
           </Link>
-          <a className="button-done" href="/" onClick={callUserRequest}>
-            완료
-          </a>
+          <Link href="/">
+            <div className="button-done" onClick={callUserRequest}>
+              완료
+            </div>
+          </Link>
         </div>
       </div>
 

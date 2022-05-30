@@ -174,11 +174,18 @@ const Chatting = ({ chatOpen, updateRoomDataFunc }) => {
 
   useEffect(() => {
     if (chatOpen && roomId !== "" && clientInfo) {
-      getChatInfo(roomId).then((res) => {
-        if (res.status.code === 5000) {
-          setShowingMessages((prev) => [...prev, res.content.content]);
-        }
-      });
+      getChatInfo(roomId)
+        .then((res) => {
+          if (res.status.code === 5000) {
+            setShowingMessages(res.content.content);
+          }
+        })
+        .catch((error) => {
+          if (error.response) {
+            alert("채팅 내역을 받아오는 데 문제가 생겼습니다.");
+            FailResponse(error.response.data.status.code);
+          }
+        });
 
       connect();
     }

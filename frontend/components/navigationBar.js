@@ -131,9 +131,7 @@ const NavigationBar = () => {
           <div className="groups">
             <div className="logo">
               <Link href="/">
-                <a>
-                  <img src="/logo-navbar.png" alt="Together Sports"></img>
-                </a>
+                <img src="/logo-navbar.png" alt="Together Sports"></img>
               </Link>
             </div>
             <div className="category">
@@ -144,7 +142,7 @@ const NavigationBar = () => {
                 <button
                   className="tag"
                   onClick={(e) => {
-                    if (myInfo.userNickname === "익명") {
+                    if (myInfo.id === 0) {
                       e.preventDefault();
                       alert("로그인 및 추가정보가 필요한 기능입니다.");
                     }
@@ -157,7 +155,7 @@ const NavigationBar = () => {
                 <button
                   className="tag"
                   onClick={(e) => {
-                    if (myInfo.userNickname === "익명") {
+                    if (myInfo.id === 0) {
                       e.preventDefault();
                       alert("로그인 및 추가정보가 필요한 기능입니다.");
                     }

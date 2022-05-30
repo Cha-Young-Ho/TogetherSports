@@ -113,19 +113,21 @@ const MyRoom = () => {
       return;
     }
 
-    getMyRoomInfo((res) => {
-      if (res.status.code === 5000) {
-        setImminentRooms(res.content.imminentRooms);
-        setHostingRooms(res.content.hostingRooms);
-        setParticipateRooms(res.content.participateRooms);
-      } else {
-        FailResponse(res.status.code);
-      }
-    }).catch((error) => {
-      if (error.response) {
-        FailResponse(error.response.data.status.code);
-      }
-    });
+    getMyRoomInfo()
+      .then((res) => {
+        if (res.status.code === 5000) {
+          setImminentRooms(res.content.imminentRooms);
+          setHostingRooms(res.content.hostingRooms);
+          setParticipateRooms(res.content.participateRooms);
+        } else {
+          FailResponse(res.status.code);
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          FailResponse(error.response.data.status.code);
+        }
+      });
   }, []);
 
   useEffect(() => {
