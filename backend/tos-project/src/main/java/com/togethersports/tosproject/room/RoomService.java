@@ -64,6 +64,7 @@ public class RoomService {
     private final RoomImageService roomImageService;
     private final UserService userService;
     private final ChatController chatController;
+
     //방 생성
     public void createRoom(User user, RoomOfCreate roomOfCreate){
 
@@ -87,7 +88,7 @@ public class RoomService {
 
         //방 저장
         Room room = roomRepository.save(roomEntity);
-        log.info("!@#!@#!@#room id = {}", room.getId());
+
         //-- Tag --
         //List<String>을 List<Tag>로 변환
         List<Tag> tagList = parsingEntityUtils.parsingStringToTagEntity(roomOfCreate.getTags());
@@ -149,7 +150,6 @@ public class RoomService {
         //WS 메세지 보내기
         sendMessage(roomEntity.getId(), wsResponse);
 
-
     }
 
     //방 필터링 조회
@@ -201,7 +201,6 @@ public class RoomService {
         //WS 메세지 보내기
         sendMessage(roomEntity.getId(), wsResponse);
 
-
         // 정상적으로 참여가 가능한 경우
         // HTTP 응답 메세지 생성
         return RoomOfParticipate.builder()
@@ -217,9 +216,7 @@ public class RoomService {
         for (Participant participant : participantList){
             userOfOtherInfoList.add(userService.getOtherInfo(participant.getUser().getId()));
         }
-
         return userOfOtherInfoList;
-
     }
 
     public boolean getAttendance(Long userId, Long roomId){
@@ -229,7 +226,7 @@ public class RoomService {
     public RoomsOfMyRoom getMyRoom(User currentUser){
         User userEntity = findUserEntityById(currentUser.getId());
 
-        List<Room> hostingRoomEntities = userEntity.getHostingRooms();
+        List<Room> hostingRoomEntities = filterRoomStatus(userEntity.getHostingRooms(), RoomStatus.Deleted);
 
         List<Participant> participateEntities = userEntity.getParticipateRooms();
 
@@ -238,22 +235,18 @@ public class RoomService {
             participatingRoomEntities.add(participant.getRoom());
         }
 
+        List<Room> filteredParticipatingRoom = filterRoomStatus(participatingRoomEntities, RoomStatus.Deleted);
 
-
-        List<Room> imminentRoomEntities = participatingRoomEntities.stream().filter(room->{
+        List<Room> imminentRoomEntities = filteredParticipatingRoom.stream().filter(room->{
             if (LocalDateTime.now().isAfter(room.getStartAppointmentDate())) {
                 return false;
             }
             return true;
         }).collect(Collectors.toList());
 
-        
-
         Collections.sort(imminentRoomEntities, new SortByDate());
 
-
         //시간 정렬
-
         return RoomsOfMyRoom.builder()
                 .hostingRooms(parsingEntityUtils.parsingRoomToRoomOfList(hostingRoomEntities))
                 .participateRooms(parsingEntityUtils.parsingRoomToRoomOfList(participatingRoomEntities))
@@ -262,13 +255,10 @@ public class RoomService {
 
     }
 
-
     //방장 위임
     public Response delegate(User currentUser, Long roomId, Long targetUserId){
 
-
         UserAndRoomOfService userAndRoomEntity = findEntityById(currentUser.getId(), roomId);
-
 
         // 해당 방 찾기
         Room roomEntity = userAndRoomEntity.getRoom();
@@ -316,18 +306,15 @@ public class RoomService {
                 .afterHostId(delegatedUser.getId())
                 .afterHostNickname(delegatedUser.getNickname()).build());
 
-
-
         return response;
-
 
     }
 
     // 강퇴
     public Response kickOut(User currentUser, Long roomId, Long targetUserId){
 
-
         UserAndRoomOfService userAndRoomEntity = findEntityById(currentUser.getId(), roomId);
+
         // 해당 방 찾기
         Room roomEntity = userAndRoomEntity.getRoom();
 
@@ -354,7 +341,6 @@ public class RoomService {
         // 방 인원 수 1명 줄이기
         roomEntity.leave();
 
-
         //WS 메세지 생성
         WsResponse wsResponse = WsResponse.of(ChatCode.SYSTEM_USER_KICKED_OUT,
                 MessageOfKickOut.builder()
@@ -365,21 +351,17 @@ public class RoomService {
         //WS 메세지 보내기
         sendMessage(roomEntity.getId(), wsResponse);
 
-
-
-
         // HTTP 응답 메세지 생성
         Response response = Response.of(
                 RoomCode.KICKED_OUT, MessageOfKickOut.builder()
                 .id(kickedOutUser.getId())
                 .nickname(kickedOutUser.getNickname())
                 .build());
-
         return response;
     }
     //방 나가기
     public Response out(User currentUser, Long roomId){
-
+        ChatCode chatCode = ChatCode.SYSTEM_USER_OUT;
         UserAndRoomOfService userAndRoomEntity = findEntityById(currentUser.getId(), roomId);
 
         User userEntity = userAndRoomEntity.getUser();
@@ -391,8 +373,61 @@ public class RoomService {
             return Response.of(RoomCode.NOT_PARTICIPATE_ROOM, null);
         }
 
-        //방장 위임 처리
+        // 요청 유저가 방장인지 확인
+        if(userEntity.getId() == roomEntity.getHost().getId()){
+            //방장일 경우
+            chatCode = ChatCode.SYSTEM_HOST_OUT;
 
+
+            //방 인원수 줄이기
+            roomEntity.leave();
+
+
+            //방 인원이 0명인 경우 방삭제
+            if(roomEntity.getParticipantCount() == 0){
+                roomEntity.setRoomStatus(RoomStatus.Deleted);
+                //나가기 처리(DB삭제)
+                participantService.out(userEntity, roomEntity);
+
+                Response response = Response.of(RoomCode.USER_OUT_FROM_ROOM, null);
+
+                return response;
+            }
+            participantService.out2(userEntity, roomEntity);
+            //참가자 중 방장 권한 위임할 랜덤 유저 선택하기.
+            Random random = new Random();
+            log.info("count = {}", roomEntity.getParticipantCount());
+            int randomNumber = random.nextInt(roomEntity.getParticipantCount());
+            log.info("random number = {}", randomNumber);
+            Long targetUserId = roomEntity.getParticipants().get(randomNumber).getUser().getId();
+            log.info("target id = {}", targetUserId);
+            //선택된 유저 엔티티 조회
+            User targetUserEntity = findUserEntityById(targetUserId);
+            roomEntity.updateHost(targetUserEntity);
+            MessageOfLeave messageBody = MessageOfLeave.builder()
+                    .id(targetUserEntity.getId())
+                    .mannerPoint(targetUserEntity.getMannerPoint())
+                    .userNickname(targetUserEntity.getNickname())
+                    .gender(targetUserEntity.getGender())
+                    .build();
+
+            //WS 메세지 생성
+            WsResponse wsResponse = WsResponse.of(chatCode,
+                    messageBody);
+
+            //WS 메세지 보내기
+            sendMessage(roomEntity.getId(), wsResponse);
+
+            // HTTP 응답 메세지 생성
+            Response response = Response.of(
+                    RoomCode.USER_OUT_FROM_ROOM, null);
+            // 소켓 통신, 정보 발행
+
+            return response;
+
+
+        }
+        //방장이 아닌 경우
         //나가기 처리(DB 삭제)
         participantService.out(userEntity, roomEntity);
 
@@ -452,7 +487,6 @@ public class RoomService {
                 .room(roomEntity)
                 .user(userEntity)
                 .build();
-
     }
 
     // 참여할 수 있는 방 개수 조회
@@ -485,6 +519,20 @@ public class RoomService {
         chatController.sendServerMessage(roomId, response);
     }
 
+    // 나가기 시 방장 위임
+    public void delegateOfOut(Long roomId, Long userId){
 
+    }
 
+    // 상태에 따른 필터 메소드
+    public List<Room> filterRoomStatus(List<Room> totalList, RoomStatus roomStatus){
+
+        return totalList.stream()
+                .filter(room ->{
+                    if(room.getRoomStatus() == roomStatus){
+                        return false;
+                    }
+                    return true;
+                }).collect(Collectors.toList());
+    }
 }

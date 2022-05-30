@@ -9,6 +9,7 @@ import com.togethersports.tosproject.room.auditing.RoomBaseEntity;
 import com.togethersports.tosproject.room.dto.RoomOfCreate;
 import com.togethersports.tosproject.room.dto.RoomOfUpdate;
 import com.togethersports.tosproject.tag.Tag;
+import com.togethersports.tosproject.user.Gender;
 import com.togethersports.tosproject.user.User;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -77,7 +78,7 @@ public class Room extends RoomBaseEntity {
 
     //참여자
     //todo N : N 매핑
-    @OneToMany(mappedBy = "room")
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
     private List<Participant> participants;
 
     //방장
@@ -93,15 +94,20 @@ public class Room extends RoomBaseEntity {
 
     //방 이미지
     @JsonIgnore
-    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<RoomImage> roomImages;
 
     //태그
-    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Tag> tags;
 
-    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ChatMessage> chatMessages;
+
+    @Column(name = "ROOM_STATUS")
+    @Enumerated(EnumType.STRING)
+    private RoomStatus roomStatus;
+
 
     @Builder(access = AccessLevel.PRIVATE)
     private Room(RoomOfCreate roomOfCreate, User user){
@@ -117,6 +123,7 @@ public class Room extends RoomBaseEntity {
         this.roomArea = roomOfCreate.getRoomArea();
         this.viewCount = 0;
         this.createUser = user;
+        this.roomStatus = RoomStatus.Running;
 
     }
 
@@ -154,5 +161,8 @@ public class Room extends RoomBaseEntity {
         this.host = user;
     }
 
-
+    //방 상태 변경 메소드
+    public void setRoomStatus(RoomStatus roomStatus){
+        this.roomStatus = roomStatus;
+    }
 }
