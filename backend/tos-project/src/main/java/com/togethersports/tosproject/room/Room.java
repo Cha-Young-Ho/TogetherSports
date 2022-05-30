@@ -9,6 +9,7 @@ import com.togethersports.tosproject.room.auditing.RoomBaseEntity;
 import com.togethersports.tosproject.room.dto.RoomOfCreate;
 import com.togethersports.tosproject.room.dto.RoomOfUpdate;
 import com.togethersports.tosproject.tag.Tag;
+import com.togethersports.tosproject.user.Gender;
 import com.togethersports.tosproject.user.User;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -103,6 +104,11 @@ public class Room extends RoomBaseEntity {
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
     private List<ChatMessage> chatMessages;
 
+    @Column(name = "ROOM_STATUS")
+    @Enumerated(EnumType.STRING)
+    private RoomStatus roomStatus;
+
+
     @Builder(access = AccessLevel.PRIVATE)
     private Room(RoomOfCreate roomOfCreate, User user){
         this.roomContent = roomOfCreate.getRoomContent();
@@ -117,6 +123,7 @@ public class Room extends RoomBaseEntity {
         this.roomArea = roomOfCreate.getRoomArea();
         this.viewCount = 0;
         this.createUser = user;
+        this.roomStatus = RoomStatus.Running;
 
     }
 
@@ -154,5 +161,8 @@ public class Room extends RoomBaseEntity {
         this.host = user;
     }
 
-
+    //방 상태 변경 메소드
+    public void setRoomStatus(RoomStatus roomStatus){
+        this.roomStatus = roomStatus;
+    }
 }

@@ -49,7 +49,8 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
                     participateCount(fieldsOfRoomList.getParticipantCount(), fieldsOfRoomList.isContainNoAdmittance()),
                     betweenTime(fieldsOfRoomList.getStartAppointmentDate(), fieldsOfRoomList.getEndAppointmentDate(), fieldsOfRoomList.isContainTimeClosing()),
                     eqTitle(fieldsOfRoomList.getRoomTitle()),
-                    eqContent(fieldsOfRoomList.getRoomContent())
+                    eqContent(fieldsOfRoomList.getRoomContent()),
+                    getRunningStatusRoom()
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -194,6 +195,9 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
 
     }
 
+    private BooleanExpression getRunningStatusRoom(){
+        return room.roomStatus.eq(RoomStatus.Running);
+    }
 
 
 
