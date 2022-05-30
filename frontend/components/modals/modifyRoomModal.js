@@ -2,52 +2,37 @@ import { useEffect, useState } from "react";
 import SetRoomImages from "../rooms/setRoomImages";
 import { getRoomInfo, putUpdateRoom } from "../../api/rooms";
 import FailResponse from "../../api/failResponse";
+import { useSelector } from "react-redux";
 
 const ModifyRoomModal = (props) => {
-  // 요청 날리기위한 기타 정보들
-  const [roomId, setRoomId] = useState(0);
-  const [roomArea, setRoomArea] = useState("");
-  const [exercise, setExercise] = useState("");
-  const [startAppointmentDate, setStartAppointmentDate] = useState("");
-  const [endAppointmentDate, setEndAppointmentDate] = useState("");
-
-  // content에 포함되는 정보들
-  const [roomTitle, setRoomTitle] = useState("");
-  const [limitPeopleCount, setLimitPeopleCount] = useState(2); // 최소2명 이상
-  const [roomContent, setRoomContent] = useState("");
-
-  /////////////////// 이미지 관련 ///////////////////
-  const [roomImages, setRoomImages] = useState([]);
-  const [thumbnailIndex, setThumbnailIndex] = useState(0);
-  const [imagePreview, setImagePreview] = useState([]); // 기존의 이미지들 프리뷰 표시할 변수
-
-  const getImageData = (imageData) => setRoomImages(imageData);
-  const getThumbnailIndex = (index) => setThumbnailIndex(index);
-  const setData = () => {
-    return roomImages;
-  };
-  const getPreview = (previewData) => setImagePreview(previewData);
-  const setPreview = () => {
-    return imagePreview;
-  };
-
-  const addOrder = (arr, index) => {
-    const thumbnail = [];
-
-    for (let i = 0; i < arr.length; i++) {
-      if (i === index) {
-        arr[i].order = 0;
-        thumbnail.push(arr[i]);
-        arr.splice(i, 1);
-      }
-    }
-
-    for (let i = 0; i < arr.length; i++) arr[i].order = i + 1;
-
-    return setRoomImages((roomImages = thumbnail.concat(arr)));
-  };
+  const roomId = props.roomId;
+  const roomTitle = useSelector(
+    (state) => state.roomRealTimeInfoReducer.roomTitle
+  );
+  const roomContent = useSelector(
+    (state) => state.roomRealTimeInfoReducer.roomContent
+  );
+  const roomArea = useSelector(
+    (state) => state.roomRealTimeInfoReducer.roomArea
+  );
+  const limitPeopleCount = useSelector(
+    (state) => state.roomRealTimeInfoReducer.limitPeopleCount
+  );
+  const exercise = useSelector(
+    (state) => state.roomRealTimeInfoReducer.exercise
+  );
+  const startAppointmentDate = useSelector(
+    (state) => state.roomRealTimeInfoReducer.startAppointmentDate
+  );
+  const endAppointmentDate = useSelector(
+    (state) => state.roomRealTimeInfoReducer.endAppointmentDate
+  );
 
   /////////////////// 태그 관련 ///////////////////
+
+  const getTagsFromRedux = useSelector(
+    (state) => state.roomRealTimeInfoReducer.tags
+  );
   const [tags, setTags] = useState([]);
   const tagsAge = [
     "10대",
@@ -103,12 +88,37 @@ const ModifyRoomModal = (props) => {
     }
   };
 
+  /////////////////// 이미지 관련 ///////////////////
+
+  const [roomImages, setRoomImages] = useState([]);
+  const [thumbnailIndex, setThumbnailIndex] = useState(0);
+
+  // setRoomImages 컴포넌트로부터 받는 데이터들
+  const getImageData = (imageData) => setRoomImages(imageData);
+  const getThumbnailIndex = (index) => setThumbnailIndex(index);
+
+  const addOrder = (arr, index) => {
+    const thumbnail = [];
+
+    for (let i = 0; i < arr.length; i++) {
+      if (i === index) {
+        arr[i].order = 0;
+        thumbnail.push(arr[i]);
+        arr.splice(i, 1);
+      }
+    }
+
+    for (let i = 0; i < arr.length; i++) arr[i].order = i + 1;
+
+    return setRoomImages((roomImages = thumbnail.concat(arr)));
+  };
+
   // 수정 완료시
   const clickDoneBtn = () => {
-    if (roomImages === []) setRoomImages(null);
-    else addOrder(roomImages, thumbnailIndex);
+    roomImages.length === 0
+      ? setRoomImages(null)
+      : addOrder(roomImages, thumbnailIndex);
 
-    // 수정할 수도 있음 limitPeopleCount === "" 으로
     if (roomTitle === "" || limitPeopleCount === 0) {
       alert("입력이 올바르지 않은 정보가 있습니다");
       e.preventDefault();
@@ -133,7 +143,7 @@ const ModifyRoomModal = (props) => {
       .then((res) => {
         if (res.status.code === 5000) {
           console.log(res.status.message);
-          alert("수정되었습니다.");
+          alert("방을 성공적으로 수정하였습니다 !"); // 임시 텍스트
 
           //수정 성공 후 실시간으로 방 정보 변경되어야 함
           //아마도 소켓?
@@ -146,43 +156,13 @@ const ModifyRoomModal = (props) => {
       });
   };
 
-  // 방에 대한 기본 설정된 데이터들을 불러오기
+  // 태그 초기값 세팅
   useEffect(() => {
     if (props.open) {
-      getRoomInfo(props.roomId)
-        .then((res) => {
-          if (res.status.code === 5000) {
-            //초기값 받아오기
-            setRoomId((roomId = res.content.roomId));
-            setRoomTitle((roomTitle = res.content.roomTitle));
-            setRoomContent((roomContent = res.content.roomContent));
-            setRoomArea((roomArea = res.content.roomArea));
-            setLimitPeopleCount(
-              (limitPeopleCount = res.content.limitPeopleCount)
-            );
-            setExercise((exercise = res.content.exercise));
-            setTags((tags = res.content.tags));
-            setStartAppointmentDate(
-              (startAppointmentDate = res.content.startAppointmentDate)
-            );
-            setEndAppointmentDate(
-              (endAppointmentDate = res.content.endAppointmentDate)
-            );
-            setRoomImages((roomImages = res.content.roomImages));
-          }
-        })
-        .catch((error) => {
-          FailResponse(error.response.data.status.code);
-          return;
-        });
+      getTagsFromRedux.map((tag) => setTags(tag));
+      if (tags.length) tags.map((tag) => setPrevTags(tag));
     }
-
-    if (tags.length) tags.map((tag) => setPrevTags(tag));
-    if (roomImages.length)
-      roomImages
-        .sort((a, b) => a.order - b.order)
-        .map((image) => setImagePreview([...imagePreview, image.imagePath]));
-  }, [props.open]);
+  }, [props.open, getTagsFromRedux]);
 
   return (
     <>
@@ -205,7 +185,8 @@ const ModifyRoomModal = (props) => {
             <div className="peopleCount-wrapper">
               <p>인원 수 조절</p>
               <input
-                type="text"
+                type="number"
+                min="2"
                 placeholder={limitPeopleCount}
                 onChange={(e) => {
                   e.target.value = e.target.value.replace(/[^0-9]/g, "");
@@ -230,9 +211,7 @@ const ModifyRoomModal = (props) => {
               <SetRoomImages
                 getImageData={getImageData}
                 getThumbnailData={getThumbnailIndex}
-                getPreview={getPreview}
-                setPreview={setPreview}
-                setData={setData}
+                path={"modifyRoom"}
               />
             </div>
 
@@ -404,7 +383,7 @@ const ModifyRoomModal = (props) => {
           align-items: center;
         }
 
-        .peopleCount-wrapper input[type="text"] {
+        .peopleCount-wrapper input[type="number"] {
           width: 50px;
           height: 35px;
           border-radius: 10px;

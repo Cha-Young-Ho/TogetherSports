@@ -346,11 +346,7 @@ const Room = () => {
           <div className="sections">
             <div className="left-section">
               <div className="image">
-                {roomImages.length !== 0 ? (
-                  <ImageSlide path={"roomDetail"} />
-                ) : (
-                  <></>
-                )}
+                <ImageSlide path={"roomDetail"} />
               </div>
               <div className="calendar">
                 <Calendar
