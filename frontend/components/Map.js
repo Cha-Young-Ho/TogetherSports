@@ -106,7 +106,6 @@ const Map = (props) => {
   const getArea = (map, geocoder) => {
     //기존 위치정보가 있는 경우
 
-    console.log(preAreaInfo);
     if (preAreaInfo.length) {
       preAreaInfo.forEach((area) => {
         const markerPosition = new kakao.maps.LatLng(
@@ -226,7 +225,7 @@ const Map = (props) => {
       <div id="map" />
       {!props.setPOM ? (
         <div className="tags">
-          {tagAreas.map((area, index) => {
+          {preAreaInfo.map((area, index) => {
             return (
               <div key={index} className="tag">
                 <p>{area.location}</p>

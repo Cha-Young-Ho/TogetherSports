@@ -298,23 +298,23 @@ const UserModification = () => {
       }));
     }
 
-    const tempAreasInfo = [];
-    // 활동 지역 세팅
-    userInfo.activeAreas.forEach((area) => {
-      tempAreasInfo.push(area);
-    });
+    // const tempAreasInfo = [];
+    // // 활동 지역 세팅
+    // userInfo.activeAreas.forEach((area) => {
+    //   tempAreasInfo.push(area);
+    // });
 
     dispatch({
       type: "SAVEACTIVEAREA",
       payload: {
-        activeAreas: tempAreasInfo,
+        activeAreas: userInfo.activeAreas,
       },
     });
 
     dispatch({
       type: "SAVETAGAREAS",
       payload: {
-        tagAreas: tempAreasInfo,
+        tagAreas: userInfo.activeAreas,
       },
     });
 
