@@ -78,7 +78,7 @@ public class Room extends RoomBaseEntity {
 
     //참여자
     //todo N : N 매핑
-    @OneToMany(mappedBy = "room")
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
     private List<Participant> participants;
 
     //방장
@@ -94,14 +94,14 @@ public class Room extends RoomBaseEntity {
 
     //방 이미지
     @JsonIgnore
-    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<RoomImage> roomImages;
 
     //태그
-    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Tag> tags;
 
-    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ChatMessage> chatMessages;
 
     @Column(name = "ROOM_STATUS")

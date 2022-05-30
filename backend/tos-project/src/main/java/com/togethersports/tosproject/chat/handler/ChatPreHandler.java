@@ -34,7 +34,7 @@ import java.util.Map;
  * @author younghocha
  */
 
-
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class ChatPreHandler implements ChannelInterceptor {
@@ -50,11 +50,12 @@ public class ChatPreHandler implements ChannelInterceptor {
         // 헤더 토큰 얻기
         String authorizationHeader = String.valueOf(headerAccessor.getNativeHeader("Authorization"));
         StompCommand command = headerAccessor.getCommand();
-        ObjectMapper objectMapper = new ObjectMapper();
-        Object a = message.getPayload();
+        Long roomId = Long.parseLong(String.valueOf(headerAccessor.getNativeHeader("roomId").get(0)));
 
 
-       // MultiValueMap<String, String> map = objectMapper.convertValue(a, MultiValueMap.class);
+        log.info("prehandler roomId = {}", roomId);
+
+
 
 
 
@@ -78,9 +79,6 @@ public class ChatPreHandler implements ChannelInterceptor {
 
         // 소켓 연결
         if(command.equals(StompCommand.CONNECT)){
-            Long roomId = 2L;
-
-
 
 
             //JWT 인증 및 참여 여부 확인
@@ -102,7 +100,7 @@ public class ChatPreHandler implements ChannelInterceptor {
 
 
 
-            Long roomId = 2L;
+
             // JWT 인증 및 참여 여부 확인
 
             return verifySend(authorizationHeader, roomId, message);

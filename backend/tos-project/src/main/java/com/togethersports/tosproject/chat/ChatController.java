@@ -50,7 +50,7 @@ public class ChatController {
         chatService.checkValidate(userId, roomId);
 
         // 메세지 저장
-        ChatOfPubRoom pubMessage = chatService.saveChat(message, roomId);
+        ChatOfPubRoom pubMessage = chatService.saveChat(message, roomId, userId);
 
         WsResponse response = WsResponse.of(ChatCode.USER_CHAT_PUBLISH, pubMessage);
 
