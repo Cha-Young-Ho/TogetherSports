@@ -29,6 +29,7 @@ const ModifyRoomModal = (props) => {
   );
 
   /////////////////// 태그 관련 ///////////////////
+
   const getTagsFromRedux = useSelector(
     (state) => state.roomRealTimeInfoReducer.tags
   );
@@ -87,19 +88,22 @@ const ModifyRoomModal = (props) => {
     }
   };
 
-  // /////////////////// 이미지 관련 ///////////////////
+  /////////////////// 이미지 관련 ///////////////////
 
   const getRoomImagesFromRedux = useSelector(
     (state) => state.roomRealTimeInfoReducer.roomImages
   );
   const [roomImages, setRoomImages] = useState([]);
   const [thumbnailIndex, setThumbnailIndex] = useState(0);
-  const [imagePreview, setImagePreview] = useState([]); // 기존의 이미지들 프리뷰 표시할 변수
+  const [imagePreview, setImagePreview] = useState([]); // 기존의 이미지들 프리뷰표시
 
   const getImageData = (imageData) => setRoomImages(imageData);
   const getThumbnailIndex = (index) => setThumbnailIndex(index);
   // 컴포넌트로 전달할 데이터
   const setData = () => {
+    // ** 수정 필요 **
+    // roomImages를 그대로 보내면 안되고
+    // extension, imageSource 만 보내야함
     if (roomImages.length !== 0) return roomImages;
   };
   const getPreview = (previewData) => setImagePreview(previewData);
@@ -167,28 +171,38 @@ const ModifyRoomModal = (props) => {
       });
   };
 
+  // 이 방식이 맞음
+  // 태그 초기값 세팅
   useEffect(() => {
     if (props.open) {
-      setTags((tags = getTagsFromRedux));
+      getTagsFromRedux.map((tag) => setTags(tag));
       if (tags.length) tags.map((tag) => setPrevTags(tag));
     }
-  }, [getTagsFromRedux]);
+  }, [props.open, getTagsFromRedux]);
 
+  // 이미지 초기값 세팅
   useEffect(() => {
     if (props.open) {
       // 사용자가 이미지를 하나라도 선택했다면
-      // 수정 할 수도
+      // ** 수정 할 수도 **
       if (getRoomImagesFromRedux[0].imagePath !== "logo-sign.png") {
-        setRoomImages((roomImages = getRoomImagesFromRedux));
-        if (roomImages.length) roomImages.sort((a, b) => a.order - b.order);
+        setRoomImages(
+          (roomImages = getRoomImagesFromRedux.sort(
+            (a, b) => a.order - b.order
+          ))
+        );
         setImagePreview(
-          (imagePreview = roomImages
+          (imagePreview = getRoomImagesFromRedux
             .sort((a, b) => a.order - b.order)
             .map((image) => image.imageSource))
         );
       }
+      // 사용자가 아무 이미지도 선택하지 않았다면
+      // redux에 담긴 값은 기본이미지만 있는 거니까
+      // setRoomImages = [] 로 만들기
+      // 그럼 나중에 null로 보내게됨
     }
-  }, [getRoomImagesFromRedux]);
+  }, [props.open, getRoomImagesFromRedux]);
 
   return (
     <>
