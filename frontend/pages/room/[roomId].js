@@ -286,11 +286,11 @@ const Room = () => {
           <div className="header">
             <div className="viewCount">
               <p>{`조회수 : ${viewCount}`}</p>
-              <p>{`생성 일시 : ${createdTime}`}</p>
+              <p>{`생성 일시 : ${createdTime.substr(0, 16)}`}</p>
               {updatedTime === "" ? (
                 <></>
               ) : (
-                <p>{`최근 수정 : ${updatedTime}`}</p>
+                <p>{`최근 수정 : ${updatedTime.substr(0, 16)}`}</p>
               )}
             </div>
 
