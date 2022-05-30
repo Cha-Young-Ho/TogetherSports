@@ -13,7 +13,12 @@ const ImageSlide = (props) => {
   );
 
   useEffect(() => {
-    showSlides(slideIndex);
+    if (props.path === "roomInfo") {
+      roomInfoImageArr.length !== 0 ? showSlides(slideIndex) : <></>;
+    }
+    if (props.path === "roomDetail") {
+      roomDetailImageArr.length !== 0 ? showSlides(slideIndex) : <></>;
+    }
   });
 
   const onChangeImage = (index) => {
@@ -35,8 +40,9 @@ const ImageSlide = (props) => {
   return (
     <>
       <div className="slideshow-container">
-        {props.path === "roomInfo"
-          ? roomInfoImageArr
+        {props.path === "roomInfo" ? (
+          roomInfoImageArr.length !== 0 ? (
+            roomInfoImageArr
               .sort((a, b) => a.order - b.order)
               .map((image, index) => {
                 return (
@@ -51,21 +57,28 @@ const ImageSlide = (props) => {
                   </div>
                 );
               })
-          : roomDetailImageArr
-              .sort((a, b) => a.order - b.order)
-              .map((image, index) => {
-                return (
-                  <div className="slide fade" key={index}>
-                    <div className="number-text">{`${index + 1} / ${
-                      roomDetailImageArr.length
-                    }`}</div>
-                    <div className="image-container">
-                      {/* <img src={`/images/${image.imagePath}`} /> */}
-                      <img src={`/${image.imagePath}`} />
-                    </div>
+          ) : (
+            <></>
+          )
+        ) : roomDetailImageArr.length !== 0 ? (
+          roomDetailImageArr
+            .sort((a, b) => a.order - b.order)
+            .map((image, index) => {
+              return (
+                <div className="slide fade" key={index}>
+                  <div className="number-text">{`${index + 1} / ${
+                    roomDetailImageArr.length
+                  }`}</div>
+                  <div className="image-container">
+                    {/* <img src={`/images/${image.imagePath}`} /> */}
+                    <img src={`/${image.imagePath}`} />
                   </div>
-                );
-              })}
+                </div>
+              );
+            })
+        ) : (
+          <></>
+        )}
 
         <div className="buttons">
           <button className="prev-button" onClick={() => onChangeImage(-1)}>

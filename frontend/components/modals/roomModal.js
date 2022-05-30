@@ -203,11 +203,7 @@ const RoomModal = (props) => {
 
             <div className="right-section">
               <div className="image">
-                {roomImages.length !== 0 ? (
-                  <ImageSlide path={"roomInfo"} />
-                ) : (
-                  <></>
-                )}
+                <ImageSlide path={"roomInfo"} />
               </div>
 
               <div className="room-info">
