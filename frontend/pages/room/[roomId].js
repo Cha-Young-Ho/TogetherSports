@@ -68,55 +68,6 @@ const Room = () => {
   );
   const { roomId } = router.query;
   const [chatOpen, setChatOpen] = useState(false);
-  // const [roomContent, setRoomContent] = useState("");
-  // const [roomTitle, setRoomTitle] = useState("");
-  // const [roomArea, setRoomArea] = useState("");
-  // const [exercise, setExercise] = useState("");
-  // const [limitPeopleCount, setLimitPeopleCount] = useState(2);
-  // const [participantCount, setParticipantCount] = useState(2);
-  // const [startAppointmentDate, setStartAppointmentDate] = useState("");
-  // const [endAppointmentDate, setEndAppointmentDate] = useState("");
-  // const [createdTime, setCreatedTime] = useState("");
-  // const [updatedTime, setUpdatedTime] = useState("");
-  // const [host, setHost] = useState("짱구");
-  // const [creatorNickName, setCreatorNickName] = useState("");
-  // const [roomImages, setRoomImages] = useState([
-  //   {
-  //     // 임시 데이터
-  //     order: -1,
-  //     imagePath: "logo-sign.png",
-  //   },
-  // ]);
-  // const [tags, setTags] = useState([]);
-  // const [viewCount, setViewCount] = useState(0);
-
-  // 안쓸 것 같지만 일단 받아오는 데이터
-  // const [roomId, setRoomId] = useState(0);
-  // const [attendance, setAttendance] = useState(false);
-
-  // 참가자 목록에 대한 필드
-  // const [participants, setParticipants] = useState([
-  //   {
-  //     // 임시 데이터
-  //     id: 1,
-  //     userNickname: "짱구",
-  //     mannerPoint: 10,
-  //     gender: "male",
-  //     activeAreas: ["서울특별시 강남구 강남동"],
-  //     interests: ["축구", "야구", "농구"],
-  //     userProfileImagePath: "",
-  //   },
-  //   {
-  //     // 임시 데이터
-  //     id: 2,
-  //     userNickname: "짱아",
-  //     mannerPoint: 10,
-  //     gender: "female",
-  //     activeAreas: ["서울특별시 강남구 강남동"],
-  //     interests: ["축구", "야구", "농구"],
-  //     userProfileImagePath: "",
-  //   },
-  // ]);
 
   // 내가 방장인지 아닌지 확인하기 위한 변수
   const myNickname = useSelector((state) => state.myInfoReducer.userNickname);
@@ -209,10 +160,12 @@ const Room = () => {
                 creatorNickName: roomInfo.creatorNickName,
                 roomImages:
                   roomInfo.roomImages === null
-                    ? {
-                        order: 0,
-                        imagePath: "logo-sign.png",
-                      }
+                    ? [
+                        {
+                          order: 0,
+                          imagePath: "logo-sign.png",
+                        },
+                      ]
                     : roomInfo.roomImages,
                 tags: roomInfo.tags,
                 viewCount: roomInfo.viewCount,
@@ -437,6 +390,8 @@ const Room = () => {
         ) : (
           <></>
         )}
+
+        <button className="button-alarm">알림</button>
       </div>
       <style jsx>{`
         .container {
@@ -769,6 +724,21 @@ const Room = () => {
           background-color: #00555f;
           margin-bottom: 60px;
           cursor: pointer;
+        }
+
+        .button-alarm {
+          width: 70px;
+          height: 70px;
+          border: none;
+          border-radius: 50%;
+          opacity: 0.94;
+          box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.42);
+          background-color: #6db152;
+          cursor: pointer;
+          position: -webkit-fixed; // safari
+          position: fixed;
+          bottom: 30px;
+          right: 30px;
         }
       `}</style>
     </>

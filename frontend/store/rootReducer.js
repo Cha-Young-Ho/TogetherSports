@@ -129,7 +129,12 @@ const roomRealTimeInfoInitialState = {
   updatedTime: "",
   host: "",
   creatorNickName: "",
-  roomImages: [],
+  roomImages: [
+    {
+      order: 0,
+      imagePath: "logo-sign.png",
+    },
+  ],
   tags: [],
   viewCount: 0,
   participants: [],
@@ -137,7 +142,12 @@ const roomRealTimeInfoInitialState = {
 
 // 방 설명 팝업에 쓰일 이미지 저장을 위한 초기값
 const saveRoomModalImagesInitialState = {
-  roomImages: [],
+  roomImages: [
+    {
+      order: 0,
+      imagePath: "logo-sign.png",
+    },
+  ],
 };
 
 // 오타 방지용
