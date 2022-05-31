@@ -284,8 +284,8 @@ const UserModification = () => {
 
   // 초기값 세팅
   useEffect(() => {
-    if (userInfo.gender === "") {
-      alert("등록된 유저 정보가 없습니다.");
+    if (userInfo.id === 0) {
+      alert("먼저 추가정보를 입력해주세요.");
       window.history.back();
       return;
     }
@@ -298,23 +298,23 @@ const UserModification = () => {
       }));
     }
 
-    const tempAreasInfo = [];
-    // 활동 지역 세팅
-    userInfo.activeAreas.forEach((area) => {
-      tempAreasInfo.push(area);
-    });
+    // const tempAreasInfo = [];
+    // // 활동 지역 세팅
+    // userInfo.activeAreas.forEach((area) => {
+    //   tempAreasInfo.push(area);
+    // });
 
     dispatch({
       type: "SAVEACTIVEAREA",
       payload: {
-        activeAreas: tempAreasInfo,
+        activeAreas: userInfo.activeAreas,
       },
     });
 
     dispatch({
       type: "SAVETAGAREAS",
       payload: {
-        tagAreas: tempAreasInfo,
+        tagAreas: userInfo.activeAreas,
       },
     });
 

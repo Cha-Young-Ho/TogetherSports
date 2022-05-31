@@ -33,15 +33,15 @@ const FilteredRooms = () => {
 
   // 현재 임시 데이터
   const [eachRoomInfo, setEachRoomInfo] = useState([
-    // {
-    //   roomId: "121",
-    //   roomTitle: "축구 한판 뛰실분?",
-    //   limitPeopleCount: "22",
-    //   participantCount: "1",
-    //   tags: ["20대만", "고수만"],
-    //   startAppointmentDate: "2022-04-18T19:00",
-    //   roomImagePath: "",
-    // },
+    {
+      roomId: "121",
+      roomTitle: "축구 한판 뛰실분?",
+      limitPeopleCount: "22",
+      participantCount: "1",
+      tags: ["20대만", "고수만"],
+      startAppointmentDate: "2022-04-18T19:00",
+      roomImagePath: "",
+    },
     // {
     //   roomId: "123",
     //   roomTitle: "야구 한판 뛰실분?",
@@ -95,6 +95,7 @@ const FilteredRooms = () => {
 
   const closeRoomExplainModal = () => {
     setRoomExplainModalOpen(false);
+    document.body.style.overflow = "unset";
   };
 
   const requestFilteringToFalse = () => {

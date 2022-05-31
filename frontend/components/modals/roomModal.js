@@ -57,6 +57,7 @@ const RoomModal = (props) => {
 
   useEffect(() => {
     if (props.open) {
+      document.body.style.overflow = "hidden";
       // 방 정보 받아오기
       getRoomInfo(props.roomId).then((res) => {
         if (res.status.code === 5000) {
@@ -131,7 +132,12 @@ const RoomModal = (props) => {
 
   return (
     <>
-      <div className={props.open ? "openModal modal" : "modal"}>
+      <div
+        className={props.open ? "openModal modal" : "modal"}
+        onClick={(e) => {
+          if (e.target.classList[1] === "openModal") props.close();
+        }}
+      >
         <div className="room-modal-body">
           <div className="header">
             <div>
@@ -244,21 +250,45 @@ const RoomModal = (props) => {
           display: flex;
           align-items: center;
           justify-content: center;
+          overflow: auto;
           animation: modal-bg-show 0.3s; // 스르륵 효과
         }
 
+        @media (max-height: 720px) {
+          .modal.openModal {
+            display: flex;
+            align-items: stretch;
+            justify-content: center;
+          }
+        }
+
+        @media (max-width: 1150px) {
+          .modal.openModal {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+          }
+        }
+
+        @media (max-height: 720px) and (max-width: 1150px) {
+          .modal.openModal {
+            display: flex;
+            align-items: stretch;
+            justify-content: flex-start;
+          }
+        }
+
         .room-modal-body {
-          min-width: 1050px;
-          min-height: 600px;
-          width: 70%;
-          height: 85%;
+          margin: 10px;
+          min-width: 1150px;
+          height: 720px;
           border-radius: 22px;
           background-color: white;
           display: flex;
           flex-direction: column;
           align-items: center;
           padding: 20px 30px;
-          /* overflow: auto; */
+          overflow: auto;
         }
 
         .header {
