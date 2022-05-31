@@ -89,6 +89,16 @@ public class RoomOfInfo {
     }
 
     public static RoomOfInfo of(Room roomEntity, List<ImageOfRoomInfo> roomImages, List<String> tags){
+
+        if(roomImages.size() == 0){
+            return RoomOfInfo.builder()
+                    .roomEntity(roomEntity)
+                    .roomImages(null)
+                    .tag(tags)
+                    .build();
+        }
+
+
         return RoomOfInfo.builder()
                 .roomEntity(roomEntity)
                 .roomImages(roomImages)
