@@ -361,11 +361,14 @@ public class RoomService {
     }
     //방 나가기
     public Response out(User currentUser, Long roomId){
-        ChatCode chatCode = ChatCode.SYSTEM_USER_OUT;
-        UserAndRoomOfService userAndRoomEntity = findEntityById(currentUser.getId(), roomId);
 
+        // user, room 식별
+        UserAndRoomOfService userAndRoomEntity = findEntityById(currentUser.getId(), roomId);
         User userEntity = userAndRoomEntity.getUser();
         Room roomEntity = userAndRoomEntity.getRoom();
+
+        // status code
+        ChatCode chatCode = ChatCode.SYSTEM_USER_OUT;
 
         // 요청자가 방에 참가했는지 확인
         if(!getAttendance(userEntity.getId(), roomEntity.getId())){
@@ -373,37 +376,42 @@ public class RoomService {
             return Response.of(RoomCode.NOT_PARTICIPATE_ROOM, null);
         }
 
-        // 요청 유저가 방장인지 확인
+        // 요청 유저가 방장인 경우
         if(userEntity.getId() == roomEntity.getHost().getId()){
             //방장일 경우
             chatCode = ChatCode.SYSTEM_HOST_OUT;
 
-
             //방 인원수 줄이기
             roomEntity.leave();
 
-
             //방 인원이 0명인 경우 방삭제
-            if(roomEntity.getParticipantCount() == 0){
+            if(roomEntity.getParticipantCount() <= 0){
                 roomEntity.setRoomStatus(RoomStatus.Deleted);
+
                 //나가기 처리(DB삭제)
-                participantService.out(userEntity, roomEntity);
+                roomRepository.deleteById(roomEntity.getId());
 
                 Response response = Response.of(RoomCode.USER_OUT_FROM_ROOM, null);
 
                 return response;
             }
-            participantService.out2(userEntity, roomEntity);
+
+            //participant 관계 테이블 삭제
+            participantService.out(userEntity, roomEntity);
+
             //참가자 중 방장 권한 위임할 랜덤 유저 선택하기.
             Random random = new Random();
-            log.info("count = {}", roomEntity.getParticipantCount());
+
             int randomNumber = random.nextInt(roomEntity.getParticipantCount());
-            log.info("random number = {}", randomNumber);
+
             Long targetUserId = roomEntity.getParticipants().get(randomNumber).getUser().getId();
-            log.info("target id = {}", targetUserId);
+
             //선택된 유저 엔티티 조회
             User targetUserEntity = findUserEntityById(targetUserId);
+
+            //방장 위임
             roomEntity.updateHost(targetUserEntity);
+
             MessageOfLeave messageBody = MessageOfLeave.builder()
                     .id(targetUserEntity.getId())
                     .mannerPoint(targetUserEntity.getMannerPoint())
@@ -427,9 +435,10 @@ public class RoomService {
 
 
         }
+
         //방장이 아닌 경우
         //나가기 처리(DB 삭제)
-        participantService.out(userEntity, roomEntity);
+        participantService.deleteRoom(userEntity, roomEntity);
 
         //방 인원수 줄이기
         roomEntity.leave();

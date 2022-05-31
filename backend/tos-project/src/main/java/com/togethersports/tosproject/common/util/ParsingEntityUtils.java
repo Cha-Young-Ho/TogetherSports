@@ -94,8 +94,9 @@ public class ParsingEntityUtils {
             imageOfRoomInfoList.add(
                     ImageOfRoomInfo.builder()
                             .imagePath(roomImage.getImagePath())
-                            .order(roomImage.getOrder()).
-                            build()
+                            .order(roomImage.getOrder())
+                            .roomImageExtension(roomImage.getRoomImageExtension())
+                                    .build()
             );
         }
 

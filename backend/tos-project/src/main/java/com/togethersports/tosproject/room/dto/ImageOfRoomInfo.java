@@ -15,4 +15,5 @@ import lombok.Getter;
 public class ImageOfRoomInfo {
     private String imagePath;
     private int order;
+    private String roomImageExtension;
 }
