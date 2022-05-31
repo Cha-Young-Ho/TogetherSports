@@ -10,9 +10,45 @@ const AddAreaModal = (props) => {
     (state) => state.filteringButtonClickDetectionReducer.reset
   );
 
-  const [rootLocations, setRootLocations] = useState([]);
+  const [rootLocations, setRootLocations] = useState([
+    "서울",
+    "대구",
+    "부산",
+    "광주",
+    "대전",
+    "경기도",
+    "경상도",
+    "대구광역시",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+  ]);
   const [secondLocations, setSecondLocations] = useState([]);
-  const [thirdLocations, setThirdLocations] = useState([]);
+  const [thirdLocations, setThirdLocations] = useState([
+    "서울",
+    "대구",
+    "부산",
+    "광주",
+    "대전",
+    "경기도",
+    "경상도",
+    "대구광역시",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+  ]);
   const [selectedAreas, setSelectedAreas] = useState([]);
 
   const [emphasisRoot, setEmphasisRoot] = useState("");
@@ -42,6 +78,26 @@ const AddAreaModal = (props) => {
           FailResponse(error.response.data.status.code);
         }
       });
+    setThirdLocations([]);
+    setSecondLocations([
+      "서울",
+      "대구",
+      "부산",
+      "광주",
+      "대전",
+      "경기도",
+      "경상도",
+      "대구광역시",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+    ]);
   };
 
   const clickSecondItem = (e) => {
@@ -60,6 +116,26 @@ const AddAreaModal = (props) => {
           FailResponse(error.response.data.status.code);
         }
       });
+
+    setThirdLocations([
+      "서울",
+      "대구",
+      "부산",
+      "광주",
+      "대전",
+      "경기도",
+      "경상도",
+      "대구광역시",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+    ]);
   };
 
   const clickThirdItem = (e) => {
@@ -106,11 +182,14 @@ const AddAreaModal = (props) => {
         add: "true",
       },
     });
+
     props.close();
   };
 
   useEffect(() => {
     if (props.open) {
+      document.body.style.overflow = "hidden";
+
       getRootLocations()
         .then((res) => {
           if (res.status.code === 5000) {
@@ -133,7 +212,12 @@ const AddAreaModal = (props) => {
 
   return (
     <>
-      <div className={props.open ? "openModal modal" : "modal"}>
+      <div
+        className={props.open ? "openModal modal" : "modal"}
+        onClick={(e) => {
+          if (e.target.classList[1] === "openModal") props.close();
+        }}
+      >
         <div className="box-container">
           <div className="header-wrapper">
             <button className="reset-button" onClick={resetButton}>
@@ -259,15 +343,17 @@ const AddAreaModal = (props) => {
 
         .modal.openModal {
           display: flex;
-          align-items: center;
           justify-content: center;
+          align-items: center;
+          overflow: auto;
           /* 팝업이 열릴때 스르륵 열리는 효과 */
           animation: modal-bg-show 0.3s;
         }
 
         .box-container {
-          width: 55%;
-          height: 80%;
+          margin: 10px 0;
+          min-width: 1000px;
+          height: 650px;
           border-radius: 22px;
           box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
           background-color: #fff;
@@ -310,7 +396,7 @@ const AddAreaModal = (props) => {
 
         .body-wrapper {
           width: 100%;
-          height: 75%;
+          height: 65%;
           margin: 15px 25px;
           display: flex;
           justify-content: space-between;
@@ -335,7 +421,6 @@ const AddAreaModal = (props) => {
           padding: 10px;
           border-bottom: 1px solid lightgrey;
           justify-content: center;
-          align-items: center;
           font-size: 1.5rem;
         }
 
@@ -343,8 +428,28 @@ const AddAreaModal = (props) => {
           width: 100%;
           display: flex;
           flex-direction: column;
-          justify-content: center;
+          overflow-y: auto;
           padding: 0 17px;
+        }
+
+        .depth-list::-webkit-scrollbar {
+          width: 17px;
+          border: none;
+        }
+
+        .depth-list::-webkit-scrollbar-track {
+          width: 9px;
+          border-radius: 4px;
+          background-color: #f5f5f5;
+          background-clip: padding-box;
+          border: 5px solid transparent;
+        }
+
+        .depth-list::-webkit-scrollbar-thumb {
+          width: 17px;
+          border-radius: 4px;
+          border: solid 1px #e5e5e5;
+          background-color: #fff;
         }
 
         .depth-list p {
@@ -410,6 +515,7 @@ const AddAreaModal = (props) => {
 
         .button-wrapper {
           width: 100%;
+          min-height: 45px;
           height: 8%;
           margin: 20px 0;
           display: flex;

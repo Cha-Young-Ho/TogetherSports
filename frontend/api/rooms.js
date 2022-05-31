@@ -137,7 +137,7 @@ const getMyRoomInfo = () => {
 
 // 최상위(시) 행정구역 조회
 const getRootLocations = () => {
-  const promise = axios.get(`http://localhost:8080/locations`);
+  const promise = axios.get(`http://localhost:8080/api/locations`);
 
   const dataPromise = promise.then((res) => res.data);
 
@@ -146,7 +146,9 @@ const getRootLocations = () => {
 
 // 하위(시 이하) 행정구역 조회
 const getChildLocations = (name) => {
-  const promise = axios.get(`http://localhost:8080/locations/parent/${name}`);
+  const promise = axios.get(
+    `http://localhost:8080/api/locations/parent/${name}`
+  );
 
   const dataPromise = promise.then((res) => res.data);
 
