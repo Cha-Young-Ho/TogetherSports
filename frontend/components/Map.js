@@ -11,6 +11,7 @@ const Map = (props) => {
   );
   const [activeAreas, setActiveAreas] = useState([]);
   const [tagAreas, setTagAreas] = useState([]);
+  const [mapLoadingCheck, setMapLoadingCheck] = useState(false);
 
   const changeActiveAreas = (data) => {
     dispatch({
@@ -120,8 +121,11 @@ const Map = (props) => {
 
         marker.setPosition(markerPosition);
         marker.setMap(map);
+        deleteMarker(marker, markerPosition, geocoder);
       });
     }
+
+    setMapLoadingCheck(true);
 
     kakao.maps.event.addListener(map, "click", function (mouseEvent) {
       searchAddrFromCoords(
@@ -144,6 +148,8 @@ const Map = (props) => {
             if (activeAreas.length < 5) {
               if (activeAreas.some(checkAreaDuplication) === false) {
                 getMarker(map, mouseEvent.latLng, geocoder); // 클릭된 지역 마커표시
+
+                console.log("중복선택", activeAreas);
 
                 setActiveAreas((prev) => (activeAreas = [...prev, area]));
                 changeActiveAreas(activeAreas);
@@ -172,6 +178,10 @@ const Map = (props) => {
     marker.setPosition(position);
     marker.setMap(map);
 
+    deleteMarker(marker, position, geocoder);
+  };
+
+  const deleteMarker = (marker, position, geocoder) => {
     // 마커 클릭 시, 해당 지역 삭제
     kakao.maps.event.addListener(marker, "click", function () {
       marker.setMap(null); // 지도에서 마커제거
@@ -211,21 +221,34 @@ const Map = (props) => {
   };
 
   useEffect(() => {
-    if (props.setPOM === "true") {
-      if (placeOfMeeting !== "") {
-        getMap();
-      }
-    } else if (!props.setPOM) {
+    if (props.setPOM === "true" && placeOfMeeting !== "") {
       getMap();
     }
   }, [placeOfMeeting]);
+
+  useEffect(() => {
+    if (preAreaInfo.length && !mapLoadingCheck) {
+      setActiveAreas(preAreaInfo);
+      setTagAreas(preAreaInfo);
+    }
+  }, [preAreaInfo]);
+
+  useEffect(() => {
+    if (activeAreas.length && tagAreas.length && !mapLoadingCheck) {
+      getMap();
+    }
+  }, [activeAreas, tagAreas]);
+
+  useEffect(() => {
+    getMap();
+  }, []);
 
   return (
     <>
       <div id="map" />
       {!props.setPOM ? (
         <div className="tags">
-          {preAreaInfo.map((area, index) => {
+          {tagAreas.map((area, index) => {
             return (
               <div key={index} className="tag">
                 <p>{area.location}</p>

@@ -284,11 +284,11 @@ const UserModification = () => {
 
   // 초기값 세팅
   useEffect(() => {
-    // if (userInfo.id === "") {
-    //   alert("등록된 유저 정보가 없습니다.");
-    //   window.history.back();
-    //   return;
-    // }
+    if (userInfo.id === 0) {
+      alert("먼저 추가정보를 입력해주세요.");
+      window.history.back();
+      return;
+    }
 
     // 관심 종목 세팅
     for (const exercise of userInfo.interests) {
