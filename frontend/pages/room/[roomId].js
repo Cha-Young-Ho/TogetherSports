@@ -14,6 +14,7 @@ import Map from "../../components/Map";
 import AlarmModal from "../../components/modals/alarmModal";
 import StompJS from "stompjs";
 import SockJS from "sockjs-client";
+import FloatingAlarm from "../../components/rooms/floatingAlarm";
 
 const Room = () => {
   const router = useRouter();
@@ -87,6 +88,20 @@ const Room = () => {
   const [alarmModalOpen, setAlarmModalOpen] = useState(false);
   const openAlarmModal = () => setAlarmModalOpen(true);
   const closeAlarmModal = () => setAlarmModalOpen(false);
+
+  ////////////// 우측 하단 고정 알림 관련 데이터 //////////////
+  const [floatingAlarmOpen, setFloatingAlarmOpen] = useState(false);
+
+  const floatingAlarmOpenFunc = (e) => {
+    setFloatingAlarmOpen(true);
+    e.target.style.display = "none";
+  };
+
+  const floatingAlarmCloseFunc = () => {
+    const button = document.getElementsByClassName("button-alarm");
+    setFloatingAlarmOpen(false);
+    button[0].style.display = "block";
+  };
 
   // 방 나가기
   const onLeaveRoom = () => {
@@ -391,7 +406,13 @@ const Room = () => {
           <></>
         )}
 
-        <button className="button-alarm">알림</button>
+        <button className="button-alarm" onClick={floatingAlarmOpenFunc}>
+          알림
+        </button>
+        <FloatingAlarm
+          open={floatingAlarmOpen}
+          close={floatingAlarmCloseFunc}
+        />
       </div>
       <style jsx>{`
         .container {
@@ -739,6 +760,24 @@ const Room = () => {
           position: fixed;
           bottom: 30px;
           right: 30px;
+          animation: zoomin 0.3s ease-in-out;
+        }
+
+        @keyframes zoomin {
+          0% {
+            transform: scale(0);
+          }
+          100% {
+            transform: scale(1);
+          }
+        }
+
+        .none {
+          display: none;
+        }
+
+        .block {
+          display: block;
         }
       `}</style>
     </>
