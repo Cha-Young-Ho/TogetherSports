@@ -33,6 +33,7 @@ const ModifyRoomModal = (props) => {
   const getTagsFromRedux = useSelector(
     (state) => state.roomRealTimeInfoReducer.tags
   );
+  const [doneTagsSetting, setDoneTagsSetting] = useState(false);
   const [tags, setTags] = useState([]);
   const tagsAge = [
     "10대",
@@ -158,11 +159,15 @@ const ModifyRoomModal = (props) => {
 
   // 태그 초기값 세팅
   useEffect(() => {
-    if (props.open) {
-      getTagsFromRedux.map((tag) => setTags(tag));
-      if (tags.length) tags.map((tag) => setPrevTags(tag));
-    }
-  }, [props.open, getTagsFromRedux]);
+    getTagsFromRedux.map((tag) => {
+      setTags((prev) => [...prev, (tags = tag)]);
+    });
+    setDoneTagsSetting(true);
+  }, [getTagsFromRedux]);
+
+  useEffect(() => {
+    if (doneTagsSetting) if (tags.length) tags.map((tag) => setPrevTags(tag));
+  }, [doneTagsSetting]);
 
   return (
     <>
