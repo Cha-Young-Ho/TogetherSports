@@ -66,7 +66,7 @@ public class RoomService {
     private final ChatController chatController;
 
     //방 생성
-    public void createRoom(User user, RoomOfCreate roomOfCreate){
+    public Response createRoom(User user, RoomOfCreate roomOfCreate){
 
         //요청 유저의 엔티티 찾기
         User userEntity = findUserEntityById(user.getId());
@@ -101,6 +101,8 @@ public class RoomService {
         roomImageService.registerRoomImage(roomOfCreate.getRoomImages(), roomEntity);
 
         participantService.save(user, room);
+
+        return Response.of(CommonCode.GOOD_REQUEST, null);
     }
 
     //방 설명 페이지 조회
@@ -124,7 +126,7 @@ public class RoomService {
 
     //방 수정
     @Transactional
-    public void modifyRoomInfo(RoomOfUpdate roomOfUpdate){
+    public Response modifyRoomInfo(RoomOfUpdate roomOfUpdate){
         Room roomEntity = findRoomEntityById(roomOfUpdate.getId());
 
         //방 인원
@@ -142,14 +144,11 @@ public class RoomService {
         //-- update Room Entity --
         roomEntity.updateRoom(roomOfUpdate);
 
-        //WS 메세지 생성
-        WsResponse wsResponse = WsResponse.of(ChatCode.ROOM_UPDATED,
-                getRoomInfo(roomEntity.getId())
-                );
-
         //WS 메세지 보내기
-        sendMessage(roomEntity.getId(), wsResponse);
+        sendMessage(roomEntity.getId(), getWsRoomDetailInfo(roomEntity));
 
+        //Http Content 생성
+        return Response.of(CommonCode.GOOD_REQUEST, null);
     }
 
     //방 필터링 조회
@@ -198,8 +197,10 @@ public class RoomService {
                         .gender(userEntity.getGender())
                         .build());
 
-        //WS 메세지 보내기
+        //참가 WS 메세지 보내기
         sendMessage(roomEntity.getId(), wsResponse);
+        //방 변화 WS 메세지 보내기
+        sendMessage(roomEntity.getId(), getWsRoomDetailInfo(roomEntity));
 
         // 정상적으로 참여가 가능한 경우
         // HTTP 응답 메세지 생성
@@ -294,8 +295,11 @@ public class RoomService {
                         .afterHostNickname(delegatedUser.getNickname())
                         .build());
 
-        //WS 메세지 보내기
+        //위임 WS 메세지 보내기
         sendMessage(roomEntity.getId(), wsResponse);
+
+        //방 변화 WS 메세지 보내기
+        sendMessage(roomEntity.getId(), getWsRoomDetailInfo(roomEntity));
 
 
 
@@ -348,8 +352,11 @@ public class RoomService {
                         .nickname(kickedOutUser.getNickname())
                         .build());
 
-        //WS 메세지 보내기
+        //강퇴 WS 메세지 보내기
         sendMessage(roomEntity.getId(), wsResponse);
+
+        //방 변화 WS 메세지 보내기
+        sendMessage(roomEntity.getId(), getWsRoomDetailInfo(roomEntity));
 
         // HTTP 응답 메세지 생성
         Response response = Response.of(
@@ -387,7 +394,6 @@ public class RoomService {
             //방 인원이 0명인 경우 방삭제
             if(roomEntity.getParticipantCount() <= 0){
                 roomEntity.setRoomStatus(RoomStatus.Deleted);
-
                 //나가기 처리(DB삭제)
                 roomRepository.deleteById(roomEntity.getId());
 
@@ -423,8 +429,11 @@ public class RoomService {
             WsResponse wsResponse = WsResponse.of(chatCode,
                     messageBody);
 
-            //WS 메세지 보내기
+            //나가기 WS 메세지 보내기
             sendMessage(roomEntity.getId(), wsResponse);
+
+            //방 변화 WS 메세지 보내기
+            sendMessage(roomEntity.getId(), getWsRoomDetailInfo(roomEntity));
 
             // HTTP 응답 메세지 생성
             Response response = Response.of(
@@ -438,7 +447,7 @@ public class RoomService {
 
         //방장이 아닌 경우
         //나가기 처리(DB 삭제)
-        participantService.deleteRoom(userEntity, roomEntity);
+        participantService.out(userEntity, roomEntity);
 
         //방 인원수 줄이기
         roomEntity.leave();
@@ -485,7 +494,6 @@ public class RoomService {
 
         return roomRepository.findById(roomId)
                 .orElseThrow(() -> new NotFoundRoomException("해당 방을 찾을 수 없습니다."));
-
     }
     // 유저 + 룸 엔티티 찾기
     public UserAndRoomOfService findEntityById(Long userId, Long roomId){
@@ -514,12 +522,21 @@ public class RoomService {
 
         return Response.of(CommonCode.GOOD_REQUEST,
                 RoomOfParticipate.builder()
-                        .status(RoomCode.SUCCESS_PARTICIPATE_ROOM)
                         .roomOfInfo(getRoomInfo(roomId))
                         .participants(getParticipantsInfo(userAndRoomOfService.getRoom().getParticipants()))
                         .build()
                 );
 
+    }
+
+    public WsResponse getWsRoomDetailInfo(Room roomEntity){
+
+        return WsResponse.of(ChatCode.ROOM_UPDATED,
+                RoomOfParticipate.builder()
+                        .roomOfInfo(getRoomInfo(roomEntity.getId()))
+                        .participants(getParticipantsInfo(roomEntity.getParticipants()))
+                        .build()
+        );
     }
 
     // 메세지 발행
@@ -544,4 +561,6 @@ public class RoomService {
                     return true;
                 }).collect(Collectors.toList());
     }
+
+
 }

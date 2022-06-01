@@ -2,6 +2,7 @@ package com.togethersports.tosproject.user.dto;
 
 import com.togethersports.tosproject.area.ActiveArea;
 import com.togethersports.tosproject.user.Gender;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @Setter
 @Getter
+@Builder
 public class UserOfModifyInfo {
 
     @NotNull

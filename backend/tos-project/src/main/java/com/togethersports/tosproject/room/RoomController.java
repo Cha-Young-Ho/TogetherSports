@@ -31,9 +31,9 @@ public class RoomController {
     @PostMapping("/api/room")
     public ResponseEntity<Response> createRoom(@CurrentUser User user, @RequestBody @Validated RoomOfCreate roomOfCreate){
 
-        roomService.createRoom(user, roomOfCreate);
+        Response response = roomService.createRoom(user, roomOfCreate);
 
-        return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, null));
+        return ResponseEntity.ok(response);
 
     }
 
@@ -48,9 +48,9 @@ public class RoomController {
     @PutMapping("/api/room")
     public ResponseEntity<Response> modifyRoomInfo(@RequestBody RoomOfUpdate roomOfUpdate){
 
-        roomService.modifyRoomInfo(roomOfUpdate);
+        Response response = roomService.modifyRoomInfo(roomOfUpdate);
 
-        return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, null));
+        return ResponseEntity.ok(response);
 
     }
 
