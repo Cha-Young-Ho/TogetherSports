@@ -97,10 +97,12 @@ const RoomModal = (props) => {
             payload: {
               roomImages:
                 res.content.roomImages === null
-                  ? {
-                      order: 0,
-                      imagePath: "logo-sign.png",
-                    }
+                  ? [
+                      {
+                        order: 0,
+                        imagePath: "logo-sign.png",
+                      },
+                    ]
                   : res.content.roomImages,
             },
           });

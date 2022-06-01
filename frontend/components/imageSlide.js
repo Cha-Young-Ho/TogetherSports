@@ -19,7 +19,7 @@ const ImageSlide = (props) => {
     if (props.path === "roomDetail") {
       roomDetailImageArr.length !== 0 ? showSlides(slideIndex) : <></>;
     }
-  });
+  }, []);
 
   const onChangeImage = (index) => {
     showSlides((slideIndex += index));
