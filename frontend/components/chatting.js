@@ -143,11 +143,11 @@ const Chatting = ({ chatOpen, updateRoomDataFunc }) => {
         dispatch({
           type: "SAVEROOMALARM",
           payload: {
-            messages: [`${JSONBodys.content.nickname}님이 참여했습니다.`],
+            messages: [`${JSONBodys.content.userNickname}님이 참여했습니다.`],
           },
         });
 
-        // alert(`${JSONBodys.content.nickname}님이 참여했습니다.`);
+        // alert(`${JSONBodys.content.userNickname}님이 참여했습니다.`);
         break;
       case 1502: //퇴장
         // 내가 퇴장하면
@@ -160,11 +160,11 @@ const Chatting = ({ chatOpen, updateRoomDataFunc }) => {
         dispatch({
           type: "SAVEROOMALARM",
           payload: {
-            messages: [`${JSONBodys.content.nickname}님이 퇴장했습니다.`],
+            messages: [`${JSONBodys.content.userNickname}님이 퇴장했습니다.`],
           },
         });
 
-        // alert(`${JSONBodys.content.nickname}님이 퇴장했습니다.`);
+        // alert(`${JSONBodys.content.userNickname}님이 퇴장했습니다.`);
         break;
       case 1503: //강퇴
         // 내가 강퇴당하면
@@ -177,11 +177,11 @@ const Chatting = ({ chatOpen, updateRoomDataFunc }) => {
         dispatch({
           type: "SAVEROOMALARM",
           payload: {
-            messages: [`${JSONBodys.content.nickname}님이 강퇴되었습니다.`],
+            messages: [`${JSONBodys.content.userNickname}님이 강퇴되었습니다.`],
           },
         });
 
-        // alert(`${nickname}님이 강퇴되었습니다.`);
+        // alert(`${JSONBodys.content.userNickname}님이 강퇴되었습니다.`);
         break;
       case 1504: //방장위임
         dispatch({
