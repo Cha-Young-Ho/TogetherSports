@@ -1,4 +1,10 @@
+import { useSelector } from "react-redux";
+
 const FloatingAlarm = (props) => {
+  const getMessagesFromRedux = useSelector(
+    (state) => state.saveRoomAlarmReducer.messages
+  );
+
   return (
     <>
       {props.open ? (
@@ -7,19 +13,20 @@ const FloatingAlarm = (props) => {
             <p>새 알림</p>
             <button onClick={props.close}>&times;</button>
           </div>
+
           <div className="alarms-wrapper">
-            <div className="alarms">
-              <p>✔️</p>
-              <div className="alarm">테스트 알림입니다.</div>
-            </div>
-            <div className="alarms">
-              <p>✔️</p>
-              <div className="alarm">
-                이것은 두줄짜리 테스트 알림입니다. 이것은 두줄짜리 테스트
-                알림입니다. 이것은 두줄짜리 테스트 알림입니다. 이것은 두줄짜리
-                테스트 알림입니다.
-              </div>
-            </div>
+            {getMessagesFromRedux.length !== 0 ? (
+              getMessagesFromRedux.map((message, index) => {
+                return (
+                  <div className="alarms" key={index}>
+                    <p>✔️</p>
+                    <div className="alarm">{message}</div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="no-alarms">새 알림이 없습니다.</div>
+            )}
           </div>
         </div>
       ) : (
@@ -105,6 +112,13 @@ const FloatingAlarm = (props) => {
           border-radius: 10px;
           box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
           background-color: white;
+        }
+
+        .no-alarms {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: 1.5rem;
         }
       `}</style>
     </>

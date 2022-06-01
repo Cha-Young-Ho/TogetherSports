@@ -150,6 +150,17 @@ const saveRoomModalImagesInitialState = {
   ],
 };
 
+// WS 실시간 알림 저장을 위한 초기값
+const saveRoomAlarmInitialState = {
+  // 임시 텍스트
+  messages: [
+    // "사공지은님이 참여했습니다.",
+    // "이동길님이 퇴장했습니다.",
+    // "차영호님이 강퇴되었습니다.",
+    // "전세운님이 방장이 되었습니다.",
+  ],
+};
+
 // 오타 방지용
 const PERSONALINFO = "PERSONALINFO";
 const INTERESTS = "INTERESTS";
@@ -185,6 +196,7 @@ const SAVEROOMCOUNT = "SAVEROOMCOUNT";
 const SAVEROOMINFOS = "SAVEROOMINFOS";
 const CHANGEHOST = "CHANGEHOST";
 const SAVEROOMMODALIMAGES = "SAVEROOMMODALIMAGES";
+const SAVEROOMALARM = "SAVEROOMALARM";
 
 // 유저 회원정보추가입력 정보 reducer
 const userRequestReducer = (state = signupInitialState, action) => {
@@ -498,6 +510,7 @@ const roomRealTimeInfoReducer = (
   }
 };
 
+// 방 설명 팝업 이미지 저장 reducer
 const saveRoomModalImagesReducer = (
   state = saveRoomModalImagesInitialState,
   action
@@ -507,6 +520,19 @@ const saveRoomModalImagesReducer = (
       return {
         ...state,
         roomImages: action.payload.roomImages,
+      };
+    default:
+      return state;
+  }
+};
+
+// WS 실시간 알림 저장을 위한 reducer
+const saveRoomAlarmReducer = (state = saveRoomAlarmInitialState, action) => {
+  switch (action.type) {
+    case SAVEROOMALARM:
+      return {
+        ...state,
+        messages: action.payload.messages,
       };
     default:
       return state;
@@ -530,6 +556,7 @@ const rootReducer = combineReducers({
   saveRoomCountReducer,
   roomRealTimeInfoReducer,
   saveRoomModalImagesReducer,
+  saveRoomAlarmReducer,
 });
 
 const makeStore = () => createStore(rootReducer, composeWithDevTools());

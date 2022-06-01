@@ -89,7 +89,7 @@ const Room = () => {
   const openAlarmModal = () => setAlarmModalOpen(true);
   const closeAlarmModal = () => setAlarmModalOpen(false);
 
-  ////////////// 우측 하단 고정 알림 관련 데이터 //////////////
+  // 우측 하단 고정 알림 관련 데이터
   const [floatingAlarmOpen, setFloatingAlarmOpen] = useState(false);
 
   const floatingAlarmOpenFunc = (e) => {
