@@ -140,25 +140,48 @@ const Chatting = ({ chatOpen, updateRoomDataFunc }) => {
   const systemMessageBranch = (JSONBodys) => {
     switch (JSONBodys.status.code) {
       case 1501: //입장
-        alert(`${JSONBodys.content.nickname}님이 참여했습니다.`);
+        dispatch({
+          type: "SAVEROOMALARM",
+          payload: {
+            messages: [`${JSONBodys.content.nickname}님이 참여했습니다.`],
+          },
+        });
+
+        // alert(`${JSONBodys.content.nickname}님이 참여했습니다.`);
         break;
       case 1502: //퇴장
+        // 내가 퇴장하면
         if (JSONBodys.content.id === myID) {
           clientInfo.disconnect(() => alert("방에서 퇴장합니다."));
           router.replace("/room/roomlist");
           return;
         }
 
-        alert(`${JSONBodys.content.nickname}님이 퇴장했습니다.`);
+        dispatch({
+          type: "SAVEROOMALARM",
+          payload: {
+            messages: [`${JSONBodys.content.nickname}님이 퇴장했습니다.`],
+          },
+        });
+
+        // alert(`${JSONBodys.content.nickname}님이 퇴장했습니다.`);
         break;
       case 1503: //강퇴
+        // 내가 강퇴당하면
         if (JSONBodys.content.id === myID) {
           clientInfo.disconnect(() => alert("방장으로부터 강퇴되었습니다."));
           router.replace("/");
           return;
         }
 
-        alert(`${nickname}님이 강퇴되었습니다.`);
+        dispatch({
+          type: "SAVEROOMALARM",
+          payload: {
+            messages: [`${JSONBodys.content.nickname}님이 강퇴되었습니다.`],
+          },
+        });
+
+        // alert(`${nickname}님이 강퇴되었습니다.`);
         break;
       case 1504: //방장위임
         dispatch({
@@ -167,7 +190,17 @@ const Chatting = ({ chatOpen, updateRoomDataFunc }) => {
             host: JSONBodys.content.afterHostNickname,
           },
         });
-        alert("방장이 변경되었습니다.");
+
+        dispatch({
+          type: "SAVEROOMALARM",
+          payload: {
+            messages: [
+              `${JSONBodys.content.afterHostNickname}님이 방장이 되었습니다.`,
+            ],
+          },
+        });
+
+        // alert("방장이 변경되었습니다.");
         break;
     }
   };
