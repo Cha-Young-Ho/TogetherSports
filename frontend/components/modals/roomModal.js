@@ -132,6 +132,12 @@ const RoomModal = (props) => {
     }
   }, [props.open]);
 
+  useEffect(() => {
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, []);
+
   return (
     <>
       <div
