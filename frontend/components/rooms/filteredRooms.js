@@ -108,7 +108,6 @@ const FilteredRooms = () => {
   };
 
   const changeSortType = (name) => {
-    console.log(name);
     switch (name) {
       case "최신순":
         setSort("updateTime,DESC");
@@ -155,6 +154,7 @@ const FilteredRooms = () => {
       });
 
     window.addEventListener("scroll", handleFollowScroll);
+    document.body.style.overflow = "unset";
     return () => {
       window.removeEventListener("scroll", handleFollowScroll);
     };
@@ -280,7 +280,7 @@ const FilteredRooms = () => {
       )
         .then((res) => {
           if (res.status.code === 5000) {
-            if (res.content) {
+            if (res.content.length) {
               setEachRoomInfo((prev) => [...prev, res.content.content]);
               setPage(page + 1);
             }
@@ -340,7 +340,7 @@ const FilteredRooms = () => {
                 })}
               </div>
             ) : (
-              <div className="emptyRooms">해당하는 방이 없습니다.</div>
+              <img className="emptyRooms" src="/noResult.png"></img>
             )}
 
             <RoomModal
@@ -395,12 +395,7 @@ const FilteredRooms = () => {
 
         .emptyRooms {
           width: 100%;
-          height: 500px;
-          font-size: 5rem;
-          font-weight: bold;
-          display: flex;
-          justify-content: center;
-          align-items: center;
+          height: 100%;
         }
 
         .clicked {
