@@ -8,7 +8,18 @@ const FloatingAlarm = (props) => {
             <button onClick={props.close}>&times;</button>
           </div>
           <div className="alarms-wrapper">
-            <div className="alarm">테스트 알림입니다.</div>
+            <div className="alarms">
+              <p>✔️</p>
+              <div className="alarm">테스트 알림입니다.</div>
+            </div>
+            <div className="alarms">
+              <p>✔️</p>
+              <div className="alarm">
+                이것은 두줄짜리 테스트 알림입니다. 이것은 두줄짜리 테스트
+                알림입니다. 이것은 두줄짜리 테스트 알림입니다. 이것은 두줄짜리
+                테스트 알림입니다.
+              </div>
+            </div>
           </div>
         </div>
       ) : (
@@ -70,6 +81,21 @@ const FloatingAlarm = (props) => {
           flex-direction: column;
           justify-content: center;
           align-items: center;
+        }
+
+        .alarms {
+          width: 100%;
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          align-items: center;
+          margin-bottom: 10px;
+        }
+
+        .alarms p {
+          font-size: 2rem;
+          margin-right: 5px;
+          user-select: none;
         }
 
         .alarm {
