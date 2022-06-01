@@ -93,6 +93,8 @@ public class ParticipantService {
         Participant participantEntity = participantRepository.findByUserAndRoom(user, room)
                 .orElseThrow(() -> new NotParticipateRoomException("해당 방에 참여하지 않은 유저입니다."));
 
+
+
         participantRepository.deleteById(participantEntity.getId());
         int i = 0;
         for(Participant participant : room.getParticipants()){
