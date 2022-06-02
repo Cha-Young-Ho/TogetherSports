@@ -104,9 +104,6 @@ public class Room extends RoomBaseEntity {
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ChatMessage> chatMessages;
 
-    @Column(name = "ROOM_STATUS")
-    @Enumerated(EnumType.STRING)
-    private RoomStatus roomStatus;
 
 
     @Builder(access = AccessLevel.PRIVATE)
@@ -123,7 +120,7 @@ public class Room extends RoomBaseEntity {
         this.roomArea = roomOfCreate.getRoomArea();
         this.viewCount = 0;
         this.createUser = user;
-        this.roomStatus = RoomStatus.Running;
+
 
     }
 
@@ -161,8 +158,5 @@ public class Room extends RoomBaseEntity {
         this.host = user;
     }
 
-    //방 상태 변경 메소드
-    public void setRoomStatus(RoomStatus roomStatus){
-        this.roomStatus = roomStatus;
-    }
+
 }
