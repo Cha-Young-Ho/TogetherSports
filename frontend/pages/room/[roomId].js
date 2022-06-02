@@ -406,9 +406,11 @@ const Room = () => {
           <></>
         )}
 
-        <button className="button-alarm" onClick={floatingAlarmOpenFunc}>
-          알림
-        </button>
+        <img
+          src="/floatingAlarm.png"
+          className="button-alarm"
+          onClick={floatingAlarmOpenFunc}
+        ></img>
         <FloatingAlarm
           open={floatingAlarmOpen}
           close={floatingAlarmCloseFunc}
