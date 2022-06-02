@@ -37,6 +37,7 @@ public class RoomController {
 
     }
 
+    //방 정보 조회
     @GetMapping("/api/rooms/{roomId}/info")
     public ResponseEntity<Response> getRoomInfo(@CurrentUser User user, @PathVariable Long roomId){
 
@@ -45,6 +46,7 @@ public class RoomController {
         return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, roomOfInfo));
     }
 
+    //방 수정
     @PutMapping("/api/room")
     public ResponseEntity<Response> modifyRoomInfo(@RequestBody RoomOfUpdate roomOfUpdate){
 
@@ -54,29 +56,23 @@ public class RoomController {
 
     }
 
+    //방 목록 조회
     @GetMapping("/api/room")
     public ResponseEntity<Response> getRoomList(FieldsOfRoomList fieldsOfRoomList, Pageable pageable){
         return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, roomService.roomFields(fieldsOfRoomList, pageable)));
 
     }
+
     //방 참가
     @PostMapping("/api/room/{roomId}/user")
     public ResponseEntity<Response> participateRoom(@CurrentUser User user, @PathVariable Long roomId){
 
-        RoomOfParticipate room = roomService.participateRoom(user, roomId);
-        // 인원이 꽉 찬 방
-        if(room.getStatus() == RoomCode.FULL_ROOM){
-            return ResponseEntity.ok(Response.of(RoomCode.FULL_ROOM, null));
-        }
-        // 시간이 지난 방
-        if(room.getStatus() == RoomCode.TIME_OUT_ROOM){
-            return ResponseEntity.ok(Response.of(RoomCode.TIME_OUT_ROOM,null));
-        }
+        Response response = roomService.participateRoom(user, roomId);
 
-        // 참가 완료
-        return ResponseEntity.ok(Response.of(RoomCode.SUCCESS_PARTICIPATE_ROOM, null));
+        return ResponseEntity.ok(response);
     }
 
+    //내 일정 조회
     @GetMapping("/api/room/myroom")
     public ResponseEntity<Response> myRoom(@CurrentUser User user){
         RoomsOfMyRoom rooms = roomService.getMyRoom(user);

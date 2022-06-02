@@ -33,6 +33,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -159,8 +160,9 @@ public class RoomService {
     }
 
     //방 참가
-    public RoomOfParticipate participateRoom(User currentUser, Long roomId){
+    public Response participateRoom(User currentUser, Long roomId){
 
+        //엔티티 찾기
         UserAndRoomOfService userAndRoomEntity =
                 findEntityById(currentUser.getId(), roomId);
 
@@ -170,18 +172,16 @@ public class RoomService {
 
         //인원이 가득찬 경우
         if(roomEntity.getParticipantCount() >= roomEntity.getLimitPeopleCount()){
-            return RoomOfParticipate.builder()
-                    .status(RoomCode.FULL_ROOM)
-                    .build();
+            return Response.of(RoomCode.FULL_ROOM, null);
         }
         //시간이 지난 방인 경우
         if(roomEntity.getEndAppointmentDate().isBefore(LocalDateTime.now())){
-            return RoomOfParticipate.builder()
-                    .status(RoomCode.TIME_OUT_ROOM)
-                    .build();
+            return Response.of(RoomCode.TIME_OUT_ROOM, null);
         }
+
         // 참가 저장
         boolean isParticipation = participantService.save(currentUser, roomEntity);
+
         // 참가한 경우
         if(isParticipation) {
             // 참가 인원 추가
@@ -204,11 +204,7 @@ public class RoomService {
 
         // 정상적으로 참여가 가능한 경우
         // HTTP 응답 메세지 생성
-        return RoomOfParticipate.builder()
-                .status(RoomCode.SUCCESS_PARTICIPATE_ROOM)
-                .roomOfInfo(getRoomInfo(roomId))
-                .participants(getParticipantsInfo(roomEntity.getParticipants()))
-                .build();
+        return Response.of(RoomCode.SUCCESS_PARTICIPATE_ROOM, null);
     }
 
     public List<UserOfOtherInfo> getParticipantsInfo(List<Participant> participantList){
@@ -227,7 +223,7 @@ public class RoomService {
     public RoomsOfMyRoom getMyRoom(User currentUser){
         User userEntity = findUserEntityById(currentUser.getId());
 
-        List<Room> hostingRoomEntities = filterRoomStatus(userEntity.getHostingRooms(), RoomStatus.Deleted);
+        List<Room> hostingRoomEntities = userEntity.getHostingRooms();
 
         List<Participant> participateEntities = userEntity.getParticipateRooms();
 
@@ -236,7 +232,7 @@ public class RoomService {
             participatingRoomEntities.add(participant.getRoom());
         }
 
-        List<Room> filteredParticipatingRoom = filterRoomStatus(participatingRoomEntities, RoomStatus.Deleted);
+        List<Room> filteredParticipatingRoom = participatingRoomEntities;
 
         List<Room> imminentRoomEntities = filteredParticipatingRoom.stream().filter(room->{
             if (LocalDateTime.now().isAfter(room.getStartAppointmentDate())) {
@@ -393,7 +389,7 @@ public class RoomService {
 
             //방 인원이 0명인 경우 방삭제
             if(roomEntity.getParticipantCount() <= 0){
-                roomEntity.setRoomStatus(RoomStatus.Deleted);
+
                 //나가기 처리(DB삭제)
                 roomRepository.deleteById(roomEntity.getId());
 
@@ -550,17 +546,7 @@ public class RoomService {
 
     }
 
-    // 상태에 따른 필터 메소드
-    public List<Room> filterRoomStatus(List<Room> totalList, RoomStatus roomStatus){
 
-        return totalList.stream()
-                .filter(room ->{
-                    if(room.getRoomStatus() == roomStatus){
-                        return false;
-                    }
-                    return true;
-                }).collect(Collectors.toList());
-    }
 
 
 }

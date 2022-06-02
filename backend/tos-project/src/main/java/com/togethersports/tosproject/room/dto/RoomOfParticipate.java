@@ -11,8 +11,6 @@ import java.util.List;
 @Builder
 @Getter
 public class RoomOfParticipate {
-    @JsonIgnore
-    RoomCode status;
 
     RoomOfInfo roomOfInfo;
 

@@ -6,12 +6,15 @@ import com.togethersports.tosproject.common.code.CommonCode;
 import com.togethersports.tosproject.common.code.ResponseCode;
 import com.togethersports.tosproject.common.dto.Response;
 import com.togethersports.tosproject.common.util.ParsingEntityUtils;
+import com.togethersports.tosproject.image.RoomImageService;
 import com.togethersports.tosproject.interest.Interest;
+import com.togethersports.tosproject.participant.ParticipantService;
 import com.togethersports.tosproject.room.code.RoomCode;
 import com.togethersports.tosproject.room.dto.ImageOfRoomCRUD;
 import com.togethersports.tosproject.room.dto.RoomOfCreate;
 import com.togethersports.tosproject.security.Role;
 import com.togethersports.tosproject.security.oauth2.model.OAuth2Provider;
+import com.togethersports.tosproject.tag.TagService;
 import com.togethersports.tosproject.user.Gender;
 import com.togethersports.tosproject.user.User;
 import com.togethersports.tosproject.user.UserRepository;
@@ -46,6 +49,15 @@ public class RoomServiceTest {
     private RoomRepository roomRepository;
 
     @Mock
+    private TagService tagService;
+
+    @Mock
+    private RoomImageService roomImageService;
+
+    @Mock
+    private ParticipantService participantService;
+
+    @Mock
     private UserRepository userRepository;
 
     @InjectMocks
@@ -67,26 +79,13 @@ public class RoomServiceTest {
         //mocking
 
         given(userRepository.findById(any())).willReturn(Optional.of(user));
-        //given(parsingEntityUtils.parsingStringToInterestsEntity(any())).willReturn(Optional.of());
+
         //when
         Response actualResponse = roomService.createRoom(user, roomOfCreate);
 
         //then
-        Assertions.assertEquals(response.getStatus(), actualResponse.getStatus());
-        Assertions.assertEquals(response.getContent(), actualResponse.getContent());
+        Assertions.assertNull(actualResponse.getContent());
 
-
-    }
-
-    @DisplayName("방 생성에 실패한다.")
-    @Test
-    public void createRoomTestOnFail() throws Exception{
-
-        //given
-
-        //when
-
-        //then
 
     }
 
@@ -125,6 +124,7 @@ public class RoomServiceTest {
         //then
 
     }
+
 
     private RoomOfCreate roomOfCreate(){
 
@@ -167,10 +167,6 @@ public class RoomServiceTest {
 
         interests.add(Interest.createInterest("abc"));
 
-
-
-
-
         testUser.updateUser(UserOfModifyInfo.builder()
                 .activeAreas(activeAreas)
                 .gender(Gender.MALE)
@@ -182,6 +178,8 @@ public class RoomServiceTest {
         return testUser;
 
     }
+
+
 
 
 
