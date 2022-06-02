@@ -6,7 +6,6 @@ import { useSelector } from "react-redux";
 import Link from "next/link";
 
 const MyRoom = () => {
-  const myInfo = useSelector((state) => state.myInfoReducer);
   // const [curWindowWidth, setWindowWidth] = useState(0);
 
   const [imminentRooms, setImminentRooms] = useState([
@@ -48,28 +47,146 @@ const MyRoom = () => {
     // },
   ]);
   const [hostingRooms, setHostingRooms] = useState([
-    // {
-    //   roomId: 2,
-    //   roomTitle: "첫번째 방",
-    //   limitPeopleCount: 10,
-    //   participantCount: 1,
-    //   tags: ["고수만", "중수만", "매너만", "남자만"],
-    //   startAppointmentDate: "2022-05-08T12:55:00",
-    //   endAppointmentDate: "2022-05-10T15:00:00",
-    // },
-    // {
-    //   roomId: 2,
-    //   roomTitle: "첫번째 방",
-    //   limitPeopleCount: 10,
-    //   participantCount: 1,
-    //   tags: ["고수만", "중수만", "매너만", "남자만"],
-    //   startAppointmentDate: "2022-05-08T12:55:00",
-    //   endAppointmentDate: "2022-05-10T15:00:00",
-    // },
+    {
+      roomId: 2,
+      roomTitle: "1",
+      limitPeopleCount: 10,
+      participantCount: 1,
+      tags: ["고수만", "중수만", "매너만", "남자만"],
+      startAppointmentDate: "2022-05-08T12:55:00",
+      endAppointmentDate: "2022-05-10T15:00:00",
+    },
+    {
+      roomId: 2,
+      roomTitle: "2",
+      limitPeopleCount: 10,
+      participantCount: 1,
+      tags: ["고수만", "중수만", "매너만", "남자만"],
+      startAppointmentDate: "2022-05-08T12:55:00",
+      endAppointmentDate: "2022-05-10T15:00:00",
+    },
+    {
+      roomId: 2,
+      roomTitle: "3",
+      limitPeopleCount: 10,
+      participantCount: 1,
+      tags: ["고수만", "중수만", "매너만", "남자만"],
+      startAppointmentDate: "2022-05-08T12:55:00",
+      endAppointmentDate: "2022-05-10T15:00:00",
+    },
+    {
+      roomId: 2,
+      roomTitle: "4",
+      limitPeopleCount: 10,
+      participantCount: 1,
+      tags: ["고수만", "중수만", "매너만", "남자만"],
+      startAppointmentDate: "2022-05-08T12:55:00",
+      endAppointmentDate: "2022-05-10T15:00:00",
+    },
+    {
+      roomId: 2,
+      roomTitle: "5",
+      limitPeopleCount: 10,
+      participantCount: 1,
+      tags: ["고수만", "중수만", "매너만", "남자만"],
+      startAppointmentDate: "2022-05-08T12:55:00",
+      endAppointmentDate: "2022-05-10T15:00:00",
+    },
+    {
+      roomId: 2,
+      roomTitle: "6",
+      limitPeopleCount: 10,
+      participantCount: 1,
+      tags: ["고수만", "중수만", "매너만", "남자만"],
+      startAppointmentDate: "2022-05-08T12:55:00",
+      endAppointmentDate: "2022-05-10T15:00:00",
+    },
+    {
+      roomId: 2,
+      roomTitle: "7",
+      limitPeopleCount: 10,
+      participantCount: 1,
+      tags: ["고수만", "중수만", "매너만", "남자만"],
+      startAppointmentDate: "2022-05-08T12:55:00",
+      endAppointmentDate: "2022-05-10T15:00:00",
+    },
+    {
+      roomId: 2,
+      roomTitle: "8",
+      limitPeopleCount: 10,
+      participantCount: 1,
+      tags: ["고수만", "중수만", "매너만", "남자만"],
+      startAppointmentDate: "2022-05-08T12:55:00",
+      endAppointmentDate: "2022-05-10T15:00:00",
+    },
+    {
+      roomId: 2,
+      roomTitle: "9",
+      limitPeopleCount: 10,
+      participantCount: 1,
+      tags: ["고수만", "중수만", "매너만", "남자만"],
+      startAppointmentDate: "2022-05-08T12:55:00",
+      endAppointmentDate: "2022-05-10T15:00:00",
+    },
+    {
+      roomId: 2,
+      roomTitle: "10",
+      limitPeopleCount: 10,
+      participantCount: 1,
+      tags: ["고수만", "중수만", "매너만", "남자만"],
+      startAppointmentDate: "2022-05-08T12:55:00",
+      endAppointmentDate: "2022-05-10T15:00:00",
+    },
+    {
+      roomId: 2,
+      roomTitle: "11",
+      limitPeopleCount: 10,
+      participantCount: 1,
+      tags: ["고수만", "중수만", "매너만", "남자만"],
+      startAppointmentDate: "2022-05-08T12:55:00",
+      endAppointmentDate: "2022-05-10T15:00:00",
+    },
+    {
+      roomId: 2,
+      roomTitle: "12",
+      limitPeopleCount: 10,
+      participantCount: 1,
+      tags: ["고수만", "중수만", "매너만", "남자만"],
+      startAppointmentDate: "2022-05-08T12:55:00",
+      endAppointmentDate: "2022-05-10T15:00:00",
+    },
+    {
+      roomId: 2,
+      roomTitle: "13",
+      limitPeopleCount: 10,
+      participantCount: 1,
+      tags: ["고수만", "중수만", "매너만", "남자만"],
+      startAppointmentDate: "2022-05-08T12:55:00",
+      endAppointmentDate: "2022-05-10T15:00:00",
+    },
+    {
+      roomId: 2,
+      roomTitle: "14",
+      limitPeopleCount: 10,
+      participantCount: 1,
+      tags: ["고수만", "중수만", "매너만", "남자만"],
+      startAppointmentDate: "2022-05-08T12:55:00",
+      endAppointmentDate: "2022-05-10T15:00:00",
+    },
+    {
+      roomId: 2,
+      roomTitle: "15",
+      limitPeopleCount: 10,
+      participantCount: 1,
+      tags: ["고수만", "중수만", "매너만", "남자만"],
+      startAppointmentDate: "2022-05-08T12:55:00",
+      endAppointmentDate: "2022-05-10T15:00:00",
+    },
   ]);
   const [participateRooms, setParticipateRooms] = useState([]);
 
   const [imminentCurIndex, setImminentCurIndex] = useState(0);
+  // const [imminentDividePoint]
   const imminentRef = useRef(null);
 
   const [hostingCurIndex, setHostingCurIndex] = useState(0);
@@ -98,11 +215,15 @@ const MyRoom = () => {
     }
 
     if (anyCurIndex <= 0) {
-      anySetIndex(((anyRooms.length / 4) >> 0) - 1);
+      anySetIndex(((anyRooms.length / dividePoint) >> 0) - 1);
     } else {
       anySetIndex(anyCurIndex - 1);
     }
   };
+
+  useEffect(() => {
+    console.log("hosting =>", hostingCurIndex);
+  }, [hostingCurIndex]);
 
   const nextClickButton = (anyRooms, anyCurIndex, anySetIndex, dividePoint) => {
     if (
@@ -245,7 +366,7 @@ const MyRoom = () => {
           )}
         </div>
         <div className="host-wrapper">
-          {imminentRooms.length > 4 ? (
+          {hostingRooms.length > 4 ? (
             <button className="before" onClick={beforeHostingCarousel}>
               {`◀`}
             </button>
@@ -269,7 +390,7 @@ const MyRoom = () => {
               )}
             </div>
           </div>
-          {imminentRooms.length > 4 ? (
+          {hostingRooms.length > 4 ? (
             <button className="next" onClick={nextHostingCarousel}>
               {`▶`}
             </button>
@@ -278,7 +399,7 @@ const MyRoom = () => {
           )}
         </div>
         <div className="participate-wrapper">
-          {imminentRooms.length > 4 ? (
+          {participateRooms.length > 4 ? (
             <button className="before" onClick={beforeParticipateCarousel}>
               {`◀`}
             </button>
@@ -301,7 +422,7 @@ const MyRoom = () => {
               )}
             </div>
           </div>
-          {imminentRooms.length > 4 ? (
+          {participateRooms.length > 4 ? (
             <button className="next" onClick={nextParticipateCarousel}>
               {`▶`}
             </button>

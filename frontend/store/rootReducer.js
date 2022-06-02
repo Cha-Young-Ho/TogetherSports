@@ -77,6 +77,7 @@ const clickDetectionInitialState = {
   add: "false",
 };
 
+// 로그인 상태 확인용 초기값
 const loginStatusChangeInitialState = {
   loginStatus: "false",
 };
@@ -102,6 +103,11 @@ const saveActiveAreaInitialState = {
 const saveWebSocketInitialState = {
   sockJS: "",
   client: "",
+};
+
+// 슬라이더 개수 저장 초기값
+const sliderDividePointInitialState = {
+  dividePoint: 0,
 };
 
 // 방장 정보 저장 초기값
