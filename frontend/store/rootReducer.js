@@ -77,6 +77,7 @@ const clickDetectionInitialState = {
   add: "false",
 };
 
+// 로그인 상태 확인용 초기값
 const loginStatusChangeInitialState = {
   loginStatus: "false",
 };
