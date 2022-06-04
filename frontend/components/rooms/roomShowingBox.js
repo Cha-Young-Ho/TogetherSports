@@ -76,8 +76,8 @@ const RoomShowingBox = (props) => {
         }
 
         .slider-wrapper {
-          min-width: ${(100 - 4 * 5) / 5}%;
-          margin: 0 2%;
+          min-width: 250px;
+          margin: 0 10px;
           border-radius: 10px;
           cursor: pointer;
           box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);

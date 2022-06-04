@@ -2,49 +2,82 @@ import RoomShowingBox from "../components/rooms/roomShowingBox";
 import { useEffect, useRef, useState } from "react";
 import { getMyRoomInfo } from "../api/rooms";
 import { FailResponse } from "../api/failResponse";
-import { useSelector } from "react-redux";
 import Link from "next/link";
 
 const MyRoom = () => {
-  // const [curWindowWidth, setWindowWidth] = useState(0);
-
   const [imminentRooms, setImminentRooms] = useState([
-    // {
-    //   roomId: 2,
-    //   roomTitle: "첫번째 방",
-    //   limitPeopleCount: 10,
-    //   participantCount: 1,
-    //   tags: ["고수만", "중수만", "매너만", "남자만"],
-    //   startAppointmentDate: "2022-05-08T12:55:00",
-    //   endAppointmentDate: "2022-05-10T15:00:00",
-    // },
-    // {
-    //   roomId: 2,
-    //   roomTitle: "첫번째 방",
-    //   limitPeopleCount: 10,
-    //   participantCount: 1,
-    //   tags: ["고수만", "중수만", "매너만", "남자만"],
-    //   startAppointmentDate: "2022-05-08T12:55:00",
-    //   endAppointmentDate: "2022-05-10T15:00:00",
-    // },
-    // {
-    //   roomId: 2,
-    //   roomTitle: "첫번째 방",
-    //   limitPeopleCount: 10,
-    //   participantCount: 1,
-    //   tags: ["고수만", "중수만", "매너만", "남자만"],
-    //   startAppointmentDate: "2022-05-08T12:55:00",
-    //   endAppointmentDate: "2022-05-10T15:00:00",
-    // },
-    // {
-    //   roomId: 2,
-    //   roomTitle: "첫번째 방",
-    //   limitPeopleCount: 10,
-    //   participantCount: 1,
-    //   tags: ["고수만", "중수만", "매너만", "남자만"],
-    //   startAppointmentDate: "2022-05-08T12:55:00",
-    //   endAppointmentDate: "2022-05-10T15:00:00",
-    // },
+    {
+      roomId: 2,
+      roomTitle: "1",
+      limitPeopleCount: 10,
+      participantCount: 1,
+      tags: ["고수만", "중수만", "매너만", "남자만"],
+      startAppointmentDate: "2022-05-08T12:55:00",
+      endAppointmentDate: "2022-05-10T15:00:00",
+    },
+    {
+      roomId: 2,
+      roomTitle: "2",
+      limitPeopleCount: 10,
+      participantCount: 1,
+      tags: ["고수만", "중수만", "매너만", "남자만"],
+      startAppointmentDate: "2022-05-08T12:55:00",
+      endAppointmentDate: "2022-05-10T15:00:00",
+    },
+    {
+      roomId: 2,
+      roomTitle: "3",
+      limitPeopleCount: 10,
+      participantCount: 1,
+      tags: ["고수만", "중수만", "매너만", "남자만"],
+      startAppointmentDate: "2022-05-08T12:55:00",
+      endAppointmentDate: "2022-05-10T15:00:00",
+    },
+    {
+      roomId: 2,
+      roomTitle: "4",
+      limitPeopleCount: 10,
+      participantCount: 1,
+      tags: ["고수만", "중수만", "매너만", "남자만"],
+      startAppointmentDate: "2022-05-08T12:55:00",
+      endAppointmentDate: "2022-05-10T15:00:00",
+    },
+    {
+      roomId: 2,
+      roomTitle: "5",
+      limitPeopleCount: 10,
+      participantCount: 1,
+      tags: ["고수만", "중수만", "매너만", "남자만"],
+      startAppointmentDate: "2022-05-08T12:55:00",
+      endAppointmentDate: "2022-05-10T15:00:00",
+    },
+    {
+      roomId: 2,
+      roomTitle: "6",
+      limitPeopleCount: 10,
+      participantCount: 1,
+      tags: ["고수만", "중수만", "매너만", "남자만"],
+      startAppointmentDate: "2022-05-08T12:55:00",
+      endAppointmentDate: "2022-05-10T15:00:00",
+    },
+    {
+      roomId: 2,
+      roomTitle: "7",
+      limitPeopleCount: 10,
+      participantCount: 1,
+      tags: ["고수만", "중수만", "매너만", "남자만"],
+      startAppointmentDate: "2022-05-08T12:55:00",
+      endAppointmentDate: "2022-05-10T15:00:00",
+    },
+    {
+      roomId: 2,
+      roomTitle: "8",
+      limitPeopleCount: 10,
+      participantCount: 1,
+      tags: ["고수만", "중수만", "매너만", "남자만"],
+      startAppointmentDate: "2022-05-08T12:55:00",
+      endAppointmentDate: "2022-05-10T15:00:00",
+    },
   ]);
   const [hostingRooms, setHostingRooms] = useState([
     {
@@ -182,97 +215,31 @@ const MyRoom = () => {
       startAppointmentDate: "2022-05-08T12:55:00",
       endAppointmentDate: "2022-05-10T15:00:00",
     },
+    {
+      roomId: 2,
+      roomTitle: "16",
+      limitPeopleCount: 10,
+      participantCount: 1,
+      tags: ["고수만", "중수만", "매너만", "남자만"],
+      startAppointmentDate: "2022-05-08T12:55:00",
+      endAppointmentDate: "2022-05-10T15:00:00",
+    },
   ]);
   const [participateRooms, setParticipateRooms] = useState([]);
 
-  const [imminentCurIndex, setImminentCurIndex] = useState(0);
-  // const [imminentDividePoint]
   const imminentRef = useRef(null);
-
-  const [hostingCurIndex, setHostingCurIndex] = useState(0);
   const hostingRef = useRef(null);
-
-  const [participateCurIndex, setParticipateCurIndex] = useState(0);
   const participateRef = useRef(null);
 
-  const beforeClickButton = (
-    anyRooms,
-    anyCurIndex,
-    anySetIndex,
-    dividePoint
-  ) => {
-    if (anyRooms.length % dividePoint !== 0) {
-      if (anyCurIndex < 1 && anyCurIndex > 0) {
-        anySetIndex(0);
-        return;
-      } else if (anyCurIndex <= 0) {
-        anySetIndex(
-          ((anyRooms.length / dividePoint) >> 0) -
-            (1 - (anyRooms.length % dividePoint) / dividePoint)
-        );
-        return;
-      }
-    }
-
-    if (anyCurIndex <= 0) {
-      anySetIndex(((anyRooms.length / dividePoint) >> 0) - 1);
-    } else {
-      anySetIndex(anyCurIndex - 1);
-    }
+  const prev = (element) => {
+    const offsetX = element.current.offsetWidth;
+    element.current.scrollBy(-offsetX, 0);
   };
 
-  useEffect(() => {
-    console.log("hosting =>", hostingCurIndex);
-  }, [hostingCurIndex]);
+  const next = (element) => {
+    const offsetX = element.current.offsetWidth;
 
-  const nextClickButton = (anyRooms, anyCurIndex, anySetIndex, dividePoint) => {
-    if (
-      anyRooms.length % dividePoint !== 0 &&
-      (anyRooms.length / dividePoint) >> 0 === anyCurIndex + 1
-    ) {
-      anySetIndex(anyCurIndex + (anyRooms.length % dividePoint) / dividePoint);
-      return;
-    }
-
-    if (anyCurIndex + 1 >= (anyRooms.length / dividePoint) >> 0) {
-      anySetIndex(0);
-    } else {
-      anySetIndex((anyCurIndex = anyCurIndex + 1));
-    }
-  };
-
-  const beforeImminentCarousel = () => {
-    beforeClickButton(imminentRooms, imminentCurIndex, setImminentCurIndex, 2);
-  };
-
-  const nextImminentCarousel = () => {
-    nextClickButton(imminentRooms, imminentCurIndex, setImminentCurIndex, 2);
-  };
-
-  const beforeHostingCarousel = () => {
-    beforeClickButton(hostingRooms, hostingCurIndex, setHostingCurIndex, 5);
-  };
-
-  const nextHostingCarousel = () => {
-    nextClickButton(hostingRooms, hostingCurIndex, setHostingCurIndex, 5);
-  };
-
-  const beforeParticipateCarousel = () => {
-    beforeClickButton(
-      participateRooms,
-      participateCurIndex,
-      setParticipateCurIndex,
-      5
-    );
-  };
-
-  const nextParticipateCarousel = () => {
-    nextClickButton(
-      participateRooms,
-      participateCurIndex,
-      setParticipateCurIndex,
-      5
-    );
+    element.current.scrollBy(offsetX, 0);
   };
 
   useEffect(() => {
@@ -293,52 +260,20 @@ const MyRoom = () => {
       });
   }, []);
 
-  useEffect(() => {
-    imminentRef.current.style.transition = "all 0.3s ease-in-out";
-    imminentRef.current.style.transform = `translate(-${
-      imminentCurIndex * imminentRef.current.offsetWidth
-    }px,0)`;
-  }, [imminentCurIndex]);
-
-  useEffect(() => {
-    hostingRef.current.style.transition = "all 0.3s ease-in-out";
-    hostingRef.current.style.transform = `translate(-${
-      hostingCurIndex * hostingRef.current.offsetWidth
-    }px,0)`;
-  }, [hostingCurIndex]);
-
-  useEffect(() => {
-    participateRef.current.style.transition = "all 0.3s ease-in-out";
-    participateRef.current.style.transform = `translate(-${
-      participateCurIndex * participateRef.current.offsetWidth
-    }px,0)`;
-  }, [participateCurIndex]);
-
-  // useEffect(() => {
-  //   window.addEventListener("resize", resizeHandler);
-  //   return () => {
-  //     window.removeEventListener("resize", resizeHandler);
-  //   };
-  // }, []);
-
-  // const resizeHandler = () => {
-  //   setWindowWidth(window.innerWidth);
-  // };
-
   return (
     <>
       <div className="myroom-wrapper">
-        <div className="imminent-wrapper">
-          {imminentRooms.length > 4 ? (
-            <button className="before" onClick={beforeImminentCarousel}>
+        <div className="imminent-container">
+          {imminentRooms.length ? (
+            <button className="before" onClick={() => prev(imminentRef)}>
               {`◀`}
             </button>
           ) : (
             ""
           )}
-          <div className="imminent-schedule">
+          <div className="slider">
             <h1>다가오는 일정</h1>
-            <div className="imminent-rooms" ref={imminentRef}>
+            <div className="slider-row" ref={imminentRef}>
               {imminentRooms.length ? (
                 imminentRooms.map((room, index) => {
                   return (
@@ -357,26 +292,26 @@ const MyRoom = () => {
               )}
             </div>
           </div>
-          {imminentRooms.length > 4 ? (
-            <button className="next" onClick={nextImminentCarousel}>
+          {imminentRooms.length ? (
+            <button className="next" onClick={() => next(imminentRef)}>
               {`▶`}
             </button>
           ) : (
             ""
           )}
         </div>
-        <div className="host-wrapper">
-          {hostingRooms.length > 4 ? (
-            <button className="before" onClick={beforeHostingCarousel}>
+        <div className="row-container">
+          {hostingRooms.length ? (
+            <button className="before" onClick={() => prev(hostingRef)}>
               {`◀`}
             </button>
           ) : (
             ""
           )}
 
-          <div className="host-schedule">
+          <div className="slider">
             <h1>내가 방장인 방</h1>
-            <div className="host-rooms" ref={hostingRef}>
+            <div className="slider-row" ref={hostingRef}>
               {hostingRooms.length ? (
                 hostingRooms.map((datas, index) => {
                   return (
@@ -390,25 +325,25 @@ const MyRoom = () => {
               )}
             </div>
           </div>
-          {hostingRooms.length > 4 ? (
-            <button className="next" onClick={nextHostingCarousel}>
+          {hostingRooms.length ? (
+            <button className="next" onClick={() => next(hostingRef)}>
               {`▶`}
             </button>
           ) : (
             ""
           )}
         </div>
-        <div className="participate-wrapper">
-          {participateRooms.length > 4 ? (
-            <button className="before" onClick={beforeParticipateCarousel}>
+        <div className="row-container">
+          {participateRooms.length ? (
+            <button className="before" onClick={() => prev(participateRef)}>
               {`◀`}
             </button>
           ) : (
             ""
           )}
-          <div className="participate-schedule">
+          <div className="slider">
             <h1>참여한 방 목록</h1>
-            <div className="participate-rooms" ref={participateRef}>
+            <div className="slider-row" ref={participateRef}>
               {participateRooms.length ? (
                 participateRooms.map((datas, index) => {
                   return (
@@ -422,8 +357,8 @@ const MyRoom = () => {
               )}
             </div>
           </div>
-          {participateRooms.length > 4 ? (
-            <button className="next" onClick={nextParticipateCarousel}>
+          {participateRooms.length ? (
+            <button className="next" onClick={() => next(participateRef)}>
               {`▶`}
             </button>
           ) : (
@@ -448,11 +383,13 @@ const MyRoom = () => {
         }
 
         .before {
-          left: 5%;
+          top: 50%;
+          left: 30px;
         }
 
         .next {
-          right: 5%;
+          top: 50%;
+          right: 30px;
         }
 
         .before:hover,
@@ -460,32 +397,39 @@ const MyRoom = () => {
           background-color: #707070;
         }
 
-        .myroom-wrapper {
-          width: 100%;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-        }
-
-        .imminent-wrapper {
+        .imminent-container {
+          position: relative;
           width: 100%;
           height: 230px;
+          box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.16);
+        }
+
+        .row-container {
+          position: relative;
+          width: 100%;
+          height: 390px;
           margin: 20px 0;
           box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.16);
-          display: flex;
-          justify-content: center;
-          align-items: center;
         }
 
-        .imminent-schedule {
+        .slider {
           width: 80%;
           height: 100%;
-          overflow: hidden;
+          margin: 0 auto;
+          display: flex;
+          flex-direction: column;
         }
 
-        .imminent-rooms {
+        .slider-row {
           display: flex;
+          overflow-x: scroll;
+          scroll-behavior: smooth;
+          padding-bottom: 10px;
+          gap: 35px;
+        }
+
+        .slider-row::-webkit-scrollbar {
+          display: none;
         }
 
         h1 {
@@ -495,12 +439,11 @@ const MyRoom = () => {
         }
 
         .roomBoxes {
-          width: 21%;
+          min-width: 350px;
           height: 135px;
           border-radius: 10px;
           background-color: #53927d;
           padding: 5px;
-          margin: 0 2%;
         }
 
         .left-date {
@@ -526,31 +469,6 @@ const MyRoom = () => {
         .perssonel {
           color: #fff;
           text-align: right;
-        }
-
-        .host-wrapper,
-        .participate-wrapper {
-          width: 100%;
-          height: 390px;
-          margin: 20px 0;
-          box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.16);
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        .host-schedule,
-        .participate-schedule {
-          width: 80%;
-          height: 100%;
-          display: flex;
-          flex-direction: column;
-          overflow: hidden;
-        }
-
-        .host-rooms,
-        .participate-rooms {
-          display: flex;
         }
 
         .noImminent {

@@ -105,11 +105,6 @@ const saveWebSocketInitialState = {
   client: "",
 };
 
-// 슬라이더 개수 저장 초기값
-const sliderDividePointInitialState = {
-  dividePoint: 0,
-};
-
 // 방장 정보 저장 초기값
 const saveRoomHostInitialState = {
   beforeHostNickname: "",
