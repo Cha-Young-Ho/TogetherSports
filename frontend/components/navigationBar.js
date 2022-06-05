@@ -241,6 +241,7 @@ const NavigationBar = () => {
 
         .logo {
           width: 138px;
+          margin-bottom: 2px;
           display: flex;
           font-size: 2rem;
           cursor: pointer;
