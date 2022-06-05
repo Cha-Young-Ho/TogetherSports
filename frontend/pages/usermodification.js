@@ -245,7 +245,11 @@ const UserModification = () => {
       gender,
       extension,
       imagesrc,
-      interests
+      Object.entries(interests)
+        .filter((exer) => {
+          if (exer[1]) return true;
+        })
+        .map((el) => el[0])
     )
       .then((res) => {
         if (res.status.code === 5000) {
@@ -260,8 +264,8 @@ const UserModification = () => {
                   userBirth: res.content.userBirth,
                   gender: res.content.gender,
                   userProfileImagePath: res.content.userProfileImagePath,
-                  activeAreas: res.content.activeAreas.map((el) => el),
-                  interests: res.content.interests.map((el) => el),
+                  activeAreas: res.content.activeAreas,
+                  interests: res.content.interests,
                   mannerPoint: res.content.mannerPoint,
                   isInformationRequired: res.content.isInformationRequired,
                 },
@@ -284,11 +288,11 @@ const UserModification = () => {
 
   // 초기값 세팅
   useEffect(() => {
-    if (userInfo.id === 0) {
-      alert("먼저 추가정보를 입력해주세요.");
-      window.history.back();
-      return;
-    }
+    // if (userInfo.id === 0) {
+    //   alert("먼저 추가정보를 입력해주세요.");
+    //   window.history.back();
+    //   return;
+    // }
 
     // 관심 종목 세팅
     for (const exercise of userInfo.interests) {

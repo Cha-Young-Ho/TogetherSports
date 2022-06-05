@@ -68,7 +68,7 @@ const AddAreaModal = (props) => {
     getChildLocations(e.target.innerText)
       .then((res) => {
         if (res.status.code === 5000) {
-          setSecondLocations(res.content);
+          setSecondLocations(res.content.sort());
         } else {
           FailResponse(res.status.code);
         }
@@ -79,25 +79,6 @@ const AddAreaModal = (props) => {
         }
       });
     setThirdLocations([]);
-    setSecondLocations([
-      "서울",
-      "대구",
-      "부산",
-      "광주",
-      "대전",
-      "경기도",
-      "경상도",
-      "대구광역시",
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-    ]);
   };
 
   const clickSecondItem = (e) => {
@@ -106,7 +87,7 @@ const AddAreaModal = (props) => {
     getChildLocations(e.target.innerText)
       .then((res) => {
         if (res.status.code === 5000) {
-          setThirdLocations(res.content);
+          setThirdLocations(res.content.sort());
         } else {
           FailResponse(res.status.code);
         }
@@ -116,26 +97,6 @@ const AddAreaModal = (props) => {
           FailResponse(error.response.data.status.code);
         }
       });
-
-    setThirdLocations([
-      "서울",
-      "대구",
-      "부산",
-      "광주",
-      "대전",
-      "경기도",
-      "경상도",
-      "대구광역시",
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-    ]);
   };
 
   const clickThirdItem = (e) => {
@@ -146,7 +107,7 @@ const AddAreaModal = (props) => {
     }
 
     for (const area of selectedAreas) {
-      if (area === e.target.innerText) {
+      if (area === `${emphasisRoot} ${emphasisSecond} ${e.target.innerText}`) {
         e.preventDefault();
         alert("이미 선택한 지역입니다.");
         return;
@@ -193,7 +154,7 @@ const AddAreaModal = (props) => {
       getRootLocations()
         .then((res) => {
           if (res.status.code === 5000) {
-            setRootLocations(res.content);
+            setRootLocations(res.content.sort());
           } else {
             FailResponse(res.status.code);
           }

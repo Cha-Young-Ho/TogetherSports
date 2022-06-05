@@ -34,8 +34,6 @@ const NavigationBar = () => {
     getMyInfo()
       .then((res) => {
         if (res.status.code === 5000) {
-          console.log("*Nav : Success Login Info Request *");
-
           dispatch({
             type: "SAVEMYINFO",
             payload: {
@@ -55,7 +53,6 @@ const NavigationBar = () => {
               isInformationRequired: res.content.isInformationRequired,
             },
           });
-          console.log("Nav : Client got this info = " + myInfo);
         } else {
           FailResponse(res.status.code);
         }
@@ -244,6 +241,7 @@ const NavigationBar = () => {
 
         .logo {
           width: 138px;
+          margin-bottom: 2px;
           display: flex;
           font-size: 2rem;
           cursor: pointer;

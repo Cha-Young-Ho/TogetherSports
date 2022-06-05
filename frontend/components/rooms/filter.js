@@ -40,11 +40,11 @@ const Filter = () => {
   };
   const closeStartCalendarModal = () => {
     setStartCalendarModalOpen(false);
+    document.body.style.overflow = "unset";
   };
 
   const openEndCalendarModal = () => {
     setEndCalendarModalOpen(true);
-    document.body.style.overflow = "unset";
   };
   const closeEndCalendarModal = () => {
     setEndCalendarModalOpen(false);
@@ -240,6 +240,21 @@ const Filter = () => {
     }
   }, [addAreaClickDetection.add]);
 
+  useEffect(() => {
+    const FilterObj = JSON.parse(localStorage.getItem("Filters"));
+
+    if (FilterObj) {
+      setSelectedAreas(FilterObj.selectedArea);
+      setStartTime(FilterObj.startTime);
+      setEndTime(FilterObj.endTime);
+      setContainNoAdmittance(FilterObj.containNoAdmittance);
+      setContainTimeClosing(FilterObj.containTimeClosing);
+      setCurStartFilteringDate(FilterObj.startDate);
+      setCurEndFilteringDate(FilterObj.endDate);
+      setEnterAccessPeople(FilterObj.requiredPeopleCount);
+    }
+  }, []);
+
   return (
     <>
       <div className="filter-wrapper">
@@ -248,15 +263,15 @@ const Filter = () => {
             <input
               type="checkbox"
               id="enter"
-              checked={containTimeClosing}
-              onChange={() => setContainTimeClosing(!containTimeClosing)}
+              checked={containNoAdmittance}
+              onChange={() => setContainNoAdmittance(!containNoAdmittance)}
             ></input>
             <label htmlFor="enter">입장 마감된 방 보기</label>
             <input
               type="checkbox"
               id="time"
-              checked={containNoAdmittance}
-              onChange={() => setContainNoAdmittance(!containNoAdmittance)}
+              checked={containTimeClosing}
+              onChange={() => setContainTimeClosing(!containTimeClosing)}
             ></input>
             <label htmlFor="time">시간 마감된 방 보기</label>
           </div>
