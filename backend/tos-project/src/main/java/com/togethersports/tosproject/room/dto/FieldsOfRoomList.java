@@ -43,7 +43,7 @@ public class FieldsOfRoomList {
     private String keyWord;
 
     // 입장 가능 인원
-    private Integer participantCount;
+    private Integer requiredPeopleCount;
 
     // 페이지
     private Integer page = 0;

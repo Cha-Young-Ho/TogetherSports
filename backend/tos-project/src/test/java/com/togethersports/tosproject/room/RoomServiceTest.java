@@ -2,22 +2,22 @@ package com.togethersports.tosproject.room;
 
 
 import com.togethersports.tosproject.area.ActiveArea;
-import com.togethersports.tosproject.common.code.CommonCode;
-import com.togethersports.tosproject.common.code.ResponseCode;
+import com.togethersports.tosproject.chat.ChatController;
 import com.togethersports.tosproject.common.dto.Response;
 import com.togethersports.tosproject.common.util.ParsingEntityUtils;
 import com.togethersports.tosproject.image.RoomImageService;
 import com.togethersports.tosproject.interest.Interest;
+import com.togethersports.tosproject.participant.Participant;
+import com.togethersports.tosproject.participant.ParticipantRepository;
 import com.togethersports.tosproject.participant.ParticipantService;
-import com.togethersports.tosproject.room.code.RoomCode;
 import com.togethersports.tosproject.room.dto.ImageOfRoomCRUD;
 import com.togethersports.tosproject.room.dto.RoomOfCreate;
 import com.togethersports.tosproject.security.Role;
-import com.togethersports.tosproject.security.oauth2.model.OAuth2Provider;
 import com.togethersports.tosproject.tag.TagService;
 import com.togethersports.tosproject.user.Gender;
 import com.togethersports.tosproject.user.User;
 import com.togethersports.tosproject.user.UserRepository;
+import com.togethersports.tosproject.user.UserService;
 import com.togethersports.tosproject.user.dto.UserOfModifyInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -28,6 +28,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -37,10 +38,21 @@ import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
+
 
 @Slf4j
 @ExtendWith(MockitoExtension.class)
 public class RoomServiceTest {
+
+    @Mock
+    private UserService userService;
+
+    @Mock
+    private ParticipantRepository participantRepository;
+
+    @Mock
+    private ChatController chatController;
 
     @Mock
     private ParsingEntityUtils parsingEntityUtils;
@@ -64,6 +76,7 @@ public class RoomServiceTest {
     private RoomService roomService;
 
 
+
     @DisplayName("방을 성공적으로 생성한다.")
     @Test
     public void createRoomTestOnSuccess() throws Exception{
@@ -71,14 +84,10 @@ public class RoomServiceTest {
         //given
         User user = getTestUser();
         RoomOfCreate roomOfCreate = roomOfCreate();
-        Room room = Room.of(roomOfCreate, user);
-
-
-        Response response = Response.of(CommonCode.GOOD_REQUEST, null);
 
         //mocking
-
         given(userRepository.findById(any())).willReturn(Optional.of(user));
+
 
         //when
         Response actualResponse = roomService.createRoom(user, roomOfCreate);
@@ -124,6 +133,32 @@ public class RoomServiceTest {
         //then
 
     }
+
+    @DisplayName("방 참가에 성공한다.")
+    @Test
+    public void participateRoomOnSuccess() throws Exception{
+
+        //given
+        User user = getTestUser();
+        RoomOfCreate roomOfCreate = roomOfCreate();
+        Room room =Room.of(roomOfCreate, user);
+        Participant participant = Participant.of(user, room);
+
+
+
+        //mocking
+        given(userRepository.save(any())).willReturn(getTestUser());
+        given(userRepository.findById(any())).willReturn(Optional.of(getTestUser()));
+        given(roomRepository.save(any())).willReturn(room);
+        given(roomRepository.findById(any())).willReturn(Optional.of(room));
+        given(participantRepository.save(any())).willReturn(participant);
+        Room roomEntity = roomRepository.findById(room.getId()).get();
+        //when
+        roomService.participateRoom(user, roomEntity.getId());
+
+        //then
+    }
+
 
 
     private RoomOfCreate roomOfCreate(){

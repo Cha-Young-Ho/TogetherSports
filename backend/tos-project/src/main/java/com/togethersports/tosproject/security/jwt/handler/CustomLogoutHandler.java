@@ -68,13 +68,13 @@ public class CustomLogoutHandler implements LogoutHandler {
         try {
             inputStream = request.getInputStream();
             map = objectMapper.readValue(StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8), Map.class);
-            log.info("로그아웃 실행");
+
             setResponse(response, map);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-        log.info("map = {}", map);
+
         return map;
     }
 
@@ -87,17 +87,15 @@ public class CustomLogoutHandler implements LogoutHandler {
         Response<?> responseValue = Response.of(CommonCode.GOOD_REQUEST, null);
         // 토큰 누락
         if(map.get("refreshToken") == null){
-            log.info("토큰 누락");
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             responseValue = Response.of(JwtErrorCode.TOKEN_NOTFOUND, null);
         }
 
         if (Objects.nonNull(responseValue)) {
-            log.info("굳");
             PrintWriter writer = response.getWriter();
             writer.write(objectMapper.writeValueAsString(responseValue));
         }
-        log.info("response = {}", response);
+
         return response;
     }
 

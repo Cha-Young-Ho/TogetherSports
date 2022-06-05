@@ -13,7 +13,7 @@ const RoomSetting = () => {
   const [exercise, setExercise] = useState("");
 
   //인원
-  const [limitPeopleCount, setLimitPeopleCount] = useState(2);
+  const [limitPeopleCount, setLimitPeopleCount] = useState(0);
 
   //지역
   const [roomArea, setRoomArea] = useState({
@@ -145,6 +145,12 @@ const RoomSetting = () => {
     if (exercise === "선택") {
       e.preventDefault();
       alert("종목을 선택해주세요!");
+    }
+
+    // 최소 인원 2명
+    if (limitPeopleCount < 2) {
+      e.preventDefault();
+      alert("최소 인원은 2명 이상이어야 합니다!");
     }
 
     dispatch({

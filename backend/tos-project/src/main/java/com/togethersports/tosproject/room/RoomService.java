@@ -161,17 +161,18 @@ public class RoomService {
 
     //방 참가
     public Response participateRoom(User currentUser, Long roomId){
-
+        log.info("current = {}", currentUser.getId());
         //엔티티 찾기
         UserAndRoomOfService userAndRoomEntity =
                 findEntityById(currentUser.getId(), roomId);
 
         Room roomEntity = userAndRoomEntity.getRoom();
-
+        log.info("roomEntity = {}", roomEntity.getId());
         User userEntity = userAndRoomEntity.getUser();
+        log.info("userEntity = {}", roomEntity.getId());
 
         //인원이 가득찬 경우
-        if(roomEntity.getParticipantCount() >= roomEntity.getLimitPeopleCount()){
+        if(roomEntity.getParticipants().size() >= roomEntity.getLimitPeopleCount()){
             return Response.of(RoomCode.FULL_ROOM, null);
         }
         //시간이 지난 방인 경우
@@ -180,13 +181,7 @@ public class RoomService {
         }
 
         // 참가 저장
-        boolean isParticipation = participantService.save(currentUser, roomEntity);
-
-        // 참가한 경우
-        if(isParticipation) {
-            // 참가 인원 추가
-            roomEntity.participate();
-        }
+        participantService.save(currentUser, roomEntity);
 
         //WS 메세지 생성
         WsResponse wsResponse = WsResponse.of(ChatCode.SYSTEM_USER_ENTER,
@@ -338,9 +333,6 @@ public class RoomService {
         // 강퇴
         participantService.kickUser(kickedOutUser.getId(), roomEntity.getId());
 
-        // 방 인원 수 1명 줄이기
-        roomEntity.leave();
-
         //WS 메세지 생성
         WsResponse wsResponse = WsResponse.of(ChatCode.SYSTEM_USER_KICKED_OUT,
                 MessageOfKickOut.builder()
@@ -384,11 +376,12 @@ public class RoomService {
             //방장일 경우
             chatCode = ChatCode.SYSTEM_HOST_OUT;
 
-            //방 인원수 줄이기
-            roomEntity.leave();
+
+            //participant 관계 테이블 삭제
+            participantService.out(userEntity, roomEntity);
 
             //방 인원이 0명인 경우 방삭제
-            if(roomEntity.getParticipantCount() <= 0){
+            if(roomEntity.getParticipants().size() <= 0){
 
                 //나가기 처리(DB삭제)
                 roomRepository.deleteById(roomEntity.getId());
@@ -398,13 +391,11 @@ public class RoomService {
                 return response;
             }
 
-            //participant 관계 테이블 삭제
-            participantService.out(userEntity, roomEntity);
 
             //참가자 중 방장 권한 위임할 랜덤 유저 선택하기.
             Random random = new Random();
 
-            int randomNumber = random.nextInt(roomEntity.getParticipantCount());
+            int randomNumber = random.nextInt(roomEntity.getParticipants().size());
 
             Long targetUserId = roomEntity.getParticipants().get(randomNumber).getUser().getId();
 
@@ -445,9 +436,6 @@ public class RoomService {
         //나가기 처리(DB 삭제)
         participantService.out(userEntity, roomEntity);
 
-        //방 인원수 줄이기
-        roomEntity.leave();
-
         //메세지 body 생성
         MessageOfLeave messageBody = MessageOfLeave.builder()
                 .id(userEntity.getId())
@@ -480,9 +468,9 @@ public class RoomService {
         }
     }
     // 유저 엔티티 찾기
-    public User findUserEntityById(Long userId){
+    public User findUserEntityById(Long targetUserId){
 
-        return  userRepository.findById(userId)
+        return  userRepository.findById(targetUserId)
                 .orElseThrow(() -> new UserNotFoundException("해당 유저를 찾을 수 없습니다."));
     }
     // 룸 엔티티 찾기

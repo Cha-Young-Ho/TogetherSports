@@ -56,10 +56,6 @@ public class Room extends RoomBaseEntity {
     @Column(name = "LIMIT_PEOPLE_COUNT")
     private int limitPeopleCount;
 
-    //현재 참여자 수
-    @Column(name = "PRESENT_PEOPLE_COUNT")
-    private int participantCount;
-
     //조회수
     @Column(name ="VIEW_COUNT")
     private int viewCount;
@@ -115,7 +111,6 @@ public class Room extends RoomBaseEntity {
         this.startAppointmentDate = roomOfCreate.getStartAppointmentDate();
         this.limitPeopleCount = roomOfCreate.getLimitPeopleCount();
         this.host = user;
-        this.participantCount = 1;
         this.createUser = user;
         this.roomArea = roomOfCreate.getRoomArea();
         this.viewCount = 0;
@@ -143,14 +138,6 @@ public class Room extends RoomBaseEntity {
         this.endAppointmentDate = roomOfUpdate.getEndAppointmentDate();
         this.roomTitle = roomOfUpdate.getRoomTitle();
         this.roomContent = roomOfUpdate.getRoomContent();
-    }
-
-    public void participate(){
-        this.participantCount = participantCount + 1;
-    }
-
-    public void leave(){
-        this.participantCount = participantCount - 1 ;
     }
 
     //방장 위임
