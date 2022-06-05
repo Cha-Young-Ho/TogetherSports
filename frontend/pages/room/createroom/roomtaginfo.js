@@ -100,31 +100,32 @@ const RoomTagInfo = () => {
     }
 
     if (roomContent === "") setRoomContent(null);
-    if (tags.length === 0) setTags(null);
-    // 정상적으로 다 입력돼있으면 방 생성 요청
-    else {
-      postCreateRoom(
-        roomInfo.roomTitle,
-        roomContent,
-        roomInfo.roomArea,
-        roomInfo.limitPeopleCount,
-        roomInfo.exercise,
-        tags,
-        roomInfo.startAppointmentDate,
-        roomInfo.endAppointmentDate,
-        roomImages
-      )
-        .then((res) => {
-          console.log(res.status.message);
-          if (res.status.code === 5000) {
-            alert("방을 성공적으로 생성하였습니다!");
-          }
-        })
-        .catch((error) => {
-          FailResponse(error.response.data.status.code);
-          return;
-        });
+    if (tags.length === 0) {
+      e.preventDefault();
+      alert("태그를 입력해주세요.");
+      return;
     }
+
+    postCreateRoom(
+      roomInfo.roomTitle,
+      roomContent,
+      roomInfo.roomArea,
+      roomInfo.limitPeopleCount,
+      roomInfo.exercise,
+      tags,
+      roomInfo.startAppointmentDate,
+      roomInfo.endAppointmentDate,
+      roomImages
+    )
+      .then((res) => {
+        if (res.status.code === 5000) {
+          alert("방을 성공적으로 생성하였습니다!");
+        }
+      })
+      .catch((error) => {
+        FailResponse(error.response.data.status.code);
+        return;
+      });
   };
 
   return (

@@ -70,6 +70,10 @@ const RoomSchedule = () => {
     );
     endTime.add(runningHour, "hours");
     endTime.add(runningMinute, "minutes");
+    if (curSelectedDate.length === 9) {
+      curSelectedDate =
+        curSelectedDate.substring(0, 8) + "0" + curSelectedDate.substr(9);
+    }
 
     dispatch({
       type: "ROOMSCHEDULE",

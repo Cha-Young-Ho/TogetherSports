@@ -20,7 +20,7 @@ const ActiveArea = () => {
     if (
       userRequestInfo.userNickname === "" ||
       userRequestInfo.userBirth === "" ||
-      activeAreas === [] ||
+      activeAreas.length === 0 ||
       userRequestInfo.gender === "" ||
       userRequestInfo.interests === []
     ) {

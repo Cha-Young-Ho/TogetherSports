@@ -49,22 +49,15 @@ const getMyInfo = () => {
 };
 
 // 다른 회원 정보 조회
-const getOtherInfo = (nickname) => {
+const getOtherInfo = (userId) => {
   const promise =
     localStorage.getItem("accessToken") === null
-      ? axios.get("http://localhost:8080/api/user/", {
-          params: {
-            userNickname: nickname,
-          },
-        })
-      : axios.get("http://localhost:8080/api/user/", {
+      ? axios.get("http://localhost:8080/api/user/" + userId)
+      : axios.get("http://localhost:8080/api/user/" + userId, {
           headers: {
             "Content-type": "application/json; charset=UTF-8",
             Accept: "*/*",
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-          params: {
-            userNickName: nickname,
           },
         });
 
