@@ -74,36 +74,15 @@ public class ParticipantService {
         participantRepository.delete(user);
     }
 
-    public void deleteRoom(User user, Room room){
+    public void out(User user, Room room){
 
         Participant participantEntity = participantRepository.findByUserAndRoom(user, room)
                 .orElseThrow(() -> new NotParticipateRoomException("해당 방에 참여하지 않은 유저입니다."));
-
         log.info("participantEntity id = {}", participantEntity.getId());
         log.info("partici 실행");
-        roomRepository.deleteById(room.getId());
-
-
-        //participantRepository.deleteById(participantEntity.getId());
+        participantRepository.deleteById(participantEntity.getId());
         log.info("여기 수행되어야 함");
 
-
-    }
-    public void out(User user, Room room){
-        Participant participantEntity = participantRepository.findByUserAndRoom(user, room)
-                .orElseThrow(() -> new NotParticipateRoomException("해당 방에 참여하지 않은 유저입니다."));
-
-
-
-        participantRepository.deleteById(participantEntity.getId());
-        int i = 0;
-        for(Participant participant : room.getParticipants()){
-            if(user.getId() == participant.getUser().getId()){
-                room.getParticipants().remove(i);
-                break;
-            }
-            i++;
-        }
     }
 
     @Transactional

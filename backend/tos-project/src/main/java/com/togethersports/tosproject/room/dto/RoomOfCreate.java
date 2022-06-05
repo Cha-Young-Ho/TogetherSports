@@ -36,12 +36,10 @@ public class RoomOfCreate {
 
 
     @NotNull(message = "인원 제한을 설정해야 합니다.")
+    @Size(min = 2, max = 99, message = "방 인원은 최소 2명 및 최대 99명까지 가능합니다.")
     private int limitPeopleCount;
 
-
-
     private List<ImageOfRoomCRUD> roomImages;
-
 
     @NotNull(message = "태그를 1개 이상 입력해야 합니다.")
     @Size(min = 1, message = "태그는 최소 1개 이상 최대 5개로 지정할 수 있습니다.")

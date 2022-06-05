@@ -99,7 +99,7 @@ public class OAuth2LoginAuthenticationSuccessHandler implements AuthenticationSu
                 .queryParam("refresh_token", refreshToken)
                 .queryParam("is_first", firstUser)
                 .toUriString();
-        log.info("token = {}", accessToken);
+
 
         response.sendRedirect(redirectUri);
     }
