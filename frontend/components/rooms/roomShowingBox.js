@@ -1,7 +1,17 @@
 import { getAvailability } from "../../api/rooms";
 import router from "next/router";
+import moment from "moment";
 
 const RoomShowingBox = (props) => {
+  const DayOfTheWeek = {
+    1: "월요일",
+    2: "화요일",
+    3: "수요일",
+    4: "목요일",
+    5: "금요일",
+    6: "토요일",
+    7: "일요일",
+  };
   // 해당 방에 이미 참가중인지 여부 체크
   const isAttendance = () => {
     props.setRoomID ? props.setRoomID(props.datas.roomId) : "";
@@ -60,10 +70,11 @@ const RoomShowingBox = (props) => {
         <div className="bodyLine">
           <h1>{`${props.datas.roomTitle}`}</h1>
           <p>
-            {`${props.datas.startAppointmentDate.slice(
-              0,
-              10
-            )} x요일 ${props.datas.startAppointmentDate.slice(11)} 모임`}
+            {`${props.datas.startAppointmentDate.slice(0, 10)} ${
+              DayOfTheWeek[
+                moment(props.datas.startAppointmentDate).isoWeekday()
+              ]
+            } ${props.datas.startAppointmentDate.slice(11)} 모임`}
           </p>
         </div>
       </div>

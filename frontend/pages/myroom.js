@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { getMyRoomInfo } from "../api/rooms";
 import { FailResponse } from "../api/failResponse";
 import Link from "next/link";
+import moment from "moment";
 
 const MyRoom = () => {
   const [imminentRooms, setImminentRooms] = useState([
@@ -13,7 +14,7 @@ const MyRoom = () => {
       participantCount: 1,
       tags: ["고수만", "중수만", "매너만", "남자만"],
       startAppointmentDate: "2022-05-08T12:55:00",
-      endAppointmentDate: "2022-05-10T15:00:00",
+      endAppointmentDate: "2022-06-10T15:00:00",
     },
     {
       roomId: 2,
@@ -22,7 +23,7 @@ const MyRoom = () => {
       participantCount: 1,
       tags: ["고수만", "중수만", "매너만", "남자만"],
       startAppointmentDate: "2022-05-08T12:55:00",
-      endAppointmentDate: "2022-05-10T15:00:00",
+      endAppointmentDate: "2022-06-06T15:00:00",
     },
     {
       roomId: 2,
@@ -276,10 +277,20 @@ const MyRoom = () => {
             <div className="slider-row" ref={imminentRef}>
               {imminentRooms.length ? (
                 imminentRooms.map((room, index) => {
+                  const a = moment(room.endAppointmentDate);
+                  const b = moment();
+
                   return (
                     <div key={index} className="roomBoxes">
-                      <p className="left-date">{`D - 3`}</p>
-                      <p className="origin-date">{`2002년`}</p>
+                      <p className="left-date">{`D-${a.diff(b, "days") + 1}
+                      `}</p>
+                      <p className="origin-date">{`${room.startAppointmentDate.slice(
+                        0,
+                        4
+                      )}년 ${room.startAppointmentDate.slice(
+                        5,
+                        7
+                      )}월 ${room.startAppointmentDate.slice(8, 10)}일`}</p>
                       <h1>{room.roomTitle}</h1>
                       <p className="perssonel">{`모집인원(${room.participantCount}/${room.limitPeopleCount})`}</p>
                     </div>

@@ -109,6 +109,8 @@ const Chatting = ({ chatOpen, updateRoomDataFunc }) => {
 
   const onSubmitMessage = (e) => {
     e.preventDefault();
+    if (messageToServer === "") return;
+
     clientInfo.send(
       `/api/room/${roomId}/chat`,
       {

@@ -220,6 +220,7 @@ const RoomSetting = () => {
                 <input
                   type="number"
                   min="2"
+                  max="99"
                   value={limitPeopleCount}
                   onKeyUp={(e) =>
                     (e.target.value = e.target.value.replace(/[^0-9]/g, ""))
