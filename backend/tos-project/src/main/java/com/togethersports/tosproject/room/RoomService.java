@@ -161,14 +161,15 @@ public class RoomService {
 
     //방 참가
     public Response participateRoom(User currentUser, Long roomId){
-
+        log.info("current = {}", currentUser.getId());
         //엔티티 찾기
         UserAndRoomOfService userAndRoomEntity =
                 findEntityById(currentUser.getId(), roomId);
 
         Room roomEntity = userAndRoomEntity.getRoom();
-
+        log.info("roomEntity = {}", roomEntity.getId());
         User userEntity = userAndRoomEntity.getUser();
+        log.info("userEntity = {}", roomEntity.getId());
 
         //인원이 가득찬 경우
         if(roomEntity.getParticipantCount() >= roomEntity.getLimitPeopleCount()){
@@ -480,9 +481,9 @@ public class RoomService {
         }
     }
     // 유저 엔티티 찾기
-    public User findUserEntityById(Long userId){
+    public User findUserEntityById(Long targetUserId){
 
-        return  userRepository.findById(userId)
+        return  userRepository.findById(targetUserId)
                 .orElseThrow(() -> new UserNotFoundException("해당 유저를 찾을 수 없습니다."));
     }
     // 룸 엔티티 찾기

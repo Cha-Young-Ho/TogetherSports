@@ -48,7 +48,7 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
                 .where(eqInterests(
                     fieldsOfRoomList.getExercise()),
                     eqArea(fieldsOfRoomList.getArea()),
-                    participateCount(fieldsOfRoomList.getParticipantCount(), fieldsOfRoomList.isContainNoAdmittance()),
+                    participateCount(fieldsOfRoomList.getRequiredPeopleCount(), fieldsOfRoomList.isContainNoAdmittance()),
                     betweenTime(fieldsOfRoomList.getStartAppointmentDate(), fieldsOfRoomList.getEndAppointmentDate(), fieldsOfRoomList.isContainTimeClosing()),
                     eqTitle(fieldsOfRoomList.getRoomTitle()),
                     eqContent(fieldsOfRoomList.getRoomContent())
@@ -132,9 +132,9 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
 
         //입장 마감 보기 시,
         if(containNoAdmittance){
-
             // 인원 검색을 하지 않았을 때
             if(participantCount == null){
+
                 return room.limitPeopleCount.goe(room.participantCount);
             }
 
@@ -148,6 +148,7 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
         if(participantCount == null){
             return room.limitPeopleCount.gt(room.participantCount);
         }
+
         // 인원 검색을 했을 때
         return room.limitPeopleCount.goe(room.participantCount.add(participantCount));
 
