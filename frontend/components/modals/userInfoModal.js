@@ -69,6 +69,12 @@ const UserInfoModal = (props) => {
       });
   };
 
+  // 매너지수 올리기
+  const upMannerPoint = () => {};
+
+  // 매너지수 내리기
+  const downMannerPoint = () => {};
+
   useEffect(() => {
     // 네비게이션에서 프로필 조회를 하는 경우 (무조건 내 정보 조회만)
     if (props.path === "navBar") {
@@ -139,9 +145,7 @@ const UserInfoModal = (props) => {
               <img src={imageSrc} className="pf-image"></img>
 
               <div className="buttons">
-                {(myInfo.userNickname === clickedUserNickname &&
-                  props.path === "partyList") ||
-                props.path === "navBar" ? (
+                {myInfo.userNickname === clickedUserNickname ? (
                   <Link href="/usermodification">
                     <button className="modify-button" onClick={props.close}>
                       회원 정보 수정하기
@@ -193,8 +197,8 @@ const UserInfoModal = (props) => {
                   <></>
                 ) : (
                   <div>
-                    <button>➕</button>
-                    <button>➖</button>
+                    <button onClick={upMannerPoint}>➕</button>
+                    <button onClick={downMannerPoint}>➖</button>
                   </div>
                 )}
               </div>
