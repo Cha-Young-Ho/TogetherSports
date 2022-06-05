@@ -135,22 +135,22 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
             // 인원 검색을 하지 않았을 때
             if(participantCount == null){
 
-                return room.limitPeopleCount.goe(room.participantCount);
+                return room.limitPeopleCount.goe(room.participants.size());
             }
 
             // 인원 검색을 했을 때
-            return room.limitPeopleCount.goe(room.participantCount.add(participantCount));
+            return room.limitPeopleCount.goe(room.participants.size().add(participantCount));
 
         }
 
         /*입장 마감 안보기 시,*/
         // 인원 검색을 하지 않았을 때
         if(participantCount == null){
-            return room.limitPeopleCount.gt(room.participantCount);
+            return room.limitPeopleCount.gt(room.participants.size());
         }
 
         // 인원 검색을 했을 때
-        return room.limitPeopleCount.goe(room.participantCount.add(participantCount));
+        return room.limitPeopleCount.goe(room.participants.size().add(participantCount));
 
     }
 
@@ -169,7 +169,7 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
                     case "updatedTime":
                         return new OrderSpecifier(direction, room.updatedTime);
                     case "participant":
-                        return new OrderSpecifier(direction, room.participantCount);
+                        return new OrderSpecifier(direction, room.participants.size());
                 }
             }
         }
