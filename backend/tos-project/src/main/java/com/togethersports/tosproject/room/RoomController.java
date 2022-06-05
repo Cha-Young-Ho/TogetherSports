@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 /**
  * <h1>RoomController</h1>
  * <p>
@@ -20,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
  * </p>
  * @author younghoCha
  */
-
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class RoomController {
@@ -65,8 +67,8 @@ public class RoomController {
 
     //방 참가
     @PostMapping("/api/room/{roomId}/user")
-    public ResponseEntity<Response> participateRoom(@CurrentUser User user, @PathVariable Long roomId){
-
+    public ResponseEntity<Response> participateRoom(@CurrentUser User user,  @PathVariable Long roomId){
+        log.info("room id = {}", roomId);
         Response response = roomService.participateRoom(user, roomId);
 
         return ResponseEntity.ok(response);
@@ -82,8 +84,9 @@ public class RoomController {
 
     //방장 위임
     @PatchMapping("/api/room/{roomId}/user/delegate")
-    public ResponseEntity delegate(@CurrentUser User user, @PathVariable Long roomId, Long targetUserId){
-
+    public ResponseEntity delegate(@RequestBody Target target, @CurrentUser User user, @PathVariable Long roomId){
+        Long targetUserId = target.getTargetUserId();
+        log.info("targetUserId = {}", targetUserId);
 
         Response response = roomService.delegate(user, roomId, targetUserId);
 
@@ -92,9 +95,9 @@ public class RoomController {
 
     //강퇴
     @DeleteMapping("/api/room/{roomId}/user/kick-out")
-    public ResponseEntity kickOut(@CurrentUser User user, @PathVariable Long roomId, Long targetUserId){
+    public ResponseEntity kickOut(@CurrentUser User user, @PathVariable Long roomId, @RequestBody Target target){
 
-        Response response = roomService.kickOut(user, roomId, targetUserId);
+        Response response = roomService.kickOut(user, roomId, target.getTargetUserId());
 
         return ResponseEntity.ok(response);
     }
