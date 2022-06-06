@@ -32,7 +32,8 @@ const myInfoInitialState = {
 };
 
 // 닉네임 저장 초기값
-const saveNicknameInitialState = {
+const saveClickedUserInitialState = {
+  id: 0,
   userNickname: "",
 };
 
@@ -165,7 +166,7 @@ const saveRoomAlarmInitialState = {
 // 오타 방지용
 const PERSONALINFO = "PERSONALINFO";
 const INTERESTS = "INTERESTS";
-const SAVENICKNAME = "SAVENICKNAME";
+const SAVECLICKEDUSERINFO = "SAVECLICKEDUSERINFO";
 const SAVEMYINFO = "SAVEMYINFO";
 const ROOMSETTING = "ROOMSETTING";
 const ROOMSCHEDULE = "ROOMSCHEDULE";
@@ -248,12 +249,16 @@ const myInfoReducer = (state = myInfoInitialState, action) => {
   }
 };
 
-// participantList -> userInfoModal 로 전달되는 닉네임 저장용 reducer
-const saveNicknameReducer = (state = saveNicknameInitialState, action) => {
+// 참가자 목록에서 클릭된 유저의 정보 저장용 reducer
+const saveClickedUserReducer = (
+  state = saveClickedUserInitialState,
+  action
+) => {
   switch (action.type) {
-    case SAVENICKNAME:
+    case SAVECLICKEDUSERINFO:
       return {
         ...state,
+        id: action.payload.id,
         userNickname: action.payload.userNickname,
       };
     default:
@@ -543,7 +548,7 @@ const saveRoomAlarmReducer = (state = saveRoomAlarmInitialState, action) => {
 // rootReducer로 모든 reducer Combine
 const rootReducer = combineReducers({
   userRequestReducer,
-  saveNicknameReducer,
+  saveClickedUserReducer,
   myInfoReducer,
   createRoomReducer,
   roomFilteringDataReducer,

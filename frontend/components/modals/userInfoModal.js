@@ -11,10 +11,14 @@ const UserInfoModal = (props) => {
   // reducer에 저장된 내 정보 불러오기
   const myInfo = useSelector((state) => state.myInfoReducer);
 
-  // 참여자목록에서 조회 선택된 회원의 닉네임과 id
+  // 참여자목록에서 조회 선택된 회원의 id와 닉네임
+  const clickedUserId = useSelector((state) => state.saveClickedUserReducer.id);
   const clickedUserNickname = useSelector(
-    (state) => state.saveNicknameReducer.userNickname
+    (state) => state.saveClickedUserReducer.userNickname
   );
+
+  // 다른 회원정보 조회에서 받아온 유저의 id
+  // 필요없을 수도
   const [userId, setUserId] = useState(0);
 
   // 모달에 필요한 데이터들
@@ -100,7 +104,7 @@ const UserInfoModal = (props) => {
       // 다른 회원 정보 조회
       if (myInfo.userNickname !== clickedUserNickname) {
         if (props.open) {
-          getOtherInfo(clickedUserNickname)
+          getOtherInfo(clickedUserId)
             .then((res) => {
               if (res.status.code === 5000) {
                 setUserId((userId = res.content.id));
