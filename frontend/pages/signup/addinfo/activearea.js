@@ -6,6 +6,7 @@ import { FailResponse } from "../../../api/failResponse";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Map from "../../../components/Map";
+import Head from "next/head";
 
 const ActiveArea = () => {
   const activeAreas = useSelector(
@@ -61,6 +62,9 @@ const ActiveArea = () => {
 
   return (
     <>
+      <Head>
+        <title>회원 정보 입력</title>
+      </Head>
       <div className="container">
         <UserInfoNavBar
           personal_atv={"deactivation"}

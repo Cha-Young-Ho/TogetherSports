@@ -2,6 +2,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import RoomInfoNavBar from "../../../components/roomInfoNavBar";
+import Head from "next/head";
 
 const RoomSetting = () => {
   const dispatch = useDispatch();
@@ -166,6 +167,9 @@ const RoomSetting = () => {
 
   return (
     <>
+      <Head>
+        <title>운동 방 생성하기</title>
+      </Head>
       <div className="container">
         <RoomInfoNavBar
           roomSetting_atv={"activation"}

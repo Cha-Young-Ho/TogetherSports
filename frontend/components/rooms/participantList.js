@@ -7,12 +7,13 @@ const ParticipantList = (props) => {
     (state) => state.roomRealTimeInfoReducer.participants
   );
 
-  const onClickUserInfo = (userNickname) => {
+  const onClickUserInfo = (userId, userNickname) => {
     props.participantListOpenModal();
 
     dispatch({
-      type: "SAVENICKNAME",
+      type: "SAVECLICKEDUSERINFO",
       payload: {
+        id: userId,
         userNickname: userNickname,
       },
     });
@@ -27,7 +28,9 @@ const ParticipantList = (props) => {
             return (
               <button
                 className="participant"
-                onClick={() => onClickUserInfo(participant.userNickname)}
+                onClick={() =>
+                  onClickUserInfo(participant.id, participant.userNickname)
+                }
                 key={index}
               >
                 <div className="profile">
@@ -41,7 +44,9 @@ const ParticipantList = (props) => {
             return (
               <button
                 className="participant"
-                onClick={() => onClickUserInfo(participant.userNickname)}
+                onClick={() =>
+                  onClickUserInfo(participant.id, participant.userNickname)
+                }
                 key={index}
               >
                 <div className="profile">

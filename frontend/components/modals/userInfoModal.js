@@ -10,11 +10,16 @@ const UserInfoModal = (props) => {
 
   // reducer에 저장된 내 정보 불러오기
   const myInfo = useSelector((state) => state.myInfoReducer);
+  const host = useSelector((state) => state.roomRealTimeInfoReducer.host);
 
-  // 참여자목록에서 조회 선택된 회원의 닉네임과 id
+  // 참여자목록에서 조회 선택된 회원의 id와 닉네임
+  const clickedUserId = useSelector((state) => state.saveClickedUserReducer.id);
   const clickedUserNickname = useSelector(
-    (state) => state.saveNicknameReducer.userNickname
+    (state) => state.saveClickedUserReducer.userNickname
   );
+
+  // 다른 회원정보 조회에서 받아온 유저의 id
+  // 필요없을 수도
   const [userId, setUserId] = useState(0);
 
   // 모달에 필요한 데이터들
@@ -69,6 +74,12 @@ const UserInfoModal = (props) => {
       });
   };
 
+  // 매너지수 올리기
+  const upMannerPoint = () => {};
+
+  // 매너지수 내리기
+  const downMannerPoint = () => {};
+
   useEffect(() => {
     // 네비게이션에서 프로필 조회를 하는 경우 (무조건 내 정보 조회만)
     if (props.path === "navBar") {
@@ -94,7 +105,7 @@ const UserInfoModal = (props) => {
       // 다른 회원 정보 조회
       if (myInfo.userNickname !== clickedUserNickname) {
         if (props.open) {
-          getOtherInfo(clickedUserNickname)
+          getOtherInfo(clickedUserId)
             .then((res) => {
               if (res.status.code === 5000) {
                 setUserId((userId = res.content.id));
@@ -139,29 +150,31 @@ const UserInfoModal = (props) => {
               <img src={imageSrc} className="pf-image"></img>
 
               <div className="buttons">
-                {(myInfo.userNickname === clickedUserNickname &&
-                  props.path === "partyList") ||
-                props.path === "navBar" ? (
+                {myInfo.userNickname === clickedUserNickname ? (
                   <Link href="/usermodification">
                     <button className="modify-button" onClick={props.close}>
                       회원 정보 수정하기
                     </button>
                   </Link>
+                ) : myInfo.userNickname === host ? (
+                  <>
+                    <div>
+                      <button
+                        className="delegate-button"
+                        onClick={delegateHostFunc}
+                      >
+                        방장 위임하기
+                      </button>
+                      <button
+                        className="expulsion-button"
+                        onClick={kickOutUserFunc}
+                      >
+                        이 방에서 내보내기
+                      </button>
+                    </div>
+                  </>
                 ) : (
-                  <div>
-                    <button
-                      className="delegate-button"
-                      onClick={delegateHostFunc}
-                    >
-                      방장 위임하기
-                    </button>
-                    <button
-                      className="expulsion-button"
-                      onClick={kickOutUserFunc}
-                    >
-                      이 방에서 내보내기
-                    </button>
-                  </div>
+                  <></>
                 )}
               </div>
             </div>
@@ -193,8 +206,8 @@ const UserInfoModal = (props) => {
                   <></>
                 ) : (
                   <div>
-                    <button>➕</button>
-                    <button>➖</button>
+                    <button onClick={upMannerPoint}>➕</button>
+                    <button onClick={downMannerPoint}>➖</button>
                   </div>
                 )}
               </div>
