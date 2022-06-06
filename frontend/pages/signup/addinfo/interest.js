@@ -77,7 +77,7 @@ const Interest = () => {
   return (
     <>
       <Head>
-        <title>회원정보 입력 페이지</title>
+        <title>회원 정보 입력</title>
       </Head>
       <div className="bg-container">
         <UserInfoNavBar

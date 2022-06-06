@@ -15,6 +15,7 @@ import AlarmModal from "../../components/modals/alarmModal";
 import StompJS from "stompjs";
 import SockJS from "sockjs-client";
 import FloatingAlarm from "../../components/rooms/floatingAlarm";
+import Head from "next/head";
 
 const Room = () => {
   const router = useRouter();
@@ -239,6 +240,9 @@ const Room = () => {
 
   return (
     <>
+      <Head>
+        <title>{roomTitle}</title>
+      </Head>
       <div className="container">
         <div className="main-info">
           <div className="header">

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useDispatch } from "react-redux";
 import moment from "moment";
+import Head from "next/head";
 
 const RoomSchedule = () => {
   const dispatch = useDispatch();
@@ -93,6 +94,9 @@ const RoomSchedule = () => {
 
   return (
     <>
+      <Head>
+        <title>운동 방 생성하기</title>
+      </Head>
       <div className="bg-container">
         <RoomInfoNavBar
           roomSetting_atv={`deactivation`}
