@@ -1,55 +1,7 @@
 import { postRefreshToken } from "./etc";
-import { getMyInfo } from "../api/members";
-
-const getInfoMethod = () => {
-  getMyInfo()
-    .then((res) => {
-      if (res.status.code === 5000) {
-        dispatch({
-          type: "SAVEMYINFO",
-          payload: {
-            userEmail: res.content.userEmail,
-            userName: res.content.userName,
-            userNickname: res.content.userNickname,
-            userBirth: res.content.userBirth,
-            gender: res.content.gender,
-            userProfileImagePath:
-              res.content.userProfileImagePath === ""
-                ? "/base_profileImage.jpg"
-                : res.content.userProfileImagePath,
-            activeAreas: res.content.activeAreas.map((el) => el),
-            interests: res.content.interests.map((el) => el),
-            mannerPoint: res.content.mannerPoint,
-            isInformationRequired: res.content.isInformationRequired,
-          },
-        });
-      } else {
-        FailResponse(res.status.code);
-      }
-
-      dispatch({
-        type: "CHANGELOGINSTATUS",
-        payload: {
-          loginStatus: "true",
-        },
-      });
-    })
-    .catch((error) => {
-      if (error.response) {
-        dispatch({
-          type: "CHANGELOGINSTATUS",
-          payload: {
-            loginStatus: "false",
-          },
-        });
-
-        FailResponse(error.response.data.status.code);
-      }
-    });
-};
 
 // fail response를 switch를 통해 관리
-const FailResponse = (codeNumber) => {
+const FailResponse = (codeNumber, prelastingToDo) => {
   switch (codeNumber) {
     case 1000:
       alert("잘못된 요청입니다.");
@@ -80,7 +32,7 @@ const FailResponse = (codeNumber) => {
       alert("인원이 가득 찼습니다.");
       break;
     case 1202:
-      alert("예정 시간이 지난 방입니다.");
+      alert("해당 방의 일정 시간이 이미 지났습니다.");
       break;
     case 1203:
       alert("누군가 방을 나갔습니다.");
@@ -114,7 +66,7 @@ const FailResponse = (codeNumber) => {
       postRefreshToken(localStorage.getItem("refreshToken")).then((res) => {
         if (res.status.code === 5000) {
           localStorage.setItem("accessToken", res.content.accessToken);
-          getInfoMethod();
+          prelastingToDo();
         } else {
           localStorage.removeItem("accessToken");
           localStorage.removeItem("refreshToken");
@@ -126,7 +78,7 @@ const FailResponse = (codeNumber) => {
       postRefreshToken(localStorage.getItem("refreshToken")).then((res) => {
         if (res.status.code === 5000) {
           localStorage.setItem("accessToken", res.content.accessToken);
-          getInfoMethod();
+          prelastingToDo();
         } else {
           localStorage.removeItem("accessToken");
           localStorage.removeItem("refreshToken");
@@ -135,6 +87,8 @@ const FailResponse = (codeNumber) => {
       break;
     case 1303:
       alert("리프레시 토큰이 만료되었습니다.");
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
       break;
     case 1304:
       alert("권한이 없는 토큰입니다.");

@@ -12,10 +12,9 @@ const RoomShowingBox = (props) => {
     6: "토요일",
     7: "일요일",
   };
+
   // 해당 방에 이미 참가중인지 여부 체크
   const isAttendance = () => {
-    props.setRoomID ? props.setRoomID(props.datas.roomId) : "";
-    props.openRoomExplainModal ? props.openRoomExplainModal() : "";
     getAvailability(props.datas.roomId)
       .then((res) => {
         if (res.status.code === 1214 && res.content.attendance) {
@@ -35,7 +34,7 @@ const RoomShowingBox = (props) => {
       })
       .catch((error) => {
         if (error.response) {
-          FailResponse(error.response.data.status.code);
+          FailResponse(error.response.data.status.code, isAttendance);
         }
       });
   };

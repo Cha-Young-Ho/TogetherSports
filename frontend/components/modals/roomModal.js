@@ -44,13 +44,13 @@ const RoomModal = (props) => {
           e.preventDefault();
           alert(res.status.message);
           return;
-          // FailResponse(res.status.code);
-          // return;
         }
+
+        FailResponse(res.status.code);
       })
       .catch((error) => {
         if (error.response) {
-          FailResponse(error.response.data.status.code);
+          FailResponse(error.response.data.status.code, enterRoom);
         }
       });
   };

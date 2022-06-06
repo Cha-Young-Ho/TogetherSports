@@ -174,8 +174,56 @@ const UserModification = () => {
     }));
   };
 
-  // 예외처리 및 수정버튼
-  const clickUpdateUserInfo = (e) => {
+  const func_PostUserRequest = () => {
+    postUserRequest(
+      nickname,
+      userBirth,
+      activeAreas,
+      gender,
+      extension,
+      imagesrc,
+      Object.entries(interests)
+        .filter((exer) => {
+          if (exer[1]) return true;
+        })
+        .map((el) => el[0])
+    )
+      .then((res) => {
+        if (res.status.code === 5000) {
+          getMyInfo((res) => {
+            if (res.status.code === 5000) {
+              dispatch({
+                type: "SAVEMYINFO",
+                payload: {
+                  userEmail: res.content.userEmail,
+                  userName: res.content.userName,
+                  userNickname: res.content.userNickname,
+                  userBirth: res.content.userBirth,
+                  gender: res.content.gender,
+                  userProfileImagePath: res.content.userProfileImagePath,
+                  activeAreas: res.content.activeAreas,
+                  interests: res.content.interests,
+                  mannerPoint: res.content.mannerPoint,
+                  isInformationRequired: res.content.isInformationRequired,
+                },
+              });
+              alert("성공적으로 수정 되었습니다.");
+              window.history.back();
+              return;
+            }
+          }).catch((error) => {
+            FailResponse(error.response.data.status.code, func_PostUserRequest);
+            return;
+          });
+        }
+      })
+      .catch((error) => {
+        FailResponse(error.response.data.status.code);
+        return;
+      });
+  };
+
+  const exception = (e) => {
     const checkNickname = $("#input-nickname").val();
 
     if (checkNickname === "" || checkNickname === null) {
@@ -236,54 +284,14 @@ const UserModification = () => {
       setExtension(null);
       setImagesrc(null);
     }
+  };
+
+  // 예외처리 및 수정버튼
+  const clickUpdateUserInfo = (e) => {
+    exception(e);
 
     // 회원가입 요청 및 회원정보 수정
-    postUserRequest(
-      nickname,
-      userBirth,
-      activeAreas,
-      gender,
-      extension,
-      imagesrc,
-      Object.entries(interests)
-        .filter((exer) => {
-          if (exer[1]) return true;
-        })
-        .map((el) => el[0])
-    )
-      .then((res) => {
-        if (res.status.code === 5000) {
-          getMyInfo((res) => {
-            if (res.status.code === 5000) {
-              dispatch({
-                type: "SAVEMYINFO",
-                payload: {
-                  userEmail: res.content.userEmail,
-                  userName: res.content.userName,
-                  userNickname: res.content.userNickname,
-                  userBirth: res.content.userBirth,
-                  gender: res.content.gender,
-                  userProfileImagePath: res.content.userProfileImagePath,
-                  activeAreas: res.content.activeAreas,
-                  interests: res.content.interests,
-                  mannerPoint: res.content.mannerPoint,
-                  isInformationRequired: res.content.isInformationRequired,
-                },
-              });
-              alert("성공적으로 수정 되었습니다.");
-              window.history.back();
-              return;
-            }
-          }).catch((error) => {
-            FailResponse(error.response.data.status.code);
-            return;
-          });
-        }
-      })
-      .catch((error) => {
-        FailResponse(error.response.data.status.code);
-        return;
-      });
+    func_PostUserRequest();
   };
 
   // 초기값 세팅

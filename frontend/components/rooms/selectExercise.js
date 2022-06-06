@@ -76,7 +76,7 @@ const SelectExercise = () => {
   }, [resetDetection.reset]);
 
   useEffect(() => {
-    if (FilterObj) {
+    if (localStorage.getItem("Filters")) {
       setFilterObj(JSON.parse(localStorage.getItem("Filters")).exercise);
       // 관심 종목 세팅
       for (const exercise of FilterObj) {

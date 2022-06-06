@@ -122,9 +122,6 @@ const FilteredRooms = () => {
   };
 
   const checkException = () => {
-    /* 시간 예외처리 수정 필요합니다.
-      1. startdate나 enddate가 비었을때 각 time은 빌 수 없음
-      2. date가 있을때 각 time이 비었다면 00:00시와 23:59로보냄 */
     if (
       roomFilteringData.startDate === "" &&
       roomFilteringData.startTime !== ""
@@ -177,57 +174,7 @@ const FilteredRooms = () => {
     }
   };
 
-  const sendDatasToServer = () => {
-    // 그 정보를 토대로 필터를 서버에게 전송
-    getRoomList(
-      roomFilteringData.roomTitle,
-      roomFilteringData.roomContent,
-      roomFilteringData.area,
-      roomFilteringData.exercise,
-      roomFilteringData.tags,
-      roomFilteringData.startAppointmentDate,
-      roomFilteringData.endAppointmentDate,
-      roomFilteringData.containTimeClosing,
-      roomFilteringData.containNoAdmittance,
-      roomFilteringData.requiredPeopleCount,
-      0,
-      10,
-      sort
-    )
-      .then((res) => {
-        if (res.status.code === 5000) {
-          setEachRoomInfo(res.content.content);
-          setPage(1);
-        }
-      })
-      .catch((error) => {
-        if (error.response) {
-          FailResponse(error.response.data.status.code);
-        }
-      });
-
-    requestFilteringToFalse();
-  };
-
-  const saveDatasToLS = () => {
-    // 사용성 개선을 위한 로컬스토리지 저장
-    const obj = JSON.stringify({
-      selectedArea: roomFilteringData.area,
-      startDate: roomFilteringData.startDate,
-      endDate: roomFilteringData.endDate,
-      startTime: roomFilteringData.startTime,
-      endTime: roomFilteringData.endTime,
-      containNoAdmittance: roomFilteringData.containNoAdmittance,
-      containTimeClosing: roomFilteringData.containTimeClosing,
-      requiredPeopleCount: roomFilteringData.requiredPeopleCount,
-      exercise: roomFilteringData.exercise,
-    });
-
-    localStorage.setItem("Filters", obj);
-  };
-
-  // 첫 화면 렌더 시 아무런 필터 없이 요청
-  useEffect(() => {
+  const func_getRoomList = (page, size, first, nextPage) => {
     getRoomList(
       roomFilteringData.roomTitle,
       roomFilteringData.roomContent,
@@ -247,16 +194,47 @@ const FilteredRooms = () => {
         if (res.status.code === 5000) {
           //방이 없을때 처리 필요
           if (res.content) {
-            setEachRoomInfo(res.content.content);
-            setPage(page + 1);
+            if (first) setEachRoomInfo(res.content.content);
+            else setEachRoomInfo((prev) => [...prev, res.content.content]);
+            setPage(nextPage);
           }
+        } else {
+          FailResponse(res.status.code);
         }
       })
       .catch((error) => {
         if (error.response) {
-          FailResponse(error.response.data.status.code);
+          FailResponse(error.response.data.status.code, func_getRoomList);
         }
       });
+  };
+
+  // 필터 적용 후 서버로 적용(1)
+  const sendDatasToServer = () => {
+    func_getRoomList(0, 10, false, 1);
+
+    requestFilteringToFalse();
+  };
+  // 사용성 개선을 위한 로컬스토리지 저장
+  const saveDatasToLS = () => {
+    const obj = JSON.stringify({
+      selectedArea: roomFilteringData.area,
+      startDate: roomFilteringData.startDate,
+      endDate: roomFilteringData.endDate,
+      startTime: roomFilteringData.startTime,
+      endTime: roomFilteringData.endTime,
+      containNoAdmittance: roomFilteringData.containNoAdmittance,
+      containTimeClosing: roomFilteringData.containTimeClosing,
+      requiredPeopleCount: roomFilteringData.requiredPeopleCount,
+      exercise: roomFilteringData.exercise,
+    });
+
+    localStorage.setItem("Filters", obj);
+  };
+
+  // 첫 화면 렌더 시 아무런 필터 없이 요청
+  useEffect(() => {
+    func_getRoomList(page, size, true, 1);
 
     window.addEventListener("scroll", handleFollowScroll);
     document.body.style.overflow = "unset";
@@ -288,34 +266,7 @@ const FilteredRooms = () => {
     let fullHeight = document.body.scrollHeight + 80; //  margin 값 80추가
 
     if (scrollY + windowHeight === fullHeight) {
-      getRoomList(
-        roomFilteringData.roomTitle,
-        roomFilteringData.roomContent,
-        roomFilteringData.area,
-        roomFilteringData.exercise,
-        roomFilteringData.tags,
-        roomFilteringData.startAppointmentDate,
-        roomFilteringData.endAppointmentDate,
-        roomFilteringData.containTimeClosing,
-        roomFilteringData.containNoAdmittance,
-        roomFilteringData.requiredPeopleCount,
-        page,
-        10,
-        sort
-      )
-        .then((res) => {
-          if (res.status.code === 5000) {
-            if (res.content.length) {
-              setEachRoomInfo((prev) => [...prev, res.content.content]);
-              setPage(page + 1);
-            }
-          }
-        })
-        .catch((error) => {
-          if (error.response) {
-            FailResponse(error.response.data.status.code);
-          }
-        });
+      func_getRoomList(page, 10, false, page + 1);
     }
   }, [scrollY]);
 
