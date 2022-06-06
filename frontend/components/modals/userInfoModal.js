@@ -10,6 +10,7 @@ const UserInfoModal = (props) => {
 
   // reducer에 저장된 내 정보 불러오기
   const myInfo = useSelector((state) => state.myInfoReducer);
+  const host = useSelector((state) => state.roomRealTimeInfoReducer.host);
 
   // 참여자목록에서 조회 선택된 회원의 id와 닉네임
   const clickedUserId = useSelector((state) => state.saveClickedUserReducer.id);
@@ -155,21 +156,25 @@ const UserInfoModal = (props) => {
                       회원 정보 수정하기
                     </button>
                   </Link>
+                ) : myInfo.userNickname === host ? (
+                  <>
+                    <div>
+                      <button
+                        className="delegate-button"
+                        onClick={delegateHostFunc}
+                      >
+                        방장 위임하기
+                      </button>
+                      <button
+                        className="expulsion-button"
+                        onClick={kickOutUserFunc}
+                      >
+                        이 방에서 내보내기
+                      </button>
+                    </div>
+                  </>
                 ) : (
-                  <div>
-                    <button
-                      className="delegate-button"
-                      onClick={delegateHostFunc}
-                    >
-                      방장 위임하기
-                    </button>
-                    <button
-                      className="expulsion-button"
-                      onClick={kickOutUserFunc}
-                    >
-                      이 방에서 내보내기
-                    </button>
-                  </div>
+                  <></>
                 )}
               </div>
             </div>
