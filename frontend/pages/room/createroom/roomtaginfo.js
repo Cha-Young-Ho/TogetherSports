@@ -81,8 +81,7 @@ const RoomTagInfo = () => {
     }
   };
 
-  // 예외 처리 및 서버에 방 생성 요청
-  const createRoom = (e) => {
+  const exception = (e) => {
     if (roomImages === []) setRoomImages(null);
     else addOrder(roomImages, thumbnailIndex);
 
@@ -106,7 +105,9 @@ const RoomTagInfo = () => {
       alert("태그를 입력해주세요.");
       return;
     }
+  };
 
+  const func_postCreateRoom = () => {
     postCreateRoom(
       roomInfo.roomTitle,
       roomContent,
@@ -124,9 +125,16 @@ const RoomTagInfo = () => {
         }
       })
       .catch((error) => {
-        FailResponse(error.response.data.status.code);
+        FailResponse(error.response.data.status.code, func_postCreateRoom);
         return;
       });
+  };
+
+  // 예외 처리 및 서버에 방 생성 요청
+  const createRoom = (e) => {
+    exception(e);
+
+    func_postCreateRoom();
   };
 
   return (

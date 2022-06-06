@@ -52,7 +52,7 @@ const UserInfoModal = (props) => {
         }
       })
       .catch((error) => {
-        FailResponse(error.response.data.status.code);
+        FailResponse(error.response.data.status.code, delegateHostFunc);
         return;
       });
   };
@@ -69,11 +69,32 @@ const UserInfoModal = (props) => {
         }
       })
       .catch((error) => {
-        FailResponse(error.response.data.status.code);
+        FailResponse(error.response.data.status.code, kickOutUserFunc);
         return;
       });
   };
 
+  // 다른사람 정보 얻기
+  const func_getOtherInfo = () => {
+    getOtherInfo(clickedUserNickname)
+      .then((res) => {
+        if (res.status.code === 5000) {
+          setUserId((userId = res.content.id));
+          setImageSrc((imageSrc = res.content.userProfileImagePath));
+          setNickname((nickname = res.content.userNickname));
+          setMannerPoint((mannerPoint = res.content.mannerPoint));
+          setInterest((interest = res.content.interests));
+          setGender((gender = res.content.gender));
+          setActiveAreas((activeAreas = res.content.activeAreas));
+        }
+      })
+      .catch((error) => {
+        FailResponse(error.response.data.status.code, func_getOtherInfo);
+        props.close();
+      });
+    // return;
+  };
+  
   // 매너지수 올리기
   const upMannerPoint = () => {};
 
@@ -105,23 +126,7 @@ const UserInfoModal = (props) => {
       // 다른 회원 정보 조회
       if (myInfo.userNickname !== clickedUserNickname) {
         if (props.open) {
-          getOtherInfo(clickedUserId)
-            .then((res) => {
-              if (res.status.code === 5000) {
-                setUserId((userId = res.content.id));
-                setImageSrc((imageSrc = res.content.userProfileImagePath));
-                setNickname((nickname = res.content.userNickname));
-                setMannerPoint((mannerPoint = res.content.mannerPoint));
-                setInterest((interest = res.content.interests));
-                setGender((gender = res.content.gender));
-                setActiveAreas((activeAreas = res.content.activeAreas));
-              }
-            })
-            .catch((error) => {
-              FailResponse(error.response.data.status.code);
-              props.close();
-            });
-          // return;
+          func_getOtherInfo();
         }
       }
 

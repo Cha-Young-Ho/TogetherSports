@@ -17,7 +17,7 @@ import { FailResponse } from "../api/failResponse";
 export default function Home() {
   const dispatch = useDispatch();
 
-  useEffect(() => {
+  const func_getRoomCount = () => {
     getRoomCount()
       .then((res) => {
         if (res.status.code === 5000) {
@@ -31,11 +31,12 @@ export default function Home() {
       })
       .catch((error) => {
         if (error.response) {
-          FailResponse(error.response.data.status.code);
+          FailResponse(error.response.data.status.code, func_getRoomCount);
           return;
         }
       });
-  }, []);
+  };
+  useEffect(func_getRoomCount, []);
 
   return (
     <>

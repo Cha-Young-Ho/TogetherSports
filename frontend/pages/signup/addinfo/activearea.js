@@ -14,10 +14,8 @@ const ActiveArea = () => {
   );
   const userRequestInfo = useSelector((state) => state.userRequestReducer);
   const router = useRouter();
-  // 위치 태그
 
-  // 서버에 회원 추가정보입력 요청
-  const callUserRequest = (e) => {
+  const exception = (e) => {
     if (
       userRequestInfo.userNickname === "" ||
       userRequestInfo.userBirth === "" ||
@@ -29,7 +27,9 @@ const ActiveArea = () => {
       alert("입력되지 않은 정보가 있습니다.");
       return;
     }
+  };
 
+  const func_postUserRequest = () => {
     postUserRequest(
       userRequestInfo.userNickname,
       userRequestInfo.userBirth,
@@ -42,9 +42,14 @@ const ActiveArea = () => {
       if (res.status.code === 5000) {
         alert("추가정보입력에 성공하였습니다!");
       } else {
-        FailResponse(res.status.code);
+        FailResponse(res.status.code, func_postUserRequest);
       }
     });
+  };
+
+  // 서버에 회원 추가정보입력 요청
+  const callUserRequest = (e) => {
+    exception(e);
 
     window.location.replace("/");
   };

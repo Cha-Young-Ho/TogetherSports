@@ -29,8 +29,49 @@ const NavigationBar = () => {
     setModalOpen(false);
   };
 
-  // 서버로 로그인 요청
-  useEffect(() => {
+  // 로그아웃 버튼 클릭
+  const ClickLogout = () => {
+    postLogOut()
+      .then((res) => {
+        if (res.status.code === 5000) {
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+
+          dispatch({
+            type: "CHANGELOGINSTATUS",
+            payload: {
+              loginStatus: "false",
+            },
+          });
+
+          dispatch({
+            type: "SAVEMYINFO",
+            payload: {
+              id: "",
+              userEmail: "",
+              userName: "",
+              userNickname: "익명",
+              userBirth: "yyyy-mm-dd",
+              gender: "",
+              userProfileImagePath: "/base_profileImage.jpg",
+              activeAreas: [],
+              interests: [],
+              mannerPoint: "",
+              isInformationRequired: "",
+            },
+          });
+          alert("로그아웃 되었습니다.");
+          return;
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          FailResponse(error.response.data.status.code, ClickLogout);
+        }
+      });
+  };
+
+  const func_getMyInfo = () => {
     getMyInfo()
       .then((res) => {
         if (res.status.code === 5000) {
@@ -73,53 +114,15 @@ const NavigationBar = () => {
             },
           });
 
-          FailResponse(error.response.data.status.code);
-        }
-      });
-  }, [loginStatus]);
-
-  // 로그아웃 버튼 클릭
-  const ClickLogout = () => {
-    postLogOut()
-      .then((res) => {
-        console.log(res.status.message);
-        if (res.status.code === 5000) {
-          localStorage.removeItem("accessToken");
-          localStorage.removeItem("refreshToken");
-
-          dispatch({
-            type: "CHANGELOGINSTATUS",
-            payload: {
-              loginStatus: "false",
-            },
-          });
-
-          dispatch({
-            type: "SAVEMYINFO",
-            payload: {
-              id: "",
-              userEmail: "",
-              userName: "",
-              userNickname: "익명",
-              userBirth: "yyyy-mm-dd",
-              gender: "",
-              userProfileImagePath: "/base_profileImage.jpg",
-              activeAreas: [],
-              interests: [],
-              mannerPoint: "",
-              isInformationRequired: "",
-            },
-          });
-          alert("로그아웃 되었습니다.");
-          return;
-        }
-      })
-      .catch((error) => {
-        if (error.response) {
-          FailResponse(error.response.data.status.code);
+          FailResponse(error.response.data.status.code, func_getMyInfo);
         }
       });
   };
+
+  // 서버로 로그인 요청
+  useEffect(() => {
+    func_getMyInfo();
+  }, [loginStatus]);
 
   return (
     <>

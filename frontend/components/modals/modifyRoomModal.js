@@ -115,21 +115,7 @@ const ModifyRoomModal = (props) => {
     return setRoomImages((roomImages = thumbnail.concat(arr)));
   };
 
-  // 수정 완료시
-  const clickDoneBtn = () => {
-    roomImages.length === 0
-      ? setRoomImages(null)
-      : addOrder(roomImages, thumbnailIndex);
-
-    if (roomTitle === "" || limitPeopleCount === 0) {
-      alert("입력이 올바르지 않은 정보가 있습니다");
-      e.preventDefault();
-      return;
-    }
-
-    if (roomContent === "") setRoomContent(null);
-    if (tags.length === 0) setTags(null);
-
+  const func_putUpdateRoom = () => {
     putUpdateRoom(
       roomId,
       roomTitle,
@@ -145,18 +131,34 @@ const ModifyRoomModal = (props) => {
       .then((res) => {
         if (res.status.code === 5000) {
           console.log(res.status.message);
-          alert("방을 성공적으로 수정하였습니다 !"); // 임시 텍스트
+          alert("방을 성공적으로 수정하였습니다 !");
 
-          //수정 성공 후 실시간으로 방 정보 변경되어야 함
-          //아마도 소켓?
-          close();
+          props.close();
         }
       })
       .catch((error) => {
-        FailResponse(error.response.data.status.code);
+        FailResponse(error.response.data.status.code, func_putUpdateRoom);
         return;
       });
   };
+
+  // 수정 완료시
+  const clickDoneBtn = () => {
+    roomImages.length === 0
+      ? setRoomImages(null)
+      : addOrder(roomImages, thumbnailIndex);
+
+    if (roomTitle === "" || limitPeopleCount === 0) {
+      alert("입력이 올바르지 않은 정보가 있습니다");
+      e.preventDefault();
+      return;
+    }
+
+    if (roomContent === "") setRoomContent(null);
+    if (tags.length === 0) setTags(null);
+  };
+
+  func_putUpdateRoom();
 
   // 태그 초기값 세팅
   useEffect(() => {
@@ -167,7 +169,7 @@ const ModifyRoomModal = (props) => {
   }, [getTagsFromRedux]);
 
   useEffect(() => {
-    if (doneTagsSetting) if (tags.length) tags.map((tag) => setPrevTags(tag));
+    if (doneTagsSetting && tags.length) tags.map((tag) => setPrevTags(tag));
   }, [doneTagsSetting]);
 
   return (

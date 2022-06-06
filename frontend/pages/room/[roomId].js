@@ -104,6 +104,71 @@ const Room = () => {
     button[0].style.display = "block";
   };
 
+  const func_getRoomDetail = () => {
+    getRoomDetail(roomId)
+      .then((res) => {
+        if (res.status.code === 5000) {
+          const roomInfo = res.content.roomOfInfo;
+
+          dispatch({
+            type: "SAVEROOMINFOS",
+            payload: {
+              roomTitle: roomInfo.roomTitle,
+              roomContent: roomInfo.roomContent,
+              roomArea: roomInfo.roomArea,
+              exercise: roomInfo.exercise,
+              participantCount: roomInfo.participantCount,
+              limitPeopleCount: roomInfo.limitPeopleCount,
+              startAppointmentDate: roomInfo.startAppointmentDate,
+              endAppointmentDate: roomInfo.endAppointmentDate,
+              createdTime: roomInfo.createdTime,
+              updatedTime: roomInfo.updatedTime,
+              host: roomInfo.host,
+              creatorNickName: roomInfo.creatorNickName,
+              roomImages:
+                roomInfo.roomImages === null
+                  ? [
+                      {
+                        order: 0,
+                        imagePath: "logo-sign.png",
+                      },
+                    ]
+                  : roomInfo.roomImages,
+              tags: roomInfo.tags,
+              viewCount: roomInfo.viewCount,
+              participants: res.content.participants,
+            },
+          });
+
+          dispatch({
+            type: "SAVEROOMDATE",
+            payload: {
+              appointmentDate: `${
+                roomInfo.startAppointmentDate[8] === "0"
+                  ? roomInfo.startAppointmentDate.substr(0, 8) +
+                    roomInfo.startAppointmentDate[9]
+                  : roomInfo.startAppointmentDate.substr(0, 10)
+              }`,
+            },
+          });
+
+          dispatch({
+            type: "SAVEPOM",
+            payload: {
+              placeOfMeeting: roomInfo.roomArea,
+            },
+          });
+        } else {
+          FailResponse(res.status.code);
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          FailResponse(error.response.data.status.code, func_getRoomDetail);
+        }
+      });
+  };
+
   // 방 나가기
   const onLeaveRoom = () => {
     deleteLeaveRoom(roomId)
@@ -116,7 +181,7 @@ const Room = () => {
       })
       .catch((error) => {
         if (error.response) {
-          FailResponse(error.response.data.status.code);
+          FailResponse(error.response.data.status.code, onLeaveRoom);
         }
       });
     // 여기서 참가자목록 같은걸 업데이트 할 필요가 있나?
@@ -135,7 +200,7 @@ const Room = () => {
       })
       .catch((error) => {
         if (error.response) {
-          FailResponse(error.response.data.status.code);
+          FailResponse(error.response.data.status.code, onDeleteRoom);
         }
       });
 
@@ -144,68 +209,7 @@ const Room = () => {
 
   useEffect(() => {
     if (roomId) {
-      getRoomDetail(roomId)
-        .then((res) => {
-          if (res.status.code === 5000) {
-            const roomInfo = res.content.roomOfInfo;
-
-            dispatch({
-              type: "SAVEROOMINFOS",
-              payload: {
-                roomTitle: roomInfo.roomTitle,
-                roomContent: roomInfo.roomContent,
-                roomArea: roomInfo.roomArea,
-                exercise: roomInfo.exercise,
-                participantCount: roomInfo.participantCount,
-                limitPeopleCount: roomInfo.limitPeopleCount,
-                startAppointmentDate: roomInfo.startAppointmentDate,
-                endAppointmentDate: roomInfo.endAppointmentDate,
-                createdTime: roomInfo.createdTime,
-                updatedTime: roomInfo.updatedTime,
-                host: roomInfo.host,
-                creatorNickName: roomInfo.creatorNickName,
-                roomImages:
-                  roomInfo.roomImages === null
-                    ? [
-                        {
-                          order: 0,
-                          imagePath: "logo-sign.png",
-                        },
-                      ]
-                    : roomInfo.roomImages,
-                tags: roomInfo.tags,
-                viewCount: roomInfo.viewCount,
-                participants: res.content.participants,
-              },
-            });
-
-            dispatch({
-              type: "SAVEROOMDATE",
-              payload: {
-                appointmentDate: `${
-                  roomInfo.startAppointmentDate[8] === "0"
-                    ? roomInfo.startAppointmentDate.substr(0, 8) +
-                      roomInfo.startAppointmentDate[9]
-                    : roomInfo.startAppointmentDate.substr(0, 10)
-                }`,
-              },
-            });
-
-            dispatch({
-              type: "SAVEPOM",
-              payload: {
-                placeOfMeeting: roomInfo.roomArea,
-              },
-            });
-          } else {
-            FailResponse(res.status.code);
-          }
-        })
-        .catch((error) => {
-          if (error.response) {
-            FailResponse(error.response.data.status.code);
-          }
-        });
+      func_getRoomDetail();
 
       dispatch({
         type: "SAVEROOMID",

@@ -244,7 +244,7 @@ const MyRoom = () => {
     element.current.scrollBy(offsetX, 0);
   };
 
-  useEffect(() => {
+  const func_getMyRoomInfo = () => {
     getMyRoomInfo()
       .then((res) => {
         if (res.status.code === 5000) {
@@ -257,10 +257,12 @@ const MyRoom = () => {
       })
       .catch((error) => {
         if (error.response) {
-          FailResponse(error.response.data.status.code);
+          FailResponse(error.response.data.status.code, func_getMyRoomInfo);
         }
       });
-  }, []);
+  };
+
+  useEffect(func_getMyRoomInfo, []);
 
   return (
     <>
