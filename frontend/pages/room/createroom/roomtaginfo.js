@@ -5,6 +5,7 @@ import { postCreateRoom } from "../../../api/rooms";
 import { FailResponse } from "../../../api/failResponse";
 import RoomInfoNavBar from "../../../components/roomInfoNavBar";
 import SetRoomImages from "../../../components/rooms/setRoomImages";
+import Head from "next/head";
 
 const RoomTagInfo = () => {
   const roomInfo = useSelector((state) => state.createRoomReducer);
@@ -138,6 +139,9 @@ const RoomTagInfo = () => {
 
   return (
     <>
+      <Head>
+        <title>운동 방 생성하기</title>
+      </Head>
       <div className="container">
         <RoomInfoNavBar
           roomSetting_atv={"deactivation"}

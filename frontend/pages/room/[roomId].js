@@ -15,6 +15,7 @@ import AlarmModal from "../../components/modals/alarmModal";
 import StompJS from "stompjs";
 import SockJS from "sockjs-client";
 import FloatingAlarm from "../../components/rooms/floatingAlarm";
+import Head from "next/head";
 
 const Room = () => {
   const router = useRouter();
@@ -173,7 +174,7 @@ const Room = () => {
     deleteLeaveRoom(roomId)
       .then((res) => {
         if (res.status.code === 1203) {
-          //router.push("/room/roomlist"); // 방 목록 페이지로 이동
+          router.push("/room/roomlist"); // 방 목록 페이지로 이동
         } else {
           FailResponse(res.status.code);
         }
@@ -183,8 +184,7 @@ const Room = () => {
           FailResponse(error.response.data.status.code, onLeaveRoom);
         }
       });
-
-    // router.push("/room/roomlist"); // test를 위한 임시 라우팅
+    // 여기서 참가자목록 같은걸 업데이트 할 필요가 있나?
   };
 
   // 방 삭제하기 -> 보류
@@ -244,6 +244,9 @@ const Room = () => {
 
   return (
     <>
+      <Head>
+        <title>{roomTitle}</title>
+      </Head>
       <div className="container">
         <div className="main-info">
           <div className="header">
@@ -369,10 +372,7 @@ const Room = () => {
                   <p>{`ID : ${host}님의 방`}</p>
                 </div>
 
-                <Chatting
-                  chatOpen={chatOpen}
-                  // updateRoomDataFunc={updateRoomDataFunc}
-                />
+                <Chatting chatOpen={chatOpen} />
               </div>
             </div>
           </div>

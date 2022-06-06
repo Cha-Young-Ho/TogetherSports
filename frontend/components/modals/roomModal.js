@@ -5,6 +5,7 @@ import ImageSlide from "../imageSlide";
 import router from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import Map from "../Map";
+import Head from "next/head";
 
 /* roomList에서 받은 각 room들의 roomId를 props로 받기 */
 const RoomModal = (props) => {
@@ -146,97 +147,106 @@ const RoomModal = (props) => {
           if (e.target.classList[1] === "openModal") props.close();
         }}
       >
-        <div className="room-modal-body">
-          <div className="header">
-            <div>
-              {tags.length !== 0 ? (
-                tags.map((tag, index) => {
-                  return (
-                    <div className="tag" key={index}>
-                      {tag}
+        {props.open ? (
+          <>
+            <Head>
+              <title>{roomTitle}</title>
+            </Head>
+            <div className="room-modal-body">
+              <div className="header">
+                <div>
+                  {tags.length !== 0 ? (
+                    tags.map((tag, index) => {
+                      return (
+                        <div className="tag" key={index}>
+                          {tag}
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <></>
+                  )}
+                </div>
+
+                <div>
+                  <div className="viewCount">{`조회수 : ${viewCount}`}</div>
+                  <div className="nickName">{`ID : ${host}님의 방`}</div>
+                </div>
+              </div>
+
+              <div className="section">
+                <div className="left-section">
+                  <p>{roomTitle}</p>
+
+                  <div className="options">
+                    <div className="option">
+                      <p>참여인원</p>
+                      <p>{participantCount}</p>
                     </div>
-                  );
-                })
-              ) : (
-                <></>
-              )}
-            </div>
+                    <div className="option">
+                      <p>모집인원</p>
+                      <p>{limitPeopleCount}</p>
+                    </div>
+                    <div className="option-exercise">
+                      <p>종목</p>
+                      <p>{exercise}</p>
+                    </div>
+                    <div className="option-time">
+                      <p>시간</p>
+                      <p>{`${startAppointmentDate.substr(
+                        11,
+                        2
+                      )}시 ${startAppointmentDate.substr(14, 2)}분 ~`}</p>
+                      <p>{`${endAppointmentDate.substr(
+                        11,
+                        2
+                      )}시 ${endAppointmentDate.substr(14, 2)}분`}</p>
+                    </div>
+                  </div>
 
-            <div>
-              <div className="viewCount">{`조회수 : ${viewCount}`}</div>
-              <div className="nickName">{`ID : ${host}님의 방`}</div>
-            </div>
-          </div>
+                  <div className="calendar">
+                    <Calendar
+                      clickDateOptionFunction={true}
+                      moveDateButtonOptionFunction={true}
+                    />
+                  </div>
 
-          <div className="section">
-            <div className="left-section">
-              <p>{roomTitle}</p>
-
-              <div className="options">
-                <div className="option">
-                  <p>참여인원</p>
-                  <p>{participantCount}</p>
+                  <div className="location">
+                    <p>위치 정보</p>
+                    <div></div>
+                    <p className="address-info">{roomArea}</p>
+                    <div className="map-wrapper">
+                      <Map setPOM={"true"} />
+                    </div>
+                  </div>
                 </div>
-                <div className="option">
-                  <p>모집인원</p>
-                  <p>{limitPeopleCount}</p>
+
+                <div className="right-section">
+                  <div className="image">
+                    <ImageSlide path={"roomInfo"} />
+                  </div>
+
+                  <div className="room-info">
+                    <p>방 설명 및 안내</p>
+                    <div className="line"></div>
+                    <textarea readOnly value={roomContent}></textarea>
+                  </div>
+
+                  <div className="buttons">
+                    <button className="left-button" onClick={props.close}>
+                      닫기
+                    </button>
+                    <button className="right-button" onClick={enterRoom}>
+                      참여
+                    </button>
+                  </div>
                 </div>
-                <div className="option-exercise">
-                  <p>종목</p>
-                  <p>{exercise}</p>
-                </div>
-                <div className="option-time">
-                  <p>시간</p>
-                  <p>{`${startAppointmentDate.substr(
-                    11,
-                    2
-                  )}시 ${startAppointmentDate.substr(14, 2)}분 ~`}</p>
-                  <p>{`${endAppointmentDate.substr(
-                    11,
-                    2
-                  )}시 ${endAppointmentDate.substr(14, 2)}분`}</p>
-                </div>
-              </div>
-
-              <div className="calendar">
-                <Calendar
-                  clickDateOptionFunction={true}
-                  moveDateButtonOptionFunction={true}
-                />
-              </div>
-
-              <div className="location">
-                <p>위치 정보</p>
-                <div></div>
-                <p className="address-info">{roomArea}</p>
-                <div className="map-wrapper">
-                  <Map setPOM={"true"} />
-                </div>
-              </div>
-            </div>
-
-            <div className="right-section">
-              <div className="image">
-                <ImageSlide path={"roomInfo"} />
-              </div>
-
-              <div className="room-info">
-                <p>방 설명 및 안내</p>
-                <div className="line"></div>
-                <textarea readOnly value={roomContent}></textarea>
-              </div>
-
-              <div className="buttons">
-                <button className="left-button" onClick={props.close}>
-                  닫기
-                </button>
-                <button className="right-button" onClick={enterRoom}>
-                  참여
-                </button>
               </div>
             </div>
-          </div>
-        </div>
+          </>
+        ) : (
+          <></>
+        )}
       </div>
       <style jsx>{`
         textarea:focus {

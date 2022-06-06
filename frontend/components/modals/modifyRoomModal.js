@@ -3,6 +3,7 @@ import SetRoomImages from "../rooms/setRoomImages";
 import { getRoomInfo, putUpdateRoom } from "../../api/rooms";
 import FailResponse from "../../api/failResponse";
 import { useSelector } from "react-redux";
+import Head from "next/head";
 
 const ModifyRoomModal = (props) => {
   const roomId = props.roomId;
@@ -174,109 +175,118 @@ const ModifyRoomModal = (props) => {
   return (
     <>
       <div className={props.open ? "openModal modal" : "modal"}>
-        <div className="box-container">
-          <h1>방 정보 수정</h1>
+        {props.open ? (
+          <>
+            <Head>
+              <title>운동 방 수정하기</title>
+            </Head>
+            <div className="box-container">
+              <h1>방 정보 수정</h1>
 
-          <div className="contents-wrapper">
-            <div className="roomTitle-wrapper">
-              <p>방 제목</p>
-              <input
-                type="text"
-                minLength="1"
-                maxLength="20"
-                placeholder={roomTitle}
-                onChange={(e) => setRoomTitle(e.target.value)}
-              ></input>
-            </div>
-
-            <div className="peopleCount-wrapper">
-              <p>인원 수 조절</p>
-              <input
-                type="number"
-                min="2"
-                placeholder={limitPeopleCount}
-                onChange={(e) => {
-                  e.target.value = e.target.value.replace(/[^0-9]/g, "");
-                  setLimitPeopleCount(e.target.value);
-                }}
-              ></input>
-              <p>명</p>
-              <p className="notice">
-                * 현재 참여 인원보다 많은 인원만 입력 가능합니다.
-              </p>
-            </div>
-
-            <div className="roomNotice-wrapper">
-              <p>방 설명 작성</p>
-              <textarea
-                onChange={(e) => setRoomContent(e.target.value)}
-                defaultValue={roomContent}
-              ></textarea>
-            </div>
-
-            <div className="picture-wrapper">
-              <SetRoomImages
-                getImageData={getImageData}
-                getThumbnailData={getThumbnailIndex}
-                path={"modifyRoom"}
-              />
-            </div>
-
-            <div className="tag-wrapper">
-              <p>빠른 태그 추가 (최대 5개)</p>
-              <div className="tags">
-                <div className="tags-age">
-                  {tagsAge.map((age, index) => {
-                    return (
-                      <div
-                        className="tag tag-age"
-                        onClick={onClickTag}
-                        key={index}
-                      >
-                        {age}
-                      </div>
-                    );
-                  })}
+              <div className="contents-wrapper">
+                <div className="roomTitle-wrapper">
+                  <p>방 제목</p>
+                  <input
+                    type="text"
+                    minLength="1"
+                    maxLength="20"
+                    placeholder={roomTitle}
+                    onChange={(e) => setRoomTitle(e.target.value)}
+                  ></input>
                 </div>
 
-                <div className="tags-level-gender">
-                  {tagsLevel.map((level, index) => {
-                    return (
-                      <div
-                        className="tag tag-level"
-                        onClick={onClickTag}
-                        key={index}
-                      >
-                        {level}
-                      </div>
-                    );
-                  })}
+                <div className="peopleCount-wrapper">
+                  <p>인원 수 조절</p>
+                  <input
+                    type="number"
+                    min="2"
+                    placeholder={limitPeopleCount}
+                    onChange={(e) => {
+                      e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                      setLimitPeopleCount(e.target.value);
+                    }}
+                  ></input>
+                  <p>명</p>
+                  <p className="notice">
+                    * 현재 참여 인원보다 많은 인원만 입력 가능합니다.
+                  </p>
+                </div>
 
-                  {tagsGender.map((gender, index) => {
-                    return (
-                      <div
-                        className="tag tag-gender"
-                        onClick={onClickTag}
-                        key={index}
-                      >
-                        {gender}
-                      </div>
-                    );
-                  })}
+                <div className="roomNotice-wrapper">
+                  <p>방 설명 작성</p>
+                  <textarea
+                    onChange={(e) => setRoomContent(e.target.value)}
+                    defaultValue={roomContent}
+                  ></textarea>
+                </div>
+
+                <div className="picture-wrapper">
+                  <SetRoomImages
+                    getImageData={getImageData}
+                    getThumbnailData={getThumbnailIndex}
+                    path={"modifyRoom"}
+                  />
+                </div>
+
+                <div className="tag-wrapper">
+                  <p>빠른 태그 추가 (최대 5개)</p>
+                  <div className="tags">
+                    <div className="tags-age">
+                      {tagsAge.map((age, index) => {
+                        return (
+                          <div
+                            className="tag tag-age"
+                            onClick={onClickTag}
+                            key={index}
+                          >
+                            {age}
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    <div className="tags-level-gender">
+                      {tagsLevel.map((level, index) => {
+                        return (
+                          <div
+                            className="tag tag-level"
+                            onClick={onClickTag}
+                            key={index}
+                          >
+                            {level}
+                          </div>
+                        );
+                      })}
+
+                      {tagsGender.map((gender, index) => {
+                        return (
+                          <div
+                            className="tag tag-gender"
+                            onClick={onClickTag}
+                            key={index}
+                          >
+                            {gender}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
 
-          <div className="button-wrapper">
-            <button className="cancel-btn" onClick={props.close}>
-              수정 취소
-            </button>
-            <button className="done-btn" onClick={clickDoneBtn}>
-              완료
-            </button>
-          </div>
-        </div>
+              <div className="button-wrapper">
+                <button className="cancel-btn" onClick={props.close}>
+                  수정 취소
+                </button>
+                <button className="done-btn" onClick={clickDoneBtn}>
+                  완료
+                </button>
+              </div>
+            </div>
+          </>
+        ) : (
+          <></>
+        )}
       </div>
 
       <style jsx>{`

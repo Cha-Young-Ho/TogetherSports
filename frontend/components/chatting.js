@@ -4,7 +4,7 @@ import { getChatInfo } from "../api/rooms";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 
-const Chatting = ({ chatOpen, updateRoomDataFunc }) => {
+const Chatting = ({ chatOpen }) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const roomId = useSelector((state) => state.saveRoomIdReducer.roomId);
@@ -134,7 +134,7 @@ const Chatting = ({ chatOpen, updateRoomDataFunc }) => {
         systemMessageBranch(JSONBodys);
         break;
       case "Room":
-        updateRoomDataFunc(JSONBodys.content);
+        updateRoomDataFunc(JSONBodys);
         break;
     }
   };
@@ -205,6 +205,34 @@ const Chatting = ({ chatOpen, updateRoomDataFunc }) => {
         // alert("방장이 변경되었습니다.");
         break;
     }
+  };
+
+  const updateRoomDataFunc = (JSONBodys) => {
+    dispatch({
+      type: "SAVEROOMINFOS",
+      payload: {
+        roomTitle: JSONBodys.content.roomTitle,
+        roomContent: JSONBodys.content.roomContent,
+        limitPeopleCount: JSONBodys.content.limitPeopleCount,
+        tags: JSONBodys.content.tags,
+        roomImages:
+          JSONBodys.content.roomImages === null
+            ? [
+                {
+                  order: 0,
+                  imagePath: "logo-sign.png",
+                },
+              ]
+            : JSONBodys.content.roomImages,
+      },
+    });
+
+    dispatch({
+      type: "SAVEROOMALARM",
+      payload: {
+        messages: ["방 정보가 수정되었습니다."],
+      },
+    });
   };
 
   useEffect(() => {

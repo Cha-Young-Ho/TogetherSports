@@ -4,6 +4,7 @@ import { getMyRoomInfo } from "../api/rooms";
 import { FailResponse } from "../api/failResponse";
 import Link from "next/link";
 import moment from "moment";
+import Head from "next/head";
 
 const MyRoom = () => {
   const [imminentRooms, setImminentRooms] = useState([
@@ -265,6 +266,9 @@ const MyRoom = () => {
 
   return (
     <>
+      <Head>
+        <title>내 일정 보기</title>
+      </Head>
       <div className="myroom-wrapper">
         <div className="imminent-container">
           {imminentRooms.length ? (

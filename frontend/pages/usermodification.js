@@ -4,6 +4,7 @@ import { getNicknameDuplicationCheck, postUserRequest } from "../api/members";
 import { useDispatch, useSelector } from "react-redux";
 import { FailResponse } from "../api/failResponse";
 import Map from "../components/Map";
+import Head from "next/head";
 
 const UserModification = () => {
   const dispatch = useDispatch();
@@ -335,6 +336,9 @@ const UserModification = () => {
 
   return (
     <>
+      <Head>
+        <title>회원 정보 수정</title>
+      </Head>
       <div className="container">
         <div className="personalInfo-wrapper">
           <div className="title">인적사항</div>
