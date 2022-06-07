@@ -30,6 +30,7 @@ const UserInfoModal = (props) => {
   const [interest, setInterest] = useState([]);
   const [gender, setGender] = useState("");
   const [activeAreas, setActiveAreas] = useState([]);
+  const [mannerType, setMannerType] = useState("");
 
   // 방장 위임하기
   const delegateHostFunc = () => {
@@ -91,6 +92,7 @@ const UserInfoModal = (props) => {
           setInterest((interest = res.content.interests));
           setGender((gender = res.content.gender));
           setActiveAreas((activeAreas = res.content.activeAreas));
+          setMannerType((mannerType = res.content.mannerType));
         }
       })
       .catch((error) => {
@@ -101,18 +103,20 @@ const UserInfoModal = (props) => {
   };
 
   // 매너지수 올리기
-  const upMannerPoint = () => {
+  const upMannerPoint = (e) => {
     patchMannerPoint(myInfo.userNickname, clickedUserId, "UP")
       .then((res) => {
         // 올리기
         if (res.status.code === 1109) {
           setMannerPoint((mannerPoint = mannerPoint + 1));
+          e.target.innerText = "▲";
           console.log(res.status.message);
           return;
         }
         // 내리기 취소
         if (res.status.code === 1108) {
           setMannerPoint((mannerPoint = mannerPoint + 1));
+          e.target.innerText = "△";
           console.log(res.status.message);
           return;
         }
@@ -125,18 +129,20 @@ const UserInfoModal = (props) => {
   };
 
   // 매너지수 내리기
-  const downMannerPoint = () => {
+  const downMannerPoint = (e) => {
     patchMannerPoint(myInfo.userNickname, clickedUserId, "DOWN")
       .then((res) => {
         // 내리기
         if (res.status.code === 1110) {
           setMannerPoint((mannerPoint = mannerPoint - 1));
+          e.target.innerText = "▼";
           console.log(res.status.message);
           return;
         }
         // 올리기 취소
         if (res.status.code === 1107) {
           setMannerPoint((mannerPoint = mannerPoint - 1));
+          e.target.innerText = "▽";
           console.log(res.status.message);
           return;
         }
@@ -235,7 +241,7 @@ const UserInfoModal = (props) => {
               {gender === "male" ? (
                 <div className="pf-nickName">
                   <div>
-                    {nickname}
+                    {clickedUserNickname}
                     <span style={{ color: "#00a6ed" }}>♂️</span>
                   </div>
                   <div>님의 프로필</div>
@@ -243,7 +249,7 @@ const UserInfoModal = (props) => {
               ) : (
                 <div className="pf-nickName">
                   <div>
-                    {nickname}
+                    {clickedUserNickname}
                     <span style={{ color: "#f70a8d" }}>♀️</span>
                   </div>
                   <div>님의 프로필</div>
@@ -251,16 +257,32 @@ const UserInfoModal = (props) => {
               )}
 
               <div className="pf-mannerPoint">
-                {`❤️ ${mannerPoint}`}
-                {(props.path === "partyList" &&
-                  myInfo.userNickname === clickedUserNickname) ||
-                props.path === "navBar" ? (
+                <img src="/mannerPoint.png"></img>
+                {mannerPoint}
+                {myInfo.userNickname === clickedUserNickname ? (
                   <></>
-                ) : (
+                ) : mannerType === "up" ? (
                   <div>
-                    <button onClick={upMannerPoint}>➕</button>
-                    <button onClick={downMannerPoint}>➖</button>
+                    <button onClick={upMannerPoint}>▲</button>
+                    <button onClick={downMannerPoint}>▽</button>
                   </div>
+                ) : mannerType === "down" ? (
+                  <div>
+                    <button onClick={upMannerPoint}>△</button>
+                    <button onClick={downMannerPoint}>▼</button>
+                  </div>
+                ) : mannerType === "default" ? (
+                  <div>
+                    <button onClick={upMannerPoint}>△</button>
+                    <button onClick={downMannerPoint}>▽</button>
+                  </div>
+                ) : (
+                  // 테스트를 위한 임시 태그
+                  // <div>
+                  //   <button onClick={upMannerPoint}>△</button>
+                  //   <button onClick={downMannerPoint}>▽</button>
+                  // </div>
+                  <></>
                 )}
               </div>
 
@@ -435,6 +457,12 @@ const UserInfoModal = (props) => {
           margin-bottom: 20px;
         }
 
+        .pf-mannerPoint > img {
+          width: 24px;
+          height: 20px;
+          margin-right: 10px;
+        }
+
         .pf-mannerPoint > div {
           margin-left: 20px;
           display: flex;
@@ -445,6 +473,7 @@ const UserInfoModal = (props) => {
           font-size: 2rem;
           font-weight: bold;
           border: none;
+          color: #08555f;
           background-color: white;
           margin-right: 10px;
           cursor: pointer;

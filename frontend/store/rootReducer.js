@@ -163,6 +163,18 @@ const saveRoomAlarmInitialState = {
   ],
 };
 
+// 다른 회원 정보 조회를 위한 초기값
+const saveOtherInfoInitialState = {
+  id: 0,
+  userNickname: "",
+  mannerPoint: 0,
+  mannerType: "",
+  activeAreas: [],
+  userProfileImagePath: "",
+  interests: [],
+  gender: "",
+};
+
 // 오타 방지용
 const PERSONALINFO = "PERSONALINFO";
 const INTERESTS = "INTERESTS";
@@ -199,6 +211,7 @@ const SAVEROOMINFOS = "SAVEROOMINFOS";
 const CHANGEHOST = "CHANGEHOST";
 const SAVEROOMMODALIMAGES = "SAVEROOMMODALIMAGES";
 const SAVEROOMALARM = "SAVEROOMALARM";
+const SAVEOTHERINFO = "SAVEOTHERINFO";
 
 // 유저 회원정보추가입력 정보 reducer
 const userRequestReducer = (state = signupInitialState, action) => {
@@ -545,6 +558,27 @@ const saveRoomAlarmReducer = (state = saveRoomAlarmInitialState, action) => {
   }
 };
 
+// 다른 회원 정보 조회를 위한 reducer
+// 동기문제 없다면 삭제
+const saveOtherInfoReducer = (state = saveOtherInfoInitialState, action) => {
+  switch (action.type) {
+    case SAVEOTHERINFO:
+      return {
+        ...state,
+        id: action.payload.id,
+        userNickname: action.payload.userNickname,
+        mannerPoint: action.payload.mannerPoint,
+        mannerType: action.payload.mannerType,
+        activeAreas: action.payload.activeAreas,
+        userProfileImagePath: action.payload.userProfileImagePath,
+        interests: action.payload.interests,
+        gender: action.payload.gender,
+      };
+    default:
+      return state;
+  }
+};
+
 // rootReducer로 모든 reducer Combine
 const rootReducer = combineReducers({
   userRequestReducer,
@@ -563,6 +597,7 @@ const rootReducer = combineReducers({
   roomRealTimeInfoReducer,
   saveRoomModalImagesReducer,
   saveRoomAlarmReducer,
+  saveOtherInfoReducer,
 });
 
 const makeStore = () => createStore(rootReducer, composeWithDevTools());
