@@ -3,6 +3,8 @@ import { postRefreshToken } from "../api/etc";
 import { getChatInfo } from "../api/rooms";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
+import SockJS from "sockjs-client";
+import StompJS from "stompjs";
 
 const Chatting = ({ chatOpen }) => {
   const router = useRouter();
@@ -65,6 +67,7 @@ const Chatting = ({ chatOpen }) => {
   ]);
 
   let preChattingID = 0;
+  let saveNowChat = "";
 
   const connect = () => {
     clientInfo.connect(
@@ -73,18 +76,20 @@ const Chatting = ({ chatOpen }) => {
         roomId: `${roomId}`,
       },
       () => {
-        clientInfo.subscribe(
-          `/topic/room/${roomId}/chat`,
-          (data) => {
-            const newMessage = JSON.parse(data.body);
+        clientInfo
+          .subscribe(
+            `/topic/room/${roomId}/chat`,
+            (data) => {
+              const newMessage = JSON.parse(data.body);
 
-            messageBranch(newMessage);
-          },
-          {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-            roomId: `${roomId}`,
-          }
-        );
+              messageBranch(newMessage);
+            },
+            {
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+              roomId: `${roomId}`,
+            }
+          )
+          .unsubscribe();
       },
       (error) => {
         console.log(error);
@@ -92,11 +97,27 @@ const Chatting = ({ chatOpen }) => {
           if (res.status.code === 5000) {
             localStorage.setItem("accessToken", res.content.accessToken);
             localStorage.setItem("refreshToken", res.content.refreshToken);
-            console.log("두 토큰 재발급 완료");
+
+            // 클라이언트 재 연결
+            clientInfo = StompJS.over(
+              new SockJS("http://localhost:8080/api/websocket")
+            );
+
+            clientInfo.send(
+              `/api/room/${roomId}/chat`,
+              {
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                roomId: `${roomId}`,
+              },
+              JSON.stringify({
+                message: saveNowChat,
+              })
+            );
           } else {
-            console.log("토큰 재발급 실패, 토큰 삭제...");
+            alert("알 수 없는 오류가 발생했습니다. 다시 시도해 주세요.");
             localStorage.removeItem("accessToken");
             localStorage.removeItem("refreshToken");
+            router.push("/");
           }
         });
       }
@@ -122,6 +143,7 @@ const Chatting = ({ chatOpen }) => {
       })
     );
 
+    saveNowChat = messageToServer;
     setMessageToServer("");
   };
 
@@ -235,21 +257,24 @@ const Chatting = ({ chatOpen }) => {
     });
   };
 
+  const func_getChatInfo = () => {
+    getChatInfo(roomId)
+      .then((res) => {
+        if (res.status.code === 5000) {
+          setShowingMessages(res.content.content);
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          FailResponse(error.response.data.status.code, func_getChatInfo);
+        }
+      });
+  };
+
   useEffect(() => {
     if (chatOpen && roomId !== "" && clientInfo) {
-      getChatInfo(roomId)
-        .then((res) => {
-          if (res.status.code === 5000) {
-            setShowingMessages(res.content.content);
-          }
-        })
-        .catch((error) => {
-          if (error.response) {
-            alert("채팅 내역을 받아오는 데 문제가 생겼습니다.");
-            FailResponse(error.response.data.status.code);
-          }
-        });
-
+      func_getChatInfo();
+      // clientInfo.debug = null;
       connect();
     }
   }, [roomId, clientInfo]);
@@ -258,6 +283,12 @@ const Chatting = ({ chatOpen }) => {
     document.getElementsByClassName("dialog")[0].scrollTop =
       document.getElementsByClassName("dialog")[0].scrollHeight;
   }, [showingMessages]);
+
+  useEffect(() => {
+    return () => {
+      clientInfo.disconnect();
+    };
+  }, []);
 
   return (
     <>
