@@ -219,22 +219,6 @@ const FilteredRooms = () => {
 
     requestFilteringToFalse();
   };
-  // 사용성 개선을 위한 로컬스토리지 저장
-  const saveDatasToLS = () => {
-    const obj = JSON.stringify({
-      selectedArea: roomFilteringData.area,
-      startDate: roomFilteringData.startDate,
-      endDate: roomFilteringData.endDate,
-      startTime: roomFilteringData.startTime,
-      endTime: roomFilteringData.endTime,
-      containNoAdmittance: roomFilteringData.containNoAdmittance,
-      containTimeClosing: roomFilteringData.containTimeClosing,
-      requiredPeopleCount: roomFilteringData.requiredPeopleCount,
-      exercise: roomFilteringData.exercise,
-    });
-
-    localStorage.setItem("Filters", obj);
-  };
 
   // 첫 화면 렌더 시 아무런 필터 없이 요청
   useEffect(() => {
@@ -264,10 +248,27 @@ const FilteredRooms = () => {
     setSelectedSortType("최신순");
   }, [changeDectection.reset]);
 
+  // 사용성 개선을 위한 로컬스토리지 저장
+  const saveDatasToLS = () => {
+    const obj = JSON.stringify({
+      selectedArea: roomFilteringData.area,
+      startDate: roomFilteringData.startDate,
+      endDate: roomFilteringData.endDate,
+      startTime: roomFilteringData.startTime,
+      endTime: roomFilteringData.endTime,
+      containNoAdmittance: roomFilteringData.containNoAdmittance,
+      containTimeClosing: roomFilteringData.containTimeClosing,
+      requiredPeopleCount: roomFilteringData.requiredPeopleCount,
+      exercise: roomFilteringData.exercise,
+    });
+
+    localStorage.setItem("Filters", obj);
+  };
+
   // 화면 맨 아래 도착 시
   useEffect(() => {
-    let windowHeight = window.innerHeight; // 스크린 창크기
-    let fullHeight = document.body.scrollHeight + 80; //  margin 값 80추가
+    const windowHeight = window.innerHeight; // 스크린 창크기
+    const fullHeight = document.body.scrollHeight + 80; //  margin 값 80추가
 
     if (scrollY + windowHeight === fullHeight) {
       func_getRoomList(page, 10, false, page + 1);
@@ -305,35 +306,37 @@ const FilteredRooms = () => {
               );
             })}
           </div>
+
+          <div className="rooms-wrapper">
+            {eachRoomInfo.length !== 0 ? (
+              <div className="rooms-grid">
+                {eachRoomInfo.map((datas, index) => {
+                  return (
+                    <RoomShowingBox
+                      key={index}
+                      setRoomID={setRoomID}
+                      openRoomExplainModal={openRoomExplainModal}
+                      datas={datas}
+                    />
+                  );
+                })}
+              </div>
+            ) : (
+              <img className="emptyRooms" src="/noResult.png"></img>
+            )}
+
+            <RoomModal
+              open={roomExplainModalOpen}
+              close={closeRoomExplainModal}
+              roomId={roomID}
+            ></RoomModal>
+          </div>
           {!loading ? (
             <div className="loading-container">
               <Loading />
             </div>
           ) : (
-            <div className="rooms-wrapper">
-              {eachRoomInfo.length !== 0 ? (
-                <div className="rooms-grid">
-                  {eachRoomInfo.map((datas, index) => {
-                    return (
-                      <RoomShowingBox
-                        key={index}
-                        setRoomID={setRoomID}
-                        openRoomExplainModal={openRoomExplainModal}
-                        datas={datas}
-                      />
-                    );
-                  })}
-                </div>
-              ) : (
-                <img className="emptyRooms" src="/noResult.png"></img>
-              )}
-
-              <RoomModal
-                open={roomExplainModalOpen}
-                close={closeRoomExplainModal}
-                roomId={roomID}
-              ></RoomModal>
-            </div>
+            ""
           )}
         </div>
       </div>
