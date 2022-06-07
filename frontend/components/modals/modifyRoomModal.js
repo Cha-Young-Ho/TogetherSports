@@ -157,7 +157,7 @@ const ModifyRoomModal = (props) => {
     if (roomContent === "") setRoomContent(null);
     if (tags.length === 0) setTags(null);
 
-    func_putUpdateRoom;
+    func_putUpdateRoom();
   };
 
   // 태그 초기값 세팅

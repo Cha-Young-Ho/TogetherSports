@@ -4,9 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import RoomModal from "../modals/roomModal";
 import RoomShowingBox from "./roomShowingBox";
 import FailResponse from "../../api/failResponse";
+import Loading from "../loading";
 
 const FilteredRooms = () => {
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
 
   const selectedTypeButtons = ["최신순", "임박한 시간순", "참여자순"];
   const [selectedSortType, setSelectedSortType] = useState("최신순");
@@ -192,12 +194,14 @@ const FilteredRooms = () => {
     )
       .then((res) => {
         if (res.status.code === 5000) {
+          setLoading(false);
           //방이 없을때 처리 필요
           if (res.content) {
             if (first) setEachRoomInfo(res.content.content);
             else setEachRoomInfo((prev) => [...prev, res.content.content]);
             setPage(nextPage);
           }
+          setLoading(true);
         } else {
           FailResponse(res.status.code);
         }
@@ -301,30 +305,36 @@ const FilteredRooms = () => {
               );
             })}
           </div>
-          <div className="rooms-wrapper">
-            {eachRoomInfo.length !== 0 ? (
-              <div className="rooms-grid">
-                {eachRoomInfo.map((datas, index) => {
-                  return (
-                    <RoomShowingBox
-                      key={index}
-                      setRoomID={setRoomID}
-                      openRoomExplainModal={openRoomExplainModal}
-                      datas={datas}
-                    />
-                  );
-                })}
-              </div>
-            ) : (
-              <img className="emptyRooms" src="/noResult.png"></img>
-            )}
+          {!loading ? (
+            <div className="loading-container">
+              <Loading />
+            </div>
+          ) : (
+            <div className="rooms-wrapper">
+              {eachRoomInfo.length !== 0 ? (
+                <div className="rooms-grid">
+                  {eachRoomInfo.map((datas, index) => {
+                    return (
+                      <RoomShowingBox
+                        key={index}
+                        setRoomID={setRoomID}
+                        openRoomExplainModal={openRoomExplainModal}
+                        datas={datas}
+                      />
+                    );
+                  })}
+                </div>
+              ) : (
+                <img className="emptyRooms" src="/noResult.png"></img>
+              )}
 
-            <RoomModal
-              open={roomExplainModalOpen}
-              close={closeRoomExplainModal}
-              roomId={roomID}
-            ></RoomModal>
-          </div>
+              <RoomModal
+                open={roomExplainModalOpen}
+                close={closeRoomExplainModal}
+                roomId={roomID}
+              ></RoomModal>
+            </div>
+          )}
         </div>
       </div>
       <style jsx>{`
@@ -381,6 +391,14 @@ const FilteredRooms = () => {
           color: white;
           border-radius: 6px;
           box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.16);
+        }
+
+        .loading-container {
+          width: 100%;
+          height: 500px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
       `}</style>
     </>
