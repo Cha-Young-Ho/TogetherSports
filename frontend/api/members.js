@@ -143,7 +143,35 @@ const postLogOut = () => {
   return dataPromise;
 };
 
-// DELETE
+// PATCH
+
+// 매너지수 요청
+const patchMannerPoint = (userId, targetUserId, mannerPointStatus) => {
+  const promise =
+    localStorage.getItem("accessToken") === null
+      ? axios.patch(`http://localhost:8080/api/user/${userId}/manner_point`, {
+          targetUserId: targetUserId,
+          mannerPointStatus: mannerPointStatus,
+        })
+      : axios.patch(
+          `http://localhost:8080/api/user/${userId}/manner_point`,
+          {
+            targetUserId: targetUserId,
+            mannerPointStatus: mannerPointStatus,
+          },
+          {
+            headers: {
+              "Content-type": "application/json; charset=UTF-8",
+              Accept: "*/*",
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+          }
+        );
+
+  const dataPromise = promise.then((res) => res.data);
+
+  return dataPromise;
+};
 
 export {
   getNicknameDuplicationCheck,
@@ -151,4 +179,5 @@ export {
   getOtherInfo,
   postUserRequest,
   postLogOut,
+  patchMannerPoint,
 };
