@@ -4,6 +4,7 @@ import Link from "next/link";
 import { getOtherInfo } from "../../api/members";
 import { FailResponse } from "../../api/failResponse";
 import { patchDelegateHost, deleteKickOutUser } from "../../api/rooms";
+import { patchMannerPoint } from "../../api/members";
 
 const UserInfoModal = (props) => {
   const dispatch = useDispatch();
@@ -22,7 +23,7 @@ const UserInfoModal = (props) => {
   // 필요없을 수도
   const [userId, setUserId] = useState(0);
 
-  // 모달에 필요한 데이터들
+  // 조회하고자 하는 회원의 정보들
   const [imageSrc, setImageSrc] = useState("/base_profileImage.jpg");
   const [nickname, setNickname] = useState("");
   const [mannerPoint, setMannerPoint] = useState(0);
@@ -49,7 +50,9 @@ const UserInfoModal = (props) => {
           alert("방장이 변경되었습니다 !"); // 임시 텍스트
 
           props.close;
+          return;
         }
+        FailResponse(error.response.data.status.code, delegateHostFunc);
       })
       .catch((error) => {
         FailResponse(error.response.data.status.code, delegateHostFunc);
@@ -66,7 +69,9 @@ const UserInfoModal = (props) => {
           alert(`${res.content.userNickname} 님을 강퇴하였습니다.`);
 
           props.close;
+          return;
         }
+        FailResponse(error.response.data.status.code, kickOutUserFunc);
       })
       .catch((error) => {
         FailResponse(error.response.data.status.code, kickOutUserFunc);
@@ -75,8 +80,8 @@ const UserInfoModal = (props) => {
   };
 
   // 다른사람 정보 얻기
-  const func_getOtherInfo = () => {
-    getOtherInfo(clickedUserNickname)
+  const getOtherInfoFunc = (userId) => {
+    getOtherInfo(userId)
       .then((res) => {
         if (res.status.code === 5000) {
           setUserId((userId = res.content.id));
@@ -89,17 +94,59 @@ const UserInfoModal = (props) => {
         }
       })
       .catch((error) => {
-        FailResponse(error.response.data.status.code, func_getOtherInfo);
+        FailResponse(error.response.data.status.code, getOtherInfoFunc);
         props.close();
       });
     // return;
   };
-  
+
   // 매너지수 올리기
-  const upMannerPoint = () => {};
+  const upMannerPoint = () => {
+    patchMannerPoint(myInfo.userNickname, clickedUserId, "UP")
+      .then((res) => {
+        // 올리기
+        if (res.status.code === 1109) {
+          setMannerPoint((mannerPoint = mannerPoint + 1));
+          console.log(res.status.message);
+          return;
+        }
+        // 내리기 취소
+        if (res.status.code === 1108) {
+          setMannerPoint((mannerPoint = mannerPoint + 1));
+          console.log(res.status.message);
+          return;
+        }
+        FailResponse(res.status.code, upMannerPoint);
+      })
+      .catch((error) => {
+        FailResponse(error.response.data.status.code, upMannerPoint);
+        return;
+      });
+  };
 
   // 매너지수 내리기
-  const downMannerPoint = () => {};
+  const downMannerPoint = () => {
+    patchMannerPoint(myInfo.userNickname, clickedUserId, "DOWN")
+      .then((res) => {
+        // 내리기
+        if (res.status.code === 1110) {
+          setMannerPoint((mannerPoint = mannerPoint - 1));
+          console.log(res.status.message);
+          return;
+        }
+        // 올리기 취소
+        if (res.status.code === 1107) {
+          setMannerPoint((mannerPoint = mannerPoint - 1));
+          console.log(res.status.message);
+          return;
+        }
+        FailResponse(error.response.data.status.code, downMannerPoint);
+      })
+      .catch((error) => {
+        FailResponse(error.response.data.status.code, downMannerPoint);
+        return;
+      });
+  };
 
   useEffect(() => {
     // 네비게이션에서 프로필 조회를 하는 경우 (무조건 내 정보 조회만)
@@ -126,7 +173,7 @@ const UserInfoModal = (props) => {
       // 다른 회원 정보 조회
       if (myInfo.userNickname !== clickedUserNickname) {
         if (props.open) {
-          func_getOtherInfo();
+          getOtherInfoFunc(clickedUserId);
         }
       }
 

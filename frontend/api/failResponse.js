@@ -25,6 +25,12 @@ const FailResponse = (codeNumber, prelastingToDo) => {
     case 1104:
       alert("잘못된 데이터가 포함되었습니다.");
       break;
+    case 1105:
+      alert("이미 매너지수를 올려서 올릴 수 없습니다.");
+      break;
+    case 1106:
+      alert("이미 매너지수를 내려서 내릴 수 없습니다.");
+      break;
     case 1200:
       alert("해당 방을 찾을 수 없습니다.");
       break;
