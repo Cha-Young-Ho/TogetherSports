@@ -29,7 +29,7 @@ const ActiveArea = () => {
     }
   };
 
-  const func_postUserRequest = () => {
+  const postUserRequestFunc = () => {
     postUserRequest(
       userRequestInfo.userNickname,
       userRequestInfo.userBirth,
@@ -42,7 +42,7 @@ const ActiveArea = () => {
       if (res.status.code === 5000) {
         alert("추가정보입력에 성공하였습니다!");
       } else {
-        FailResponse(res.status.code, func_postUserRequest);
+        FailResponse(res.status.code, postUserRequestFunc);
       }
     });
   };
@@ -50,7 +50,7 @@ const ActiveArea = () => {
   // 서버에 회원 추가정보입력 요청
   const callUserRequest = (e) => {
     exception(e);
-
+    postUserRequestFunc();
     window.location.replace("/");
   };
 

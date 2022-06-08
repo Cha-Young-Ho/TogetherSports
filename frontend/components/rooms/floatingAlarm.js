@@ -45,7 +45,7 @@ const FloatingAlarm = (props) => {
           position: fixed;
           bottom: 30px;
           right: 30px;
-          z-index: 1;
+          z-index: 99;
           animation: zoomin 0.2s ease-in-out;
         }
 

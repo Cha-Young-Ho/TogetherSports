@@ -115,7 +115,7 @@ const ModifyRoomModal = (props) => {
     return setRoomImages((roomImages = thumbnail.concat(arr)));
   };
 
-  const func_putUpdateRoom = () => {
+  const updateRoomFunc = () => {
     putUpdateRoom(
       roomId,
       roomTitle,
@@ -137,7 +137,7 @@ const ModifyRoomModal = (props) => {
         }
       })
       .catch((error) => {
-        FailResponse(error.response.data.status.code, func_putUpdateRoom);
+        FailResponse(error.response.data.status.code, updateRoomFunc);
         return;
       });
   };
@@ -157,7 +157,7 @@ const ModifyRoomModal = (props) => {
     if (roomContent === "") setRoomContent(null);
     if (tags.length === 0) setTags(null);
 
-    func_putUpdateRoom();
+    updateRoomFunc();
   };
 
   // 태그 초기값 세팅

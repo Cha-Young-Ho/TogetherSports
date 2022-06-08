@@ -50,20 +50,20 @@ const Room = () => {
   const updatedTime = useSelector(
     (state) => state.roomRealTimeInfoReducer.updatedTime
   );
-  const creatorNickName = useSelector(
-    (state) => state.roomRealTimeInfoReducer.creatorNickName
-  );
-  const roomImages = useSelector(
-    (state) => state.roomRealTimeInfoReducer.roomImages
-  );
+  // const creatorNickName = useSelector(
+  //   (state) => state.roomRealTimeInfoReducer.creatorNickName
+  // );
+  // const roomImages = useSelector(
+  //   (state) => state.roomRealTimeInfoReducer.roomImages
+  // );
   const host = useSelector((state) => state.roomRealTimeInfoReducer.host);
   const tags = useSelector((state) => state.roomRealTimeInfoReducer.tags);
   const viewCount = useSelector(
     (state) => state.roomRealTimeInfoReducer.viewCount
   );
-  const participants = useSelector(
-    (state) => state.roomRealTimeInfoReducer.participants
-  );
+  // const participants = useSelector(
+  //   (state) => state.roomRealTimeInfoReducer.participants
+  // );
 
   const webSocketInfo = useSelector(
     (state) => state.saveWebSocketReducer.sockJS
@@ -125,15 +125,7 @@ const Room = () => {
               updatedTime: roomInfo.updatedTime,
               host: roomInfo.host,
               creatorNickName: roomInfo.creatorNickName,
-              roomImages:
-                roomInfo.roomImages === null
-                  ? [
-                      {
-                        order: 0,
-                        imagePath: "logo-sign.png",
-                      },
-                    ]
-                  : roomInfo.roomImages,
+              roomImages: roomInfo.roomImages,
               tags: roomInfo.tags,
               viewCount: roomInfo.viewCount,
               participants: res.content.participants,
