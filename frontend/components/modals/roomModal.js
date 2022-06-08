@@ -25,7 +25,6 @@ const RoomModal = (props) => {
   const [startAppointmentDate, setStartAppointmentDate] = useState("");
   const [endAppointmentDate, setEndAppointmentDate] = useState("");
   const [viewCount, setViewCount] = useState(0);
-  // const [roomImages, setRoomImages] = useState([]);
 
   const enterRoom = (e) => {
     postEnterRoom(roomId)
@@ -83,28 +82,11 @@ const RoomModal = (props) => {
             (endAppointmentDate = res.content.endAppointmentDate)
           );
           setViewCount((viewCount = res.content.viewCount));
-          // setRoomImages(
-          //   (roomImages =
-          //     res.content.roomImages === null
-          //       ? {
-          //           order: 0,
-          //           imagePath: "logo-sign.png",
-          //         }
-          //       : res.content.roomImages)
-          // );
 
           dispatch({
             type: "SAVEROOMMODALIMAGES",
             payload: {
-              roomImages:
-                res.content.roomImages === null
-                  ? [
-                      {
-                        order: 0,
-                        imagePath: "logo-sign.png",
-                      },
-                    ]
-                  : res.content.roomImages,
+              roomImages: res.content.roomImages,
             },
           });
 

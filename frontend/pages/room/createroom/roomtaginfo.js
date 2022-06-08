@@ -89,7 +89,7 @@ const RoomTagInfo = () => {
     if (
       roomInfo.roomTitle === "" ||
       roomInfo.roomArea === "" ||
-      roomInfo.limitPeopleCount === "" ||
+      roomInfo.limitPeopleCount === 0 ||
       roomInfo.exercise === "" ||
       roomInfo.startAppointmentDate === "" ||
       roomInfo.endAppointmentDate === ""
@@ -107,7 +107,7 @@ const RoomTagInfo = () => {
     }
   };
 
-  const func_postCreateRoom = () => {
+  const createRoomFunc = () => {
     postCreateRoom(
       roomInfo.roomTitle,
       roomContent,
@@ -125,7 +125,7 @@ const RoomTagInfo = () => {
         }
       })
       .catch((error) => {
-        FailResponse(error.response.data.status.code, func_postCreateRoom);
+        FailResponse(error.response.data.status.code, createRoomFunc);
         return;
       });
   };
@@ -133,8 +133,7 @@ const RoomTagInfo = () => {
   // 예외 처리 및 서버에 방 생성 요청
   const createRoom = (e) => {
     exception(e);
-
-    func_postCreateRoom();
+    createRoomFunc();
   };
 
   return (
