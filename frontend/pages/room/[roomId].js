@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { useState, useEffect } from "react";
 import ImageSlide from "../../components/imageSlide";
 import Calendar from "../../components/calendar/calendar";
@@ -12,8 +11,6 @@ import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import Map from "../../components/Map";
 import AlarmModal from "../../components/modals/alarmModal";
-import StompJS from "stompjs";
-import SockJS from "sockjs-client";
 import FloatingAlarm from "../../components/rooms/floatingAlarm";
 import Head from "next/head";
 
@@ -65,9 +62,6 @@ const Room = () => {
     (state) => state.roomRealTimeInfoReducer.participants
   );
 
-  const webSocketInfo = useSelector(
-    (state) => state.saveWebSocketReducer.sockJS
-  );
   const { roomId } = router.query;
   const [chatOpen, setChatOpen] = useState(false);
 
@@ -203,8 +197,6 @@ const Room = () => {
           FailResponse(error.response.data.status.code, onDeleteRoom);
         }
       });
-
-    // router.push("/room/roomlist"); // test를 위한 임시 라우팅
   };
 
   useEffect(() => {
@@ -221,26 +213,6 @@ const Room = () => {
       setChatOpen(true);
     }
   }, [roomId]);
-
-  useEffect(() => {
-    dispatch({
-      type: "SAVEWEBSOCKET",
-      payload: {
-        sockJS: new SockJS("http://localhost:8080/api/websocket"),
-      },
-    });
-  }, []);
-
-  useEffect(() => {
-    if (webSocketInfo) {
-      dispatch({
-        type: "SAVECLIENT",
-        payload: {
-          client: StompJS.over(webSocketInfo),
-        },
-      });
-    }
-  }, [webSocketInfo]);
 
   return (
     <>
