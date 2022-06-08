@@ -28,9 +28,9 @@ const ParticipantList = (props) => {
             return (
               <button
                 className="participant"
-                onClick={() =>
-                  onClickUserInfo(participant.id, participant.userNickname)
-                }
+                onClick={() => {
+                  onClickUserInfo(participant.id, participant.userNickname);
+                }}
                 key={index}
               >
                 <div className="profile">
@@ -44,9 +44,9 @@ const ParticipantList = (props) => {
             return (
               <button
                 className="participant"
-                onClick={() =>
-                  onClickUserInfo(participant.id, participant.userNickname)
-                }
+                onClick={() => {
+                  onClickUserInfo(participant.id, participant.userNickname);
+                }}
                 key={index}
               >
                 <div className="profile">

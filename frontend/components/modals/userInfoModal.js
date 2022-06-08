@@ -261,17 +261,17 @@ const UserInfoModal = (props) => {
                 {mannerPoint}
                 {myInfo.userNickname === clickedUserNickname ? (
                   <></>
-                ) : mannerType === "up" ? (
+                ) : mannerType === "UP" ? (
                   <div>
                     <button onClick={upMannerPoint}>▲</button>
                     <button onClick={downMannerPoint}>▽</button>
                   </div>
-                ) : mannerType === "down" ? (
+                ) : mannerType === "DOWN" ? (
                   <div>
                     <button onClick={upMannerPoint}>△</button>
                     <button onClick={downMannerPoint}>▼</button>
                   </div>
-                ) : mannerType === "default" ? (
+                ) : mannerType === "DEFAULT" ? (
                   <div>
                     <button onClick={upMannerPoint}>△</button>
                     <button onClick={downMannerPoint}>▽</button>
