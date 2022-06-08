@@ -8,7 +8,7 @@ import Loading from "../loading";
 
 const FilteredRooms = () => {
   const dispatch = useDispatch();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const selectedTypeButtons = ["최신순", "임박한 시간순", "참여자순"];
   const [selectedSortType, setSelectedSortType] = useState("최신순");
@@ -198,7 +198,11 @@ const FilteredRooms = () => {
           //방이 없을때 처리 필요
           if (res.content) {
             if (first) setEachRoomInfo(res.content.content);
-            else setEachRoomInfo((prev) => [...prev, res.content.content]);
+            else {
+              if (res.content.content.length) {
+                setEachRoomInfo((prev) => [...prev, res.content.content]);
+              }
+            }
             setPage(nextPage);
           }
           setLoading(true);
@@ -242,7 +246,7 @@ const FilteredRooms = () => {
 
   // 리셋 버튼 클릭
   useEffect(() => {
-    setPage(1);
+    setPage(0);
     setSize(10);
     setSort("updateTime,DESC");
     setSelectedSortType("최신순");

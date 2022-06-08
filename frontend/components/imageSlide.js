@@ -14,10 +14,12 @@ const ImageSlide = (props) => {
 
   useEffect(() => {
     if (props.path === "roomInfo") {
-      roomInfoImageArr.length !== 0 ? showSlides(slideIndex) : <></>;
+      roomInfoImageArr !== null ? showSlides(slideIndex) : <></>;
+      // roomInfoImageArr.length !== 0 ? showSlides(slideIndex) : <></>;
     }
     if (props.path === "roomDetail") {
-      roomDetailImageArr.length !== 0 ? showSlides(slideIndex) : <></>;
+      roomDetailImageArr !== null ? showSlides(slideIndex) : <></>;
+      // roomDetailImageArr.length !== 0 ? showSlides(slideIndex) : <></>;
     }
   }, []);
 
@@ -41,7 +43,7 @@ const ImageSlide = (props) => {
     <>
       <div className="slideshow-container">
         {props.path === "roomInfo" ? (
-          roomInfoImageArr.length !== 0 ? (
+          roomInfoImageArr !== null ? (
             roomInfoImageArr
               .sort((a, b) => a.order - b.order)
               .map((image, index) => {
@@ -60,7 +62,7 @@ const ImageSlide = (props) => {
           ) : (
             <></>
           )
-        ) : roomDetailImageArr.length !== 0 ? (
+        ) : roomDetailImageArr !== null ? (
           roomDetailImageArr
             .sort((a, b) => a.order - b.order)
             .map((image, index) => {
