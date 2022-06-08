@@ -140,4 +140,8 @@ public class User {
         this.nickname = userOfModifyInfo.getUserNickname();
         this.informationRequired = false;
     }
+
+    public void updateMannerPoint(int point){
+        this.mannerPoint = this.mannerPoint + point;
+    }
 }

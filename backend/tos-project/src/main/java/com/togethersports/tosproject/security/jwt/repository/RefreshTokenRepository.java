@@ -42,7 +42,7 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
 //
 //    boolean existsByClientIpAndUserAgentAndProvider(String clientIp, String userAgent, String provider);
 //    void deleteByClientIpAndUserAgentAndProvider(String clientIp, String userAgent, String provider);
-//    void deleteByRefreshToken(String refreshToken);
+    void deleteByToken(String refreshToken);
 
 
 }

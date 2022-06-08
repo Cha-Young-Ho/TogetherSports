@@ -23,6 +23,7 @@ import com.togethersports.tosproject.user.User;
 import com.togethersports.tosproject.user.UserRepository;
 import com.togethersports.tosproject.user.UserService;
 import com.togethersports.tosproject.user.dto.UserOfOtherInfo;
+import com.togethersports.tosproject.user.dto.UserOfParticipantInfo;
 import com.togethersports.tosproject.user.exception.NotEnteredInformationException;
 import com.togethersports.tosproject.user.exception.UserNotFoundException;
 
@@ -202,13 +203,13 @@ public class RoomService {
         return Response.of(RoomCode.SUCCESS_PARTICIPATE_ROOM, null);
     }
 
-    public List<UserOfOtherInfo> getParticipantsInfo(List<Participant> participantList){
-        List<UserOfOtherInfo> userOfOtherInfoList = new ArrayList<>();
+    public List<UserOfParticipantInfo> getParticipantsInfo(List<Participant> participantList){
+        List<UserOfParticipantInfo> userOfParticipantInfoList = new ArrayList<>();
 
         for (Participant participant : participantList){
-            userOfOtherInfoList.add(userService.getOtherInfo(participant.getUser().getId()));
+            userOfParticipantInfoList.add(userService.getParticipantInfo(participant.getUser().getId()));
         }
-        return userOfOtherInfoList;
+        return userOfParticipantInfoList;
     }
 
     public boolean getAttendance(Long userId, Long roomId){
@@ -494,7 +495,6 @@ public class RoomService {
     public Response<?> getRoomCount(){
 
         Long count = roomRepository.getAvailableRoomCount();
-
 
         return Response.of(CommonCode.GOOD_REQUEST, CountOfAvailableRoom.builder().count(count).build());
 

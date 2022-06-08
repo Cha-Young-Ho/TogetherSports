@@ -3,6 +3,7 @@ package com.togethersports.tosproject.room.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.togethersports.tosproject.room.code.RoomCode;
 import com.togethersports.tosproject.user.dto.UserOfOtherInfo;
+import com.togethersports.tosproject.user.dto.UserOfParticipantInfo;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -14,7 +15,7 @@ public class RoomOfParticipate {
 
     RoomOfInfo roomOfInfo;
 
-    List<UserOfOtherInfo> participants;
+    List<UserOfParticipantInfo> participants;
 
 
 

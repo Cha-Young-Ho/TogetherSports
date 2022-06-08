@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author younghoCha
  */
-@Slf4j
+
 @Service
 @RequiredArgsConstructor
 public class ParticipantService {
@@ -78,10 +78,9 @@ public class ParticipantService {
 
         Participant participantEntity = participantRepository.findByUserAndRoom(user, room)
                 .orElseThrow(() -> new NotParticipateRoomException("해당 방에 참여하지 않은 유저입니다."));
-        log.info("participantEntity id = {}", participantEntity.getId());
-        log.info("partici 실행");
+
         participantRepository.deleteById(participantEntity.getId());
-        log.info("여기 수행되어야 함");
+
 
     }
 

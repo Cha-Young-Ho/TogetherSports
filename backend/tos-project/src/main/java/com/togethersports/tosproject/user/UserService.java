@@ -1,14 +1,16 @@
 package com.togethersports.tosproject.user;
 
+import com.togethersports.tosproject.common.code.CommonCode;
+import com.togethersports.tosproject.common.dto.Response;
 import com.togethersports.tosproject.common.file.service.StorageService;
 import com.togethersports.tosproject.common.file.util.Base64Decoder;
 import com.togethersports.tosproject.common.file.util.NameGenerator;
 import com.togethersports.tosproject.common.util.ParsingEntityUtils;
 import com.togethersports.tosproject.interest.Interest;
+import com.togethersports.tosproject.mannerpoint.MannerPointStatus;
+import com.togethersports.tosproject.mannerpoint.UserMannerPointService;
 import com.togethersports.tosproject.security.oauth2.model.OAuth2Provider;
-import com.togethersports.tosproject.user.dto.UserOfModifyInfo;
-import com.togethersports.tosproject.user.dto.UserOfMyInfo;
-import com.togethersports.tosproject.user.dto.UserOfOtherInfo;
+import com.togethersports.tosproject.user.dto.*;
 import com.togethersports.tosproject.user.exception.NicknameDuplicationException;
 import com.togethersports.tosproject.user.exception.NotEnteredInformationException;
 import com.togethersports.tosproject.user.exception.UserNotFoundException;
@@ -41,6 +43,8 @@ public class UserService {
     private final Base64Decoder base64Decoder;
     private final NameGenerator nameGenerator;
     private final ParsingEntityUtils parsingEntityUtils;
+    private final UserMannerPointService userMannerPointService;
+
 
     /**
      * 신규 계정을 등록한다.
@@ -84,7 +88,7 @@ public class UserService {
      * @param otherUserId : 전달받은 user id
      * @return USerOfOtherInfo : 다른 회원 정보에 대한 DTO
      */
-    public UserOfOtherInfo getOtherInfo(Long otherUserId){
+    public UserOfParticipantInfo getParticipantInfo(Long otherUserId){
 
         //유저 엔티티
         User userEntity = userRepository.findById(otherUserId)
@@ -94,7 +98,7 @@ public class UserService {
         checkInformation(userEntity);
 
         //다른 회원 정보 조회 DTO 리턴
-        return UserOfOtherInfo.builder()
+        return UserOfParticipantInfo.builder()
                 .id(userEntity.getId())
                 .activeAreas(userEntity.getActiveAreas())
                 .gender(userEntity.getGender())
@@ -105,6 +109,34 @@ public class UserService {
                 .build();
 
     }
+
+    public UserOfOtherInfo getOtherInfo(User requestUser, Long otherUserId){
+
+        User requestUserEntity = userRepository.findById(requestUser.getId())
+                .orElseThrow(() -> new UserNotFoundException("해당 사용자를 찾을 수 없습니다."));
+
+        //유저 엔티티
+        User targetUserEntity = userRepository.findById(otherUserId)
+                .orElseThrow(() -> new UserNotFoundException("해당 사용자를 찾을 수 없습니다."));
+
+        //다른 회원이 정보를 입력했는지 여부
+        checkInformation(targetUserEntity);
+
+        //다른 회원 정보 조회 DTO 리턴
+        return UserOfOtherInfo.builder()
+                .id(targetUserEntity.getId())
+                .activeAreas(targetUserEntity.getActiveAreas())
+                .gender(targetUserEntity.getGender())
+                .interests(parsingEntityUtils.parsingInterestsEntityToString(targetUserEntity.getInterests()))
+                .userNickname(targetUserEntity.getNickname())
+                .mannerPoint(targetUserEntity.getMannerPoint())
+                .userProfileImagePath(targetUserEntity.getUserProfileImage())
+                .mannerType(userMannerPointService.getMannerPointStatus(requestUserEntity, targetUserEntity))
+                .build();
+
+    }
+
+
 
 
     //회원 정보 수정 메소드
@@ -159,4 +191,16 @@ public class UserService {
             throw new NotEnteredInformationException("추가 정보를 입력하지 않은 계정입니다.");
         }
     }
+
+    public Response mannerPointUp(User requestUser, UserOfMannerPoint userOfMannerPoint){
+        User targetUserEntity = userRepository.findById(userOfMannerPoint.getTargetUserId())
+                .orElseThrow(() -> new UserNotFoundException("해당 유저를 찾을 수 없습니다."));
+
+        Response response = userMannerPointService.doPointingMannerPoint(requestUser, targetUserEntity, userOfMannerPoint.getMannerPointStatus());
+
+
+        return response;
+    }
+
+
 }
