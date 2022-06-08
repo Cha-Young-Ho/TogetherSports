@@ -24,7 +24,7 @@ public interface RoomRepository extends JpaRepository<Room, Long>, RoomRepositor
      * <h2>getAvailableRoomCount</h2>
      * @return Long : 시간이 지나지 않고, 인원이 꽉차지 않은 방 개수
      */
-    @Query("select count(*) from Room a WHERE DATE(Now()) < DATE(a.startAppointmentDate) AND a.limitPeopleCount > a.participantCount")
+    @Query("select count(*) from Room a WHERE DATE(Now()) < DATE(a.startAppointmentDate) AND a.limitPeopleCount > (select count(*) from Participant where room = a.id)")
     Long getAvailableRoomCount();
 
 }

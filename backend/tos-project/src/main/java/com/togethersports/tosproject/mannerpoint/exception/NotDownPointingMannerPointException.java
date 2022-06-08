@@ -1,11 +1,11 @@
 package com.togethersports.tosproject.mannerpoint.exception;
 
-public class NotUpPointingMannerPointException extends RuntimeException{
-    public NotUpPointingMannerPointException() {
+public class NotDownPointingMannerPointException extends RuntimeException{
+    public NotDownPointingMannerPointException() {
         super();
     }
 
-    public NotUpPointingMannerPointException(String message) {
+    public NotDownPointingMannerPointException(String message) {
         super(message);
     }
 }

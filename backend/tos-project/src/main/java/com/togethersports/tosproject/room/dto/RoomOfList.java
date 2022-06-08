@@ -40,7 +40,7 @@ public class RoomOfList {
         this.roomId = room.getId();
         this.roomTitle = room.getRoomTitle();
         this.limitPeopleCount = room.getLimitPeopleCount();
-        this.participantCount = room.getParticipantCount();
+        this.participantCount = room.getParticipants().size();
         this.tags = tags;
         this.endAppointmentDate = room.getEndAppointmentDate();
         this.startAppointmentDate = room.getStartAppointmentDate();

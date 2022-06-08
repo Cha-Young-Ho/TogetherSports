@@ -55,10 +55,6 @@ public class ChatPreHandler implements ChannelInterceptor {
 
         log.info("prehandler roomId = {}", roomId);
 
-
-
-
-
         /*
             1. preHandler
                * jwt 검증
@@ -76,6 +72,12 @@ public class ChatPreHandler implements ChannelInterceptor {
             4. message broadcasting
                * 메세지 보내기
          */
+        if(command.equals(StompCommand.DISCONNECT)){
+            log.info("message header = ", message.getHeaders());
+
+
+        }
+
 
         // 소켓 연결
         if(command.equals(StompCommand.CONNECT)){

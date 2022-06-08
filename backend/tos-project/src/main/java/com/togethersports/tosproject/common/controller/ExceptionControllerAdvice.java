@@ -1,5 +1,8 @@
 package com.togethersports.tosproject.common.controller;
 
+import com.togethersports.tosproject.mannerpoint.code.MannerPointCode;
+import com.togethersports.tosproject.mannerpoint.exception.NotDownPointingMannerPointException;
+import com.togethersports.tosproject.mannerpoint.exception.NotUpPointingMannerPointException;
 import com.togethersports.tosproject.room.code.RoomCode;
 import com.togethersports.tosproject.room.exception.NotFoundRoomException;
 import com.togethersports.tosproject.user.code.UserCode;
@@ -67,6 +70,17 @@ public class ExceptionControllerAdvice {
     @ExceptionHandler(NotFoundRoomException.class)
     public ResponseEntity<Response> handleNotFoundRoomException(){
         return ResponseEntity.ok().body(Response.of(RoomCode.NOT_FOUND_ROOM, null));
+    }
+
+    @ExceptionHandler(NotUpPointingMannerPointException.class)
+    public ResponseEntity<Response> handleNotUpPointingMannerPointException(){
+
+        return ResponseEntity.ok().body(Response.of(MannerPointCode.FAIL_MANNER_POINT_UP, null));
+    }
+
+    @ExceptionHandler(NotDownPointingMannerPointException.class)
+    public ResponseEntity<Response> handleNotDownPointingMannerPointException(){
+        return ResponseEntity.ok().body(Response.of(MannerPointCode.FAIL_MANNER_POINT_DOWN, null));
     }
 
 

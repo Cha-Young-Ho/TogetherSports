@@ -29,9 +29,7 @@ public class UserOfInitInfo {
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate userBirth;
-
-
-
+    
     @NotNull
     private Gender gender;
 

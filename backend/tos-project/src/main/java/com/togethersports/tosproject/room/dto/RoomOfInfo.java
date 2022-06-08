@@ -79,7 +79,7 @@ public class RoomOfInfo {
         this.exercise = roomEntity.getExercise();
         this.roomId = roomEntity.getId();
         this.limitPeopleCount = roomEntity.getLimitPeopleCount();
-        this.participantCount = roomEntity.getParticipantCount();
+        this.participantCount = roomEntity.getParticipants().size();
         this.roomImages = roomImages;
         this.roomTitle = roomEntity.getRoomTitle();
         this.roomContent = roomEntity.getRoomContent();
