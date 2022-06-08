@@ -17,7 +17,6 @@ const FailResponse = (codeNumber, prelastingToDo) => {
       router.replace("/");
       break;
     case 1102:
-      alert("추가정보가 입력되지 않은 유저입니다.");
       break;
     case 1103:
       alert("중복된 닉네임이 있습니다.");

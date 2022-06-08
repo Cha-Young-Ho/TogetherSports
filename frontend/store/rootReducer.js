@@ -100,12 +100,6 @@ const saveActiveAreaInitialState = {
   placeOfMeeting: "",
 };
 
-// 웹소켓 저장 초기값
-const saveWebSocketInitialState = {
-  sockJS: "",
-  client: "",
-};
-
 // 방장 정보 저장 초기값
 const saveRoomHostInitialState = {
   beforeHostNickname: "",
@@ -193,8 +187,6 @@ const SAVEROOMDATE = "SAVEROOMDATE";
 const SAVEACTIVEAREA = "SAVEACTIVEAREA";
 const SAVETAGAREAS = "SAVETAGAREAS";
 const SAVEPOM = "SAVEPOM";
-const SAVEWEBSOCKET = "SAVEWEBSOCKET";
-const SAVECLIENT = "SAVECLIENT";
 const SAVEROOMHOST = "SAVEROOMHOST";
 const SAVEROOMCOUNT = "SAVEROOMCOUNT";
 const SAVEROOMINFOS = "SAVEROOMINFOS";
@@ -439,24 +431,6 @@ const saveActiveAreaReducer = (state = saveActiveAreaInitialState, action) => {
   }
 };
 
-// 활동지역 정보 관련 저장
-const saveWebSocketReducer = (state = saveWebSocketInitialState, action) => {
-  switch (action.type) {
-    case SAVEWEBSOCKET:
-      return {
-        ...state,
-        sockJS: action.payload.sockJS,
-      };
-    case SAVECLIENT:
-      return {
-        ...state,
-        client: action.payload.client,
-      };
-    default:
-      return state;
-  }
-};
-
 // 방장이 바뀌면 WS로 알리기위해 해당 내용 저장
 const saveRoomHostReducer = (state = saveRoomHostInitialState, action) => {
   switch (action.type) {
@@ -581,7 +555,6 @@ const rootReducer = combineReducers({
   saveRoomIdReducer,
   saveRoomDateReducer,
   saveActiveAreaReducer,
-  saveWebSocketReducer,
   saveRoomHostReducer,
   saveRoomCountReducer,
   roomRealTimeInfoReducer,

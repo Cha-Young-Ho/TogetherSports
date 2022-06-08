@@ -4,115 +4,65 @@ import { getChatInfo } from "../api/rooms";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import SockJS from "sockjs-client";
-import StompJS from "stompjs";
+import FailResponse from "../api/failResponse";
 
+let clientInfo;
+let nowMessage = "";
 const Chatting = ({ chatOpen }) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const roomId = useSelector((state) => state.saveRoomIdReducer.roomId);
-  const clientInfo = useSelector((state) => state.saveWebSocketReducer.client);
   const myID = useSelector((state) => state.myInfoReducer.id);
   const [messageToServer, setMessageToServer] = useState("");
-  const [showingMessages, setShowingMessages] = useState([
-    // {
-    //   userId: 0,
-    //   nickname: "동동이",
-    //   userProfileImagePath: "/base_profileImage.jpg",
-    //   message: "안녕하세요",
-    //   sendAt: "2022-12-11T13:05",
-    // },
-    // {
-    //   userId: 0,
-    //   nickname: "동동이",
-    //   userProfileImagePath: "/base_profileImage.jpg",
-    //   message: "안녕하세요",
-    //   sendAt: "2022-12-11T13:05",
-    // },
-    // {
-    //   userId: 1,
-    //   nickname: "아리",
-    //   userProfileImagePath: "/base_profileImage.jpg",
-    //   message:
-    //     "감사해요ㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁ",
-    //   sendAt: "2022-12-11T13:05",
-    // },
-    // {
-    //   userId: 1,
-    //   nickname: "아빠",
-    //   userProfileImagePath: "/base_profileImage.jpg",
-    //   message: "잘있어요",
-    //   sendAt: "2022-12-11T13:05",
-    // },
-    // {
-    //   userId: 2,
-    //   nickname: "엄마",
-    //   userProfileImagePath: "/base_profileImage.jpg",
-    //   message: "다시만나요",
-    //   sendAt: "2022-12-11T13:05",
-    // },
-    // {
-    //   userId: 1,
-    //   nickname: "동동이",
-    //   userProfileImagePath: "/base_profileImage.jpg",
-    //   message: "안녕하세요",
-    //   sendAt: "2022-12-11T13:05",
-    // },
-    // {
-    //   userId: 0,
-    //   nickname: "아리",
-    //   userProfileImagePath: "/base_profileImage.jpg",
-    //   message: "감사해요",
-    //   sendAt: "2022-12-11T13:05",
-    // },
-  ]);
+  const [showingMessages, setShowingMessages] = useState([]);
 
   let preChattingID = 0;
-  let saveNowChat = "";
 
-  const connect = () => {
+  const connect = (type) => {
+    const sockJS = new SockJS("http://localhost:8080/api/websocket");
+    clientInfo = Stomp.over(sockJS);
+
     clientInfo.connect(
       {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         roomId: `${roomId}`,
       },
       () => {
-        clientInfo
-          .subscribe(
-            `/topic/room/${roomId}/chat`,
-            (data) => {
-              const newMessage = JSON.parse(data.body);
+        clientInfo.subscribe(
+          `/topic/room/${roomId}/chat`,
+          (data) => {
+            const newMessage = JSON.parse(data.body);
 
-              messageBranch(newMessage);
-            },
+            messageBranch(newMessage);
+          },
+          {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            roomId: `${roomId}`,
+          }
+        );
+
+        if (type === "refresh") {
+          clientInfo.send(
+            `/api/room/${roomId}/chat`,
             {
               Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
               roomId: `${roomId}`,
-            }
-          )
-          .unsubscribe();
+            },
+            JSON.stringify({
+              message: nowMessage,
+            })
+          );
+        }
       },
       (error) => {
-        console.log(error);
+        if (typeof error !== "object") return;
+
         postRefreshToken(localStorage.getItem("refreshToken")).then((res) => {
           if (res.status.code === 5000) {
             localStorage.setItem("accessToken", res.content.accessToken);
             localStorage.setItem("refreshToken", res.content.refreshToken);
 
-            // 클라이언트 재 연결
-            clientInfo = StompJS.over(
-              new SockJS("http://localhost:8080/api/websocket")
-            );
-
-            clientInfo.send(
-              `/api/room/${roomId}/chat`,
-              {
-                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-                roomId: `${roomId}`,
-              },
-              JSON.stringify({
-                message: saveNowChat,
-              })
-            );
+            connect("refresh");
           } else {
             alert("알 수 없는 오류가 발생했습니다. 다시 시도해 주세요.");
             localStorage.removeItem("accessToken");
@@ -126,6 +76,7 @@ const Chatting = ({ chatOpen }) => {
 
   const addMessageToServer = (e) => {
     setMessageToServer(e.target.value);
+    nowMessage = e.target.value;
   };
 
   const onSubmitMessage = (e) => {
@@ -143,7 +94,6 @@ const Chatting = ({ chatOpen }) => {
       })
     );
 
-    saveNowChat = messageToServer;
     setMessageToServer("");
   };
 
@@ -262,6 +212,8 @@ const Chatting = ({ chatOpen }) => {
       .then((res) => {
         if (res.status.code === 5000) {
           setShowingMessages(res.content.content);
+        } else {
+          FailResponse(res.status.code);
         }
       })
       .catch((error) => {
@@ -272,12 +224,12 @@ const Chatting = ({ chatOpen }) => {
   };
 
   useEffect(() => {
-    if (chatOpen && roomId !== "" && clientInfo) {
+    if (chatOpen && roomId !== "") {
       func_getChatInfo();
-      // clientInfo.debug = null;
+
       connect();
     }
-  }, [roomId, clientInfo]);
+  }, [roomId]);
 
   useEffect(() => {
     document.getElementsByClassName("dialog")[0].scrollTop =
@@ -286,7 +238,7 @@ const Chatting = ({ chatOpen }) => {
 
   useEffect(() => {
     return () => {
-      clientInfo.disconnect();
+      if (clientInfo) clientInfo.disconnect();
     };
   }, []);
 
