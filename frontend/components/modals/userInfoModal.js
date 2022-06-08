@@ -104,22 +104,35 @@ const UserInfoModal = (props) => {
 
   // 매너지수 올리기
   const upMannerPoint = (e) => {
+    const downButton = document.getElementsByClassName("button-down");
+
     patchMannerPoint(myInfo.userNickname, clickedUserId, "UP")
       .then((res) => {
-        // 올리기
-        if (res.status.code === 1109) {
-          setMannerPoint((mannerPoint = mannerPoint + 1));
-          e.target.innerText = "▲";
-          console.log(res.status.message);
-          return;
-        }
-        // 내리기 취소
-        if (res.status.code === 1108) {
-          setMannerPoint((mannerPoint = mannerPoint + 1));
+        // 이미 올려져있을때 다시 누르면 올리기 취소
+        if (e.target.innerText === "▲") {
+          setMannerPoint((mannerPoint = mannerPoint - 1));
           e.target.innerText = "△";
-          console.log(res.status.message);
+          downButton.innerText = "▽";
           return;
+        } else {
+          // 올리기
+          if (res.status.code === 1109) {
+            setMannerPoint((mannerPoint = mannerPoint + 1));
+            e.target.innerText = "▲";
+            downButton.innerText = "▽";
+            console.log(res.status.message);
+            return;
+          }
+          // 내리기 취소
+          if (res.status.code === 1108) {
+            setMannerPoint((mannerPoint = mannerPoint + 1));
+            downButton.innerText = "▽";
+            e.target.innerText = "△";
+            console.log(res.status.message);
+            return;
+          }
         }
+
         FailResponse(res.status.code, upMannerPoint);
       })
       .catch((error) => {
@@ -130,23 +143,36 @@ const UserInfoModal = (props) => {
 
   // 매너지수 내리기
   const downMannerPoint = (e) => {
+    const upButton = document.getElementsByClassName("button-up");
+
     patchMannerPoint(myInfo.userNickname, clickedUserId, "DOWN")
       .then((res) => {
-        // 내리기
-        if (res.status.code === 1110) {
-          setMannerPoint((mannerPoint = mannerPoint - 1));
-          e.target.innerText = "▼";
-          console.log(res.status.message);
-          return;
-        }
-        // 올리기 취소
-        if (res.status.code === 1107) {
-          setMannerPoint((mannerPoint = mannerPoint - 1));
+        // 이미 내려져있을때 다시 누르면 내림 취소
+        if (e.target.innerText === "▼") {
+          setMannerPoint((mannerPoint = mannerPoint + 1));
+          upButton.innerText = "△";
           e.target.innerText = "▽";
-          console.log(res.status.message);
           return;
+        } else {
+          // 내리기
+          if (res.status.code === 1110) {
+            setMannerPoint((mannerPoint = mannerPoint - 1));
+            upButton.innerText = "△";
+            e.target.innerText = "▼";
+            console.log(res.status.message);
+            return;
+          }
+          // 올리기 취소
+          if (res.status.code === 1107) {
+            setMannerPoint((mannerPoint = mannerPoint - 1));
+            upButton.innerText = "△";
+            e.target.innerText = "▽";
+            console.log(res.status.message);
+            return;
+          }
         }
-        FailResponse(error.response.data.status.code, downMannerPoint);
+
+        FailResponse(res.status.code, downMannerPoint);
       })
       .catch((error) => {
         FailResponse(error.response.data.status.code, downMannerPoint);
@@ -263,18 +289,30 @@ const UserInfoModal = (props) => {
                   <></>
                 ) : mannerType === "UP" ? (
                   <div>
-                    <button onClick={upMannerPoint}>▲</button>
-                    <button onClick={downMannerPoint}>▽</button>
+                    <button className="button-up" onClick={upMannerPoint}>
+                      ▲
+                    </button>
+                    <button className="button-down" onClick={downMannerPoint}>
+                      ▽
+                    </button>
                   </div>
                 ) : mannerType === "DOWN" ? (
                   <div>
-                    <button onClick={upMannerPoint}>△</button>
-                    <button onClick={downMannerPoint}>▼</button>
+                    <button className="button-up" onClick={upMannerPoint}>
+                      △
+                    </button>
+                    <button className="button-down" onClick={downMannerPoint}>
+                      ▼
+                    </button>
                   </div>
                 ) : mannerType === "DEFAULT" ? (
                   <div>
-                    <button onClick={upMannerPoint}>△</button>
-                    <button onClick={downMannerPoint}>▽</button>
+                    <button className="button-up" onClick={upMannerPoint}>
+                      △
+                    </button>
+                    <button className="button-down" onClick={downMannerPoint}>
+                      ▽
+                    </button>
                   </div>
                 ) : (
                   // 테스트를 위한 임시 태그

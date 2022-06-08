@@ -125,7 +125,13 @@ const roomRealTimeInfoInitialState = {
   updatedTime: "",
   host: "",
   creatorNickName: "",
-  roomImages: [],
+  roomImages: [
+    // 임시
+    {
+      order: 0,
+      imagePath: "/signup-logo.png",
+    },
+  ],
   tags: [],
   viewCount: 0,
   participants: [],
@@ -133,7 +139,13 @@ const roomRealTimeInfoInitialState = {
 
 // 방 설명 팝업에 쓰일 이미지 저장을 위한 초기값
 const saveRoomModalImagesInitialState = {
-  roomImages: [],
+  roomImages: [
+    // 임시
+    {
+      order: 0,
+      imagePath: "/signup-logo.png",
+    },
+  ],
 };
 
 // WS 실시간 알림 저장을 위한 초기값
@@ -511,11 +523,12 @@ const saveRoomModalImagesReducer = (
 
 // WS 실시간 알림 저장을 위한 reducer
 const saveRoomAlarmReducer = (state = saveRoomAlarmInitialState, action) => {
+  const { messages } = state;
   switch (action.type) {
     case SAVEROOMALARM:
       return {
         ...state,
-        messages: action.payload.messages,
+        messages: [...messages, action.payload.messages],
       };
     default:
       return state;

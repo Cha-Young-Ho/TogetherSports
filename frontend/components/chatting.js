@@ -117,12 +117,11 @@ const Chatting = ({ chatOpen }) => {
         dispatch({
           type: "SAVEROOMALARM",
           payload: {
-            messages: [`${JSONBodys.content.userNickname}님이 참여했습니다.`],
+            messages: `${JSONBodys.content.userNickname}님이 참여했습니다.`,
           },
         });
-
-        // alert(`${JSONBodys.content.userNickname}님이 참여했습니다.`);
         break;
+
       case 1502: //퇴장
         // 내가 퇴장하면
         if (JSONBodys.content.id === myID) {
@@ -134,12 +133,11 @@ const Chatting = ({ chatOpen }) => {
         dispatch({
           type: "SAVEROOMALARM",
           payload: {
-            messages: [`${JSONBodys.content.userNickname}님이 퇴장했습니다.`],
+            messages: `${JSONBodys.content.userNickname}님이 퇴장했습니다.`,
           },
         });
-
-        // alert(`${JSONBodys.content.userNickname}님이 퇴장했습니다.`);
         break;
+
       case 1503: //강퇴
         // 내가 강퇴당하면
         if (JSONBodys.content.id === myID) {
@@ -151,12 +149,11 @@ const Chatting = ({ chatOpen }) => {
         dispatch({
           type: "SAVEROOMALARM",
           payload: {
-            messages: [`${JSONBodys.content.userNickname}님이 강퇴되었습니다.`],
+            messages: `${JSONBodys.content.userNickname}님이 강퇴되었습니다.`,
           },
         });
-
-        // alert(`${JSONBodys.content.userNickname}님이 강퇴되었습니다.`);
         break;
+
       case 1504: //방장위임
         dispatch({
           type: "CHANGEHOST",
@@ -168,41 +165,34 @@ const Chatting = ({ chatOpen }) => {
         dispatch({
           type: "SAVEROOMALARM",
           payload: {
-            messages: [
-              `${JSONBodys.content.afterHostNickname}님이 방장이 되었습니다.`,
-            ],
+            messages: `${JSONBodys.content.afterHostNickname}님이 방장이 되었습니다.`,
           },
         });
-
-        // alert("방장이 변경되었습니다.");
         break;
     }
   };
 
   const updateRoomDataFunc = (JSONBodys) => {
+    const roomInfo = JSONBodys.content.roomOfInfo;
     dispatch({
       type: "SAVEROOMINFOS",
       payload: {
-        roomTitle: JSONBodys.content.roomTitle,
-        roomContent: JSONBodys.content.roomContent,
-        limitPeopleCount: JSONBodys.content.limitPeopleCount,
-        tags: JSONBodys.content.tags,
-        roomImages:
-          JSONBodys.content.roomImages === null
-            ? [
-                {
-                  order: 0,
-                  imagePath: "logo-sign.png",
-                },
-              ]
-            : JSONBodys.content.roomImages,
-      },
-    });
-
-    dispatch({
-      type: "SAVEROOMALARM",
-      payload: {
-        messages: ["방 정보가 수정되었습니다."],
+        roomTitle: roomInfo.roomTitle,
+        roomContent: roomInfo.roomContent,
+        roomArea: roomInfo.roomArea,
+        exercise: roomInfo.exercise,
+        limitPeopleCount: roomInfo.limitPeopleCount,
+        participantCount: roomInfo.participantCount,
+        startAppointmentDate: roomInfo.startAppointmentDate,
+        endAppointmentDate: roomInfo.endAppointmentDate,
+        createdTime: roomInfo.createdTime,
+        updatedTime: roomInfo.updatedTime,
+        host: roomInfo.host,
+        creatorNickName: roomInfo.creatorNickName,
+        roomImages: roomInfo.roomImages,
+        tags: roomInfo.tags,
+        viewCount: roomInfo.viewCount,
+        participants: JSONBodys.content.participants,
       },
     });
   };
