@@ -17,12 +17,21 @@ const FloatingAlarm = (props) => {
           <div className="alarms-wrapper">
             {getMessagesFromRedux.length !== 0 ? (
               getMessagesFromRedux.map((message, index) => {
-                return (
-                  <div className="alarms" key={index}>
-                    <p>✔️</p>
-                    <div className="alarm">{message}</div>
-                  </div>
-                );
+                if (index === getMessagesFromRedux.length - 1) {
+                  return (
+                    <div className="alarms" key={index}>
+                      <p className="new-alarm">NEW</p>
+                      <div className="alarm">{message}</div>
+                    </div>
+                  );
+                } else {
+                  return (
+                    <div className="alarms" key={index}>
+                      <p className="check-alarm">✔️</p>
+                      <div className="alarm">{message}</div>
+                    </div>
+                  );
+                }
               })
             ) : (
               <div className="no-alarms">새 알림이 없습니다.</div>
@@ -47,6 +56,7 @@ const FloatingAlarm = (props) => {
           right: 30px;
           z-index: 99;
           animation: zoomin 0.2s ease-in-out;
+          overflow: auto;
         }
 
         @keyframes zoomin {
@@ -56,6 +66,15 @@ const FloatingAlarm = (props) => {
           100% {
             transform: scale(1);
           }
+        }
+
+        .floating-wrapper {
+          -ms-overflow-style: none; // IE and Edge
+          scrollbar-width: none; // Firefox
+        }
+
+        .floating-wrapper::-webkit-scrollbar {
+          display: none; // Chrome, Safari, Opera
         }
 
         .header {
@@ -99,7 +118,22 @@ const FloatingAlarm = (props) => {
           margin-bottom: 10px;
         }
 
-        .alarms p {
+        .new-alarm {
+          color: red;
+          font-weight: bold;
+          font-size: 1.5rem;
+          margin-right: 5px;
+          user-select: none;
+          animation: blink-effect 1s step-end infinite;
+        }
+
+        @keyframes blink-effect {
+          50% {
+            opacity: 0;
+          }
+        }
+
+        .check-alarm {
           font-size: 2rem;
           margin-right: 5px;
           user-select: none;
@@ -107,6 +141,7 @@ const FloatingAlarm = (props) => {
 
         .alarm {
           width: 100%;
+          margin-right: 5px;
           padding: 10px 15px;
           font-size: 1.2rem;
           border-radius: 10px;
