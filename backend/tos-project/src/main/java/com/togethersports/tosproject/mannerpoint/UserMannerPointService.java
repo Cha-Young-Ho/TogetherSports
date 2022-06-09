@@ -70,22 +70,14 @@ public class UserMannerPointService {
         if(actualMannerPointStatus.equals(MannerPointStatus.UP)){
             //매너지수 올리기
             if(request.equals(MannerPointStatus.UP)){
-                // 매너지수 내려야함
-                targetUser.updateMannerPoint(-1);
-
-                //db삭제
-                userMannerPointRepository.delete(userMannerPointEntity.get());
+                doPointing(targetUser, -1, userMannerPointEntity);
 
                 return Response.of(MannerPointCode.MANNER_POINT_DOWN, MannerPointOfPointing.builder().mannerPoint(targetUser.getMannerPoint()).id(targetUser.getId()).build());
 
             }
             //매너지수 내리기
             if(request.equals(MannerPointStatus.DOWN)){
-                //내려야함
-                targetUser.updateMannerPoint(-1);
-
-                //db삭제
-                userMannerPointRepository.delete(userMannerPointEntity.get());
+                doPointing(targetUser, -1, userMannerPointEntity);
 
                 return Response.of(MannerPointCode.CANCEL_MANNER_POINT_UP, MannerPointOfPointing.builder().mannerPoint(targetUser.getMannerPoint()).id(targetUser.getId()).build());
 
@@ -94,23 +86,15 @@ public class UserMannerPointService {
         // 이미 매너지수 내린 상태
         if(actualMannerPointStatus.equals(MannerPointStatus.DOWN)){
             // 매너지수 내리기
+
             if(request.equals(MannerPointStatus.DOWN)){
-                // 매너지수 내려야함
-                targetUser.updateMannerPoint(1);
-
-                //db삭제
-                userMannerPointRepository.delete(userMannerPointEntity.get());
-
+                doPointing(targetUser, 1, userMannerPointEntity);
                 return Response.of(MannerPointCode.MANNER_POINT_UP, MannerPointOfPointing.builder().mannerPoint(targetUser.getMannerPoint()).id(targetUser.getId()).build());
 
             }
             // 매너지수 올리기 DOWN -> DEFAULT(db 삭제)
             if(request.equals(MannerPointStatus.UP)){
-                //올려야 함
-                targetUser.updateMannerPoint(1);
-
-                //db 삭제
-                userMannerPointRepository.delete(userMannerPointEntity.get());
+                doPointing(targetUser, 1, userMannerPointEntity);
 
                 return Response.of(MannerPointCode.CANCEL_MANNER_POINT_DOWN, MannerPointOfPointing.builder().mannerPoint(targetUser.getMannerPoint()).id(targetUser.getId()).build());
             }
@@ -123,6 +107,11 @@ public class UserMannerPointService {
 
         return checkMannerPointStatus(userMannerPointRepository.findByUserAndTargetUser(requestUserEntity, targetUserEntity));
 
+    }
+
+    public void doPointing(User targetUser, int mannerPoint, Optional<UserMannerPoint> userMannerPointEntity){
+        targetUser.updateMannerPoint(mannerPoint);
+        userMannerPointRepository.delete(userMannerPointEntity.get());
     }
 
 
