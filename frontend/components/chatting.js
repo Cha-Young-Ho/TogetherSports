@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import SockJS from "sockjs-client";
 import FailResponse from "../api/failResponse";
+import StompJS from "stompjs";
 
 let clientInfo;
 let nowMessage = "";
