@@ -3,6 +3,7 @@ package com.togethersports.tosproject.mannerpoint;
 import com.togethersports.tosproject.common.code.CommonCode;
 import com.togethersports.tosproject.common.dto.Response;
 import com.togethersports.tosproject.mannerpoint.code.MannerPointCode;
+import com.togethersports.tosproject.mannerpoint.dto.MannerPointOfPointing;
 import com.togethersports.tosproject.mannerpoint.exception.NotDownPointingMannerPointException;
 import com.togethersports.tosproject.mannerpoint.exception.NotUpPointingMannerPointException;
 import com.togethersports.tosproject.user.User;
@@ -51,7 +52,7 @@ public class UserMannerPointService {
                 //db 등록
                 userMannerPointRepository.save(newUserMannerPointEntity);
 
-                return Response.of(MannerPointCode.MANNER_POINT_DOWN, null);
+                return Response.of(MannerPointCode.MANNER_POINT_DOWN, MannerPointOfPointing.builder().mannerPoint(targetUser.getMannerPoint()).id(targetUser.getId()).build());
             }
             // 매너지수 올리기 요청
             if(request.equals(MannerPointStatus.UP)){
@@ -62,15 +63,20 @@ public class UserMannerPointService {
                 //db 등록
                 userMannerPointRepository.save(newUserMannerPointEntity);
 
-                return Response.of(MannerPointCode.MANNER_POINT_UP, null);
+                return Response.of(MannerPointCode.MANNER_POINT_UP, MannerPointOfPointing.builder().mannerPoint(targetUser.getMannerPoint()).id(targetUser.getId()).build());
             }
         }
         // 이미 매너지수 올린 상태
         if(actualMannerPointStatus.equals(MannerPointStatus.UP)){
             //매너지수 올리기
             if(request.equals(MannerPointStatus.UP)){
-                //return 올릴 수 없다.
-                throw new NotUpPointingMannerPointException("이미 올려서 매너지수를 올릴 수 없습니다.");
+                // 매너지수 내려야함
+                targetUser.updateMannerPoint(-1);
+
+                //db삭제
+                userMannerPointRepository.delete(userMannerPointEntity.get());
+
+                return Response.of(MannerPointCode.MANNER_POINT_DOWN, MannerPointOfPointing.builder().mannerPoint(targetUser.getMannerPoint()).id(targetUser.getId()).build());
 
             }
             //매너지수 내리기
@@ -81,7 +87,7 @@ public class UserMannerPointService {
                 //db삭제
                 userMannerPointRepository.delete(userMannerPointEntity.get());
 
-                return Response.of(MannerPointCode.CANCEL_MANNER_POINT_UP, null);
+                return Response.of(MannerPointCode.CANCEL_MANNER_POINT_UP, MannerPointOfPointing.builder().mannerPoint(targetUser.getMannerPoint()).id(targetUser.getId()).build());
 
             }
         }
@@ -89,8 +95,14 @@ public class UserMannerPointService {
         if(actualMannerPointStatus.equals(MannerPointStatus.DOWN)){
             // 매너지수 내리기
             if(request.equals(MannerPointStatus.DOWN)){
-                //return 내릴 수 없다.
-                throw new NotDownPointingMannerPointException("이미 내려서 매너지수를 내릴 수 없습니다.");
+                // 매너지수 내려야함
+                targetUser.updateMannerPoint(1);
+
+                //db삭제
+                userMannerPointRepository.delete(userMannerPointEntity.get());
+
+                return Response.of(MannerPointCode.MANNER_POINT_UP, MannerPointOfPointing.builder().mannerPoint(targetUser.getMannerPoint()).id(targetUser.getId()).build());
+
             }
             // 매너지수 올리기 DOWN -> DEFAULT(db 삭제)
             if(request.equals(MannerPointStatus.UP)){
@@ -100,7 +112,7 @@ public class UserMannerPointService {
                 //db 삭제
                 userMannerPointRepository.delete(userMannerPointEntity.get());
 
-                return Response.of(MannerPointCode.CANCEL_MANNER_POINT_DOWN, null);
+                return Response.of(MannerPointCode.CANCEL_MANNER_POINT_DOWN, MannerPointOfPointing.builder().mannerPoint(targetUser.getMannerPoint()).id(targetUser.getId()).build());
             }
         }
 
