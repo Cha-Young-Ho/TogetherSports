@@ -1,5 +1,6 @@
 package com.togethersports.tosproject.area;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.togethersports.tosproject.user.User;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -28,9 +29,11 @@ public class ActiveArea {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ACTIVE_AREA_ID")
+    @JsonIgnore
     private Long id;
 
     @Column(name = "USER_ID")
+    @JsonIgnore
     private String userId;
 
     @Column(name = "LOCATION")
