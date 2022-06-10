@@ -8,7 +8,7 @@ import lombok.*;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Target {
+public class TargetOfHostRequest {
 
     private Long targetUserId;
 }
