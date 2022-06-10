@@ -181,43 +181,21 @@ const UserInfoModal = (props) => {
   };
 
   useEffect(() => {
-    // 네비게이션에서 프로필 조회를 하는 경우 (무조건 내 정보 조회만)
-    if (props.path === "navBar") {
-      // 회원 추가정보 입력이 완료되지 않은 경우
-      if (props.open && myInfo.userNickname === "익명") {
-        alert("회원 추가 정보가 없어 내 정보를 요청할 수 없습니다.");
-        props.close();
-        return;
-      }
-      // 내 정보 조회
-      else {
-        setImageSrc((imageSrc = myInfo.userProfileImagePath));
-        setNickname((nickname = myInfo.userNickname));
-        setMannerPoint((mannerPoint = myInfo.mannerPoint));
-        setInterest((interest = myInfo.interests));
-        setGender((gender = myInfo.gender));
-        setActiveAreas((activeAreas = myInfo.activeAreas));
+    // 다른 회원 정보 조회
+    if (myInfo.userNickname !== clickedUserNickname) {
+      if (props.open) {
+        getOtherInfoFunc(clickedUserId);
       }
     }
 
-    // 운동 대기방의 참여자목록에서 프로필 조회를 하는 경우 (내 정보 조회, 다른 회원 정보 조회 모두 가능)
-    if (props.path === "partyList") {
-      // 다른 회원 정보 조회
-      if (myInfo.userNickname !== clickedUserNickname) {
-        if (props.open) {
-          getOtherInfoFunc(clickedUserId);
-        }
-      }
-
-      // 내 정보 조회
-      if (myInfo.userNickname === clickedUserNickname) {
-        setImageSrc((imageSrc = myInfo.userProfileImagePath));
-        setNickname((nickname = myInfo.userNickname));
-        setMannerPoint((mannerPoint = myInfo.mannerPoint));
-        setInterest((interest = myInfo.interests));
-        setGender((gender = myInfo.gender));
-        setActiveAreas((activeAreas = myInfo.activeAreas));
-      }
+    // 내 정보 조회
+    if (myInfo.userNickname === clickedUserNickname) {
+      setImageSrc((imageSrc = myInfo.userProfileImagePath));
+      setNickname((nickname = myInfo.userNickname));
+      setMannerPoint((mannerPoint = myInfo.mannerPoint));
+      setInterest((interest = myInfo.interests));
+      setGender((gender = myInfo.gender));
+      setActiveAreas((activeAreas = myInfo.activeAreas));
     }
   }, [props.open]);
 
