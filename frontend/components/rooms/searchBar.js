@@ -37,6 +37,17 @@ const SearchBar = () => {
     }
   }, [resetDetection.reset]);
 
+  useEffect(() => {
+    return () => {
+      dispatch({
+        type: "FILTERINGTITLE",
+        payload: {
+          roomTitle: "",
+        },
+      });
+    };
+  }, []);
+
   return (
     <>
       <div className="search-wrapper">

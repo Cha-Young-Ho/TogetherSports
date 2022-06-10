@@ -38,10 +38,10 @@ const FilteredRooms = () => {
   const [eachRoomInfo, setEachRoomInfo] = useState([
     {
       roomId: "121",
-      roomTitle: "축구 한판 뛰실분?",
+      roomTitle: "가가가가가가가가가가가가가가가가가가가가",
       limitPeopleCount: "22",
       participantCount: "1",
-      tags: ["20대만", "고수만"],
+      tags: ["20대만", "고수만", "20대만", "고수만", "20대입니다다다다"],
       startAppointmentDate: "2022-04-18T19:00",
       roomImagePath: "",
     },
@@ -231,7 +231,7 @@ const FilteredRooms = () => {
       scrollHandlingTimer = setTimeout(() => {
         scrollHandlingTimer = null;
         func_getRoomList(page, size, true, 1);
-      }, 200);
+      }, 500);
     }
 
     window.addEventListener("scroll", handleFollowScroll);
