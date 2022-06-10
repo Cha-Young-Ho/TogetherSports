@@ -6,6 +6,7 @@ import RoomShowingBox from "./roomShowingBox";
 import FailResponse from "../../api/failResponse";
 import Loading from "../loading";
 
+let scrollHandlingTimer;
 const FilteredRooms = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
@@ -14,7 +15,7 @@ const FilteredRooms = () => {
   const [selectedSortType, setSelectedSortType] = useState("최신순");
 
   const [page, setPage] = useState(0);
-  const [size, setSize] = useState(10);
+  const [size, setSize] = useState(12);
   const [sort, setSort] = useState("updateTime,DESC");
 
   // 스크롤 위치값
@@ -37,10 +38,10 @@ const FilteredRooms = () => {
   const [eachRoomInfo, setEachRoomInfo] = useState([
     {
       roomId: "121",
-      roomTitle: "축구 한판 뛰실분?",
+      roomTitle: "가가가가가가가가가가가가가가가가가가가가",
       limitPeopleCount: "22",
       participantCount: "1",
-      tags: ["20대만", "고수만"],
+      tags: ["20대만", "고수만", "20대만", "고수만", "20대입니다다다다"],
       startAppointmentDate: "2022-04-18T19:00",
       roomImagePath: "",
     },
@@ -200,7 +201,7 @@ const FilteredRooms = () => {
             if (first) setEachRoomInfo(res.content.content);
             else {
               if (res.content.content.length) {
-                setEachRoomInfo((prev) => [...prev, res.content.content]);
+                setEachRoomInfo((prev) => prev.concat(res.content.content));
               }
             }
             setPage(nextPage);
@@ -219,14 +220,19 @@ const FilteredRooms = () => {
 
   // 필터 적용 후 서버로 적용(1)
   const sendDatasToServer = () => {
-    func_getRoomList(0, 10, false, 1);
+    func_getRoomList(0, 12, false, 1);
 
     requestFilteringToFalse();
   };
 
   // 첫 화면 렌더 시 아무런 필터 없이 요청
   useEffect(() => {
-    func_getRoomList(page, size, true, 1);
+    if (!scrollHandlingTimer) {
+      scrollHandlingTimer = setTimeout(() => {
+        scrollHandlingTimer = null;
+        func_getRoomList(page, size, true, 1);
+      }, 500);
+    }
 
     window.addEventListener("scroll", handleFollowScroll);
     document.body.style.overflow = "unset";
@@ -247,7 +253,7 @@ const FilteredRooms = () => {
   // 리셋 버튼 클릭
   useEffect(() => {
     setPage(0);
-    setSize(10);
+    setSize(12);
     setSort("updateTime,DESC");
     setSelectedSortType("최신순");
   }, [changeDectection.reset]);
@@ -274,8 +280,13 @@ const FilteredRooms = () => {
     const windowHeight = window.innerHeight; // 스크린 창크기
     const fullHeight = document.body.scrollHeight + 80; //  margin 값 80추가
 
-    if (scrollY + windowHeight === fullHeight) {
-      func_getRoomList(page, 10, false, page + 1);
+    if (scrollY + windowHeight >= fullHeight - 100) {
+      if (!scrollHandlingTimer) {
+        scrollHandlingTimer = setTimeout(() => {
+          scrollHandlingTimer = null;
+          func_getRoomList(page, 12, false, page + 1);
+        }, 800);
+      }
     }
   }, [scrollY]);
 
