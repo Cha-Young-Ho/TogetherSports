@@ -124,10 +124,10 @@ const UserInfoModal = (props) => {
             return;
           }
           // 내리기 취소
-          if (res.status.code === 1108) {
+          if (res.status.code === 1108 || downButton.innerText === "▼") {
             setMannerPoint((mannerPoint = mannerPoint + 1));
-            downButton.innerText = "▽";
             e.target.innerText = "△";
+            downButton.innerText = "▽";
             console.log(res.status.message);
             return;
           }
@@ -163,7 +163,7 @@ const UserInfoModal = (props) => {
             return;
           }
           // 올리기 취소
-          if (res.status.code === 1107) {
+          if (res.status.code === 1107 || upButton.innerText === "▲") {
             setMannerPoint((mannerPoint = mannerPoint - 1));
             upButton.innerText = "△";
             e.target.innerText = "▽";
