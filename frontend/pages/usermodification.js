@@ -191,37 +191,43 @@ const UserModification = () => {
     )
       .then((res) => {
         if (res.status.code === 5000) {
-          getMyInfo((res) => {
-            if (res.status.code === 5000) {
-              dispatch({
-                type: "SAVEMYINFO",
-                payload: {
-                  userEmail: res.content.userEmail,
-                  userName: res.content.userName,
-                  userNickname: res.content.userNickname,
-                  userBirth: res.content.userBirth,
-                  gender: res.content.gender,
-                  userProfileImagePath: res.content.userProfileImagePath,
-                  activeAreas: res.content.activeAreas,
-                  interests: res.content.interests,
-                  mannerPoint: res.content.mannerPoint,
-                  isInformationRequired: res.content.isInformationRequired,
-                },
-              });
-              alert("성공적으로 수정 되었습니다.");
-              window.history.back();
-              return;
-            }
-          }).catch((error) => {
-            FailResponse(error.response.data.status.code, func_PostUserRequest);
-            return;
-          });
+          func_getMyInfo();
         }
       })
       .catch((error) => {
-        FailResponse(error.response.data.status.code);
-        return;
+        if (error?.response?.data) {
+          FailResponse(error.response.data.status.code, func_PostUserRequest);
+          return;
+        }
       });
+  };
+
+  const func_getMyInfo = () => {
+    getMyInfo((res) => {
+      if (res.status.code === 5000) {
+        dispatch({
+          type: "SAVEMYINFO",
+          payload: {
+            userEmail: res.content.userEmail,
+            userName: res.content.userName,
+            userNickname: res.content.userNickname,
+            userBirth: res.content.userBirth,
+            gender: res.content.gender,
+            userProfileImagePath: res.content.userProfileImagePath,
+            activeAreas: res.content.activeAreas,
+            interests: res.content.interests,
+            mannerPoint: res.content.mannerPoint,
+            isInformationRequired: res.content.isInformationRequired,
+          },
+        });
+        alert("성공적으로 수정 되었습니다.");
+        window.history.back();
+        return;
+      }
+    }).catch((error) => {
+      FailResponse(error.response.data.status.code, func_getMyInfo);
+      return;
+    });
   };
 
   const exception = (e) => {

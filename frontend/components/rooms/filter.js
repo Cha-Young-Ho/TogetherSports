@@ -111,8 +111,6 @@ const Filter = () => {
   };
 
   const clickDoFilteringButton = () => {
-    console.log("Execute Filtering...");
-
     if (
       moment(curStartFilteringDate).isSame(curEndFilteringDate) &&
       startTime > endTime
@@ -135,8 +133,6 @@ const Filter = () => {
   };
 
   const clickResetFilterButton = () => {
-    console.log("Reset Filters...");
-
     setStartTime("");
     setEndTime("");
     setEnterAccessPeople("");
