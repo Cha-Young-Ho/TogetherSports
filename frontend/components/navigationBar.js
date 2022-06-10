@@ -3,7 +3,7 @@ import { signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { postLogOut } from "../api/members";
 import { FailResponse } from "../api/failResponse";
-import Modal from "./modals/userInfoModal";
+import UserInfoModal from "./modals/navBarUserInfoModal";
 import { getMyInfo } from "../api/members";
 import { useDispatch, useSelector } from "react-redux";
 import FixedRequestAlarm from "./fixedRequestAlarm";
@@ -20,13 +20,13 @@ const NavigationBar = () => {
   const myInfo = useSelector((state) => state.myInfoReducer);
 
   // 유저 프로필 클릭 시 뜨는 팝업 창 관리 state
-  const [modalOpen, setModalOpen] = useState(false);
+  const [userInfoModalOpen, setUserInfoModalOpen] = useState(false);
 
-  const openModal = () => {
-    setModalOpen(true);
+  const openUserInfoModalFunc = () => {
+    setUserInfoModalOpen(true);
   };
-  const closeModal = () => {
-    setModalOpen(false);
+  const closeUserInfoModalFun = () => {
+    setUserInfoModalOpen(false);
   };
 
   // 로그아웃 버튼 클릭
@@ -176,7 +176,7 @@ const NavigationBar = () => {
                 </>
               ) : (
                 <>
-                  <button className="user-box" onClick={openModal}>
+                  <button className="user-box" onClick={openUserInfoModalFunc}>
                     <img
                       className="ProfileImage"
                       src={`/images/${myInfo.userProfileImagePath}`}
@@ -186,11 +186,10 @@ const NavigationBar = () => {
                     </div>
                   </button>
 
-                  <Modal
-                    open={modalOpen}
-                    close={closeModal}
-                    path={"navBar"}
-                  ></Modal>
+                  <UserInfoModal
+                    open={userInfoModalOpen}
+                    close={closeUserInfoModalFun}
+                  ></UserInfoModal>
 
                   <button
                     className="btn_signout"
