@@ -167,7 +167,7 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
                     case "start":
                         return new OrderSpecifier(direction, room.startAppointmentDate);
                     case "updatedTime":
-                        return new OrderSpecifier(direction, room.updatedTime);
+                        return new OrderSpecifier(direction, room.createdTime);
                     case "participant":
                         return new OrderSpecifier(direction, room.participants.size());
                 }
