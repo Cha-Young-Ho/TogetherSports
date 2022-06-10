@@ -53,7 +53,7 @@ const UserInfoModal = (props) => {
           props.close;
           return;
         }
-        FailResponse(error.response.data.status.code, delegateHostFunc);
+        FailResponse(res.status.code, delegateHostFunc);
       })
       .catch((error) => {
         FailResponse(error.response.data.status.code, delegateHostFunc);
@@ -72,7 +72,7 @@ const UserInfoModal = (props) => {
           props.close;
           return;
         }
-        FailResponse(error.response.data.status.code, kickOutUserFunc);
+        FailResponse(res.status.code, kickOutUserFunc);
       })
       .catch((error) => {
         FailResponse(error.response.data.status.code, kickOutUserFunc);
