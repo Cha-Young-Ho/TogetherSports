@@ -38,25 +38,27 @@ public class ChatService {
     /**
      * 클라이언트가 보낸 메세지를 DB에 저장하는 메소드
      * @param message : 클라이언트가 보낸 메세지 DTO
-     * @param room_id : 클라이언트가 보낸 Destination room
+     * @param roomId : 클라이언트가 보낸 Destination room
      * @return : 발행할 메세지 DTO
      */
-    public ChatOfPubRoom saveChat(ClientMessage message, Long room_id){
+    public ChatOfPubRoom saveChat(ClientMessage message, Long roomId, Long userId){
 
 //        User userEntity = userRepository.findById(message.getUserId())
 //                .orElseThrow(() -> new UserNotFoundException());
-        User userEntity = userRepository.findById(1L)
+        User userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException());
 
-        Room roomEntity = roomRepository.findById(room_id)
+        Room roomEntity = roomRepository.findById(roomId)
                 .orElseThrow(() -> new NotFoundRoomException());
 
         ChatMessage chatMessage = chatRepository.save(ChatMessage.of(message.getMessage(), userEntity, roomEntity));
 
         return ChatOfPubRoom.builder()
-                .userId(1L)
+                .userId(userEntity.getId())
+                .userProfileImagePath(userEntity.getUserProfileImage())
                 .nickname(userEntity.getNickname())
-                .content(ChatOfMessage.builder().message(message.getMessage()).sendAt(chatMessage.getSendAt()).build())
+                .message(chatMessage.getMessage())
+                .sendAt(chatMessage.getSendAt())
                 .build();
 
     }
@@ -95,13 +97,11 @@ public class ChatService {
         Page<ChatMessage> chatEntityList = chatRepository.findByRoom(roomEntity, pageable);
         Page<ChatOfHistory> pageList = chatEntityList.map(
                 chat -> ChatOfHistory.builder()
-                        .messageContent(
-                                ChatOfMessage.builder()
-                                        .message(chat.getMessage())
-                                        .sendAt(chat.getSendAt()).build())
                         .nickname(chat.getUser().getNickname())
                         .userProfileImagePath(chat.getUser().getUserProfileImage())
                         .userId(chat.getUser().getId())
+                        .sendAt(chat.getSendAt())
+                        .message(chat.getMessage())
                         .build()
         );
 
@@ -114,9 +114,10 @@ public class ChatService {
                 .orElseThrow(() -> new UserNotFoundException());
 
         return ChatOfPubRoom.builder()
-                .userId(userId)
+                .userId(userEntity.getId())
+                .userProfileImagePath(userEntity.getUserProfileImage())
                 .nickname(userEntity.getNickname())
-                .content(ChatOfMessage.builder().message(message.getMessage()).sendAt(LocalDateTime.now()).build())
+                .message(message.getMessage())
                 .build();
     }
 

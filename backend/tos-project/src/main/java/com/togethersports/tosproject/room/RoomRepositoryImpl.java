@@ -9,6 +9,7 @@ import com.togethersports.tosproject.common.util.ParsingEntityUtils;
 import com.togethersports.tosproject.room.dto.FieldsOfRoomList;
 import com.togethersports.tosproject.room.dto.RoomOfList;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +32,7 @@ import static com.togethersports.tosproject.tag.QTag.tag1;
  * @author younghoCha
  */
 
+@Slf4j
 @RequiredArgsConstructor
 public class RoomRepositoryImpl implements RoomRepositoryCustom{
 
@@ -46,7 +48,7 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
                 .where(eqInterests(
                     fieldsOfRoomList.getExercise()),
                     eqArea(fieldsOfRoomList.getArea()),
-                    participateCount(fieldsOfRoomList.getParticipantCount(), fieldsOfRoomList.isContainNoAdmittance()),
+                    participateCount(fieldsOfRoomList.getRequiredPeopleCount(), fieldsOfRoomList.isContainNoAdmittance()),
                     betweenTime(fieldsOfRoomList.getStartAppointmentDate(), fieldsOfRoomList.getEndAppointmentDate(), fieldsOfRoomList.isContainTimeClosing()),
                     eqTitle(fieldsOfRoomList.getRoomTitle()),
                     eqContent(fieldsOfRoomList.getRoomContent())
@@ -55,11 +57,11 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
                 .limit(pageable.getPageSize())
                 .orderBy(sortRoomList(pageable))
                 .fetch();
-
-
         return afterTreatment(result);
-
     }
+
+
+
     //방 제목 검색
     private BooleanExpression eqTitle(String searchTitle){
         return searchTitle == null ? null : room.roomTitle.contains(searchTitle);
@@ -90,6 +92,7 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
         BooleanBuilder booleanBuilder = new BooleanBuilder();
 
         for (String interest : interests){
+
             booleanBuilder.or(room.exercise.eq(interest));
         }
 
@@ -126,25 +129,28 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
 
     /*입장 가능 인원 검색*/
     private BooleanExpression participateCount(Integer participantCount, boolean containNoAdmittance){
+
         //입장 마감 보기 시,
         if(containNoAdmittance){
             // 인원 검색을 하지 않았을 때
             if(participantCount == null){
-                return null;
+
+                return room.limitPeopleCount.goe(room.participants.size());
             }
 
             // 인원 검색을 했을 때
-            return room.limitPeopleCount.gt(room.participantCount.add(participantCount));
+            return room.limitPeopleCount.goe(room.participants.size().add(participantCount));
 
         }
 
         /*입장 마감 안보기 시,*/
         // 인원 검색을 하지 않았을 때
         if(participantCount == null){
-            return room.limitPeopleCount.gt(room.participantCount);
+            return room.limitPeopleCount.gt(room.participants.size());
         }
+
         // 인원 검색을 했을 때
-        return room.limitPeopleCount.gt(room.participantCount.add(participantCount));
+        return room.limitPeopleCount.goe(room.participants.size().add(participantCount));
 
     }
 
@@ -161,9 +167,9 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
                     case "start":
                         return new OrderSpecifier(direction, room.startAppointmentDate);
                     case "updatedTime":
-                        return new OrderSpecifier(direction, room.updatedTime);
+                        return new OrderSpecifier(direction, room.createdTime);
                     case "participant":
-                        return new OrderSpecifier(direction, room.participantCount);
+                        return new OrderSpecifier(direction, room.participants.size());
                 }
             }
         }
@@ -187,6 +193,8 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
         return new PageImpl<>(rooms);
 
     }
+
+
 
 
 }

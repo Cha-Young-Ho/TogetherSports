@@ -37,6 +37,17 @@ const SearchBar = () => {
     }
   }, [resetDetection.reset]);
 
+  useEffect(() => {
+    return () => {
+      dispatch({
+        type: "FILTERINGTITLE",
+        payload: {
+          roomTitle: "",
+        },
+      });
+    };
+  }, []);
+
   return (
     <>
       <div className="search-wrapper">
@@ -51,6 +62,10 @@ const SearchBar = () => {
         </div>
       </div>
       <style jsx>{`
+        input:focus {
+          outline: none;
+        }
+
         .search-wrapper {
           width: 100%;
           min-width: 1190px;

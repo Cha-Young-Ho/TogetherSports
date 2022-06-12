@@ -1,5 +1,7 @@
 package com.togethersports.tosproject.user.dto;
 
+import com.togethersports.tosproject.area.ActiveArea;
+import com.togethersports.tosproject.mannerpoint.MannerPointStatus;
 import com.togethersports.tosproject.user.Gender;
 import lombok.*;
 
@@ -14,9 +16,8 @@ public class UserOfOtherInfo {
     private String userNickname;
     private int mannerPoint;
     private Gender gender;
-    private List<String> activeAreas;
+    private List<ActiveArea> activeAreas;
     private List<String> interests;
     private String userProfileImagePath;
-
+    private MannerPointStatus mannerType;
 }
-

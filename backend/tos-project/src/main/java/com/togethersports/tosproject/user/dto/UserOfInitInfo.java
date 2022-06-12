@@ -1,5 +1,6 @@
 package com.togethersports.tosproject.user.dto;
 
+import com.togethersports.tosproject.area.ActiveArea;
 import com.togethersports.tosproject.user.Gender;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,15 +29,13 @@ public class UserOfInitInfo {
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate userBirth;
-
-
-
+    
     @NotNull
     private Gender gender;
 
     @NotNull
     @Size(max = 5)
-    private List<String> activeAreas; // 관심 지역
+    private List<ActiveArea> activeAreas; // 관심 지역
 
     @NotNull
     @Size(min = 1, max = 5, message = "1~5개 사이의 운동 종목을 선택해야합니다.")

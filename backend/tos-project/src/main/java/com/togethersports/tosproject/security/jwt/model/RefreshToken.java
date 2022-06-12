@@ -20,7 +20,7 @@ import javax.persistence.*;
 @Entity
 public class RefreshToken {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "REFRESH_TOKEN_ID")
     private Long id;
 

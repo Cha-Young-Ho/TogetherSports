@@ -1,91 +1,327 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getOtherInfo } from "../../api/members";
 import { FailResponse } from "../../api/failResponse";
+import { patchDelegateHost, deleteKickOutUser } from "../../api/rooms";
+import { patchMannerPoint } from "../../api/members";
 
 const UserInfoModal = (props) => {
-  const myInfo = useSelector((state) => state.myInfoReducer);
+  const dispatch = useDispatch();
 
-  const userNickname = useSelector(
-    (state) => state.saveNicknameReducer.userNickname
+  // reducer에 저장된 내 정보 불러오기
+  const myInfo = useSelector((state) => state.myInfoReducer);
+  const host = useSelector((state) => state.roomRealTimeInfoReducer.host);
+
+  // 참여자목록에서 조회 선택된 회원의 id와 닉네임
+  const clickedUserId = useSelector((state) => state.saveClickedUserReducer.id);
+  const clickedUserNickname = useSelector(
+    (state) => state.saveClickedUserReducer.userNickname
   );
 
-  const [imageSrc, setImageSrc] = useState("");
-  const [nickname, setNickname] = useState(props.userNickname);
-  const [mannerPoint, setMannerPoint] = useState("");
+  // 다른 회원정보 조회에서 받아온 유저의 id
+  // 필요없을 수도
+  const [userId, setUserId] = useState(0);
+
+  // 조회하고자 하는 회원의 정보들
+  const [imageSrc, setImageSrc] = useState("/base_profileImage.jpg");
+  const [nickname, setNickname] = useState("");
+  const [mannerPoint, setMannerPoint] = useState(0);
   const [interest, setInterest] = useState([]);
+  const [gender, setGender] = useState("");
+  const [activeAreas, setActiveAreas] = useState([]);
+  const [mannerType, setMannerType] = useState("");
+
+  // 방장 위임하기
+  const delegateHostFunc = () => {
+    patchDelegateHost(props.roomId, userId)
+      .then((res) => {
+        if (res.status.code === 1208) {
+          dispatch({
+            type: "SAVEROOMHOST",
+            payload: {
+              beforeHostNickname: res.content.beforeHostNickname,
+              beforeHostId: res.content.beforeHostId,
+              afterHostNickname: res.content.afterHostNickname,
+              afterHostId: res.content.afterHostId,
+            },
+          });
+
+          console.log(res.status.message);
+          alert("방장이 변경되었습니다 !"); // 임시 텍스트
+
+          props.close;
+          return;
+        }
+        FailResponse(error.response.data.status.code, delegateHostFunc);
+      })
+      .catch((error) => {
+        FailResponse(error.response.data.status.code, delegateHostFunc);
+        return;
+      });
+  };
+
+  // 유저 강퇴하기
+  const kickOutUserFunc = () => {
+    deleteKickOutUser(props.roomId, userId)
+      .then((res) => {
+        if (res.status.code === 1204) {
+          console.log(res.status.message);
+          alert(`${res.content.userNickname} 님을 강퇴하였습니다.`);
+
+          props.close;
+          return;
+        }
+        FailResponse(error.response.data.status.code, kickOutUserFunc);
+      })
+      .catch((error) => {
+        FailResponse(error.response.data.status.code, kickOutUserFunc);
+        return;
+      });
+  };
+
+  // 다른사람 정보 얻기
+  const getOtherInfoFunc = (userId) => {
+    getOtherInfo(userId)
+      .then((res) => {
+        if (res.status.code === 5000) {
+          setUserId((userId = res.content.id));
+          setImageSrc((imageSrc = res.content.userProfileImagePath));
+          setNickname((nickname = res.content.userNickname));
+          setMannerPoint((mannerPoint = res.content.mannerPoint));
+          setInterest((interest = res.content.interests));
+          setGender((gender = res.content.gender));
+          setActiveAreas((activeAreas = res.content.activeAreas));
+          setMannerType((mannerType = res.content.mannerType));
+        }
+      })
+      .catch((error) => {
+        FailResponse(error.response.data.status.code, getOtherInfoFunc);
+        props.close();
+      });
+    // return;
+  };
+
+  // 매너지수 올리기
+  const upMannerPoint = (e) => {
+    const downButton = document.getElementsByClassName("button-down");
+
+    patchMannerPoint(myInfo.userNickname, clickedUserId, "UP")
+      .then((res) => {
+        // 이미 올려져있을때 다시 누르면 올리기 취소
+        if (e.target.innerText === "▲") {
+          setMannerPoint((mannerPoint = mannerPoint - 1));
+          e.target.innerText = "△";
+          downButton.innerText = "▽";
+          return;
+        } else {
+          // 올리기
+          if (res.status.code === 1109) {
+            setMannerPoint((mannerPoint = mannerPoint + 1));
+            e.target.innerText = "▲";
+            downButton.innerText = "▽";
+            console.log(res.status.message);
+            return;
+          }
+          // 내리기 취소
+          if (res.status.code === 1108 || downButton.innerText === "▼") {
+            setMannerPoint((mannerPoint = mannerPoint + 1));
+            e.target.innerText = "△";
+            downButton.innerText = "▽";
+            console.log(res.status.message);
+            return;
+          }
+        }
+
+        FailResponse(res.status.code, upMannerPoint);
+      })
+      .catch((error) => {
+        FailResponse(error.response.data.status.code, upMannerPoint);
+        return;
+      });
+  };
+
+  // 매너지수 내리기
+  const downMannerPoint = (e) => {
+    const upButton = document.getElementsByClassName("button-up");
+
+    patchMannerPoint(myInfo.userNickname, clickedUserId, "DOWN")
+      .then((res) => {
+        // 이미 내려져있을때 다시 누르면 내림 취소
+        if (e.target.innerText === "▼") {
+          setMannerPoint((mannerPoint = mannerPoint + 1));
+          upButton.innerText = "△";
+          e.target.innerText = "▽";
+          return;
+        } else {
+          // 내리기
+          if (res.status.code === 1110) {
+            setMannerPoint((mannerPoint = mannerPoint - 1));
+            upButton.innerText = "△";
+            e.target.innerText = "▼";
+            console.log(res.status.message);
+            return;
+          }
+          // 올리기 취소
+          if (res.status.code === 1107 || upButton.innerText === "▲") {
+            setMannerPoint((mannerPoint = mannerPoint - 1));
+            upButton.innerText = "△";
+            e.target.innerText = "▽";
+            console.log(res.status.message);
+            return;
+          }
+        }
+
+        FailResponse(res.status.code, downMannerPoint);
+      })
+      .catch((error) => {
+        FailResponse(error.response.data.status.code, downMannerPoint);
+        return;
+      });
+  };
 
   useEffect(() => {
-    if (props.info === "other") {
+    // 다른 회원 정보 조회
+    if (myInfo.userNickname !== clickedUserNickname) {
       if (props.open) {
-        getOtherInfo(userNickname)
-          .then((res) => {
-            if (res.status.code === 5000) {
-              setNickname(res.content.userNickname);
-              setMannerPoint(res.content.mannerPoint);
-              setInterest(res.content.interests);
-              setImageSrc(res.content.userProfileImagePath);
-            }
-          })
-          .catch((error) => {
-            FailResponse(error.response.data.status.code);
-            props.close();
-          });
-        return;
+        getOtherInfoFunc(clickedUserId);
       }
-    } else {
-      if (props.open && myInfo.userNickname === "익명") {
-        alert("회원 추가 정보가 없어 내 정보를 요청할 수 없습니다.");
-        props.close();
-        return;
-      }
+    }
 
-      setImageSrc(myInfo.userProfileImagePath);
-      setNickname(myInfo.userNickname);
-      setMannerPoint(myInfo.mannerPoint);
-      setInterest(myInfo.interests);
+    // 내 정보 조회
+    if (myInfo.userNickname === clickedUserNickname) {
+      setImageSrc((imageSrc = myInfo.userProfileImagePath));
+      setNickname((nickname = myInfo.userNickname));
+      setMannerPoint((mannerPoint = myInfo.mannerPoint));
+      setInterest((interest = myInfo.interests));
+      setGender((gender = myInfo.gender));
+      setActiveAreas((activeAreas = myInfo.activeAreas));
     }
   }, [props.open]);
 
   return (
     <>
       <div className={props.open ? "openModal modal" : "modal"}>
-        {props.open ? (
-          <section>
-            <header>
-              {props.info === "other" ? `${nickname}님의 프로필` : `마이프로필`}
-              <button className="exit-button" onClick={props.close}>
-                &times;
-              </button>
-            </header>
-            <div className="profile-body">
+        <div className="userinfo-modal-body">
+          <div className="header">
+            <button onClick={props.close}>&times;</button>
+          </div>
+
+          <div className="section">
+            <div className="left-section">
               <img src={imageSrc} className="pf-image"></img>
-              <div className="pf-nickName">{nickname}</div>
-              <div className="pf-mannerPoint">{mannerPoint}</div>
-              <div className="pf-interest">
-                {interest.map((exercise, index) => {
-                  return (
-                    <div key={index} className="pf-exercise">
-                      {exercise}
+
+              <div className="buttons">
+                {myInfo.userNickname === clickedUserNickname ? (
+                  <Link href="/usermodification">
+                    <button className="modify-button" onClick={props.close}>
+                      회원 정보 수정하기
+                    </button>
+                  </Link>
+                ) : myInfo.userNickname === host ? (
+                  <>
+                    <div>
+                      <button
+                        className="delegate-button"
+                        onClick={delegateHostFunc}
+                      >
+                        방장 위임하기
+                      </button>
+                      <button
+                        className="expulsion-button"
+                        onClick={kickOutUserFunc}
+                      >
+                        이 방에서 내보내기
+                      </button>
                     </div>
-                  );
-                })}
+                  </>
+                ) : (
+                  <></>
+                )}
               </div>
-              {props.info === "other" ? (
-                <button className="next-button" onClick={props.close}>
-                  나가기
-                </button>
-              ) : (
-                <Link href="/usermodification">
-                  <button className="next-button" onClick={props.close}>
-                    회원 정보 수정하기
-                  </button>
-                </Link>
-              )}
             </div>
-          </section>
-        ) : null}
+
+            <div className="right-section">
+              {gender === "male" ? (
+                <div className="pf-nickName">
+                  <div>
+                    {clickedUserNickname}
+                    <span style={{ color: "#00a6ed" }}>♂️</span>
+                  </div>
+                  <div>님의 프로필</div>
+                </div>
+              ) : (
+                <div className="pf-nickName">
+                  <div>
+                    {clickedUserNickname}
+                    <span style={{ color: "#f70a8d" }}>♀️</span>
+                  </div>
+                  <div>님의 프로필</div>
+                </div>
+              )}
+
+              <div className="pf-mannerPoint">
+                <img src="/mannerPoint.png"></img>
+                {mannerPoint}
+                {myInfo.userNickname === clickedUserNickname ? (
+                  <></>
+                ) : mannerType === "UP" ? (
+                  <div>
+                    <button className="button-up" onClick={upMannerPoint}>
+                      ▲
+                    </button>
+                    <button className="button-down" onClick={downMannerPoint}>
+                      ▽
+                    </button>
+                  </div>
+                ) : mannerType === "DOWN" ? (
+                  <div>
+                    <button className="button-up" onClick={upMannerPoint}>
+                      △
+                    </button>
+                    <button className="button-down" onClick={downMannerPoint}>
+                      ▼
+                    </button>
+                  </div>
+                ) : mannerType === "DEFAULT" ? (
+                  <div>
+                    <button className="button-up" onClick={upMannerPoint}>
+                      △
+                    </button>
+                    <button className="button-down" onClick={downMannerPoint}>
+                      ▽
+                    </button>
+                  </div>
+                ) : (
+                  // 테스트를 위한 임시 태그
+                  // <div>
+                  //   <button onClick={upMannerPoint}>△</button>
+                  //   <button onClick={downMannerPoint}>▽</button>
+                  // </div>
+                  <></>
+                )}
+              </div>
+
+              <div className="pf-interest">
+                <p>관심 종목</p>
+                <div className="interests">
+                  {interest.map((exercise, index) => {
+                    return <div key={index}>{exercise}</div>;
+                  })}
+                </div>
+              </div>
+
+              <div className="pf-activearea">
+                <p>활동 지역</p>
+                <div className="areas">
+                  {activeAreas.map((area, index) => {
+                    return <div key={index}>{area.location}</div>;
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <style jsx>{`
         .modal {
@@ -99,101 +335,207 @@ const UserInfoModal = (props) => {
           background-color: rgba(0, 0, 0, 0.6);
         }
 
-        button {
-          outline: none;
-          cursor: pointer;
-          border: 0;
+        .modal.openModal {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          animation: modal-bg-show 0.3s; // 스르륵 효과
         }
 
-        section {
-          //width: 400px;
-          height: 540px;
-          width: 90%;
-          max-width: 450px;
-          margin: 0 auto;
+        .userinfo-modal-body {
+          min-width: 680px;
+          width: 45%;
+          min-height: 410px;
           border-radius: 22px;
-          background-color: #fff;
+          background-color: white;
           box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
-          /* 팝업이 열릴때 스르륵 열리는 효과 */
-          animation: modal-show 0.3s;
-          overflow: hidden;
-        }
-
-        header {
-          width: 100%;
-          height: 45px;
-          position: relative;
-          padding: 16px 16px 16px 16px;
-          background-color: #f1f1f1;
-          font-weight: bold;
-          text-align: center;
-        }
-
-        .exit-button {
-          position: absolute;
-          top: 15px;
-          right: 15px;
-          width: 30px;
-          font-size: 21px;
-          font-weight: 700;
-          text-align: center;
-          color: #999;
-          background-color: transparent;
-        }
-
-        .profile-body {
-          width: 100%;
-          height: 495px;
           display: flex;
           flex-direction: column;
           justify-content: center;
           align-items: center;
-          border-top: 1px solid #dee2e6;
+          padding: 15px;
+          /* overflow: auto; */
+        }
+
+        .header {
+          width: 100%;
+          position: relative;
+        }
+
+        .header > button {
+          position: absolute;
+          top: 0px;
+          right: 0px;
+          color: #999;
+          font-size: 3rem;
+          background-color: white;
+          border: none;
+          cursor: pointer;
+        }
+
+        .section {
+          width: 100%;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+        }
+
+        .left-section {
+          width: 40%;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
         }
 
         .pf-image {
-          width: 280px;
-          height: 300px;
-          border: 1px solid black;
-          margin-bottom: 20px;
+          width: 100%;
+          height: width;
           border-radius: 22px;
+          box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+          border: solid 1px #e2e2e2;
+          background-color: #efefef;
+          margin-bottom: 30px;
+        }
+
+        .buttons {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .buttons > div {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .delegate-button,
+        .expulsion-button,
+        .modify-button {
+          width: 100%;
+          height: 40px;
+          border: none;
+          border-radius: 20px;
+          background-color: #00555f;
+          color: white;
+          font-size: 1.5rem;
+          cursor: pointer;
+        }
+
+        .delegate-button {
+          margin-bottom: 10px;
+        }
+
+        .expulsion-button {
+          background-color: #d8d8d8;
+        }
+
+        .right-section {
+          width: 55%;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
         }
 
         .pf-nickName {
+          display: flex;
+          flex-direction: row;
+          margin-bottom: 20px;
+        }
+
+        .pf-nickName > div {
+          font-size: 1.6rem;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .pf-nickName > div:nth-child(1) {
+          padding: 5px 15px;
+          border-radius: 10px;
+          border: solid 1px #e2e2e2;
+          background-color: #fff;
+          font-weight: bold;
+          margin-right: 10px;
+        }
+
+        .pf-nickName span {
+          margin-left: 5px;
+        }
+
+        .pf-mannerPoint {
           font-size: 2rem;
+          font-weight: bold;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          margin-bottom: 20px;
+        }
+
+        .pf-mannerPoint > img {
+          width: 24px;
+          height: 20px;
+          margin-right: 10px;
+        }
+
+        .pf-mannerPoint > div {
+          margin-left: 20px;
+          display: flex;
+          flex-direction: row;
+        }
+
+        .pf-mannerPoint button {
+          font-size: 2rem;
+          font-weight: bold;
+          border: none;
+          color: #08555f;
+          background-color: white;
+          margin-right: 10px;
+          cursor: pointer;
+        }
+
+        .pf-interest,
+        .pf-activearea {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .pf-interest {
+          margin-bottom: 20px;
+        }
+
+        .pf-interest > p,
+        .pf-activearea > p {
+          font-size: 1.6rem;
           font-weight: bold;
           margin-bottom: 10px;
         }
 
-        .pf-mannerPoint {
-          font-size: 1.5rem;
-          margin-bottom: 5px;
-        }
-
-        .pf-interest {
-          margin-bottom: 10px;
+        .interests {
           display: flex;
+          flex-direction: row;
         }
 
-        .pf-exercise {
-          margin: 5px;
-        }
-
-        .next-button {
-          width: 300px;
-          height: 40px;
-          border-radius: 20px;
-          background-color: #00555f;
-          color: white;
-          font-weight: 200px;
-          font-size: 1.5rem;
-        }
-
-        .modal.openModal {
+        .interests div {
           display: flex;
           align-items: center;
-          /* 팝업이 열릴때 스르륵 열리는 효과 */
-          animation: modal-bg-show 0.3s;
+          padding: 5px 10px;
+          margin-right: 10px;
+          border-radius: 6px;
+          background-color: #efefef;
+          font-size: 1.3rem;
+        }
+
+        .areas div {
+          display: flex;
+          justify-content: center;
+          width: 210px;
+          margin-bottom: 5px;
+          padding: 5px 10px;
+          border-radius: 6px;
+          background-color: #efefef;
+          font-size: 1.3rem;
         }
 
         @keyframes modal-show {

@@ -1,135 +1,74 @@
-import StompJS from "stompjs";
-import SockJS from "sockjs-client";
 import { useState, useEffect } from "react";
 import { postRefreshToken } from "../api/etc";
 import { getChatInfo } from "../api/rooms";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/router";
+import SockJS from "sockjs-client";
+import FailResponse from "../api/failResponse";
+import StompJS from "stompjs";
 
-const Chatting = () => {
+let clientInfo;
+let nowMessage = "";
+const Chatting = ({ chatOpen }) => {
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const roomId = useSelector((state) => state.saveRoomIdReducer.roomId);
+  const myID = useSelector((state) => state.myInfoReducer.id);
   const [messageToServer, setMessageToServer] = useState("");
-  const [showingMessages, setShowingMessages] = useState([
-    //   [
-    //     {
-    //       userId: "me",
-    //       nickname: "동동이",
-    //       userProfileImagePath: "/base_profileImage.jpg",
-    //       content: {
-    //         message: "안녕하세요",
-    //         sendAt: "2022-12-11T13:05",
-    //       },
-    //     },
-    //     {
-    //       userId: "me",
-    //       nickname: "동동이",
-    //       userProfileImagePath: "/base_profileImage.jpg",
-    //       content: {
-    //         message: "안녕하세요",
-    //         sendAt: "2022-12-11T13:05",
-    //       },
-    //     },
-    //   ],
-    //   [
-    //     {
-    //       userId: "me2",
-    //       nickname: "아리",
-    //       userProfileImagePath: "/base_profileImage.jpg",
-    //       content: {
-    //         message:
-    //           "감사해요ㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁ",
-    //         sendAt: "2022-12-11T13:05",
-    //       },
-    //     },
-    //     {
-    //       userId: "me2",
-    //       nickname: "아빠",
-    //       userProfileImagePath: "/base_profileImage.jpg",
-    //       content: {
-    //         message: "잘있어요",
-    //         sendAt: "2022-12-11T13:05",
-    //       },
-    //     },
-    //     {
-    //       userId: "me2",
-    //       nickname: "엄마",
-    //       userProfileImagePath: "/base_profileImage.jpg",
-    //       content: {
-    //         message: "다시만나요",
-    //         sendAt: "2022-12-11T13:05",
-    //       },
-    //     },
-    //   ],
-    //   [
-    //     {
-    //       userId: "me",
-    //       nickname: "동동이",
-    //       userProfileImagePath: "/base_profileImage.jpg",
-    //       content: {
-    //         message: "안녕하세요",
-    //         sendAt: "2022-12-11T13:05",
-    //       },
-    //     },
-    //   ],
-    //   [
-    //     {
-    //       userId: "me2",
-    //       nickname: "아리",
-    //       userProfileImagePath: "/base_profileImage.jpg",
-    //       content: {
-    //         message: "감사해요",
-    //         sendAt: "2022-12-11T13:05",
-    //       },
-    //     },
-    //   ],
-  ]);
+  const [showingMessages, setShowingMessages] = useState([]);
 
-  let sockJS = new SockJS("http://localhost:8080/api/websocket");
-  let client = StompJS.over(sockJS);
+  let preChattingID = 0;
 
-  const connect = () => {
-    client.connect(
-      { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
+  const connect = (type) => {
+    const sockJS = new SockJS("http://localhost:8080/api/websocket");
+    clientInfo = Stomp.over(sockJS);
+
+    clientInfo.connect(
+      {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        roomId: `${roomId}`,
+      },
       () => {
-        client.subscribe(
-          "/topic/room/1/chat",
+        clientInfo.subscribe(
+          `/topic/room/${roomId}/chat`,
           (data) => {
             const newMessage = JSON.parse(data.body);
-            const msgLen = showingMessages.length;
 
-            if (
-              msgLen &&
-              newMessage.userId === showingMessages[msgLen - 1][0].userId
-            ) {
-              const temp = [...showingMessages];
-              temp[temp.length - 1].push({
-                userId: newMessage.userId,
-                nickname: newMessage.nickname,
-                userProfileImagePath: newMessage.userProfileImagePath,
-                content: {
-                  message: newMessage.content.message,
-                  sendAt: newMessage.content.sendAt,
-                },
-              });
-
-              setShowingMessages(temp);
-            } else {
-              setShowingMessages((prev) => [...prev, newMessage]);
-            }
-
-            setMessageToServer("");
+            messageBranch(newMessage);
           },
-          { Authorization: `Bearer ${localStorage.getItem("accessToken")}` }
+          {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            roomId: `${roomId}`,
+          }
         );
+
+        if (type === "refresh") {
+          clientInfo.send(
+            `/api/room/${roomId}/chat`,
+            {
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+              roomId: `${roomId}`,
+            },
+            JSON.stringify({
+              message: nowMessage,
+            })
+          );
+        }
       },
       (error) => {
-        console.log(error);
+        if (typeof error !== "object") return;
+
         postRefreshToken(localStorage.getItem("refreshToken")).then((res) => {
           if (res.status.code === 5000) {
             localStorage.setItem("accessToken", res.content.accessToken);
             localStorage.setItem("refreshToken", res.content.refreshToken);
-            console.log("두 토큰 재발급 완료");
+
+            connect("refresh");
           } else {
-            console.log("토큰 재발급 실패, 토큰 삭제...");
+            alert("알 수 없는 오류가 발생했습니다. 다시 시도해 주세요.");
             localStorage.removeItem("accessToken");
             localStorage.removeItem("refreshToken");
+            router.push("/");
           }
         });
       }
@@ -138,33 +77,161 @@ const Chatting = () => {
 
   const addMessageToServer = (e) => {
     setMessageToServer(e.target.value);
+    nowMessage = e.target.value;
   };
 
   const onSubmitMessage = (e) => {
     e.preventDefault();
-    client.send(
-      "/api/room/1/chat",
-      { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
+    if (messageToServer === "") return;
+
+    clientInfo.send(
+      `/api/room/${roomId}/chat`,
+      {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        roomId: `${roomId}`,
+      },
       JSON.stringify({
         message: messageToServer,
-        roomId: "temp",
       })
     );
+
+    setMessageToServer("");
+  };
+
+  const messageBranch = (JSONBodys) => {
+    switch (JSONBodys.status.type) {
+      case "User":
+        setShowingMessages((prev) => [...prev, JSONBodys.content]);
+        break;
+      case "System":
+        systemMessageBranch(JSONBodys);
+        break;
+      case "Room":
+        updateRoomDataFunc(JSONBodys);
+        break;
+    }
+  };
+
+  const systemMessageBranch = (JSONBodys) => {
+    switch (JSONBodys.status.code) {
+      case 1501: //입장
+        dispatch({
+          type: "SAVEROOMALARM",
+          payload: {
+            messages: `${JSONBodys.content.userNickname}님이 참여했습니다.`,
+          },
+        });
+        break;
+
+      case 1502: //퇴장
+        // 내가 퇴장하면
+        if (JSONBodys.content.id === myID) {
+          clientInfo.disconnect(() => alert("방에서 퇴장합니다."));
+          router.replace("/room/roomlist");
+          return;
+        }
+
+        dispatch({
+          type: "SAVEROOMALARM",
+          payload: {
+            messages: `${JSONBodys.content.userNickname}님이 퇴장했습니다.`,
+          },
+        });
+        break;
+
+      case 1503: //강퇴
+        // 내가 강퇴당하면
+        if (JSONBodys.content.id === myID) {
+          clientInfo.disconnect(() => alert("방장으로부터 강퇴되었습니다."));
+          router.replace("/");
+          return;
+        }
+
+        dispatch({
+          type: "SAVEROOMALARM",
+          payload: {
+            messages: `${JSONBodys.content.userNickname}님이 강퇴되었습니다.`,
+          },
+        });
+        break;
+
+      case 1504: //방장위임
+        dispatch({
+          type: "CHANGEHOST",
+          payload: {
+            host: JSONBodys.content.afterHostNickname,
+          },
+        });
+
+        dispatch({
+          type: "SAVEROOMALARM",
+          payload: {
+            messages: `${JSONBodys.content.afterHostNickname}님이 방장이 되었습니다.`,
+          },
+        });
+        break;
+    }
+  };
+
+  const updateRoomDataFunc = (JSONBodys) => {
+    const roomInfo = JSONBodys.content.roomOfInfo;
+    dispatch({
+      type: "SAVEROOMINFOS",
+      payload: {
+        roomTitle: roomInfo.roomTitle,
+        roomContent: roomInfo.roomContent,
+        roomArea: roomInfo.roomArea,
+        exercise: roomInfo.exercise,
+        limitPeopleCount: roomInfo.limitPeopleCount,
+        participantCount: roomInfo.participantCount,
+        startAppointmentDate: roomInfo.startAppointmentDate,
+        endAppointmentDate: roomInfo.endAppointmentDate,
+        createdTime: roomInfo.createdTime,
+        updatedTime: roomInfo.updatedTime,
+        host: roomInfo.host,
+        creatorNickName: roomInfo.creatorNickName,
+        roomImages: roomInfo.roomImages,
+        tags: roomInfo.tags,
+        viewCount: roomInfo.viewCount,
+        participants: JSONBodys.content.participants,
+      },
+    });
+  };
+
+  const func_getChatInfo = () => {
+    getChatInfo(roomId)
+      .then((res) => {
+        if (res.status.code === 5000) {
+          setShowingMessages(res.content.content);
+        } else {
+          FailResponse(res.status.code);
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          FailResponse(error.response.data.status.code, func_getChatInfo);
+        }
+      });
   };
 
   useEffect(() => {
-    getChatInfo().then((res) => {
-      if (res.status.code === 5000) {
-      }
-    });
+    if (chatOpen && roomId !== "") {
+      func_getChatInfo();
 
-    connect();
-  }, []);
+      connect();
+    }
+  }, [roomId]);
 
   useEffect(() => {
     document.getElementsByClassName("dialog")[0].scrollTop =
       document.getElementsByClassName("dialog")[0].scrollHeight;
   }, [showingMessages]);
+
+  useEffect(() => {
+    return () => {
+      if (clientInfo) clientInfo.disconnect();
+    };
+  }, []);
 
   return (
     <>
@@ -172,41 +239,38 @@ const Chatting = () => {
         <div className="dialog">
           <div className="messages">
             {showingMessages.length ? (
-              showingMessages.map((messages) => {
-                // 내 메세지가 아닌 경우만 중복에 대해 처리필요
-                if (messages.length > 1 && messages[0].userId !== "me") {
-                  return messages.map((datas, index) => {
-                    return index === messages.length - 1 ? (
-                      <div key={index} className="other-message">
-                        <img
-                          className="msg-profileImg"
-                          src={`${datas.userProfileImagePath}`}
-                        ></img>
-                        <p>{datas.content.message}</p>
-                      </div>
-                    ) : (
-                      <div key={index} className="dupID-message">
-                        <p>{datas.content.message}</p>
-                      </div>
-                    );
-                  });
+              showingMessages.map((messages, index) => {
+                // 내가 보낸 메세지 일 때
+                if (messages.userId === myID) {
+                  preChattingID = messages.userId;
+
+                  return (
+                    <div key={index} className="my-message">
+                      <p>{messages.message}</p>
+                    </div>
+                  );
                 }
 
-                return messages.map((datas, index) => {
-                  return datas.userId === "me" ? (
-                    <div key={index} className="my-message">
-                      <p>{datas.content.message}</p>
+                // 다른 사람의 메세지 일 때
+                if (messages.userId === preChattingID) {
+                  return (
+                    <div key={index} className="dupID-message">
+                      <p>{messages.message}</p>
                     </div>
-                  ) : (
+                  );
+                } else {
+                  preChattingID = messages.userId;
+
+                  return (
                     <div key={index} className="other-message">
                       <img
                         className="msg-profileImg"
-                        src={`${datas.userProfileImagePath}`}
+                        src={`${messages.userProfileImagePath}`}
                       ></img>
-                      <p>{datas.content.message}</p>
+                      <p>{messages.message}</p>
                     </div>
                   );
-                });
+                }
               })
             ) : (
               <></>
@@ -227,6 +291,10 @@ const Chatting = () => {
         </form>
       </div>
       <style jsx>{`
+        input:focus {
+          outline: none;
+        }
+
         .chatting {
           width: 100%;
           height: 433px;

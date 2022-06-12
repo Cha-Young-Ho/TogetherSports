@@ -6,7 +6,7 @@ import lombok.Setter;
 
 /**
  * <h1>Response</h1>
- * <p>HTTP 요청 응답 갳체</p>
+ * <p>HTTP 요청 응답 객체</p>
  * @param <T> 본문에 들어갈 객체 타입 (json 으로 변환될 대상)
  */
 @Setter
@@ -43,5 +43,4 @@ public class Response<T> {
 
         return response;
     }
-
 }

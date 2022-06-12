@@ -40,6 +40,7 @@ const Filter = () => {
   };
   const closeStartCalendarModal = () => {
     setStartCalendarModalOpen(false);
+    document.body.style.overflow = "unset";
   };
 
   const openEndCalendarModal = () => {
@@ -47,6 +48,7 @@ const Filter = () => {
   };
   const closeEndCalendarModal = () => {
     setEndCalendarModalOpen(false);
+    document.body.style.overflow = "unset";
   };
 
   const openAreaModal = () => {
@@ -54,6 +56,7 @@ const Filter = () => {
   };
   const closeAreaModal = () => {
     setAreaModalOpen(false);
+    document.body.style.overflow = "unset";
   };
 
   // calendarModal의 시기 받아오기 위한 함수
@@ -108,8 +111,6 @@ const Filter = () => {
   };
 
   const clickDoFilteringButton = () => {
-    console.log("Execute Filtering...");
-
     if (
       moment(curStartFilteringDate).isSame(curEndFilteringDate) &&
       startTime > endTime
@@ -132,8 +133,6 @@ const Filter = () => {
   };
 
   const clickResetFilterButton = () => {
-    console.log("Reset Filters...");
-
     setStartTime("");
     setEndTime("");
     setEnterAccessPeople("");
@@ -237,6 +236,21 @@ const Filter = () => {
     }
   }, [addAreaClickDetection.add]);
 
+  useEffect(() => {
+    const FilterObj = JSON.parse(localStorage.getItem("Filters"));
+
+    if (FilterObj) {
+      setSelectedAreas(FilterObj.selectedArea);
+      setStartTime(FilterObj.startTime);
+      setEndTime(FilterObj.endTime);
+      setContainNoAdmittance(FilterObj.containNoAdmittance);
+      setContainTimeClosing(FilterObj.containTimeClosing);
+      setCurStartFilteringDate(FilterObj.startDate);
+      setCurEndFilteringDate(FilterObj.endDate);
+      setEnterAccessPeople(FilterObj.requiredPeopleCount);
+    }
+  }, []);
+
   return (
     <>
       <div className="filter-wrapper">
@@ -245,15 +259,15 @@ const Filter = () => {
             <input
               type="checkbox"
               id="enter"
-              checked={containTimeClosing}
-              onChange={() => setContainTimeClosing(!containTimeClosing)}
+              checked={containNoAdmittance}
+              onChange={() => setContainNoAdmittance(!containNoAdmittance)}
             ></input>
             <label htmlFor="enter">입장 마감된 방 보기</label>
             <input
               type="checkbox"
               id="time"
-              checked={containNoAdmittance}
-              onChange={() => setContainNoAdmittance(!containNoAdmittance)}
+              checked={containTimeClosing}
+              onChange={() => setContainTimeClosing(!containTimeClosing)}
             ></input>
             <label htmlFor="time">시간 마감된 방 보기</label>
           </div>
@@ -365,6 +379,10 @@ const Filter = () => {
       </div>
 
       <style jsx>{`
+        input:focus {
+          outline: none;
+        }
+
         .filter-wrapper {
           width: 100%;
           max-width: 1920px;

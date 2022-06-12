@@ -1,29 +1,36 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const ParticipantList = (props) => {
   const dispatch = useDispatch();
+  const host = useSelector((state) => state.roomRealTimeInfoReducer.host);
+  const participantArr = useSelector(
+    (state) => state.roomRealTimeInfoReducer.participants
+  );
 
-  const onClickUserInfo = () => {
+  const onClickUserInfo = (userId, userNickname) => {
     props.participantListOpenModal();
 
     dispatch({
-      type: "SAVENICKNAME",
+      type: "SAVECLICKEDUSERINFO",
       payload: {
-        // 수정 필요할듯
-        userNickname: props.participantArr.userNickname,
+        id: userId,
+        userNickname: userNickname,
       },
     });
   };
 
   return (
     <>
-      {props.participantArr.length !== 0 ? (
-        props.participantArr.map((participant, index) => {
-          if (participant.userNickname === props.host) {
+      {participantArr.length !== 0 ? (
+        participantArr.map((participant, index) => {
+          // 방장이라면
+          if (participant.userNickname === host) {
             return (
               <button
                 className="participant"
-                onClick={onClickUserInfo}
+                onClick={() => {
+                  onClickUserInfo(participant.id, participant.userNickname);
+                }}
                 key={index}
               >
                 <div className="profile">
@@ -37,7 +44,9 @@ const ParticipantList = (props) => {
             return (
               <button
                 className="participant"
-                onClick={onClickUserInfo}
+                onClick={() => {
+                  onClickUserInfo(participant.id, participant.userNickname);
+                }}
                 key={index}
               >
                 <div className="profile">

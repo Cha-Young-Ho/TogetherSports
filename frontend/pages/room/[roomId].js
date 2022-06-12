@@ -1,162 +1,227 @@
-import Link from "next/link";
 import { useState, useEffect } from "react";
 import ImageSlide from "../../components/imageSlide";
 import Calendar from "../../components/calendar/calendar";
 import ParticipantList from "../../components/rooms/participantList";
 import UserInfoModal from "../../components/modals/userInfoModal";
 import ModifyRoomModal from "../../components/modals/modifyRoomModal";
-import { useSelector } from "react-redux";
 import Chatting from "../../components/chatting";
-import { getRoomDetail } from "../../api/rooms";
+import { FailResponse } from "../../api/failResponse";
+import { getRoomDetail, deleteLeaveRoom, deleteRoom } from "../../api/rooms";
+import { useRouter } from "next/router";
+import { useDispatch, useSelector } from "react-redux";
+import Map from "../../components/Map";
+import AlarmModal from "../../components/modals/alarmModal";
+import FloatingAlarm from "../../components/rooms/floatingAlarm";
+import Head from "next/head";
 
 const Room = () => {
-  const getRoomId = useSelector((state) => state.saveRoomIdReducer);
-  const roomId = getRoomId.roomId;
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const roomTitle = useSelector(
+    (state) => state.roomRealTimeInfoReducer.roomTitle
+  );
+  const roomContent = useSelector(
+    (state) => state.roomRealTimeInfoReducer.roomContent
+  );
+  const roomArea = useSelector(
+    (state) => state.roomRealTimeInfoReducer.roomArea
+  );
+  const exercise = useSelector(
+    (state) => state.roomRealTimeInfoReducer.exercise
+  );
+  const participantCount = useSelector(
+    (state) => state.roomRealTimeInfoReducer.participantCount
+  );
+  const limitPeopleCount = useSelector(
+    (state) => state.roomRealTimeInfoReducer.limitPeopleCount
+  );
+  const startAppointmentDate = useSelector(
+    (state) => state.roomRealTimeInfoReducer.startAppointmentDate
+  );
+  const endAppointmentDate = useSelector(
+    (state) => state.roomRealTimeInfoReducer.endAppointmentDate
+  );
+  const createdTime = useSelector(
+    (state) => state.roomRealTimeInfoReducer.createdTime
+  );
+  const updatedTime = useSelector(
+    (state) => state.roomRealTimeInfoReducer.updatedTime
+  );
+  // const creatorNickName = useSelector(
+  //   (state) => state.roomRealTimeInfoReducer.creatorNickName
+  // );
+  // const roomImages = useSelector(
+  //   (state) => state.roomRealTimeInfoReducer.roomImages
+  // );
+  const host = useSelector((state) => state.roomRealTimeInfoReducer.host);
+  const tags = useSelector((state) => state.roomRealTimeInfoReducer.tags);
+  const viewCount = useSelector(
+    (state) => state.roomRealTimeInfoReducer.viewCount
+  );
+  // const participants = useSelector(
+  //   (state) => state.roomRealTimeInfoReducer.participants
+  // );
 
-  // 방 정보에 대한 필드
-  const [creatorNickName, setCreatorNickName] = useState(""); // 방 생성자
-  const [host, setHost] = useState("짱구"); // 방장
-  const [roomTitle, setRoomTitle] = useState("");
-  const [roomContent, setRoomContent] = useState("");
-  const [roomArea, setRoomArea] = useState("서울 송파구 올림픽로 19-2"); // 임시 데이터
-  const [limitPeopleCount, setLimitPeopleCount] = useState("");
-  const [participantCount, setParticipantCount] = useState("");
-  const [exercise, setExercise] = useState("");
-  const [tags, setTags] = useState([]);
-  const [startAppointmentDate, setStartAppointmentDate] = useState("");
-  const [endAppointmentDate, setEndAppointmentDate] = useState("");
-  const [viewCount, setViewCount] = useState("");
-  const [roomImages, setRoomImages] = useState([
-    {
-      // 임시 데이터
-      order: -1,
-      imagePath: "logo-sign.png",
-    },
-  ]);
+  const { roomId } = router.query;
+  const [chatOpen, setChatOpen] = useState(false);
 
-  // 참가자 목록에 대한 필드
-  const [participants, setParticipants] = useState([
-    {
-      // 임시 데이터
-      userNickname: "짱구",
-      mannerPoint: 10,
-      activeAreas: ["서울특별시 강남구 강남동"],
-      userProfileImagePath: "",
-      interests: ["축구", "야구", "농구"],
-      gender: "male",
-    },
-    {
-      // 임시 데이터
-      userNickname: "짱아",
-      mannerPoint: 10,
-      activeAreas: ["서울특별시 강남구 강남동"],
-      userProfileImagePath: "",
-      interests: ["축구", "야구", "농구"],
-      gender: "female",
-    },
-  ]);
+  // 내가 방장인지 아닌지 확인하기 위한 변수
+  const myNickname = useSelector((state) => state.myInfoReducer.userNickname);
 
   // 방 수정하기
   const [modifyModalOpen, setModifyModalOpen] = useState(false);
-  const openModifyModal = () => {
-    setModifyModalOpen(true);
-  };
-  const closeModifyModal = () => {
-    setModifyModalOpen(false);
-  };
+  const openModifyModal = () => setModifyModalOpen(true);
+  const closeModifyModal = () => setModifyModalOpen(false);
 
   // 접속자 목록 modal 관련 데이터
   const [participantListModalOpen, setParticipantListModalOpen] =
     useState(false);
+  const participantListOpenModal = () => setParticipantListModalOpen(true);
+  const participantListCloseModal = () => setParticipantListModalOpen(false);
 
-  const participantListOpenModal = () => {
-    setParticipantListModalOpen(true);
+  // 방 나가기 여부 재차 확인 modal 관련 데이터
+  const [alarmModalOpen, setAlarmModalOpen] = useState(false);
+  const openAlarmModal = () => setAlarmModalOpen(true);
+  const closeAlarmModal = () => setAlarmModalOpen(false);
+
+  // 우측 하단 고정 알림 관련 데이터
+  const [floatingAlarmOpen, setFloatingAlarmOpen] = useState(false);
+
+  const floatingAlarmOpenFunc = (e) => {
+    setFloatingAlarmOpen(true);
+    e.target.style.display = "none";
   };
-  const participantListCloseModal = () => {
-    setParticipantListModalOpen(false);
+
+  const floatingAlarmCloseFunc = () => {
+    const button = document.getElementsByClassName("button-alarm");
+    setFloatingAlarmOpen(false);
+    button[0].style.display = "block";
   };
 
-  const onLoadKakaoMap = () => {
-    kakao.maps.load(() => {
-      const container = document.getElementById("map"),
-        options = {
-          center: new kakao.maps.LatLng(37.56682420062817, 126.97864093976689),
-          level: 4,
-        };
+  const func_getRoomDetail = () => {
+    getRoomDetail(roomId)
+      .then((res) => {
+        if (res.status.code === 5000) {
+          const roomInfo = res.content.roomOfInfo;
 
-      const map = new kakao.maps.Map(container, options); // 지도 생성
-      const geocoder = new kakao.maps.services.Geocoder(); // 주소-좌표 변환 객체 생성
-
-      // 주소로 좌표를 검색
-      geocoder.addressSearch(`${roomArea}`, function (result, status) {
-        if (status === kakao.maps.services.Status.OK) {
-          const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-
-          // 위치에 마커 표시
-          const marker = new kakao.maps.Marker({
-            map: map,
-            position: coords,
+          dispatch({
+            type: "SAVEROOMINFOS",
+            payload: {
+              roomTitle: roomInfo.roomTitle,
+              roomContent: roomInfo.roomContent,
+              roomArea: roomInfo.roomArea,
+              exercise: roomInfo.exercise,
+              participantCount: roomInfo.participantCount,
+              limitPeopleCount: roomInfo.limitPeopleCount,
+              startAppointmentDate: roomInfo.startAppointmentDate,
+              endAppointmentDate: roomInfo.endAppointmentDate,
+              createdTime: roomInfo.createdTime,
+              updatedTime: roomInfo.updatedTime,
+              host: roomInfo.host,
+              creatorNickName: roomInfo.creatorNickName,
+              roomImages: roomInfo.roomImages,
+              tags: roomInfo.tags,
+              viewCount: roomInfo.viewCount,
+              participants: res.content.participants,
+            },
           });
 
-          // 인포윈도우로 장소에 대한 설명을 표시
-          const infowindow = new kakao.maps.InfoWindow({
-            content:
-              '<div style="width:150px;text-align:center;padding:6px 0;">만남의 장소</div>',
+          dispatch({
+            type: "SAVEROOMDATE",
+            payload: {
+              appointmentDate: `${
+                roomInfo.startAppointmentDate[8] === "0"
+                  ? roomInfo.startAppointmentDate.substr(0, 8) +
+                    roomInfo.startAppointmentDate[9]
+                  : roomInfo.startAppointmentDate.substr(0, 10)
+              }`,
+            },
           });
-          infowindow.open(map, marker);
 
-          // 지도의 중심을 결과값으로 받은 위치로 이동
-          map.setCenter(coords);
+          dispatch({
+            type: "SAVEPOM",
+            payload: {
+              placeOfMeeting: roomInfo.roomArea,
+            },
+          });
+        } else {
+          FailResponse(res.status.code);
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          FailResponse(error.response.data.status.code, func_getRoomDetail);
         }
       });
-    });
+  };
+
+  // 방 나가기
+  const onLeaveRoom = () => {
+    deleteLeaveRoom(roomId)
+      .then((res) => {
+        if (res.status.code === 1203) {
+          router.push("/room/roomlist"); // 방 목록 페이지로 이동
+        } else {
+          FailResponse(res.status.code);
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          FailResponse(error.response.data.status.code, onLeaveRoom);
+        }
+      });
+    // 여기서 참가자목록 같은걸 업데이트 할 필요가 있나?
+  };
+
+  // 방 삭제하기 -> 보류
+  const onDeleteRoom = () => {
+    deleteRoom(roomId)
+      .then((res) => {
+        if (res.status.code === 5000) {
+          alert("방을 성공적으로 삭제하였습니다 !"); // 임시 텍스트
+          router.push("/room/roomlist"); // 방 목록 페이지로 이동
+        } else {
+          FailResponse(res.status.code);
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          FailResponse(error.response.data.status.code, onDeleteRoom);
+        }
+      });
   };
 
   useEffect(() => {
-    const mapScript = document.createElement("script");
-    mapScript.async = true;
-    mapScript.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAOMAP_APPKEY}&autoload=false&libraries=services`;
-    document.head.appendChild(mapScript);
-    mapScript.addEventListener("load", onLoadKakaoMap);
-  }, []);
+    if (roomId) {
+      func_getRoomDetail();
 
-  useEffect(() => {
-    getRoomDetail(roomId).then((res) => {
-      if (res.status.code === 5000) {
-        const roomInfo = res.content.roomOfInfo;
+      dispatch({
+        type: "SAVEROOMID",
+        payload: {
+          roomId: roomId,
+        },
+      });
 
-        setCreatorNickName((creatorNickName = roomInfo.creatorNickName));
-        setHost((host = roomInfo.host));
-        setRoomTitle((roomTitle = roomInfo.roomTitle));
-        setRoomContent((roomContent = roomInfo.roomContent));
-        setRoomArea((roomArea = roomInfo.roomArea));
-        setLimitPeopleCount((limitPeopleCount = roomInfo.limitPeopleCount));
-        setParticipantCount((participantCount = roomInfo.participantCount));
-        setExercise((exercise = roomInfo.exercise));
-        setTags((tags = roomInfo.tags));
-        setStartAppointmentDate(
-          (startAppointmentDate = roomInfo.startAppointmentDate)
-        );
-        setEndAppointmentDate(
-          (endAppointmentDate = roomInfo.endAppointmentDate)
-        );
-        setViewCount((viewCount = roomInfo.viewCount));
-        setRoomImages((roomImages = roomInfo.roomImages));
-        setParticipants((participants = res.content.participants));
-      } else {
-        FailResponse(res.status.code);
-      }
-    });
-  });
+      setChatOpen(true);
+    }
+  }, [roomId]);
 
   return (
     <>
+      <Head>
+        <title>{roomTitle}</title>
+      </Head>
       <div className="container">
         <div className="main-info">
           <div className="header">
             <div className="viewCount">
               <p>{`조회수 : ${viewCount}`}</p>
-              {/* <p>{`생성일시 : 2022년 4월 23일 PM 2 : 15`}</p> */}
+              <p>{`생성 일시 : ${createdTime.substr(0, 16)}`}</p>
+              {updatedTime === "" ? (
+                <></>
+              ) : (
+                <p>{`최근 수정 : ${updatedTime.substr(0, 16)}`}</p>
+              )}
             </div>
 
             <div className="long-line"></div>
@@ -178,17 +243,31 @@ const Room = () => {
             <div className="title">
               <p>{roomTitle}</p>
               <div>
-                <button className="button-modify" onClick={openModifyModal}>
-                  수정하기
+                {myNickname === host ? (
+                  <button className="button-modify" onClick={openModifyModal}>
+                    수정하기
+                  </button>
+                ) : (
+                  <></>
+                )}
+
+                <button className="button-leave" onClick={openAlarmModal}>
+                  나가기
                 </button>
-                <Link href="/room/roomlist">
-                  <button className="button-exit">나가기</button>
-                </Link>
+
+                <AlarmModal
+                  open={alarmModalOpen}
+                  close={closeAlarmModal}
+                  content={"정말 방을 나가시겠습니까?"}
+                  result={onLeaveRoom}
+                  leftButton={"예"}
+                  rightButton={"아니오"}
+                ></AlarmModal>
 
                 <ModifyRoomModal
                   open={modifyModalOpen}
                   close={closeModifyModal}
-                  sequenceId={"test"}
+                  roomId={roomId}
                 ></ModifyRoomModal>
               </div>
             </div>
@@ -197,16 +276,11 @@ const Room = () => {
           <div className="sections">
             <div className="left-section">
               <div className="image">
-                <ImageSlide imageArr={roomImages} />
+                <ImageSlide path={"roomDetail"} />
               </div>
               <div className="calendar">
                 <Calendar
-                  clickDateOptionFunction={`${
-                    startAppointmentDate[8] === "0"
-                      ? startAppointmentDate.substr(0, 8) +
-                        startAppointmentDate[9]
-                      : startAppointmentDate.substr(0, 10)
-                  }`}
+                  clickDateOptionFunction={true}
                   moveDateButtonOptionFunction={true}
                 />
               </div>
@@ -240,19 +314,17 @@ const Room = () => {
               </div>
 
               <div className="participant-list">
-                <p>참여자 목록 (10/30)</p>
+                <p>{`참여자 목록 (${participantCount}/${limitPeopleCount})`}</p>
                 <div className="short-line"></div>
                 <div className="participants">
                   <ParticipantList
-                    participantArr={participants}
-                    host={host}
                     participantListOpenModal={participantListOpenModal}
                   />
                 </div>
                 <UserInfoModal
                   open={participantListModalOpen}
                   close={participantListCloseModal}
-                  info={"other"}
+                  roomId={roomId}
                 />
               </div>
             </div>
@@ -263,7 +335,7 @@ const Room = () => {
                   <p>{`ID : ${host}님의 방`}</p>
                 </div>
 
-                <Chatting />
+                <Chatting chatOpen={chatOpen} />
               </div>
             </div>
           </div>
@@ -281,8 +353,26 @@ const Room = () => {
             <p>{roomArea}</p>
           </div>
           <div className="long-line"></div>
-          <div id="map"></div>
+          <div className="map-wrapper">
+            <Map setPOM={"true"} />
+          </div>
         </div>
+
+        {myNickname === host ? (
+          <button className="button-deleteRoom">방 삭제하기</button>
+        ) : (
+          <></>
+        )}
+
+        <img
+          src="/floatingAlarm.png"
+          className="button-alarm"
+          onClick={floatingAlarmOpenFunc}
+        ></img>
+        <FloatingAlarm
+          open={floatingAlarmOpen}
+          close={floatingAlarmCloseFunc}
+        />
       </div>
       <style jsx>{`
         .container {
@@ -367,7 +457,7 @@ const Room = () => {
         }
 
         .button-modify,
-        .button-exit {
+        .button-leave {
           width: 125px;
           height: 35px;
           border: none;
@@ -383,7 +473,7 @@ const Room = () => {
           margin-right: 10px;
         }
 
-        .button-exit {
+        .button-leave {
           background-color: #00555f;
         }
 
@@ -595,12 +685,59 @@ const Room = () => {
           font-size: 2.5rem;
         }
 
-        #map {
+        .map-wrapper {
           width: 1200px;
           height: 420px;
           border: solid 1px #e8e8e8;
           border-radius: 10px;
           background-color: #f2f2f2;
+        }
+
+        .button-deleteRoom {
+          width: 250px;
+          height: 40px;
+          border: none;
+          border-radius: 20px;
+          font-size: 1.6rem;
+          font-weight: bold;
+          letter-spacing: 1px;
+          color: white;
+          background-color: #00555f;
+          margin-bottom: 60px;
+          cursor: pointer;
+        }
+
+        .button-alarm {
+          width: 70px;
+          height: 70px;
+          border: none;
+          border-radius: 50%;
+          opacity: 0.94;
+          box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.42);
+          background-color: #6db152;
+          cursor: pointer;
+          position: -webkit-fixed; // safari
+          position: fixed;
+          bottom: 30px;
+          right: 30px;
+          animation: zoomin 0.3s ease-in-out;
+        }
+
+        @keyframes zoomin {
+          0% {
+            transform: scale(0);
+          }
+          100% {
+            transform: scale(1);
+          }
+        }
+
+        .none {
+          display: none;
+        }
+
+        .block {
+          display: block;
         }
       `}</style>
     </>

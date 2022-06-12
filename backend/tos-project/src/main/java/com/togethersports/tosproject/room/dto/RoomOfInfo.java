@@ -17,7 +17,7 @@ import java.util.List;
  */
 @Getter
 public class RoomOfInfo {
-    private Long id;
+    private Long roomId;
 
     //방 설명 내용
     private String roomContent;
@@ -62,11 +62,14 @@ public class RoomOfInfo {
     //조회수
     private int viewCount;
 
-    //참여 여부
-    private boolean attendance;
+    //방 생성 시간
+    private LocalDateTime createdTime;
+
+    //방 수정 시간
+    private LocalDateTime updatedTime;
 
     @Builder(access = AccessLevel.PRIVATE)
-    private RoomOfInfo(Room roomEntity, List<ImageOfRoomInfo> roomImages, List<String> tag, boolean attendance){
+    private RoomOfInfo(Room roomEntity, List<ImageOfRoomInfo> roomImages, List<String> tag){
         this.creatorNickName = roomEntity.getCreateUser().getNickname();
         this.tags = tag;
         this.host = roomEntity.getHost().getNickname();
@@ -74,22 +77,32 @@ public class RoomOfInfo {
         this.startAppointmentDate = roomEntity.getStartAppointmentDate();
         this.roomArea = roomEntity.getRoomArea();
         this.exercise = roomEntity.getExercise();
-        this.id = roomEntity.getId();
+        this.roomId = roomEntity.getId();
         this.limitPeopleCount = roomEntity.getLimitPeopleCount();
-        this.participantCount = roomEntity.getParticipantCount();
+        this.participantCount = roomEntity.getParticipants().size();
         this.roomImages = roomImages;
         this.roomTitle = roomEntity.getRoomTitle();
         this.roomContent = roomEntity.getRoomContent();
         this.viewCount = roomEntity.getViewCount();
-        this.attendance = attendance;
+        this.createdTime = roomEntity.getCreatedTime();
+        this.updatedTime = roomEntity.getUpdatedTime();
     }
 
-    public static RoomOfInfo of(Room roomEntity, List<ImageOfRoomInfo> roomImages, List<String> tags, boolean attendance){
+    public static RoomOfInfo of(Room roomEntity, List<ImageOfRoomInfo> roomImages, List<String> tags){
+
+        if(roomImages.size() == 0){
+            return RoomOfInfo.builder()
+                    .roomEntity(roomEntity)
+                    .roomImages(null)
+                    .tag(tags)
+                    .build();
+        }
+
+
         return RoomOfInfo.builder()
                 .roomEntity(roomEntity)
                 .roomImages(roomImages)
                 .tag(tags)
-                .attendance(attendance)
                 .build();
     }
 }

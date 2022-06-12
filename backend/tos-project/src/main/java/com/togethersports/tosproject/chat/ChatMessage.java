@@ -24,7 +24,7 @@ public class ChatMessage extends ChatBaseEntity {
         ;
     }
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "MESSAGE")

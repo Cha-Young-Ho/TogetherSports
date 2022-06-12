@@ -11,6 +11,11 @@ plugins {
 	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
+bootRun {
+	String activeProfile = System.properties['spring.profiles.active']
+	systemProperty "spring.profiles.active", activeProfile
+}
+
 group = 'com.togethersports'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
@@ -67,6 +72,14 @@ dependencies {
 	// test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+
+	//test - lombok
+	testCompileOnly 'org.projectlombok:lombok:1.18.12'
+	testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
+
+	//gson
+	compile group: 'com.google.code.gson', name: 'gson', version: '2.8.2'
+
 }
 
 

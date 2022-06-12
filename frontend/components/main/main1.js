@@ -2,18 +2,30 @@ import TextLogo from "./textLogo";
 
 const Main1 = () => {
   const sports = [
-    "축구",
-    "야구",
-    "농구",
-    "당구",
-    "탁구",
-    "헬스",
-    "자전거",
-    "골프",
-    "등산",
-    "런닝",
-    "배드민턴",
-    "기타",
+    "soccer.png",
+    "baseball.png",
+    "basketball.png",
+    "billiards.png",
+    "tableTennis.png",
+    "health.png",
+    "bicycle.png",
+    "golf.png",
+    "hiking.png",
+    "running.png",
+    "badminton.png",
+    "etc.png",
+    "soccer.png",
+    "baseball.png",
+    "basketball.png",
+    "billiards.png",
+    "tableTennis.png",
+    "health.png",
+    "bicycle.png",
+    "golf.png",
+    "hiking.png",
+    "running.png",
+    "badminton.png",
+    "etc.png",
   ];
 
   return (
@@ -23,22 +35,16 @@ const Main1 = () => {
 
         <div className="line"></div>
 
-        <div className="sports">
-          {sports.map((sport, index) => {
-            if (index % 2 === 0) {
+        <div className="slider">
+          <div className="slide-track">
+            {sports.map((sport, index) => {
               return (
-                <div key={index} className="sport odd">
-                  {sport}
+                <div key={index} className="slide">
+                  <img src={`/${sport}`}></img>
                 </div>
               );
-            } else {
-              return (
-                <div key={index} className="sport even">
-                  {sport}
-                </div>
-              );
-            }
-          })}
+            })}
+          </div>
         </div>
 
         <div className="text">
@@ -69,21 +75,35 @@ const Main1 = () => {
           width: 32px;
           height: 2px;
           background-color: black;
-          margin-bottom: 30px;
-        }
-
-        .sports {
-          width: 65%;
-          display: flex;
-          flex-direction: row;
-          justify-content: space-between;
-          align-items: center;
           margin-bottom: 40px;
         }
 
-        .sport {
-          width: 160px;
-          height: 160px;
+        @keyframes scroll {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(calc(-250px * 12));
+          }
+        }
+
+        .slider {
+          width: 100%;
+          margin-bottom: 40px;
+          overflow: hidden;
+          position: relative;
+        }
+
+        .slide-track {
+          animation: scroll 30s linear infinite;
+          display: flex;
+          width: calc(250px * 24);
+        }
+
+        .slide {
+          width: 150px;
+          height: 150px;
+          margin-right: 100px;
           border: none;
           border-radius: 10px;
           font-size: 2rem;
@@ -91,14 +111,13 @@ const Main1 = () => {
           display: flex;
           justify-content: center;
           align-items: center;
-        }
-
-        .odd {
-          background-color: rgba(0, 0, 0, 0.5);
-        }
-
-        .even {
+          /* margin: 0 100px; */
           background-color: #67a74d;
+        }
+
+        .slide img {
+          width: 150px;
+          height: 150px;
         }
 
         .text {

@@ -7,11 +7,11 @@ const Saving = () => {
   const [accessToken, setAccessToken] = useState();
   const [refreshToken, setRefreshToken] = useState();
   const [isFirst, setIsFirst] = useState();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const url = window.location.search;
     const urlParams = new URLSearchParams(url);
-    const dispatch = useDispatch();
 
     setAccessToken(urlParams.get("access_token"));
     setRefreshToken(urlParams.get("refresh_token"));

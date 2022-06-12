@@ -17,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StreamUtils;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -49,13 +50,23 @@ public class CustomLogoutHandler implements LogoutHandler {
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         // Request 토큰 추출
         Map<String, String> map = getBodyAndSetResponse(request, response);
+
         if(map != null) {
             // refresh 값이 있을 경우 필요한 헤더 추출
             String refreshToken = map.get("refreshToken");
             // refresh 제거
-//            refreshTokenService.removeRefreshTokenByToken(refreshToken);
+            refreshTokenService.removeRefreshTokenByToken(refreshToken);
+
+            String redirectUri = UriComponentsBuilder
+                    .fromUriString("http://localhost:3000/login")
+                    .toUriString();
 
 
+            try {
+                response.sendRedirect(redirectUri);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             return;
         }
 
@@ -68,7 +79,7 @@ public class CustomLogoutHandler implements LogoutHandler {
         try {
             inputStream = request.getInputStream();
             map = objectMapper.readValue(StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8), Map.class);
-            log.info("로그아웃 실행");
+
             setResponse(response, map);
 
         } catch (IOException e) {
@@ -87,16 +98,15 @@ public class CustomLogoutHandler implements LogoutHandler {
         Response<?> responseValue = Response.of(CommonCode.GOOD_REQUEST, null);
         // 토큰 누락
         if(map.get("refreshToken") == null){
-            log.info("토큰 누락");
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             responseValue = Response.of(JwtErrorCode.TOKEN_NOTFOUND, null);
         }
 
         if (Objects.nonNull(responseValue)) {
-            log.info("굳");
             PrintWriter writer = response.getWriter();
             writer.write(objectMapper.writeValueAsString(responseValue));
         }
+
         return response;
     }
 

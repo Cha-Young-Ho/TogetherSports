@@ -2,10 +2,10 @@ import Link from "next/link";
 import { useSelector } from "react-redux";
 
 const FixedRoomAlarm = () => {
-  const myInfo = useSelector((state) => state.myInfoReducer);
+  const userId = useSelector((state) => state.myInfoReducer.id);
 
   const checkingUserInfo = (e) => {
-    if (myInfo.userEmail === "") {
+    if (userId === 0) {
       alert("회원 추가정보를 입력하셔야 이용하실 수 있습니다.");
       e.preventDefault();
       return;

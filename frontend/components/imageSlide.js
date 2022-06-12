@@ -1,11 +1,27 @@
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 const ImageSlide = (props) => {
   const [slideIndex, setSlideIndex] = useState(1);
+  // 운동 대기방 페이지 이미지
+  const roomDetailImageArr = useSelector(
+    (state) => state.roomRealTimeInfoReducer.roomImages
+  );
+  // 방 설명 팝업 이미지
+  const roomInfoImageArr = useSelector(
+    (state) => state.saveRoomModalImagesReducer.roomImages
+  );
 
   useEffect(() => {
-    showSlides(slideIndex);
-  });
+    if (props.path === "roomInfo") {
+      roomInfoImageArr !== null ? showSlides(slideIndex) : <></>;
+      // roomInfoImageArr.length !== 0 ? showSlides(slideIndex) : <></>;
+    }
+    if (props.path === "roomDetail") {
+      roomDetailImageArr !== null ? showSlides(slideIndex) : <></>;
+      // roomDetailImageArr.length !== 0 ? showSlides(slideIndex) : <></>;
+    }
+  }, []);
 
   const onChangeImage = (index) => {
     showSlides((slideIndex += index));
@@ -26,16 +42,37 @@ const ImageSlide = (props) => {
   return (
     <>
       <div className="slideshow-container">
-        {props.imageArr.length !== 0 ? (
-          props.imageArr
+        {props.path === "roomInfo" ? (
+          roomInfoImageArr !== null ? (
+            roomInfoImageArr
+              .sort((a, b) => a.order - b.order)
+              .map((image, index) => {
+                return (
+                  <div className="slide fade" key={index}>
+                    <div className="number-text">{`${index + 1} / ${
+                      roomInfoImageArr.length
+                    }`}</div>
+                    <div className="image-container">
+                      {/* <img src={`/images/${image.imagePath}`} /> */}
+                      <img src={`/${image.imagePath}`} />
+                    </div>
+                  </div>
+                );
+              })
+          ) : (
+            <></>
+          )
+        ) : roomDetailImageArr !== null ? (
+          roomDetailImageArr
             .sort((a, b) => a.order - b.order)
             .map((image, index) => {
               return (
                 <div className="slide fade" key={index}>
                   <div className="number-text">{`${index + 1} / ${
-                    props.imageArr.length
+                    roomDetailImageArr.length
                   }`}</div>
                   <div className="image-container">
+                    {/* <img src={`/images/${image.imagePath}`} /> */}
                     <img src={`/${image.imagePath}`} />
                   </div>
                 </div>

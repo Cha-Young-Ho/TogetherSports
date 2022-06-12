@@ -6,6 +6,7 @@ const SelectExercise = () => {
   const resetDetection = useSelector(
     (state) => state.filteringButtonClickDetectionReducer
   );
+  const [FilterObj, setFilterObj] = useState([]);
 
   const interestArray = [
     "축구",
@@ -74,6 +75,19 @@ const SelectExercise = () => {
     }
   }, [resetDetection.reset]);
 
+  useEffect(() => {
+    if (localStorage.getItem("Filters")) {
+      setFilterObj(JSON.parse(localStorage.getItem("Filters")).exercise);
+      // 관심 종목 세팅
+      for (const exercise of FilterObj) {
+        setInterest((prev) => ({
+          ...prev,
+          [exercise]: true,
+        }));
+      }
+    }
+  }, []);
+
   return (
     <>
       <div className="exercise-wrapper">
@@ -84,7 +98,9 @@ const SelectExercise = () => {
               return (
                 <button
                   key={index}
-                  className="exercise"
+                  className={`exercise ${
+                    FilterObj.indexOf(exercise) === -1 ? `` : `clicked`
+                  }`}
                   onClick={clickExercises}
                 >
                   {exercise}

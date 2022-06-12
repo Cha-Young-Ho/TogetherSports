@@ -9,6 +9,7 @@ import com.togethersports.tosproject.room.auditing.RoomBaseEntity;
 import com.togethersports.tosproject.room.dto.RoomOfCreate;
 import com.togethersports.tosproject.room.dto.RoomOfUpdate;
 import com.togethersports.tosproject.tag.Tag;
+import com.togethersports.tosproject.user.Gender;
 import com.togethersports.tosproject.user.User;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -30,7 +31,7 @@ import java.util.List;
 public class Room extends RoomBaseEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ROOM_ID")
     private Long id;
 
@@ -55,10 +56,6 @@ public class Room extends RoomBaseEntity {
     @Column(name = "LIMIT_PEOPLE_COUNT")
     private int limitPeopleCount;
 
-    //현재 참여자 수
-    @Column(name = "PRESENT_PEOPLE_COUNT")
-    private int participantCount;
-
     //조회수
     @Column(name ="VIEW_COUNT")
     private int viewCount;
@@ -77,7 +74,7 @@ public class Room extends RoomBaseEntity {
 
     //참여자
     //todo N : N 매핑
-    @OneToMany(mappedBy = "room")
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
     private List<Participant> participants;
 
     //방장
@@ -93,15 +90,17 @@ public class Room extends RoomBaseEntity {
 
     //방 이미지
     @JsonIgnore
-    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<RoomImage> roomImages;
 
     //태그
-    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Tag> tags;
 
-    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ChatMessage> chatMessages;
+
+
 
     @Builder(access = AccessLevel.PRIVATE)
     private Room(RoomOfCreate roomOfCreate, User user){
@@ -112,11 +111,11 @@ public class Room extends RoomBaseEntity {
         this.startAppointmentDate = roomOfCreate.getStartAppointmentDate();
         this.limitPeopleCount = roomOfCreate.getLimitPeopleCount();
         this.host = user;
-        this.participantCount = 1;
         this.createUser = user;
         this.roomArea = roomOfCreate.getRoomArea();
         this.viewCount = 0;
         this.createUser = user;
+
 
     }
 
@@ -139,14 +138,6 @@ public class Room extends RoomBaseEntity {
         this.endAppointmentDate = roomOfUpdate.getEndAppointmentDate();
         this.roomTitle = roomOfUpdate.getRoomTitle();
         this.roomContent = roomOfUpdate.getRoomContent();
-    }
-
-    public void participate(){
-        this.participantCount = participantCount + 1;
-    }
-
-    public void leave(){
-        this.participantCount = participantCount - 1 ;
     }
 
     //방장 위임

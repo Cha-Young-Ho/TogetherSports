@@ -1,56 +1,72 @@
 import { useState, useEffect } from "react";
 import Calendar from "../calendar/calendar";
-import { getRoomInfo } from "../../api/rooms";
+import { getRoomInfo, postEnterRoom } from "../../api/rooms";
 import ImageSlide from "../imageSlide";
 import router from "next/router";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import Map from "../Map";
+import Head from "next/head";
 
 /* roomList에서 받은 각 room들의 roomId를 props로 받기 */
 const RoomModal = (props) => {
   const dispatch = useDispatch();
-  const [mapLoaded, setMapLoaded] = useState(false); // 지도 로드 동기화
 
   /* response content 담을 변수들 */
-  const [roomId, setRoomId] = useState(""); // 참여페이지로 넘어가기 위한 roomId
+  const [roomId, setRoomId] = useState(0); // 참여페이지로 넘어가기 위한 roomId
   const [creatorNickName, setCreatorNickName] = useState(""); // 방 생성자
   const [host, setHost] = useState(""); // 방장
   const [roomTitle, setRoomTitle] = useState("");
   const [roomContent, setRoomContent] = useState("");
-  const [area, setArea] = useState("서울 송파구 올림픽로 19-2");
-  const [limitPeopleCount, setLimitPeopleCount] = useState("");
-  const [participantCount, setParticipantCount] = useState("");
+  const [roomArea, setRoomArea] = useState("");
+  const [limitPeopleCount, setLimitPeopleCount] = useState(2); // 초기값 수정할수도
+  const [participantCount, setParticipantCount] = useState(2);
   const [exercise, setExercise] = useState("");
   const [tags, setTags] = useState([]);
   const [startAppointmentDate, setStartAppointmentDate] = useState("");
   const [endAppointmentDate, setEndAppointmentDate] = useState("");
-  const [viewCount, setViewCount] = useState("5");
-  const [roomImages, setRoomImages] = useState([
-    {
-      // test를 위한 임시 데이터
-      order: -1,
-      imagePath: "logo-sign.png",
-    },
-  ]);
+  const [viewCount, setViewCount] = useState(0);
+
+  const enterRoom = (e) => {
+    postEnterRoom(roomId)
+      .then((res) => {
+        if (res.status.code === 1209) {
+          router.push(`/room/${roomId}`);
+          return;
+        }
+
+        if (res.status.code === 1201) {
+          e.preventDefault();
+          alert(res.status.message);
+          return;
+        }
+
+        if (res.status.code === 1202) {
+          e.preventDefault();
+          alert(res.status.message);
+          return;
+        }
+
+        FailResponse(res.status.code);
+      })
+      .catch((error) => {
+        if (error.response) {
+          FailResponse(error.response.data.status.code, enterRoom);
+        }
+      });
+  };
 
   useEffect(() => {
-    const script = document.createElement("script");
-    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAOMAP_APPKEY}&autoload=false&libraries=services`;
-    document.head.appendChild(script);
-    setMapLoaded(true);
-  }, []);
-
-  useEffect(() => {
-    if (props.open && mapLoaded) {
-      console.log(props.roomID);
+    if (props.open) {
+      document.body.style.overflow = "hidden";
       // 방 정보 받아오기
-      getRoomInfo(props.roomID).then((res) => {
+      getRoomInfo(props.roomId).then((res) => {
         if (res.status.code === 5000) {
           setRoomId((roomId = res.content.roomId));
           setCreatorNickName((creatorNickName = res.content.creatorNickName));
           setHost((host = res.content.host));
           setRoomTitle((roomTitle = res.content.roomTitle));
           setRoomContent((roomContent = res.content.roomContent));
-          setArea((area = res.content.area));
+          setRoomArea((roomArea = res.content.roomArea));
           setLimitPeopleCount(
             (limitPeopleCount = res.content.limitPeopleCount)
           );
@@ -66,181 +82,159 @@ const RoomModal = (props) => {
             (endAppointmentDate = res.content.endAppointmentDate)
           );
           setViewCount((viewCount = res.content.viewCount));
-          setRoomImages((roomImages = res.content.roomImages));
+
+          dispatch({
+            type: "SAVEROOMMODALIMAGES",
+            payload: {
+              roomImages: res.content.roomImages,
+            },
+          });
+
+          // 캘린더 컴포넌트 date 변경
+          dispatch({
+            type: "SAVEROOMDATE",
+            payload: {
+              appointmentDate: `${
+                startAppointmentDate[8] === "0"
+                  ? startAppointmentDate.substr(0, 8) + startAppointmentDate[9]
+                  : startAppointmentDate.substr(0, 10)
+              }`,
+            },
+          });
+
+          dispatch({
+            type: "SAVEPOM",
+            payload: {
+              placeOfMeeting: roomArea,
+            },
+          });
         } else {
           FailResponse(res.status.code);
         }
       });
-
-      // 위치 정보 받아오기
-      kakao.maps.load(() => {
-        const container = document.getElementById("map"),
-          options = {
-            center: new kakao.maps.LatLng(
-              37.56682420062817,
-              126.97864093976689
-            ),
-            level: 4,
-          };
-
-        const map = new kakao.maps.Map(container, options); // 지도 생성
-        const geocoder = new kakao.maps.services.Geocoder(); // 주소-좌표 변환 객체 생성
-
-        // 주소로 좌표를 검색
-        geocoder.addressSearch(`${area}`, function (result, status) {
-          if (status === kakao.maps.services.Status.OK) {
-            const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-
-            // 위치에 마커 표시
-            const marker = new kakao.maps.Marker({
-              map: map,
-              position: coords,
-            });
-
-            // 인포윈도우로 장소에 대한 설명을 표시
-            const infowindow = new kakao.maps.InfoWindow({
-              content:
-                '<div style="width:150px;text-align:center;padding:6px 0;">만남의 장소</div>',
-            });
-            infowindow.open(map, marker);
-
-            // 지도의 중심을 결과값으로 받은 위치로 이동
-            map.setCenter(coords);
-          }
-        });
-      });
     }
   }, [props.open]);
 
-  // 방에 참가
-  const enterRoom = (e) => {
-    // 참가 버튼을 누르는 순간 API요청을 한번 더 해서 참여가능여부 판단
-    getRoomInfo(props.roomId).then((res) => {
-      if (res.status.code === 5000) {
-        if (res.content.participantCount === res.content.limitPeopleCount) {
-          e.preventDefault();
-          alert("인원이 가득 차서 참가할 수 없습니다.");
-          return;
-        }
-      } else {
-        FailResponse(res.status.code);
-      }
-    });
-
-    // 위의 상황이 아니라면 방에 참가
-    dispatch({
-      type: "SAVEROOMID",
-      payload: {
-        roomId: roomId,
-      },
-    });
-
-    router.push("/room/room");
-  };
+  useEffect(() => {
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, []);
 
   return (
     <>
-      <div className={props.open ? "openModal modal" : "modal"}>
-        <div className="room-modal-body">
-          <div className="header">
-            <div>
-              {tags.length !== 0 ? (
-                tags.map((tag, index) => {
-                  return (
-                    <div className="tag" key={index}>
-                      {tag}
+      <div
+        className={props.open ? "openModal modal" : "modal"}
+        onClick={(e) => {
+          if (e.target.classList[1] === "openModal") props.close();
+        }}
+      >
+        {props.open ? (
+          <>
+            <Head>
+              <title>{roomTitle}</title>
+            </Head>
+            <div className="room-modal-body">
+              <div className="header">
+                <div>
+                  {tags.length !== 0 ? (
+                    tags.map((tag, index) => {
+                      return (
+                        <div className="tag" key={index}>
+                          {tag}
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <></>
+                  )}
+                </div>
+
+                <div>
+                  <div className="viewCount">{`조회수 : ${viewCount}`}</div>
+                  <div className="nickName">{`ID : ${host}님의 방`}</div>
+                </div>
+              </div>
+
+              <div className="section">
+                <div className="left-section">
+                  <p>{roomTitle}</p>
+
+                  <div className="options">
+                    <div className="option">
+                      <p>참여인원</p>
+                      <p>{participantCount}</p>
                     </div>
-                  );
-                })
-              ) : (
-                <></>
-              )}
-            </div>
+                    <div className="option">
+                      <p>모집인원</p>
+                      <p>{limitPeopleCount}</p>
+                    </div>
+                    <div className="option-exercise">
+                      <p>종목</p>
+                      <p>{exercise}</p>
+                    </div>
+                    <div className="option-time">
+                      <p>시간</p>
+                      <p>{`${startAppointmentDate.substr(
+                        11,
+                        2
+                      )}시 ${startAppointmentDate.substr(14, 2)}분 ~`}</p>
+                      <p>{`${endAppointmentDate.substr(
+                        11,
+                        2
+                      )}시 ${endAppointmentDate.substr(14, 2)}분`}</p>
+                    </div>
+                  </div>
 
-            <div>
-              <div className="viewCount">{`조회수 : ${viewCount}`}</div>
-              <div className="nickName">{`ID : ${host}님의 방`}</div>
-            </div>
-          </div>
+                  <div className="calendar">
+                    <Calendar
+                      clickDateOptionFunction={true}
+                      moveDateButtonOptionFunction={true}
+                    />
+                  </div>
 
-          <div className="section">
-            <div className="left-section">
-              <p>{roomTitle}</p>
-
-              <div className="options">
-                <div className="option">
-                  <p>참여인원</p>
-                  <p>{participantCount}</p>
+                  <div className="location">
+                    <p>위치 정보</p>
+                    <div></div>
+                    <p className="address-info">{roomArea}</p>
+                    <div className="map-wrapper">
+                      <Map setPOM={"true"} />
+                    </div>
+                  </div>
                 </div>
-                <div className="option">
-                  <p>모집인원</p>
-                  <p>{limitPeopleCount}</p>
-                </div>
-                <div className="option-exercise">
-                  <p>종목</p>
-                  <p>{exercise}</p>
-                </div>
-                <div className="option-time">
-                  <p>시간</p>
-                  <p>{`${startAppointmentDate.substr(
-                    11,
-                    2
-                  )}시 ${startAppointmentDate.substr(-2)}분 ~`}</p>
-                  <p>{`${endAppointmentDate.substr(
-                    11,
-                    2
-                  )}시 ${endAppointmentDate.substr(-2)}분`}</p>
-                </div>
-              </div>
 
-              <div className="calendar">
-                <Calendar
-                  clickDateOptionFunction={`${
-                    startAppointmentDate[8] === "0"
-                      ? startAppointmentDate.substr(0, 8) +
-                        startAppointmentDate[9]
-                      : startAppointmentDate.substr(0, 10)
-                  }`}
-                  moveDateButtonOptionFunction={true}
-                />
-              </div>
+                <div className="right-section">
+                  <div className="image">
+                    <ImageSlide path={"roomInfo"} />
+                  </div>
 
-              <div className="location">
-                <p>위치 정보</p>
-                <div></div>
-                <p className="address-info">{area}</p>
-                <div id="map"></div>
+                  <div className="room-info">
+                    <p>방 설명 및 안내</p>
+                    <div className="line"></div>
+                    <textarea readOnly value={roomContent}></textarea>
+                  </div>
+
+                  <div className="buttons">
+                    <button className="left-button" onClick={props.close}>
+                      닫기
+                    </button>
+                    <button className="right-button" onClick={enterRoom}>
+                      참여
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
-
-            <div className="right-section">
-              <div className="image">
-                {roomImages.length !== 0 ? (
-                  <ImageSlide imageArr={roomImages} />
-                ) : (
-                  <></>
-                )}
-              </div>
-
-              <div className="room-info">
-                <p>방 설명 및 안내</p>
-                <div className="line"></div>
-                <textarea readOnly value={roomContent}></textarea>
-              </div>
-
-              <div className="buttons">
-                <button className="left-button" onClick={props.close}>
-                  닫기
-                </button>
-                <button className="right-button" onClick={enterRoom}>
-                  참여
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+          </>
+        ) : (
+          <></>
+        )}
       </div>
       <style jsx>{`
+        textarea:focus {
+          outline: none;
+        }
+
         .modal {
           display: none;
           position: fixed;
@@ -256,19 +250,45 @@ const RoomModal = (props) => {
           display: flex;
           align-items: center;
           justify-content: center;
+          overflow: auto;
           animation: modal-bg-show 0.3s; // 스르륵 효과
         }
 
+        @media (max-height: 720px) {
+          .modal.openModal {
+            display: flex;
+            align-items: stretch;
+            justify-content: center;
+          }
+        }
+
+        @media (max-width: 1150px) {
+          .modal.openModal {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+          }
+        }
+
+        @media (max-height: 720px) and (max-width: 1150px) {
+          .modal.openModal {
+            display: flex;
+            align-items: stretch;
+            justify-content: flex-start;
+          }
+        }
+
         .room-modal-body {
-          width: 70%;
-          height: 85%;
+          margin: 10px;
+          min-width: 1150px;
+          height: 720px;
           border-radius: 22px;
           background-color: white;
           display: flex;
           flex-direction: column;
           align-items: center;
           padding: 20px 30px;
-          /* overflow: auto; */
+          overflow: auto;
         }
 
         .header {
@@ -410,7 +430,7 @@ const RoomModal = (props) => {
           border: solid 0.3px #707070;
         }
 
-        #map {
+        .map-wrapper {
           width: 100%;
           height: 100%;
           border-radius: 10px;

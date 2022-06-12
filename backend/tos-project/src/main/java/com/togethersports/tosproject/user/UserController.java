@@ -4,6 +4,7 @@ import com.togethersports.tosproject.common.code.CommonCode;
 import com.togethersports.tosproject.common.dto.Response;
 import com.togethersports.tosproject.security.annotation.CurrentUser;
 import com.togethersports.tosproject.user.code.UserCode;
+import com.togethersports.tosproject.user.dto.UserOfMannerPoint;
 import com.togethersports.tosproject.user.dto.UserOfModifyInfo;
 import com.togethersports.tosproject.user.dto.UserOfMyInfo;
 import com.togethersports.tosproject.user.dto.UserOfOtherInfo;
@@ -41,8 +42,8 @@ public class UserController {
     }
 
     @GetMapping("/api/user/{id}")
-    public ResponseEntity<Response> otherInfo(@PathVariable Long id){
-        UserOfOtherInfo userOfOtherInfo = userService.getOtherInfo(id);
+    public ResponseEntity<Response> otherInfo(@CurrentUser User user, @PathVariable Long id){
+        UserOfOtherInfo userOfOtherInfo = userService.getOtherInfo(user, id);
 
         return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, userOfOtherInfo));
     }
@@ -65,4 +66,13 @@ public class UserController {
         }
         return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, myInfo));
     }
+
+    @PatchMapping("/api/user/{user_id}/manner_point")
+    public ResponseEntity<Response> doMannerPointing(@CurrentUser User user, @RequestBody UserOfMannerPoint userOfMannerPoint){
+        Response response = userService.mannerPointUp(user, userOfMannerPoint);
+        return ResponseEntity.ok(response);
+    }
+
+
+
 }

@@ -1,14 +1,43 @@
 import React from "react";
 import Banner from "../components/main/banner";
-// import HotRoom from "../components/hotRoom";
 import Footer from "../components/main/footer";
 import Head from "next/head";
 import Main1 from "../components/main/main1";
 import Main2 from "../components/main/main2";
 import Main3 from "../components/main/main3";
 import Link from "next/link";
+import { getRoomCount } from "../api/etc";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { FailResponse } from "../api/failResponse";
+
+/* 수정 필요 */
+// 방 생성하기 누를 때 로그인여부에 따라 막기
 
 export default function Home() {
+  const dispatch = useDispatch();
+
+  const func_getRoomCount = () => {
+    getRoomCount()
+      .then((res) => {
+        if (res.status.code === 5000) {
+          dispatch({
+            type: "SAVEROOMCOUNT",
+            payload: {
+              roomCount: res.content.count,
+            },
+          });
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          FailResponse(error.response.data.status.code, func_getRoomCount);
+          return;
+        }
+      });
+  };
+  useEffect(func_getRoomCount, []);
+
   return (
     <>
       <Head>
@@ -24,8 +53,6 @@ export default function Home() {
             <button className="fadein">🔥방 생성하러 가기🔥</button>
           </Link>
         </div>
-
-        {/* <HotRoom /> */}
         <Footer />
       </div>
       <style jsx>{`

@@ -31,7 +31,7 @@ import java.util.List;
 public class User {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "USER_ID")
     private Long id;
 
@@ -131,13 +131,17 @@ public class User {
     }
 
     // TODO 주석 및 메소드 구조 개선
-    public void updateUser(UserOfModifyInfo userOfModifyInfo, List<ActiveArea> activeAreas, List<Interest> interests, String userProfileImage) {
+    public void updateUser(UserOfModifyInfo userOfModifyInfo, List<Interest> interests, String userProfileImage) {
         this.gender = userOfModifyInfo.getGender();
         this.userBirth = userOfModifyInfo.getUserBirth();
         this.interests = interests;
-        this.activeAreas = activeAreas;
+        this.activeAreas = userOfModifyInfo.getActiveAreas();
         this.userProfileImage = userProfileImage;
         this.nickname = userOfModifyInfo.getUserNickname();
         this.informationRequired = false;
+    }
+
+    public void updateMannerPoint(int point){
+        this.mannerPoint = this.mannerPoint + point;
     }
 }

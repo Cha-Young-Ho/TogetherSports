@@ -1,5 +1,6 @@
 package com.togethersports.tosproject.chat.handler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.togethersports.tosproject.participant.ParticipantService;
 import com.togethersports.tosproject.participant.exception.NotParticipateRoomException;
 import com.togethersports.tosproject.security.jwt.JwtProperties;
@@ -20,6 +21,10 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.MultiValueMap;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <h1>ChatPreHandler</h1>
@@ -45,18 +50,38 @@ public class ChatPreHandler implements ChannelInterceptor {
         // 헤더 토큰 얻기
         String authorizationHeader = String.valueOf(headerAccessor.getNativeHeader("Authorization"));
         StompCommand command = headerAccessor.getCommand();
+        Long roomId = Long.parseLong(String.valueOf(headerAccessor.getNativeHeader("roomId").get(0)));
 
-//        List<GrantedAuthority> authorities = new ArrayList<>();
-//        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-//        Authentication auth = new UsernamePasswordAuthenticationToken(1L, 1L, authorities);
-//        SecurityContextHolder.getContext().setAuthentication(auth);
-//        headerAccessor.setUser(auth);
-//        log.info("message user id = {}", headerAccessor.getUser());
+
+        log.info("prehandler roomId = {}", roomId);
+
+        /*
+            1. preHandler
+               * jwt 검증
+               * 해당 방 참여 검증 --------
+               * controller 에서 받을 메세지 타입으로 생성
+               * 예외 발생시 예외 throw
+
+            2. chat controller
+               * 메세지 -> 서비스 실행
+                    * 서비스에서 chat 저장s
+
+            3. out bound channel
+               * 메세지 브로드 캐스팅으로 넘기기
+
+            4. message broadcasting
+               * 메세지 보내기
+         */
+        if(command.equals(StompCommand.DISCONNECT)){
+            log.info("message header = ", message.getHeaders());
+
+
+        }
+
 
         // 소켓 연결
         if(command.equals(StompCommand.CONNECT)){
-            Long roomId= 1L;
-            log.info("Connect 작동");
+
 
             //JWT 인증 및 참여 여부 확인
             verifySend(authorizationHeader, roomId, message);
@@ -71,10 +96,13 @@ public class ChatPreHandler implements ChannelInterceptor {
             }
         }
 
+
         // SEND, SUBSCRIBE 일 경우
         if(command.equals(StompCommand.SEND) || command.equals(StompCommand.SUBSCRIBE)){
-            Long roomId = 1L;
-            //Long roomId = Long.valueOf(map.getFirst("roomId"));
+
+
+
+
             // JWT 인증 및 참여 여부 확인
 
             return verifySend(authorizationHeader, roomId, message);
@@ -82,10 +110,16 @@ public class ChatPreHandler implements ChannelInterceptor {
 
         if(command.equals(StompCommand.DISCONNECT)){
             // 세션 연결 해제 메세지 생성
-
             // 세션 정보 지우기
 
             // 구독 정보 없애기
+
+
+        }
+
+        if (command.equals(StompCommand.UNSUBSCRIBE)) {
+
+
         }
         return message;
     }
@@ -116,16 +150,19 @@ public class ChatPreHandler implements ChannelInterceptor {
         return participantService.checkAttendance(userId, roomId);
     }
     public Message<?> verifySend(String token, Long roomId, Message message){
+
         //토큰 검증
         User user = verifyJwt(token);
 
         //해당 방에 참가했는지 확인
         //참가하지 않은 경우 거부 응답
-        if(!verifyParticipate(user.getId(), roomId)){
+        boolean abc = verifyParticipate(user.getId(), roomId);
+        if(!abc){
 
             //메세지 생성 및 send
             throw new NotParticipateRoomException("Auth");
         }
+
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(message);
         headerAccessor.setHeader("userId", user.getId());
 

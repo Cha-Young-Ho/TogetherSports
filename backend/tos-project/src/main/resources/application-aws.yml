@@ -1,0 +1,19 @@
+# aws deployment environment application setting
+# spring properties
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/togethersports?serverTimezone=Asia/Seoul
+    username: tsadmin
+    password: 1234
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+
+# together sports application properties
+app:
+  storage:
+    root: /home/ubuntu/together-sports-data
+    location: /images

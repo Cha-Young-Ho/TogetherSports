@@ -1,14 +1,24 @@
 import { useState, useEffect } from "react";
 import $ from "jquery";
-import { getNicknameDuplicationCheck, postUserRequest } from "../api/members";
+import {
+  getMyInfo,
+  getNicknameDuplicationCheck,
+  postUserRequest,
+} from "../api/members";
 import { useDispatch, useSelector } from "react-redux";
 import { FailResponse } from "../api/failResponse";
+import Map from "../components/Map";
+import Head from "next/head";
 
 const UserModification = () => {
   const dispatch = useDispatch();
 
   // 회원정보 초기값
   const userInfo = useSelector((state) => state.myInfoReducer);
+
+  const activeAreas = useSelector(
+    (state) => state.saveActiveAreaReducer.activeAreas
+  );
 
   // 닉네임
   const [nickname, setNickname] = useState(userInfo.userNickname);
@@ -50,18 +60,15 @@ const UserModification = () => {
     "기타종목",
   ];
 
-  // 활동지역
-  let activeAreas = [];
-  // 위치 태그
-  const [tagAreas, setTagAreas] = useState([]);
-
   // 닉네임 중복확인
   const checkNicknameDuplication = () => {
     if (nickname.length < 2) {
       alert("닉네임은 최소 2글자 이상 입력해주세요.");
-    } else {
-      getNicknameDuplicationCheck(nickname).then((res) => {
-        console.log(res.status.message);
+      return;
+    }
+
+    getNicknameDuplicationCheck(nickname)
+      .then((res) => {
         if (res.status.code === 5000) {
           setIsNicknameCheck(true);
           alert("사용 가능한 닉네임입니다.");
@@ -69,8 +76,11 @@ const UserModification = () => {
           setNickname("");
           alert("이미 사용중인 닉네임입니다.");
         }
+      })
+      .catch((error) => {
+        FailResponse(error.response.data.status.code, checkNicknameDuplication);
+        return;
       });
-    }
   };
 
   // 생년월일 dropdown 데이터 가져오기
@@ -174,127 +184,62 @@ const UserModification = () => {
     }));
   };
 
-  const getMap = () => {
-    const mapScript = document.createElement("script");
-    mapScript.async = true;
-    mapScript.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAOMAP_APPKEY}&autoload=false&libraries=services`;
-    document.head.appendChild(mapScript);
-    mapScript.addEventListener("load", onLoadKakaoMap);
-  };
-
-  const onLoadKakaoMap = () => {
-    kakao.maps.load(() => {
-      const container = document.getElementById("map");
-      const options = {
-        center: new kakao.maps.LatLng(37.56682420062817, 126.97864093976689),
-        level: 5, //지도의 확대 레벨
-      };
-      const map = new kakao.maps.Map(container, options); // 지도 생성
-      const geocoder = new kakao.maps.services.Geocoder(); // 주소-좌표 변환 객체 생성
-      const marker = new kakao.maps.Marker(); // 클릭한 위치를 표시할 마커 생성
-
-      getCenter(map); // 지도의 중심좌표 얻기
-      getArea(map, geocoder, marker);
-    });
-  };
-
-  const getCenter = (map) => {
-    // 사용자의 위치를 정상적으로 받아오면 해당 위치가 중심좌표
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function (position) {
-        const lat = position.coords.latitude,
-          lon = position.coords.longitude;
-
-        const locPosition = new kakao.maps.LatLng(lat, lon);
-        map.setCenter(locPosition);
-      });
-    }
-    // 아니라면 서울시청이 기본 중심좌표
-    else {
-      const locPosition = new kakao.maps.LatLng(
-        37.56682420062817,
-        126.97864093976689
-      );
-      map.setCenter(locPosition);
-    }
-  };
-
-  const getArea = (map, geocoder) => {
-    kakao.maps.event.addListener(map, "click", function (mouseEvent) {
-      searchAddrFromCoords(
-        geocoder,
-        mouseEvent.latLng,
-        function (result, status) {
-          if (status === kakao.maps.services.Status.OK) {
-            const area = result[0].address_name;
-
-            // 중복되는 지역 여부 체크
-            const checkAreaDuplication = (element) => {
-              if (element === area) return true;
-            };
-
-            // 지역 설정 개수 최대 5개 제한
-            if (activeAreas.length < 5) {
-              if (activeAreas.some(checkAreaDuplication) === false) {
-                getMarker(map, mouseEvent.latLng, geocoder); // 클릭된 지역 마커표시
-                activeAreas.push(area);
-              } else {
-                alert("해당 지역은 이미 선택되었습니다.");
-              }
-              setTagAreas((prev) => [...prev, area]);
-            } else {
-              alert("최대 설정 가능한 개수를 초과하였습니다!");
-            }
-          }
+  const func_PostUserRequest = () => {
+    postUserRequest(
+      nickname,
+      userBirth,
+      activeAreas,
+      gender,
+      extension,
+      imagesrc,
+      Object.entries(interests)
+        .filter((exer) => {
+          if (exer[1]) return true;
+        })
+        .map((el) => el[0])
+    )
+      .then((res) => {
+        if (res.status.code === 5000) {
+          func_getMyInfo();
         }
-      );
-    });
+      })
+      .catch((error) => {
+        FailResponse(error.response.data.status.code, func_PostUserRequest);
+        return;
+      });
   };
 
-  const getMarker = (map, position, geocoder) => {
-    const marker = new kakao.maps.Marker({
-      map: map,
-      position: new kakao.maps.LatLng(position),
-    });
-
-    // 마커를 클릭한 위치에 표시
-    marker.setPosition(position);
-    marker.setMap(map);
-
-    // 마커 클릭 시, 해당 지역 삭제
-    kakao.maps.event.addListener(marker, "click", function () {
-      marker.setMap(null); // 지도에서 마커제거
-      searchAddrFromCoords(geocoder, position, function (result, status) {
-        if (status === kakao.maps.services.Status.OK) {
-          const area = result[0].address_name;
-
-          // 태그목록에서 해당 지역 삭제
-          setTagAreas((prev) =>
-            prev.filter((el) => {
-              return el !== area;
-            })
-          );
-
-          // 배열에서 클릭된 마커의 지역 인덱스 찾기
-          const index = activeAreas.findIndex(function (element) {
-            return element === area;
+  const func_getMyInfo = () => {
+    getMyInfo()
+      .then((res) => {
+        if (res.status.code === 5000) {
+          dispatch({
+            type: "SAVEMYINFO",
+            payload: {
+              userEmail: res.content.userEmail,
+              userName: res.content.userName,
+              userNickname: res.content.userNickname,
+              userBirth: res.content.userBirth,
+              gender: res.content.gender,
+              userProfileImagePath: res.content.userProfileImagePath,
+              activeAreas: res.content.activeAreas,
+              interests: res.content.interests,
+              mannerPoint: res.content.mannerPoint,
+              isInformationRequired: res.content.isInformationRequired,
+            },
           });
-
-          if (index !== -1) {
-            activeAreas.splice(index, 1); // 배열에서 해당 지역 삭제
-          }
+          alert("성공적으로 수정 되었습니다.");
+          window.history.back();
+          return;
         }
+      })
+      .catch((error) => {
+        FailResponse(error.response.data.status.code, func_getMyInfo);
+        return;
       });
-    });
   };
 
-  // 좌표를 통해 행정동 주소 정보 요청
-  const searchAddrFromCoords = (geocoder, coords, callback) => {
-    geocoder.coord2RegionCode(coords.getLng(), coords.getLat(), callback);
-  };
-
-  // 예외처리 및 수정버튼
-  const clickUpdateUserInfo = (e) => {
+  const exception = (e) => {
     const checkNickname = $("#input-nickname").val();
 
     if (checkNickname === "" || checkNickname === null) {
@@ -355,50 +300,14 @@ const UserModification = () => {
       setExtension(null);
       setImagesrc(null);
     }
+  };
+
+  // 예외처리 및 수정버튼
+  const clickUpdateUserInfo = (e) => {
+    exception(e);
 
     // 회원가입 요청 및 회원정보 수정
-    postUserRequest(
-      nickname,
-      userBirth,
-      activeAreas,
-      gender,
-      extension,
-      imagesrc,
-      interests
-    )
-      .then((res) => {
-        if (res.status.code === 5000) {
-          getMyInfo((res) => {
-            if (res.status.code === 5000) {
-              dispatch({
-                type: "SAVEMYINFO",
-                payload: {
-                  userEmail: res.content.userEmail,
-                  userName: res.content.userName,
-                  userNickname: res.content.userNickname,
-                  userBirth: res.content.userBirth,
-                  gender: res.content.gender,
-                  userProfileImagePath: res.content.userProfileImagePath,
-                  activeAreas: res.content.activeAreas.map((el) => el),
-                  interests: res.content.interests.map((el) => el),
-                  mannerPoint: res.content.mannerPoint,
-                  isInformationRequired: res.content.isInformationRequired,
-                },
-              });
-              alert("성공적으로 수정 되었습니다.");
-              window.history.back();
-              return;
-            }
-          }).catch((error) => {
-            FailResponse(error.response.data.status.code);
-            return;
-          });
-        }
-      })
-      .catch((error) => {
-        FailResponse(error.response.data.status.code);
-        return;
-      });
+    func_PostUserRequest();
   };
 
   // 초기값 세팅
@@ -411,18 +320,28 @@ const UserModification = () => {
       }));
     }
 
-    // 활동 지역 세팅
-    userInfo.activeAreas.map((area) => {
-      activeAreas.push(area);
-      setTagAreas((prev) => [...prev, area]);
+    dispatch({
+      type: "SAVEACTIVEAREA",
+      payload: {
+        activeAreas: userInfo.activeAreas,
+      },
+    });
+
+    dispatch({
+      type: "SAVETAGAREAS",
+      payload: {
+        tagAreas: userInfo.activeAreas,
+      },
     });
 
     getBirthDay();
-    getMap();
   }, []);
 
   return (
     <>
+      <Head>
+        <title>회원 정보 수정</title>
+      </Head>
       <div className="container">
         <div className="personalInfo-wrapper">
           <div className="title">인적사항</div>
@@ -540,19 +459,8 @@ const UserModification = () => {
         <div className="activearea-wrapper">
           <div className="title">활동지역</div>
           <div className="widthBar"></div>
-          <div id="map"></div>
-          <div className="tags">
-            {tagAreas
-              .filter((element, idx) => {
-                return tagAreas.indexOf(element) === idx;
-              })
-              .map((area, index) => {
-                return (
-                  <div key={index} className="tag">
-                    {area}
-                  </div>
-                );
-              })}
+          <div className="map-wrapper">
+            <Map />
           </div>
           <div className="widthBar"></div>
         </div>
@@ -567,6 +475,10 @@ const UserModification = () => {
         </div>
       </div>
       <style jsx>{`
+        input:focus {
+          outline: none;
+        }
+
         .container {
           width: 70%;
           min-width: 1000px;
@@ -581,7 +493,7 @@ const UserModification = () => {
         }
 
         .widthBar {
-          margin: 5px;
+          margin: 5px 0;
           width: 100%;
           border-top: 0.1px solid #eaeaea;
         }
@@ -605,7 +517,6 @@ const UserModification = () => {
           display: flex;
           flex-direction: column;
           width: 100%;
-          height: 500px;
         }
 
         .contents {
@@ -686,6 +597,15 @@ const UserModification = () => {
           border-radius: 10px;
           border: solid 1px #e8e8e8;
           font-weight: bold;
+        }
+
+        .map-wrapper {
+          width: 800px;
+          height: 500px;
+          margin-bottom: 30px;
+          border-radius: 10px;
+          border: solid 1px #e8e8e8;
+          background-color: #f2f2f2;
         }
 
         .content-gender {
@@ -823,37 +743,6 @@ const UserModification = () => {
 
         .clicked {
           background-color: #468f5b;
-        }
-
-        #map {
-          width: 800px;
-          height: 500px;
-          margin: 30px 0;
-          border-radius: 10px;
-          border: solid 1px #e8e8e8;
-        }
-
-        .tags {
-          width: 800px;
-          margin-bottom: 10px;
-          align-items: left;
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-        }
-
-        .tag {
-          width: 180px;
-          height: 24px;
-          padding: 5px;
-          margin: 5px;
-          border: none;
-          border-radius: 10px;
-          background-color: #e0e0e0;
-          color: #747474;
-          display: flex;
-          justify-content: center;
-          align-items: center;
         }
 
         .button-tag-delete {

@@ -3,6 +3,8 @@ package com.togethersports.tosproject.chat.dto;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 /**
  * <h1>ChatOfPubRoom</h1>
  * <p>
@@ -13,8 +15,10 @@ import lombok.Getter;
 @Builder
 @Getter
 public class ChatOfPubRoom {
-    Long userId;
-    String nickname;
-    String userProfileImagePath;
-    ChatOfMessage content;
+    private Long userId;
+    private String nickname;
+    private String userProfileImagePath;
+    private String message;
+    private LocalDateTime sendAt;
+
 }

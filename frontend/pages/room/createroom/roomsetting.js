@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import RoomInfoNavBar from "../../../components/roomInfoNavBar";
-import { BrowserRouter } from "react-router-dom";
+import Head from "next/head";
 
 const RoomSetting = () => {
   const dispatch = useDispatch();
+  const myInfo = useSelector((state) => state.myInfoReducer.userNickname);
   //방 제목
   const [roomTitle, setRoomTitle] = useState("");
 
@@ -13,7 +14,7 @@ const RoomSetting = () => {
   const [exercise, setExercise] = useState("");
 
   //인원
-  const [limitPeopleCount, setLimitPeopleCount] = useState("");
+  const [limitPeopleCount, setLimitPeopleCount] = useState(0);
 
   //지역
   const [roomArea, setRoomArea] = useState({
@@ -22,6 +23,11 @@ const RoomSetting = () => {
   });
 
   useEffect(() => {
+    if (myInfo === "익명") {
+      alert("추가 정보를 입력하지 않아 접속할 수 없습니다.");
+      window.history.back();
+    }
+
     getMap();
   }, []);
 
@@ -128,7 +134,7 @@ const RoomSetting = () => {
     if (
       roomTitle === "" ||
       exercise === "" ||
-      limitPeopleCount === "" ||
+      limitPeopleCount === 0 ||
       roomArea.area === "" ||
       roomArea.areaDetail === ""
     ) {
@@ -140,6 +146,12 @@ const RoomSetting = () => {
     if (exercise === "선택") {
       e.preventDefault();
       alert("종목을 선택해주세요!");
+    }
+
+    // 최소 인원 2명
+    if (limitPeopleCount < 2) {
+      e.preventDefault();
+      alert("최소 인원은 2명 이상이어야 합니다!");
     }
 
     dispatch({
@@ -155,6 +167,9 @@ const RoomSetting = () => {
 
   return (
     <>
+      <Head>
+        <title>운동 방 생성하기</title>
+      </Head>
       <div className="container">
         <RoomInfoNavBar
           roomSetting_atv={"activation"}
@@ -215,6 +230,7 @@ const RoomSetting = () => {
                 <input
                   type="number"
                   min="2"
+                  max="99"
                   value={limitPeopleCount}
                   onKeyUp={(e) =>
                     (e.target.value = e.target.value.replace(/[^0-9]/g, ""))
@@ -254,6 +270,10 @@ const RoomSetting = () => {
         </Link>
       </div>
       <style jsx>{`
+        input:focus {
+          outline: none;
+        }
+
         .container {
           width: 100%;
           display: flex;

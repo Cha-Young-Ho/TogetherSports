@@ -6,25 +6,8 @@ import axios from "axios";
 
 // GET
 
-// 인기있는 방 조회
-const getPopulariyRooms = async () => {
-  const promise =
-    localStorage.getItem("accessToken") === null
-      ? axios.get("http://localhost:8080/api/rooms/popularity")
-      : axios.get("http://localhost:8080/api/rooms/popularity", {
-          headers: {
-            "Content-type": "application/json; charset=UTF-8",
-            Accept: "*/*",
-          },
-        });
-
-  const dataPromise = promise.then((res) => res.data);
-
-  return dataPromise;
-};
-
 // 네비게이션 바 요청
-const getNavBar = async () => {
+const getNavBar = () => {
   const promise =
     localStorage.getItem("accessToken") === null
       ? axios.get("http://localhost:8080/api/nav")
@@ -41,10 +24,24 @@ const getNavBar = async () => {
   return dataPromise;
 };
 
+// 메인페이지 방 개수 조회
+const getRoomCount = () => {
+  const promise = axios.get("http://localhost:8080/api/room/count", {
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+      Accept: "*/*",
+    },
+  });
+
+  const dataPromise = promise.then((res) => res.data);
+
+  return dataPromise;
+};
+
 // POST
 
 // 액세스 토큰 발급
-const postRefreshToken = async (refreshToken) => {
+const postRefreshToken = (refreshToken) => {
   const promise =
     localStorage.getItem("accessToken") === null
       ? axios.post("http://localhost:8080/api/refresh", {
@@ -72,4 +69,4 @@ const postRefreshToken = async (refreshToken) => {
 
 // DELETE
 
-export { getPopulariyRooms, getNavBar, postRefreshToken };
+export { getNavBar, getRoomCount, postRefreshToken };

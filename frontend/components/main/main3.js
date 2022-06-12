@@ -1,9 +1,6 @@
 import TextLogo from "./textLogo";
 import useScrollFadeIn from "./useScrollFadeIn";
 
-/* 수정 필요 */
-// 1. 방 생성하러 갈 때 로그인 했는지 확인 필요
-
 const Main3 = () => {
   const animatedItem1 = useScrollFadeIn("up", 0.5, 0.1);
   const animatedItem2 = useScrollFadeIn("up", 0.5, 0.2);

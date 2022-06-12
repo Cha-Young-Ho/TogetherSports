@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useDispatch } from "react-redux";
 import moment from "moment";
+import Head from "next/head";
 
 const RoomSchedule = () => {
   const dispatch = useDispatch();
@@ -70,6 +71,10 @@ const RoomSchedule = () => {
     );
     endTime.add(runningHour, "hours");
     endTime.add(runningMinute, "minutes");
+    if (curSelectedDate.length === 9) {
+      curSelectedDate =
+        curSelectedDate.substring(0, 8) + "0" + curSelectedDate.substr(9);
+    }
 
     dispatch({
       type: "ROOMSCHEDULE",
@@ -89,6 +94,9 @@ const RoomSchedule = () => {
 
   return (
     <>
+      <Head>
+        <title>운동 방 생성하기</title>
+      </Head>
       <div className="bg-container">
         <RoomInfoNavBar
           roomSetting_atv={`deactivation`}
@@ -157,6 +165,10 @@ const RoomSchedule = () => {
         </div>
       </div>
       <style jsx>{`
+        input:focus {
+          outline: none;
+        }
+
         .bg-container {
           margin-top: 10px;
           border-top: 1px solid #e4e8eb;

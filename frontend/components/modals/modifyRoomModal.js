@@ -1,32 +1,40 @@
 import { useEffect, useState } from "react";
 import SetRoomImages from "../rooms/setRoomImages";
-import { getRoomInfo, postUpdateRoom } from "../../api/rooms";
+import { getRoomInfo, putUpdateRoom } from "../../api/rooms";
 import FailResponse from "../../api/failResponse";
+import { useSelector } from "react-redux";
+import Head from "next/head";
 
 const ModifyRoomModal = (props) => {
-  // 방 제목, 설명, 인원
-  const [roomTitle, setRoomTitle] = useState("");
-  const [roomContent, setRoomContent] = useState("");
-  const [limitPeopleCount, setLimitPeopleCount] = useState("");
+  const roomId = props.roomId;
+  const roomTitle = useSelector(
+    (state) => state.roomRealTimeInfoReducer.roomTitle
+  );
+  const roomContent = useSelector(
+    (state) => state.roomRealTimeInfoReducer.roomContent
+  );
+  const roomArea = useSelector(
+    (state) => state.roomRealTimeInfoReducer.roomArea
+  );
+  const limitPeopleCount = useSelector(
+    (state) => state.roomRealTimeInfoReducer.limitPeopleCount
+  );
+  const exercise = useSelector(
+    (state) => state.roomRealTimeInfoReducer.exercise
+  );
+  const startAppointmentDate = useSelector(
+    (state) => state.roomRealTimeInfoReducer.startAppointmentDate
+  );
+  const endAppointmentDate = useSelector(
+    (state) => state.roomRealTimeInfoReducer.endAppointmentDate
+  );
 
-  // post 하기위한 정보들
-  const [roomArea, setRoomArea] = useState({});
-  const [exercise, setExercise] = useState("");
-  const [startAppointmentDate, setStartAppointmentDate] = useState("");
-  const [endAppointmentDate, setEndAppointmentDate] = useState("");
+  /////////////////// 태그 관련 ///////////////////
 
-  // 서버로 보내기 위한 방 이미지 정보(확장자, 원본주소)
-  const [roomImages, setRoomImages] = useState([]);
-  const [thumbnailIndex, setThumbnailIndex] = useState(0);
-  const getImageData = (imageData) => {
-    setRoomImages(imageData);
-  };
-
-  const getThumbnailIndex = (index) => {
-    setThumbnailIndex(index);
-  };
-
-  // 방 태그
+  const getTagsFromRedux = useSelector(
+    (state) => state.roomRealTimeInfoReducer.tags
+  );
+  const [doneTagsSetting, setDoneTagsSetting] = useState(false);
   const [tags, setTags] = useState([]);
   const tagsAge = [
     "10대",
@@ -41,9 +49,9 @@ const ModifyRoomModal = (props) => {
   const tagsLevel = ["입문만", "초보만", "중수만", "고수만", "실력 무관"];
   const tagsGender = ["남자만", "여자만", "성별 무관"];
 
-  // 태그 선택 함수
+  // 태그 선택시
   const onClickTag = (e) => {
-    if (e.target.classList[2] === "tag-clicked") {
+    if (e.target.classList[3] === "tag-clicked") {
       e.target.classList.remove("tag-clicked");
       setTags((prev) =>
         prev.filter((el) => {
@@ -61,11 +69,36 @@ const ModifyRoomModal = (props) => {
     }
   };
 
-  const setData = () => {
-    return roomImages;
+  // 이미 설정된 태그들에 대해 선택처리
+  const setPrevTags = (tagName) => {
+    let index = 0;
+
+    if (tagsAge.some((tag) => tag === tagName)) {
+      index = tagsAge.indexOf(tagName);
+      const tagAge = document.getElementsByClassName("tag-age");
+      tagAge[index].classList.add("tag-clicked");
+    }
+    if (tagsLevel.some((tag) => tag === tagName)) {
+      index = tagsLevel.indexOf(tagName);
+      const tagLevel = document.getElementsByClassName("tag-level");
+      tagLevel[index].classList.add("tag-clicked");
+    }
+    if (tagsGender.some((tag) => tag === tagName)) {
+      index = tagsGender.indexOf(tagName);
+      const tagGender = document.getElementsByClassName("tag-gender");
+      tagGender[index].classList.add("tag-clicked");
+    }
   };
 
-  // 이미지 배열에 order 추가하기
+  /////////////////// 이미지 관련 ///////////////////
+
+  const [roomImages, setRoomImages] = useState([]);
+  const [thumbnailIndex, setThumbnailIndex] = useState(0);
+
+  // setRoomImages 컴포넌트로부터 받는 데이터들
+  const getImageData = (imageData) => setRoomImages(imageData);
+  const getThumbnailIndex = (index) => setThumbnailIndex(index);
+
   const addOrder = (arr, index) => {
     const thumbnail = [];
 
@@ -77,41 +110,18 @@ const ModifyRoomModal = (props) => {
       }
     }
 
-    for (let i = 0; i < arr.length; i++) {
-      arr[i].order = i + 1;
-    }
+    for (let i = 0; i < arr.length; i++) arr[i].order = i + 1;
 
     return setRoomImages((roomImages = thumbnail.concat(arr)));
   };
 
-  // 화면에 표시되는 프리뷰 이미지
-  const [imagePreview, setImagePreview] = useState([]);
-  const getPreview = (previewData) => {
-    setImagePreview(previewData);
-  };
-
-  const setPreview = () => {
-    return imagePreview;
-  };
-
-  // 완료 버튼 클릭 시
-  const clickDoneBtn = () => {
-    addOrder(roomImages, thumbnailIndex);
-
-    if (roomTitle === "" || limitPeopleCount === "") {
-      alert("입력이 올바르지 않은 정보가 있습니다");
-      e.preventDefault();
-      return;
-    }
-
-    if (roomContent === "") setRoomContent(null);
-    if (tags.length === 0) setTags(null);
-    if (roomImages.length === 0) setRoomImages(null);
-
-    postUpdateRoom(
+  const updateRoomFunc = () => {
+    putUpdateRoom(
+      roomId,
       roomTitle,
       roomContent,
       roomArea,
+      limitPeopleCount,
       exercise,
       tags,
       startAppointmentDate,
@@ -121,161 +131,173 @@ const ModifyRoomModal = (props) => {
       .then((res) => {
         if (res.status.code === 5000) {
           console.log(res.status.message);
-          alert("수정되었습니다.");
+          alert("방을 성공적으로 수정하였습니다 !");
 
-          //수정 성공 후 실시간으로 방 정보 변경되어야 함
-          //아마도 소켓?
-          close();
+          props.close();
         }
       })
       .catch((error) => {
-        FailResponse(error.response.data.status.code);
+        FailResponse(error.response.data.status.code, updateRoomFunc);
         return;
       });
   };
 
-  // 제목 인풋 변경사항
-  const changeTitle = (e) => {
-    setRoomTitle(e.target.value);
-  };
+  // 수정 완료시
+  const clickDoneBtn = () => {
+    roomImages.length === 0
+      ? setRoomImages(null)
+      : addOrder(roomImages, thumbnailIndex);
 
-  // 인원 수 변경사항
-  const changePplCnt = (e) => {
-    e.target.value = e.target.value.replace(/[^0-9]/g, "");
-    setLimitPeopleCount(e.target.value);
-  };
-
-  // 방 설명 변경사항
-  const changeContent = (e) => {
-    setRoomContent(e.target.value);
-  };
-
-  // 방에 대한 정보 조회
-  useEffect(() => {
-    if (props.open) {
-      getRoomInfo(props.sequenceId)
-        .then((res) => {
-          if (res.status.code === 5000) {
-            console.log(res.status.message);
-            //초기값 받아오기
-            setRoomTitle(res.content.roomTitle);
-            setRoomContent(res.content.roomContent);
-            setRoomArea(res.content.roomArea);
-            setExercise(res.content.exercise);
-            setTags(res.content.tags);
-            setStartAppointmentDate(res.content.startAppointmentDate);
-            setEndAppointmentDate(res.content.endAppointmentDate);
-            setImagePreview(
-              (imagePreview = res.content.roomImages.imageSource.map(preview))
-            );
-            setLimitPeopleCount(res.content.limitPeopleCount);
-          }
-        })
-        .catch((error) => {
-          FailResponse(error.response.data.status.code);
-          return;
-        });
+    if (roomTitle === "" || limitPeopleCount === 0) {
+      alert("입력이 올바르지 않은 정보가 있습니다");
+      e.preventDefault();
+      return;
     }
-  }, [props.open]);
+
+    if (roomContent === "") setRoomContent(null);
+    if (tags.length === 0) setTags(null);
+
+    updateRoomFunc();
+  };
+
+  // 태그 초기값 세팅
+  useEffect(() => {
+    getTagsFromRedux.map((tag) => {
+      setTags((prev) => [...prev, (tags = tag)]);
+    });
+    setDoneTagsSetting(true);
+  }, [getTagsFromRedux]);
+
+  useEffect(() => {
+    if (doneTagsSetting && tags.length) tags.map((tag) => setPrevTags(tag));
+  }, [doneTagsSetting]);
 
   return (
     <>
       <div className={props.open ? "openModal modal" : "modal"}>
-        <div className="box-container">
-          <h1>방 정보 수정</h1>
+        {props.open ? (
+          <>
+            <Head>
+              <title>운동 방 수정하기</title>
+            </Head>
+            <div className="box-container">
+              <h1>방 정보 수정</h1>
 
-          <div className="contents-wrapper">
-            <div className="roomTitle-wrapper">
-              <p>방 제목</p>
-              <input
-                type="text"
-                minLength="1"
-                maxLength="20"
-                placeholder={roomTitle}
-                onChange={changeTitle}
-              ></input>
-            </div>
-
-            <div className="peopleCount-wrapper">
-              <p>인원 수 조절</p>
-              <input
-                type="text"
-                placeholder={limitPeopleCount}
-                onChange={changePplCnt}
-              ></input>
-              <p>명</p>
-              <p className="notice">
-                * 현재 참여 인원보다 많은 인원만 입력 가능합니다.
-              </p>
-            </div>
-
-            <div className="roomNotice-wrapper">
-              <p>방 설명 작성</p>
-              <textarea
-                onChange={changeContent}
-                defaultValue={roomContent}
-              ></textarea>
-            </div>
-
-            <div className="picture-wrapper">
-              <SetRoomImages
-                getImageData={getImageData}
-                setPreview={setPreview}
-                getPreview={getPreview}
-                setData={setData}
-                getThumbnailData={getThumbnailIndex}
-              />
-            </div>
-
-            <div className="tag-wrapper">
-              <p>빠른 태그 추가 (최대 5개)</p>
-              <div className="tags">
-                <div className="tags-age">
-                  {tagsAge.map((age, index) => {
-                    return (
-                      <div className="tag" onClick={onClickTag} key={index}>
-                        {age}
-                      </div>
-                    );
-                  })}
+              <div className="contents-wrapper">
+                <div className="roomTitle-wrapper">
+                  <p>방 제목</p>
+                  <input
+                    type="text"
+                    minLength="1"
+                    maxLength="20"
+                    placeholder={roomTitle}
+                    onChange={(e) => setRoomTitle(e.target.value)}
+                  ></input>
                 </div>
 
-                <div className="tags-level-gender">
-                  {tagsLevel.map((level, index) => {
-                    return (
-                      <div className="tag" onClick={onClickTag} key={index}>
-                        {level}
-                      </div>
-                    );
-                  })}
+                <div className="peopleCount-wrapper">
+                  <p>인원 수 조절</p>
+                  <input
+                    type="number"
+                    min="2"
+                    placeholder={limitPeopleCount}
+                    onChange={(e) => {
+                      e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                      setLimitPeopleCount(e.target.value);
+                    }}
+                  ></input>
+                  <p>명</p>
+                  <p className="notice">
+                    * 현재 참여 인원보다 많은 인원만 입력 가능합니다.
+                  </p>
+                </div>
 
-                  {tagsGender.map((gender, index) => {
-                    return (
-                      <div className="tag" onClick={onClickTag} key={index}>
-                        {gender}
-                      </div>
-                    );
-                  })}
+                <div className="roomNotice-wrapper">
+                  <p>방 설명 작성</p>
+                  <textarea
+                    onChange={(e) => setRoomContent(e.target.value)}
+                    defaultValue={roomContent}
+                  ></textarea>
+                </div>
+
+                <div className="picture-wrapper">
+                  <SetRoomImages
+                    getImageData={getImageData}
+                    getThumbnailData={getThumbnailIndex}
+                    path={"modifyRoom"}
+                  />
+                </div>
+
+                <div className="tag-wrapper">
+                  <p>빠른 태그 추가 (최대 5개)</p>
+                  <div className="tags">
+                    <div className="tags-age">
+                      {tagsAge.map((age, index) => {
+                        return (
+                          <div
+                            className="tag tag-age"
+                            onClick={onClickTag}
+                            key={index}
+                          >
+                            {age}
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    <div className="tags-level-gender">
+                      {tagsLevel.map((level, index) => {
+                        return (
+                          <div
+                            className="tag tag-level"
+                            onClick={onClickTag}
+                            key={index}
+                          >
+                            {level}
+                          </div>
+                        );
+                      })}
+
+                      {tagsGender.map((gender, index) => {
+                        return (
+                          <div
+                            className="tag tag-gender"
+                            onClick={onClickTag}
+                            key={index}
+                          >
+                            {gender}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
 
-          <div className="button-wrapper">
-            <button className="cancel-btn" onClick={props.close}>
-              수정 취소
-            </button>
-            <button className="done-btn" onClick={clickDoneBtn}>
-              완료
-            </button>
-          </div>
-        </div>
+              <div className="button-wrapper">
+                <button className="cancel-btn" onClick={props.close}>
+                  수정 취소
+                </button>
+                <button className="done-btn" onClick={clickDoneBtn}>
+                  완료
+                </button>
+              </div>
+            </div>
+          </>
+        ) : (
+          <></>
+        )}
       </div>
 
       <style jsx>{`
         p {
           font-size: 1.5rem;
           font-weight: bold;
+        }
+
+        input:focus,
+        textarea:focus {
+          outline: none;
         }
 
         .modal {
@@ -297,7 +319,8 @@ const ModifyRoomModal = (props) => {
         }
 
         .box-container {
-          width: 48%;
+          min-width: 720px;
+          width: 50%;
           height: 85%;
           padding: 40px 50px;
           border-radius: 10px;
@@ -377,7 +400,7 @@ const ModifyRoomModal = (props) => {
           align-items: center;
         }
 
-        .peopleCount-wrapper input[type="text"] {
+        .peopleCount-wrapper input[type="number"] {
           width: 50px;
           height: 35px;
           border-radius: 10px;

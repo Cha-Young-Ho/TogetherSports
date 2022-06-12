@@ -1,13 +1,11 @@
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
+import { useSelector } from "react-redux";
 import { postCreateRoom } from "../../../api/rooms";
 import { FailResponse } from "../../../api/failResponse";
 import RoomInfoNavBar from "../../../components/roomInfoNavBar";
 import SetRoomImages from "../../../components/rooms/setRoomImages";
-
-/* 수정 필요 */
-// 1. 완료 버튼 클릭 시, 새로 만들어진 방으로 이동
+import Head from "next/head";
 
 const RoomTagInfo = () => {
   const roomInfo = useSelector((state) => state.createRoomReducer);
@@ -83,15 +81,15 @@ const RoomTagInfo = () => {
     }
   };
 
-  // 예외 처리 및 서버에 방 생성 요청
-  const createRoom = (e) => {
-    addOrder(roomImages, thumbnailIndex);
+  const exception = (e) => {
+    if (roomImages === []) setRoomImages(null);
+    else addOrder(roomImages, thumbnailIndex);
 
     // 필수입력정보들이 입력되지 않으면
     if (
       roomInfo.roomTitle === "" ||
       roomInfo.roomArea === "" ||
-      roomInfo.limitPeopleCount === "" ||
+      roomInfo.limitPeopleCount === 0 ||
       roomInfo.exercise === "" ||
       roomInfo.startAppointmentDate === "" ||
       roomInfo.endAppointmentDate === ""
@@ -102,36 +100,47 @@ const RoomTagInfo = () => {
     }
 
     if (roomContent === "") setRoomContent(null);
-    if (tags.length === 0) setTags(null);
-    if (roomImages.length === 0) setRoomImages(null);
-    // 정상적으로 다 입력돼있으면 방 생성 요청
-    else {
-      postCreateRoom(
-        roomInfo.roomTitle,
-        roomContent,
-        roomInfo.roomArea,
-        roomInfo.limitPeopleCount,
-        roomInfo.exercise,
-        tags,
-        roomInfo.startAppointmentDate,
-        roomInfo.endAppointmentDate,
-        roomImages
-      )
-        .then((res) => {
-          console.log(res.status.message);
-          if (res.status.code === 5000) {
-            alert("방을 성공적으로 생성하였습니다!");
-          }
-        })
-        .catch((error) => {
-          FailResponse(error.response.data.status.code);
-          return;
-        });
+    if (tags.length === 0) {
+      e.preventDefault();
+      alert("태그를 입력해주세요.");
+      return;
     }
+  };
+
+  const createRoomFunc = () => {
+    postCreateRoom(
+      roomInfo.roomTitle,
+      roomContent,
+      roomInfo.roomArea,
+      roomInfo.limitPeopleCount,
+      roomInfo.exercise,
+      tags,
+      roomInfo.startAppointmentDate,
+      roomInfo.endAppointmentDate,
+      roomImages
+    )
+      .then((res) => {
+        if (res.status.code === 5000) {
+          alert("방을 성공적으로 생성하였습니다!");
+        }
+      })
+      .catch((error) => {
+        FailResponse(error.response.data.status.code, createRoomFunc);
+        return;
+      });
+  };
+
+  // 예외 처리 및 서버에 방 생성 요청
+  const createRoom = (e) => {
+    exception(e);
+    createRoomFunc();
   };
 
   return (
     <>
+      <Head>
+        <title>운동 방 생성하기</title>
+      </Head>
       <div className="container">
         <RoomInfoNavBar
           roomSetting_atv={"deactivation"}
@@ -205,6 +214,10 @@ const RoomTagInfo = () => {
         </div>
       </div>
       <style jsx>{`
+        textarea:focus {
+          outline: none;
+        }
+
         .container {
           width: 100%;
           display: flex;
