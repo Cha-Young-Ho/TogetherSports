@@ -161,16 +161,17 @@ public class RoomService {
     }
 
     //방 참가
+    @Transactional
     public Response participateRoom(User currentUser, Long roomId){
-        log.info("current = {}", currentUser.getId());
+
         //엔티티 찾기
         UserAndRoomOfService userAndRoomEntity =
                 findEntityById(currentUser.getId(), roomId);
 
         Room roomEntity = userAndRoomEntity.getRoom();
-        log.info("roomEntity = {}", roomEntity.getId());
+
         User userEntity = userAndRoomEntity.getUser();
-        log.info("userEntity = {}", roomEntity.getId());
+
 
         //인원이 가득찬 경우
         if(roomEntity.getParticipants().size() >= roomEntity.getLimitPeopleCount()){
@@ -196,7 +197,10 @@ public class RoomService {
         //참가 WS 메세지 보내기
         sendMessage(roomEntity.getId(), wsResponse);
         //방 변화 WS 메세지 보내기
-        sendMessage(roomEntity.getId(), getWsRoomDetailInfo(roomEntity));
+
+        Room updatedRoomEntity = findRoomEntityById(roomEntity.getId());
+        
+        sendMessage(roomEntity.getId(), getWsRoomDetailInfo(updatedRoomEntity));
 
         // 정상적으로 참여가 가능한 경우
         // HTTP 응답 메세지 생성
@@ -420,8 +424,9 @@ public class RoomService {
             //나가기 WS 메세지 보내기
             sendMessage(roomEntity.getId(), wsResponse);
 
-            //방 변화 WS 메세지 보내기
-            sendMessage(roomEntity.getId(), getWsRoomDetailInfo(roomEntity));
+            //방 변화 WS 메세지 보내기시
+            Room updatedRoomEntity = findRoomEntityById(roomEntity.getId());
+            sendMessage(roomEntity.getId(), getWsRoomDetailInfo(updatedRoomEntity));
 
             // HTTP 응답 메세지 생성
             Response response = Response.of(
@@ -450,6 +455,11 @@ public class RoomService {
 
         //WS 메세지 보내기
         sendMessage(roomEntity.getId(), wsResponse);
+
+        //방 업데이트
+        Room updatedRoomEntity = findRoomEntityById(roomEntity.getId());
+
+        sendMessage(roomEntity.getId(), getWsRoomDetailInfo(updatedRoomEntity));
 
         // HTTP 응답 메세지 생성
         Response response = Response.of(

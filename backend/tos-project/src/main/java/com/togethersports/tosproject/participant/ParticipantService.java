@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author younghoCha
  */
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ParticipantService {
@@ -31,6 +31,8 @@ public class ParticipantService {
     private final ParticipantRepository participantRepository;
     private final UserRepository userRepository;
     private final RoomRepository roomRepository;
+
+    @Transactional
     public boolean save(User user, Room room){
 
         //해당 유저가 참여했는지 확인, 참여한 경우와 참여하지 않은 경우에 따른 로직 분기
@@ -44,6 +46,8 @@ public class ParticipantService {
         Participant participant = Participant.of(user, room);
 
         participantRepository.save(participant);
+
+        room.getParticipants().add(participant);
 
         return true;
     }
@@ -73,13 +77,32 @@ public class ParticipantService {
 
         participantRepository.delete(user);
     }
-
+    @Transactional
     public void out(User user, Room room){
 
         Participant participantEntity = participantRepository.findByUserAndRoom(user, room)
                 .orElseThrow(() -> new NotParticipateRoomException("해당 방에 참여하지 않은 유저입니다."));
 
-        participantRepository.deleteById(participantEntity.getId());
+
+        int i = 0;
+        for(Participant participant : user.getParticipateRooms()){
+            if(participant.getId() == participantEntity.getId()){
+                user.getParticipateRooms().remove(i);
+                break;
+            }
+            i++;
+        }
+
+        i = 0;
+        for(Participant participant : room.getParticipants()){
+            if(participant.getId() == participantEntity.getId()){
+                room.getParticipants().remove(i);
+                break;
+            }
+            i++;
+        }
+        participantRepository.delete(participantEntity);
+
 
 
     }
