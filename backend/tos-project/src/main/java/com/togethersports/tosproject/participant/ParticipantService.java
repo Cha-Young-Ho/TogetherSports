@@ -72,10 +72,12 @@ public class ParticipantService {
     public void kickUser(Long kickedUserId, Long roomId){
         User userEntity = findUserEntityById(kickedUserId);
         Room roomEntity = findRoomEntityById(roomId);
-        Participant user = participantRepository.findByUserAndRoom(userEntity, roomEntity)
+        Participant participant = participantRepository.findByUserAndRoom(userEntity, roomEntity)
                 .orElseThrow(() -> new UserNotFoundException("해당하는 사용자를 찾을 수 없어, 강퇴할 수 없습니다."));
 
-        participantRepository.delete(user);
+        userEntity.out(participant);
+        roomEntity.out(participant);
+        participantRepository.delete(participant);
     }
     @Transactional
     public void out(User user, Room room){
@@ -84,23 +86,9 @@ public class ParticipantService {
                 .orElseThrow(() -> new NotParticipateRoomException("해당 방에 참여하지 않은 유저입니다."));
 
 
-        int i = 0;
-        for(Participant participant : user.getParticipateRooms()){
-            if(participant.getId() == participantEntity.getId()){
-                user.getParticipateRooms().remove(i);
-                break;
-            }
-            i++;
-        }
+        user.out(participantEntity);
+        room.out(participantEntity);
 
-        i = 0;
-        for(Participant participant : room.getParticipants()){
-            if(participant.getId() == participantEntity.getId()){
-                room.getParticipants().remove(i);
-                break;
-            }
-            i++;
-        }
         participantRepository.delete(participantEntity);
 
 

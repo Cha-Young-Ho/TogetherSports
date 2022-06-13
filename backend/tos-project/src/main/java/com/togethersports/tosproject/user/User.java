@@ -144,4 +144,15 @@ public class User {
     public void updateMannerPoint(int point){
         this.mannerPoint = this.mannerPoint + point;
     }
+
+    public void out(Participant participantEntity){
+        int i = 0;
+        for(Participant participant : getParticipateRooms()){
+            if(participant.getId() == participantEntity.getId()){
+                getParticipateRooms().remove(i);
+                break;
+            }
+            i++;
+        }
+    }
 }
