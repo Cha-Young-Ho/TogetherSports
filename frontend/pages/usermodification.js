@@ -18,6 +18,7 @@ const UserModification = () => {
 
   // 닉네임
   const [nickname, setNickname] = useState(userInfo.userNickname);
+  const [validNickname, setValidNickname] = useState("");
   const [isNicknameCheck, setIsNicknameCheck] = useState(false);
 
   // 생년월일
@@ -60,11 +61,15 @@ const UserModification = () => {
   const checkNicknameDuplication = () => {
     if (nickname.length < 2) {
       alert("닉네임은 최소 2글자 이상 입력해주세요.");
+    } else if (userInfo.userNickname === nickname) {
+      setIsNicknameCheck(true);
+      setValidNickname(nickname);
+      alert("사용 가능한 닉네임 입니다.");
     } else {
       getNicknameDuplicationCheck(nickname).then((res) => {
-        console.log(res.status.message);
         if (res.status.code === 5000) {
           setIsNicknameCheck(true);
+          setValidNickname(nickname);
           alert("사용 가능한 닉네임입니다.");
         } else {
           setNickname("");
@@ -177,7 +182,7 @@ const UserModification = () => {
 
   const func_PostUserRequest = () => {
     postUserRequest(
-      nickname,
+      validNickname,
       userBirth,
       activeAreas,
       gender,
@@ -225,9 +230,7 @@ const UserModification = () => {
   };
 
   const exception = (e) => {
-    const checkNickname = $("#input-nickname").val();
-
-    if (checkNickname === "" || checkNickname === null) {
+    if (validNickname === "") {
       e.preventDefault();
       alert("닉네임을 입력해주세요.");
       return false;
@@ -235,7 +238,7 @@ const UserModification = () => {
 
     // 닉네임에 공백이 있을 경우
     const blank_pattern = /[\s]/g;
-    if (blank_pattern.test(checkNickname) === true) {
+    if (blank_pattern.test(validNickname) === true) {
       e.preventDefault();
       alert("닉네임을 공백없이 입력해주세요.");
       return false;
@@ -250,7 +253,7 @@ const UserModification = () => {
     // }
 
     // 닉네임 길이 제한
-    if (checkNickname.length < 2 && checkNickname.length > 8) {
+    if (validNickname.length < 2 && validNickname.length > 8) {
       e.preventDefault();
       alert("닉네임은 최소 2글자 최대 8글자까지 입력 가능합니다.");
       return false;
