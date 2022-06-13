@@ -5,7 +5,7 @@ import ParticipantList from "../../components/rooms/participantList";
 import UserInfoModal from "../../components/modals/userInfoModal";
 import ModifyRoomModal from "../../components/modals/modifyRoomModal";
 import Chatting from "../../components/chatting";
-import FailResponse from "../../api/failResponse";
+import { FailResponse } from "../../api/failResponse";
 import { getRoomDetail, deleteLeaveRoom, deleteRoom } from "../../api/rooms";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
@@ -721,6 +721,7 @@ const Room = () => {
           bottom: 30px;
           right: 30px;
           animation: zoomin 0.3s ease-in-out;
+          z-index: 99;
         }
 
         @keyframes zoomin {

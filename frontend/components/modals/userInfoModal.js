@@ -1,10 +1,9 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { getOtherInfo } from "../../api/members";
+import { getOtherInfo, patchMannerPoint } from "../../api/members";
 import { FailResponse } from "../../api/failResponse";
 import { patchDelegateHost, deleteKickOutUser } from "../../api/rooms";
-import { patchMannerPoint } from "../../api/members";
 
 const UserInfoModal = (props) => {
   const dispatch = useDispatch();
@@ -106,29 +105,28 @@ const UserInfoModal = (props) => {
   const upMannerPoint = (e) => {
     const downButton = document.getElementsByClassName("button-down");
 
-    patchMannerPoint(myInfo.userNickname, clickedUserId, "UP")
+    patchMannerPoint(clickedUserId, "UP")
       .then((res) => {
-        // 이미 올려져있을때 다시 누르면 올리기 취소
-        if (e.target.innerText === "▲") {
-          setMannerPoint((mannerPoint = mannerPoint - 1));
-          e.target.innerText = "△";
-          downButton.innerText = "▽";
-          return;
-        } else {
-          // 올리기
+        {
+          // 그냥 올리기
           if (res.status.code === 1109) {
             setMannerPoint((mannerPoint = mannerPoint + 1));
             e.target.innerText = "▲";
             downButton.innerText = "▽";
-            console.log(res.status.message);
             return;
           }
-          // 내리기 취소
-          if (res.status.code === 1108 || downButton.innerText === "▼") {
+          // 내렸던거 취소
+          if (res.status.code === 1108) {
             setMannerPoint((mannerPoint = mannerPoint + 1));
             e.target.innerText = "△";
             downButton.innerText = "▽";
-            console.log(res.status.message);
+            return;
+          }
+          // 올렸던거 취소
+          if (res.status.code === 1107) {
+            setMannerPoint((mannerPoint = mannerPoint - 1));
+            e.target.innerText = "△";
+            downButton.innerText = "▽";
             return;
           }
         }
@@ -145,29 +143,28 @@ const UserInfoModal = (props) => {
   const downMannerPoint = (e) => {
     const upButton = document.getElementsByClassName("button-up");
 
-    patchMannerPoint(myInfo.userNickname, clickedUserId, "DOWN")
+    patchMannerPoint(clickedUserId, "DOWN")
       .then((res) => {
-        // 이미 내려져있을때 다시 누르면 내림 취소
-        if (e.target.innerText === "▼") {
-          setMannerPoint((mannerPoint = mannerPoint + 1));
-          upButton.innerText = "△";
-          e.target.innerText = "▽";
-          return;
-        } else {
-          // 내리기
+        {
+          // 그냥 내리기
           if (res.status.code === 1110) {
             setMannerPoint((mannerPoint = mannerPoint - 1));
             upButton.innerText = "△";
             e.target.innerText = "▼";
-            console.log(res.status.message);
             return;
           }
-          // 올리기 취소
-          if (res.status.code === 1107 || upButton.innerText === "▲") {
+          // 올렸던거 취소
+          if (res.status.code === 1107) {
             setMannerPoint((mannerPoint = mannerPoint - 1));
             upButton.innerText = "△";
             e.target.innerText = "▽";
-            console.log(res.status.message);
+            return;
+          }
+          // 내렸던거 취소
+          if (res.status.code === 1108) {
+            setMannerPoint((mannerPoint = mannerPoint + 1));
+            upButton.innerText = "△";
+            e.target.innerText = "▽";
             return;
           }
         }
