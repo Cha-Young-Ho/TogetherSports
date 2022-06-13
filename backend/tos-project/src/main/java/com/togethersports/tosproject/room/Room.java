@@ -145,5 +145,15 @@ public class Room extends RoomBaseEntity {
         this.host = user;
     }
 
+    public void out(Participant participantEntity){
+        int i = 0;
+        for(Participant participant : getParticipants()){
+            if(participant.getId() == participantEntity.getId()){
+                getParticipants().remove(i);
+                break;
+            }
+            i++;
+        }
+    }
 
 }

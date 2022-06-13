@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author younghoCha
  */
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ParticipantService {
@@ -31,6 +31,8 @@ public class ParticipantService {
     private final ParticipantRepository participantRepository;
     private final UserRepository userRepository;
     private final RoomRepository roomRepository;
+
+    @Transactional
     public boolean save(User user, Room room){
 
         //해당 유저가 참여했는지 확인, 참여한 경우와 참여하지 않은 경우에 따른 로직 분기
@@ -44,6 +46,8 @@ public class ParticipantService {
         Participant participant = Participant.of(user, room);
 
         participantRepository.save(participant);
+
+        room.getParticipants().add(participant);
 
         return true;
     }
@@ -68,18 +72,25 @@ public class ParticipantService {
     public void kickUser(Long kickedUserId, Long roomId){
         User userEntity = findUserEntityById(kickedUserId);
         Room roomEntity = findRoomEntityById(roomId);
-        Participant user = participantRepository.findByUserAndRoom(userEntity, roomEntity)
+        Participant participant = participantRepository.findByUserAndRoom(userEntity, roomEntity)
                 .orElseThrow(() -> new UserNotFoundException("해당하는 사용자를 찾을 수 없어, 강퇴할 수 없습니다."));
 
-        participantRepository.delete(user);
+        userEntity.out(participant);
+        roomEntity.out(participant);
+        participantRepository.delete(participant);
     }
-
+    @Transactional
     public void out(User user, Room room){
 
         Participant participantEntity = participantRepository.findByUserAndRoom(user, room)
                 .orElseThrow(() -> new NotParticipateRoomException("해당 방에 참여하지 않은 유저입니다."));
 
-        participantRepository.deleteById(participantEntity.getId());
+
+        user.out(participantEntity);
+        room.out(participantEntity);
+
+        participantRepository.delete(participantEntity);
+
 
 
     }

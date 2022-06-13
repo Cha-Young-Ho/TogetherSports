@@ -375,14 +375,11 @@ const deleteLeaveRoom = (roomId) => {
 const deleteKickOutUser = (roomId, targetUserId) => {
   const promise =
     localStorage.getItem("accessToken") === null
-      ? axios.delete(`http://localhost:8080/api/room/${roomId}/user/kick-out`, {
-          targetUserId: targetUserId,
-        })
+      ? axios.delete(
+          `http://localhost:8080/api/room/${roomId}/user/${targetUserId}/kick-out`
+        )
       : axios.delete(
-          `http://localhost:8080/api/room/${roomId}/user/kick-out`,
-          {
-            targetUserId: targetUserId,
-          },
+          `http://localhost:8080/api/room/${roomId}/user/${targetUserId}/kick-out`,
           {
             headers: {
               "Content-type": "application/json; charset=UTF-8",

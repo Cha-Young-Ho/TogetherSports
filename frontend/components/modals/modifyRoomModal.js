@@ -165,7 +165,8 @@ const ModifyRoomModal = (props) => {
     getTagsFromRedux.map((tag) => {
       setTags((prev) => [...prev, (tags = tag)]);
     });
-    setDoneTagsSetting(true);
+
+    if (getTagsFromRedux.length === tags.length) setDoneTagsSetting(true);
   }, [getTagsFromRedux]);
 
   useEffect(() => {
