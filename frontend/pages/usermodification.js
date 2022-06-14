@@ -71,7 +71,8 @@ const UserModification = () => {
       alert("사용 가능한 닉네임 입니다.");
     } else {
       getNicknameDuplicationCheck(nickname).then((res) => {
-      return;
+        return;
+      });
     }
 
     getNicknameDuplicationCheck(nickname)
