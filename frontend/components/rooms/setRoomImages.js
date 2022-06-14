@@ -115,8 +115,12 @@ const SetRoomImages = (props) => {
   // 방 수정 팝업에 기본값 세팅
   useEffect(() => {
     if (props.path === "modifyRoom") {
-      // 사용자가 이미지 설정을 최소 1개라도 한 경우
-      if (getRoomImagesFromRedux[0].roomImageExtension !== undefined) {
+      // 이미지 설정을 한 경우
+      if (
+        getRoomImagesFromRedux[0].imagePath !==
+        "https://together-sports.com/images/default_room_image.png"
+      ) {
+        // ************ 수정 필요한 부분 ************
         getRoomImagesFromRedux
           .sort((a, b) => a.order - b.order)
           .map((image) =>
