@@ -17,26 +17,29 @@ import { FailResponse } from "../api/failResponse";
 export default function Home() {
   const dispatch = useDispatch();
 
-  const func_getRoomCount = () => {
-    getRoomCount()
-      .then((res) => {
-        if (res.status.code === 5000) {
-          dispatch({
-            type: "SAVEROOMCOUNT",
-            payload: {
-              roomCount: res.content.count,
-            },
-          });
-        }
-      })
-      .catch((error) => {
-        if (error.response) {
-          FailResponse(error.response.data.status.code, func_getRoomCount);
-          return;
-        }
-      });
-  };
-  useEffect(func_getRoomCount, []);
+  useEffect(() => {
+    const func_getRoomCount = () => {
+      getRoomCount()
+        .then((res) => {
+          if (res.status.code === 5000) {
+            dispatch({
+              type: "SAVEROOMCOUNT",
+              payload: {
+                roomCount: res.content.count,
+              },
+            });
+          }
+        })
+        .catch((error) => {
+          if (error.response) {
+            FailResponse(error.response.data.status.code, func_getRoomCount);
+            return;
+          }
+        });
+    };
+
+    func_getRoomCount();
+  }, []);
 
   return (
     <>
@@ -49,7 +52,7 @@ export default function Home() {
           <Main1 />
           <Main2 />
           <Main3 />
-          <Link href="/room/createroom/roomsetting">
+          <Link href="/room/createroom/roomsetting" passHref>
             <button className="fadein">🔥방 생성하러 가기🔥</button>
           </Link>
         </div>

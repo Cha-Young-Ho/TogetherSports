@@ -86,10 +86,10 @@ const ActiveArea = () => {
         </div>
 
         <div className="button-wrapper">
-          <Link href="/signup/addinfo/interest">
+          <Link href="/signup/addinfo/interest" passHref>
             <button className="prev-button">이전</button>
           </Link>
-          <Link href="/">
+          <Link href="/" passHref>
             <div className="button-done" onClick={callUserRequest}>
               완료
             </div>

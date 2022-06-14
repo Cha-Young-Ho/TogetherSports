@@ -106,14 +106,14 @@ const NavigationBar = () => {
         });
       })
       .catch((error) => {
-        if (error.response) {
+        if (error.response.data.status) {
           dispatch({
             type: "CHANGELOGINSTATUS",
             payload: {
               loginStatus: "false",
             },
           });
-
+          console.log(error.response);
           FailResponse(error.response.data.status.code, func_getMyInfo);
         }
       });

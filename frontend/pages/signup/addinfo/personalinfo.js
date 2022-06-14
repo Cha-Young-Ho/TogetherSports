@@ -293,7 +293,7 @@ const PersonalInfo = () => {
           </div>
         </div>
 
-        <Link href="/signup/addinfo/interest">
+        <Link href="/signup/addinfo/interest" passHref>
           <button className="next-button" onClick={getNext}>
             다음
           </button>

@@ -4,7 +4,7 @@ import { getChatInfo } from "../api/rooms";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import SockJS from "sockjs-client";
-import FailResponse from "../api/failResponse";
+import { FailResponse } from "../api/failResponse";
 import StompJS from "stompjs";
 
 let clientInfo;
@@ -116,19 +116,27 @@ const Chatting = ({ chatOpen }) => {
       (error) => {
         if (typeof error !== "object") return;
 
-        postRefreshToken(localStorage.getItem("refreshToken")).then((res) => {
-          if (res.status.code === 5000) {
-            localStorage.setItem("accessToken", res.content.accessToken);
-            localStorage.setItem("refreshToken", res.content.refreshToken);
+        const tokenCatchError = error.headers.message;
 
-            connect("refresh");
-          } else {
-            alert("알 수 없는 오류가 발생했습니다. 다시 시도해 주세요.");
-            localStorage.removeItem("accessToken");
-            localStorage.removeItem("refreshToken");
-            router.push("/");
-          }
-        });
+        if (tokenCatchError === "1301" || tokenCatchError === "1302") {
+          postRefreshToken(localStorage.getItem("refreshToken"))
+            .then((res) => {
+              if (res.status.code === 5000) {
+                localStorage.setItem("accessToken", res.content.accessToken);
+                localStorage.setItem("refreshToken", res.content.refreshToken);
+
+                connect("refresh");
+              } else {
+                FailResponse(res.status.code);
+              }
+            })
+            .catch((error) => {
+              FailResponse(error.response.data.status.code);
+            });
+        } else {
+          alert("참여할 수 없거나 오류가 발생했습니다.");
+          router.push("/");
+        }
       }
     );
   };
@@ -288,6 +296,12 @@ const Chatting = ({ chatOpen }) => {
   useEffect(() => {
     return () => {
       if (clientInfo) clientInfo.disconnect();
+      dispatch({
+        type: "SAVEROOMID",
+        payload: {
+          roomId: 0,
+        },
+      });
     };
   }, []);
 
@@ -328,6 +342,7 @@ const Chatting = ({ chatOpen }) => {
                       <img
                         className="msg-profileImg"
                         src={`${messages.userProfileImagePath}`}
+                        alt="user pic"
                       ></img>
                       <div className="chat-container">
                         <div className="chat-header">{messages.nickname}</div>
@@ -366,7 +381,7 @@ const Chatting = ({ chatOpen }) => {
           />
           <br />
           <button>
-            <img src="/chatting-send-button.png" />
+            <img src="/chatting-send-button.png" alt="chat sendingButton pic" />
           </button>
         </form>
       </div>

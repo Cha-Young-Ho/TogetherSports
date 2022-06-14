@@ -203,10 +203,10 @@ const RoomTagInfo = () => {
         </div>
 
         <div className="button-wrapper">
-          <Link href="/room/createroom/roomschedule">
+          <Link href="/room/createroom/roomschedule" passHref>
             <button className="button-prev">이전</button>
           </Link>
-          <Link href="/">
+          <Link href="/" passHref>
             <button className="button-done" onClick={createRoom}>
               완료
             </button>
