@@ -152,7 +152,7 @@ public class UserService {
         List<Interest> interests = parsingEntityUtils.parsingStringToInterestsEntity(userOfModifyInfo.getInterests());
         if(userOfModifyInfo.getUserProfileImage().getImageSource() == null){
 
-            findUser.updateUser(userOfModifyInfo, interests, "http://localhost:8080/Users/chayeongho/Desktop/스크린샷 2022-04-13 오후 6.51.46.png");
+            findUser.updateUser(userOfModifyInfo, interests, "https://together-sports.com/images/default_user_profile.jpeg");
             return;
         }
 

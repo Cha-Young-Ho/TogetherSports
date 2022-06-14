@@ -50,10 +50,16 @@ public class ChatPreHandler implements ChannelInterceptor {
         // 헤더 토큰 얻기
         String authorizationHeader = String.valueOf(headerAccessor.getNativeHeader("Authorization"));
         StompCommand command = headerAccessor.getCommand();
-        Long roomId = Long.parseLong(String.valueOf(headerAccessor.getNativeHeader("roomId").get(0)));
+        log.info("message header = {}", message.getHeaders());
+        Long roomId = null;
+
+        if(!command.equals(StompCommand.DISCONNECT)){
+
+            roomId = Long.parseLong(String.valueOf(headerAccessor.getNativeHeader("roomId").get(0)));
+        }
 
 
-        log.info("prehandler roomId = {}", roomId);
+
 
         /*
             1. preHandler

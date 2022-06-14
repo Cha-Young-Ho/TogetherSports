@@ -75,19 +75,19 @@ public class User {
     @Column(name = "MANNER_POINT", columnDefinition = "int default 10")
     private int mannerPoint;
 
-    @OneToMany(mappedBy = "host")
+    @OneToMany(mappedBy = "host", cascade = CascadeType.ALL)
     private List<Room> hostingRooms;
 
-    @OneToMany(mappedBy = "createUser")
+    @OneToMany(mappedBy = "createUser", cascade = CascadeType.ALL)
     private List<Room> madeRooms;
 
     @Column(name = "INFORMATION_REQUIRED")
     private boolean informationRequired;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Participant> participateRooms;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<ChatMessage> chatMessages;
 
     /**
@@ -143,5 +143,16 @@ public class User {
 
     public void updateMannerPoint(int point){
         this.mannerPoint = this.mannerPoint + point;
+    }
+
+    public void out(Participant participantEntity){
+        int i = 0;
+        for(Participant participant : getParticipateRooms()){
+            if(participant.getId() == participantEntity.getId()){
+                getParticipateRooms().remove(i);
+                break;
+            }
+            i++;
+        }
     }
 }

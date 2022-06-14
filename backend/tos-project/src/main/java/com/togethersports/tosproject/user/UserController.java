@@ -67,7 +67,7 @@ public class UserController {
         return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, myInfo));
     }
 
-    @PatchMapping("/api/user/{user_id}/manner_point")
+    @PatchMapping("/api/user/manner_point")
     public ResponseEntity<Response> doMannerPointing(@CurrentUser User user, @RequestBody UserOfMannerPoint userOfMannerPoint){
         Response response = userService.mannerPointUp(user, userOfMannerPoint);
         return ResponseEntity.ok(response);

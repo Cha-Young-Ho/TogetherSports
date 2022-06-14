@@ -86,7 +86,6 @@ public class RoomController {
     @PatchMapping("/api/room/{roomId}/user/delegate")
     public ResponseEntity delegate(@RequestBody TargetOfHostRequest target, @CurrentUser User user, @PathVariable Long roomId){
         Long targetUserId = target.getTargetUserId();
-        log.info("targetUserId = {}", targetUserId);
 
         Response response = roomService.delegate(user, roomId, targetUserId);
 
@@ -94,10 +93,10 @@ public class RoomController {
     }
 
     //강퇴
-    @DeleteMapping("/api/room/{roomId}/user/kick-out")
-    public ResponseEntity kickOut(@RequestBody TargetOfHostRequest target, @CurrentUser User user, @PathVariable Long roomId){
+    @DeleteMapping("/api/room/{roomId}/user/{userId}/kick-out")
+    public ResponseEntity kickOut(@CurrentUser User user, @PathVariable Long roomId, @PathVariable Long userId){
 
-        Response response = roomService.kickOut(user, roomId, target.getTargetUserId());
+        Response response = roomService.kickOut(user, roomId, userId);
 
         return ResponseEntity.ok(response);
     }
