@@ -327,7 +327,7 @@ const Chatting = ({ chatOpen }) => {
                     <div key={index} className="other-message">
                       <img
                         className="msg-profileImg"
-                        src={`${messages.userProfileImagePath}`}
+                        src={messages.userProfileImagePath}
                       ></img>
                       <div className="chat-container">
                         <div className="chat-header">{messages.nickname}</div>

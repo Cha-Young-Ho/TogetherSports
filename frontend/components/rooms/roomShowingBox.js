@@ -55,13 +55,7 @@ const RoomShowingBox = (props) => {
         }}
       >
         <div className="thumbs-box">
-          <img
-            src={
-              props.datas.roomImagePath === ""
-                ? "/base_profileImage.jpg"
-                : `/images/${props.datas.roomImagePath}`
-            }
-          ></img>
+          <img src={props.datas.roomImagePath}></img>
           <div className="tags" onClick={handleTagLayout}>
             {props.datas.tags.length !== 0
               ? props.datas.tags.map((tag, index) => {
