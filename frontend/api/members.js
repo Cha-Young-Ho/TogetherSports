@@ -3,7 +3,7 @@ import axios from "axios";
 /* 
 유저 API 정리
 */
-const API_ENDPOINT = process.env.API_ENDPOINT;
+const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT;
 // GET
 
 // 닉네임 중복확인
