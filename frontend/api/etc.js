@@ -4,7 +4,7 @@ import axios from "axios";
 기타 API 정리
 */
 
-const API_ENDPOINT = process.env.API_ENDPOINT;
+const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT;
 
 // GET
 
