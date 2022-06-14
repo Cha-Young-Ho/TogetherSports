@@ -9,15 +9,72 @@ import StompJS from "stompjs";
 
 let clientInfo;
 let nowMessage = "";
+let pre_userId;
+let pre_sendAt;
 const Chatting = ({ chatOpen }) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const roomId = useSelector((state) => state.saveRoomIdReducer.roomId);
   const myID = useSelector((state) => state.myInfoReducer.id);
   const [messageToServer, setMessageToServer] = useState("");
-  const [showingMessages, setShowingMessages] = useState([]);
-
-  let preChattingID = 0;
+  const [showingMessages, setShowingMessages] = useState([
+    // {
+    //   userId: 0,
+    //   nickname: "테스트",
+    //   userProfileImagePath: "/base_profileImage.jpg",
+    //   message: "ㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱ",
+    //   sendAt: "2022-05-09T17:42:22.302111",
+    // },
+    // {
+    //   userId: 0,
+    //   nickname: "테스트",
+    //   userProfileImagePath: "/base_profileImage.jpg",
+    //   message: "1",
+    //   sendAt: "2022-05-09T17:42:22.302111",
+    // },
+    // {
+    //   userId: 1,
+    //   nickname: "테스트",
+    //   userProfileImagePath: "/base_profileImage.jpg",
+    //   message: "ㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱ",
+    //   sendAt: "2022-05-09T17:43:22.302111",
+    // },
+    // {
+    //   userId: 1,
+    //   nickname: "테스트",
+    //   userProfileImagePath: "/base_profileImage.jpg",
+    //   message: "1",
+    //   sendAt: "2022-05-09T17:44:22.302111",
+    // },
+    // {
+    //   userId: 1,
+    //   nickname: "테스트",
+    //   userProfileImagePath: "/base_profileImage.jpg",
+    //   message: "2",
+    //   sendAt: "2022-05-09T17:44:22.302111",
+    // },
+    // {
+    //   userId: 1,
+    //   nickname: "테스트",
+    //   userProfileImagePath: "/base_profileImage.jpg",
+    //   message: "2",
+    //   sendAt: "2022-05-09T17:44:22.302111",
+    // },
+    // {
+    //   userId: 1,
+    //   nickname: "테스트",
+    //   userProfileImagePath: "/base_profileImage.jpg",
+    //   message: "1",
+    //   sendAt: "2022-05-09T17:45:22.302111",
+    // },
+    // {
+    //   userId: 0,
+    //   nickname: "테스트",
+    //   userProfileImagePath: "/base_profileImage.jpg",
+    //   message: "1",
+    //   sendAt: "2022-05-09T17:45:22.302111",
+    // },
+  ]);
 
   const connect = (type) => {
     const sockJS = new SockJS("http://localhost:8080/api/websocket");
@@ -240,26 +297,30 @@ const Chatting = ({ chatOpen }) => {
           <div className="messages">
             {showingMessages.length ? (
               showingMessages.map((messages, index) => {
-                // 내가 보낸 메세지 일 때
-                if (messages.userId === myID) {
-                  preChattingID = messages.userId;
+                const now_sendAt = `${messages.sendAt.substr(
+                  11,
+                  2
+                )} : ${messages.sendAt.substr(14, 2)}`;
+
+                const now_userId = messages.userId;
+
+                if (now_userId === myID) {
+                  pre_userId = now_userId;
+                  pre_sendAt = now_sendAt;
 
                   return (
                     <div key={index} className="my-message">
-                      <p>{messages.message}</p>
+                      <div className="chat-body">
+                        <div className="message-sendAt">{now_sendAt}</div>
+                        <p>{messages.message}</p>
+                      </div>
                     </div>
                   );
                 }
 
-                // 다른 사람의 메세지 일 때
-                if (messages.userId === preChattingID) {
-                  return (
-                    <div key={index} className="dupID-message">
-                      <p>{messages.message}</p>
-                    </div>
-                  );
-                } else {
-                  preChattingID = messages.userId;
+                if (pre_sendAt !== now_sendAt || pre_userId !== now_userId) {
+                  pre_userId = now_userId;
+                  pre_sendAt = now_sendAt;
 
                   return (
                     <div key={index} className="other-message">
@@ -267,10 +328,28 @@ const Chatting = ({ chatOpen }) => {
                         className="msg-profileImg"
                         src={`${messages.userProfileImagePath}`}
                       ></img>
-                      <p>{messages.message}</p>
+                      <div className="chat-container">
+                        <div className="chat-header">{messages.nickname}</div>
+                        <div className="chat-body">
+                          <p>{messages.message}</p>
+                          <div className="message-sendAt">{now_sendAt}</div>
+                        </div>
+                      </div>
                     </div>
                   );
                 }
+
+                pre_userId = now_userId;
+                pre_sendAt = now_sendAt;
+
+                return (
+                  <div key={index} className="dupID-message">
+                    <div className="chat-body">
+                      <p>{messages.message}</p>
+                      <div className="message-sendAt">{now_sendAt}</div>
+                    </div>
+                  </div>
+                );
               })
             ) : (
               <></>
@@ -380,7 +459,7 @@ const Chatting = ({ chatOpen }) => {
           float: left;
           text-align: left;
           display: flex;
-          align-items: center;
+          align-items: start;
         }
 
         .dupID-message {
@@ -392,8 +471,10 @@ const Chatting = ({ chatOpen }) => {
         }
 
         .my-message {
-          float: right;
+          display: flex;
+          justify-content: end;
           text-align: left;
+          padding-left: 20px;
         }
 
         .msg-profileImg {
@@ -401,7 +482,17 @@ const Chatting = ({ chatOpen }) => {
           height: 50px;
         }
 
-        .other-message p,
+        .chat-container {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .chat-body {
+          display: flex;
+          align-items: end;
+        }
+
+        .chat-body > p,
         .dupID-message p {
           display: block;
           float: left;
@@ -422,6 +513,18 @@ const Chatting = ({ chatOpen }) => {
           font-size: 1.5rem;
           padding: 7px;
           margin: 5px;
+        }
+
+        .chat-header {
+          margin-left: 5px;
+          font-size: 1.2rem;
+          font-weight: 600;
+        }
+
+        .message-sendAt {
+          width: 33px;
+          height: 20px;
+          white-space: nowrap;
         }
       `}</style>
     </>

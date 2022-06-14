@@ -1,6 +1,7 @@
 import { getAvailability } from "../../api/rooms";
 import router from "next/router";
 import moment from "moment";
+import { FailResponse } from "../../api/failResponse";
 import { useState } from "react";
 
 const RoomShowingBox = (props) => {
