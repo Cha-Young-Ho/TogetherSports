@@ -16,6 +16,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 /**
  * <h1>Room</h1>
@@ -75,7 +76,7 @@ public class Room extends RoomBaseEntity {
     //참여자
     //todo N : N 매핑
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
-    private List<Participant> participants;
+    private List<Participant> participants = new ArrayList<>();
 
     //방장
     @JsonIgnore
