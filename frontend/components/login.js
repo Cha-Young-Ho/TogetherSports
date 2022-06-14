@@ -1,17 +1,19 @@
+const API_ENDPOINT = process.env.API_ENDPOINT;
+
 const Login = () => {
   // 네이버 로그인
   const naverLogin = () => {
-    window.location.href = "http://localhost:8080/oauth2/authorization/naver";
+    window.location.href = `${API_ENDPOINT}/oauth2/authorization/naver`;
   };
 
   // 카카오 로그인
   const kakaoLogin = () => {
-    window.location.href = "http://localhost:8080/oauth2/authorization/kakao";
+    window.location.href = `${API_ENDPOINT}/oauth2/authorization/kakao`;
   };
 
   // 구글 로그인
   const googleLogin = () => {
-    window.location.href = "http://localhost:8080/oauth2/authorization/google";
+    window.location.href = `${API_ENDPOINT}/oauth2/authorization/google`;
   };
 
   return (

@@ -75,9 +75,10 @@ const Chatting = ({ chatOpen }) => {
     //   sendAt: "2022-05-09T17:45:22.302111",
     // },
   ]);
+  const API_ENDPOINT = process.env.API_ENDPOINT;
 
   const connect = (type) => {
-    const sockJS = new SockJS("http://localhost:8080/api/websocket");
+    const sockJS = new SockJS(`${API_ENDPOINT}/api/websocket`);
     clientInfo = Stomp.over(sockJS);
 
     clientInfo.connect(

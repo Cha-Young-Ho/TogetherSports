@@ -4,14 +4,16 @@ import axios from "axios";
 방 API 정리
 */
 
+const API_ENDPOINT = process.env.API_ENDPOINT;
+
 // GET
 
 // 방 설명 페이지 조회
 const getRoomInfo = (roomId) => {
   const promise =
     localStorage.getItem("accessToken") === null
-      ? axios.get(`http://localhost:8080/api/rooms/${roomId}/info`)
-      : axios.get(`http://localhost:8080/api/rooms/${roomId}/info`, {
+      ? axios.get(`${API_ENDPOINT}/api/rooms/${roomId}/info`)
+      : axios.get(`${API_ENDPOINT}/api/rooms/${roomId}/info`, {
           headers: {
             "Content-type": "application/json; charset=UTF-8",
             Accept: "*/*",
@@ -28,8 +30,8 @@ const getRoomInfo = (roomId) => {
 const getRoomDetail = (roomId) => {
   const promise =
     localStorage.getItem("accessToken") === null
-      ? axios.get(`http://localhost:8080/api/rooms/${roomId}/detail`)
-      : axios.get(`http://localhost:8080/api/rooms/${roomId}/detail`, {
+      ? axios.get(`${API_ENDPOINT}/api/rooms/${roomId}/detail`)
+      : axios.get(`${API_ENDPOINT}/api/rooms/${roomId}/detail`, {
           headers: {
             "Content-type": "application/json; charset=UTF-8",
             Accept: "*/*",
@@ -78,11 +80,11 @@ const getRoomList = (
 
   const promise =
     localStorage.getItem("accessToken") === null
-      ? axios.get("http://localhost:8080/api/room", {
+      ? axios.get("${API_ENDPOINT}/api/room", {
           params: totalQueryString,
         })
       : axios.get(
-          "http://localhost:8080/api/room",
+          "${API_ENDPOINT}/api/room",
           {
             params: totalQueryString,
           },
@@ -103,8 +105,8 @@ const getRoomList = (
 const getAvailability = (roomId) => {
   const promise =
     localStorage.getItem("accessToken") === null
-      ? axios.get(`http://localhost:8080/api/rooms/${roomId}/attendance`)
-      : axios.get(`http://localhost:8080/api/rooms/${roomId}/attendance`, {
+      ? axios.get(`${API_ENDPOINT}/api/rooms/${roomId}/attendance`)
+      : axios.get(`${API_ENDPOINT}/api/rooms/${roomId}/attendance`, {
           headers: {
             "Content-type": "application/json; charset=UTF-8",
             Accept: "*/*",
@@ -121,8 +123,8 @@ const getAvailability = (roomId) => {
 const getMyRoomInfo = () => {
   const promise =
     localStorage.getItem("accessToken") === null
-      ? axios.get(`http://localhost:8080/api/room/myroom`)
-      : axios.get(`http://localhost:8080/api/room/myroom`, {
+      ? axios.get(`${API_ENDPOINT}/api/room/myroom`)
+      : axios.get(`${API_ENDPOINT}/api/room/myroom`, {
           headers: {
             "Content-type": "application/json; charset=UTF-8",
             Accept: "*/*",
@@ -137,7 +139,7 @@ const getMyRoomInfo = () => {
 
 // 최상위(시) 행정구역 조회
 const getRootLocations = () => {
-  const promise = axios.get(`http://localhost:8080/api/locations`);
+  const promise = axios.get(`${API_ENDPOINT}/api/locations`);
 
   const dataPromise = promise.then((res) => res.data);
 
@@ -146,9 +148,7 @@ const getRootLocations = () => {
 
 // 하위(시 이하) 행정구역 조회
 const getChildLocations = (name) => {
-  const promise = axios.get(
-    `http://localhost:8080/api/locations/parent/${name}`
-  );
+  const promise = axios.get(`${API_ENDPOINT}/api/locations/parent/${name}`);
 
   const dataPromise = promise.then((res) => res.data);
 
@@ -158,8 +158,8 @@ const getChildLocations = (name) => {
 const getChatInfo = (roomSequenceId) => {
   const promise =
     localStorage.getItem("accessToken") === null
-      ? axios.get(`http://localhost:8080/api/room/${roomSequenceId}/chat`)
-      : axios.get(`http://localhost:8080/api/room/${roomSequenceId}/chat`, {
+      ? axios.get(`${API_ENDPOINT}/api/room/${roomSequenceId}/chat`)
+      : axios.get(`${API_ENDPOINT}/api/room/${roomSequenceId}/chat`, {
           headers: {
             "Content-type": "application/json; charset=UTF-8",
             Accept: "*/*",
@@ -188,7 +188,7 @@ const postCreateRoom = (
 ) => {
   const promise =
     localStorage.getItem("accessToken") === null
-      ? axios.post("http://localhost:8080/api/room", {
+      ? axios.post("${API_ENDPOINT}/api/room", {
           roomTitle: roomTitle,
           roomContent: roomContent,
           roomArea: roomArea,
@@ -200,7 +200,7 @@ const postCreateRoom = (
           roomImages: roomImages,
         })
       : axios.post(
-          "http://localhost:8080/api/room",
+          "${API_ENDPOINT}/api/room",
           {
             roomTitle: roomTitle,
             roomContent: roomContent,
@@ -230,9 +230,9 @@ const postCreateRoom = (
 const postEnterRoom = (roomId) => {
   const promise =
     localStorage.getItem("accessToken") === null
-      ? axios.post(`http://localhost:8080/api/room/${roomId}/user`)
+      ? axios.post(`${API_ENDPOINT}/api/room/${roomId}/user`)
       : axios.post(
-          `http://localhost:8080/api/room/${roomId}/user`,
+          `${API_ENDPOINT}/api/room/${roomId}/user`,
           {},
           {
             headers: {
@@ -265,7 +265,7 @@ const putUpdateRoom = (
 ) => {
   const promise =
     localStorage.getItem("accessToken") === null
-      ? axios.put("http://localhost:8080/api/room", {
+      ? axios.put("${API_ENDPOINT}/api/room", {
           roomId: roomId,
           roomTitle: roomTitle,
           roomContent: roomContent,
@@ -278,7 +278,7 @@ const putUpdateRoom = (
           roomImages: roomImages,
         })
       : axios.put(
-          "http://localhost:8080/api/room",
+          "${API_ENDPOINT}/api/room",
           {
             roomId: roomId,
             roomTitle: roomTitle,
@@ -311,11 +311,11 @@ const putUpdateRoom = (
 const patchDelegateHost = (roomId, targetUserId) => {
   const promise =
     localStorage.getItem("accessToken") === null
-      ? axios.patch(`http://localhost:8080/api/room/${roomId}/user/delegate`, {
+      ? axios.patch(`${API_ENDPOINT}/api/room/${roomId}/user/delegate`, {
           targetUserId: targetUserId,
         })
       : axios.patch(
-          `http://localhost:8080/api/room/${roomId}/user/delegate`,
+          `${API_ENDPOINT}/api/room/${roomId}/user/delegate`,
           {
             targetUserId: targetUserId,
           },
@@ -339,8 +339,8 @@ const patchDelegateHost = (roomId, targetUserId) => {
 const deleteRoom = (roomId) => {
   const promise =
     localStorage.getItem("accessToken") === null
-      ? axios.delete(`http://localhost:8080/api/room/${roomId}`)
-      : axios.delete(`http://localhost:8080/api/room/${roomId}`, {
+      ? axios.delete(`${API_ENDPOINT}/api/room/${roomId}`)
+      : axios.delete(`${API_ENDPOINT}/api/room/${roomId}`, {
           headers: {
             "Content-type": "application/json; charset=UTF-8",
             Accept: "*/*",
@@ -357,8 +357,8 @@ const deleteRoom = (roomId) => {
 const deleteLeaveRoom = (roomId) => {
   const promise =
     localStorage.getItem("accessToken") === null
-      ? axios.delete(`http://localhost:8080/api/room/${roomId}/user`)
-      : axios.delete(`http://localhost:8080/api/room/${roomId}/user`, {
+      ? axios.delete(`${API_ENDPOINT}/api/room/${roomId}/user`)
+      : axios.delete(`${API_ENDPOINT}/api/room/${roomId}/user`, {
           headers: {
             "Content-type": "application/json; charset=UTF-8",
             Accept: "*/*",
@@ -376,10 +376,10 @@ const deleteKickOutUser = (roomId, targetUserId) => {
   const promise =
     localStorage.getItem("accessToken") === null
       ? axios.delete(
-          `http://localhost:8080/api/room/${roomId}/user/${targetUserId}/kick-out`
+          `${API_ENDPOINT}/api/room/${roomId}/user/${targetUserId}/kick-out`
         )
       : axios.delete(
-          `http://localhost:8080/api/room/${roomId}/user/${targetUserId}/kick-out`,
+          `${API_ENDPOINT}/api/room/${roomId}/user/${targetUserId}/kick-out`,
           {
             headers: {
               "Content-type": "application/json; charset=UTF-8",
