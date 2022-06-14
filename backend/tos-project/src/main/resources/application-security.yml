@@ -43,7 +43,7 @@ spring:
 
 app:
   oauth2:
-    authorized-redirect-uri: https://together-sport.com/oauth/saving
+    authorized-redirect-uri: https://together-sports.com/oauth/saving
 
 jwt:
   access-token-signing-key: KWJ0fT7c7yeq6cPCAcikky1U+eRiXeqkStV3ZhkMkWE=
