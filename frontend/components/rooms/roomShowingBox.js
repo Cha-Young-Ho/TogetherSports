@@ -2,6 +2,7 @@ import { getAvailability } from "../../api/rooms";
 import router from "next/router";
 import moment from "moment";
 import { FailResponse } from "../../api/failResponse";
+import { useState } from "react";
 
 const RoomShowingBox = (props) => {
   const DayOfTheWeek = {
@@ -13,6 +14,7 @@ const RoomShowingBox = (props) => {
     6: "토요일",
     7: "일요일",
   };
+  const [tagLayout, setTagLayout] = useState(true);
 
   // 해당 방에 이미 참가중인지 여부 체크
   const isAttendance = () => {
@@ -40,6 +42,10 @@ const RoomShowingBox = (props) => {
       });
   };
 
+  const handleTagLayout = () => {
+    setTagLayout(!tagLayout);
+  };
+
   return (
     <>
       <div
@@ -56,7 +62,7 @@ const RoomShowingBox = (props) => {
                 : `/images/${props.datas.roomImagePath}`
             }
           ></img>
-          <div className="tags">
+          <div className="tags" onClick={handleTagLayout}>
             {props.datas.tags.length !== 0
               ? props.datas.tags.map((tag, index) => {
                   return <p key={index}>{tag}</p>;
@@ -112,11 +118,14 @@ const RoomShowingBox = (props) => {
           position: relative;
           bottom: 170px;
           margin: 10px;
-          display: flex;
+          height: 29px;
+          ${tagLayout && `overflow-y: hidden;`}
         }
 
         .tags p {
+          display: inline-block;
           margin-left: 10px;
+          margin-top: 5px;
           padding: 5px;
           border: solid 1px #f0376f;
           color: #f0376f;
@@ -155,6 +164,9 @@ const RoomShowingBox = (props) => {
           font-size: 2rem;
           font-weight: bold;
           margin: 10px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
         }
 
         .bodyLine p {

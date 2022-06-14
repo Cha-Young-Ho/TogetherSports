@@ -324,7 +324,6 @@ const Room = () => {
                 <UserInfoModal
                   open={participantListModalOpen}
                   close={participantListCloseModal}
-                  path={"partyList"}
                   roomId={roomId}
                 />
               </div>
@@ -722,6 +721,7 @@ const Room = () => {
           bottom: 30px;
           right: 30px;
           animation: zoomin 0.3s ease-in-out;
+          z-index: 99;
         }
 
         @keyframes zoomin {

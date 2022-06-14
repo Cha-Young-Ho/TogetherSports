@@ -29,6 +29,7 @@ public class Location {
     @Column(name = "LOCATION_ID")
     private Long id;
 
+    @Setter
     @Column(name = "LOCATION_NAME")
     private String name;
 

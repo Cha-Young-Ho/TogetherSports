@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import $ from "jquery";
-import { getNicknameDuplicationCheck, postUserRequest } from "../api/members";
+import {
+  getMyInfo,
+  getNicknameDuplicationCheck,
+  postUserRequest,
+} from "../api/members";
 import { useDispatch, useSelector } from "react-redux";
 import { FailResponse } from "../api/failResponse";
 import Map from "../components/Map";
@@ -67,6 +71,11 @@ const UserModification = () => {
       alert("사용 가능한 닉네임 입니다.");
     } else {
       getNicknameDuplicationCheck(nickname).then((res) => {
+      return;
+    }
+
+    getNicknameDuplicationCheck(nickname)
+      .then((res) => {
         if (res.status.code === 5000) {
           setIsNicknameCheck(true);
           setValidNickname(nickname);
@@ -75,8 +84,11 @@ const UserModification = () => {
           setNickname("");
           alert("이미 사용중인 닉네임입니다.");
         }
+      })
+      .catch((error) => {
+        FailResponse(error.response.data.status.code, checkNicknameDuplication);
+        return;
       });
-    }
   };
 
   // 생년월일 dropdown 데이터 가져오기
@@ -196,35 +208,41 @@ const UserModification = () => {
     )
       .then((res) => {
         if (res.status.code === 5000) {
-          getMyInfo((res) => {
-            if (res.status.code === 5000) {
-              dispatch({
-                type: "SAVEMYINFO",
-                payload: {
-                  userEmail: res.content.userEmail,
-                  userName: res.content.userName,
-                  userNickname: res.content.userNickname,
-                  userBirth: res.content.userBirth,
-                  gender: res.content.gender,
-                  userProfileImagePath: res.content.userProfileImagePath,
-                  activeAreas: res.content.activeAreas,
-                  interests: res.content.interests,
-                  mannerPoint: res.content.mannerPoint,
-                  isInformationRequired: res.content.isInformationRequired,
-                },
-              });
-              alert("성공적으로 수정 되었습니다.");
-              window.history.back();
-              return;
-            }
-          }).catch((error) => {
-            FailResponse(error.response.data.status.code, func_PostUserRequest);
-            return;
-          });
+          func_getMyInfo();
         }
       })
       .catch((error) => {
-        FailResponse(error.response.data.status.code);
+        FailResponse(error.response.data.status.code, func_PostUserRequest);
+        return;
+      });
+  };
+
+  const func_getMyInfo = () => {
+    getMyInfo()
+      .then((res) => {
+        if (res.status.code === 5000) {
+          dispatch({
+            type: "SAVEMYINFO",
+            payload: {
+              userEmail: res.content.userEmail,
+              userName: res.content.userName,
+              userNickname: res.content.userNickname,
+              userBirth: res.content.userBirth,
+              gender: res.content.gender,
+              userProfileImagePath: res.content.userProfileImagePath,
+              activeAreas: res.content.activeAreas,
+              interests: res.content.interests,
+              mannerPoint: res.content.mannerPoint,
+              isInformationRequired: res.content.isInformationRequired,
+            },
+          });
+          alert("성공적으로 수정 되었습니다.");
+          window.history.back();
+          return;
+        }
+      })
+      .catch((error) => {
+        FailResponse(error.response.data.status.code, func_getMyInfo);
         return;
       });
   };
@@ -300,12 +318,6 @@ const UserModification = () => {
 
   // 초기값 세팅
   useEffect(() => {
-    if (userInfo.id === 0) {
-      alert("먼저 추가정보를 입력해주세요.");
-      window.history.back();
-      return;
-    }
-
     // 관심 종목 세팅
     for (const exercise of userInfo.interests) {
       setInterests((prev) => ({

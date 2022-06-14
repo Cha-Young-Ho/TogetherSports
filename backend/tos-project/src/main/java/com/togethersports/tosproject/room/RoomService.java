@@ -189,7 +189,7 @@ public class RoomService {
                 MessageOfParticipate.builder()
                         .id(userEntity.getId())
                         .mannerPoint(userEntity.getMannerPoint())
-                        .nickname(userEntity.getNickname())
+                        .userNickname(userEntity.getNickname())
                         .gender(userEntity.getGender())
                         .build());
 

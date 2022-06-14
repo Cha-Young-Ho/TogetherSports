@@ -1,10 +1,9 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { getOtherInfo } from "../../api/members";
+import { getOtherInfo, patchMannerPoint } from "../../api/members";
 import { FailResponse } from "../../api/failResponse";
 import { patchDelegateHost, deleteKickOutUser } from "../../api/rooms";
-import { patchMannerPoint } from "../../api/members";
 
 const UserInfoModal = (props) => {
   const dispatch = useDispatch();
@@ -53,7 +52,7 @@ const UserInfoModal = (props) => {
           props.close;
           return;
         }
-        FailResponse(error.response.data.status.code, delegateHostFunc);
+        FailResponse(res.status.code, delegateHostFunc);
       })
       .catch((error) => {
         FailResponse(error.response.data.status.code, delegateHostFunc);
@@ -72,7 +71,7 @@ const UserInfoModal = (props) => {
           props.close;
           return;
         }
-        FailResponse(error.response.data.status.code, kickOutUserFunc);
+        FailResponse(res.status.code, kickOutUserFunc);
       })
       .catch((error) => {
         FailResponse(error.response.data.status.code, kickOutUserFunc);
@@ -106,29 +105,28 @@ const UserInfoModal = (props) => {
   const upMannerPoint = (e) => {
     const downButton = document.getElementsByClassName("button-down");
 
-    patchMannerPoint(myInfo.userNickname, clickedUserId, "UP")
+    patchMannerPoint(clickedUserId, "UP")
       .then((res) => {
-        // 이미 올려져있을때 다시 누르면 올리기 취소
-        if (e.target.innerText === "▲") {
-          setMannerPoint((mannerPoint = mannerPoint - 1));
-          e.target.innerText = "△";
-          downButton.innerText = "▽";
-          return;
-        } else {
-          // 올리기
+        {
+          // 그냥 올리기
           if (res.status.code === 1109) {
             setMannerPoint((mannerPoint = mannerPoint + 1));
             e.target.innerText = "▲";
             downButton.innerText = "▽";
-            console.log(res.status.message);
             return;
           }
-          // 내리기 취소
+          // 내렸던거 취소
           if (res.status.code === 1108) {
             setMannerPoint((mannerPoint = mannerPoint + 1));
-            downButton.innerText = "▽";
             e.target.innerText = "△";
-            console.log(res.status.message);
+            downButton.innerText = "▽";
+            return;
+          }
+          // 올렸던거 취소
+          if (res.status.code === 1107) {
+            setMannerPoint((mannerPoint = mannerPoint - 1));
+            e.target.innerText = "△";
+            downButton.innerText = "▽";
             return;
           }
         }
@@ -145,29 +143,28 @@ const UserInfoModal = (props) => {
   const downMannerPoint = (e) => {
     const upButton = document.getElementsByClassName("button-up");
 
-    patchMannerPoint(myInfo.userNickname, clickedUserId, "DOWN")
+    patchMannerPoint(clickedUserId, "DOWN")
       .then((res) => {
-        // 이미 내려져있을때 다시 누르면 내림 취소
-        if (e.target.innerText === "▼") {
-          setMannerPoint((mannerPoint = mannerPoint + 1));
-          upButton.innerText = "△";
-          e.target.innerText = "▽";
-          return;
-        } else {
-          // 내리기
+        {
+          // 그냥 내리기
           if (res.status.code === 1110) {
             setMannerPoint((mannerPoint = mannerPoint - 1));
             upButton.innerText = "△";
             e.target.innerText = "▼";
-            console.log(res.status.message);
             return;
           }
-          // 올리기 취소
+          // 올렸던거 취소
           if (res.status.code === 1107) {
             setMannerPoint((mannerPoint = mannerPoint - 1));
             upButton.innerText = "△";
             e.target.innerText = "▽";
-            console.log(res.status.message);
+            return;
+          }
+          // 내렸던거 취소
+          if (res.status.code === 1108) {
+            setMannerPoint((mannerPoint = mannerPoint + 1));
+            upButton.innerText = "△";
+            e.target.innerText = "▽";
             return;
           }
         }
@@ -181,43 +178,21 @@ const UserInfoModal = (props) => {
   };
 
   useEffect(() => {
-    // 네비게이션에서 프로필 조회를 하는 경우 (무조건 내 정보 조회만)
-    if (props.path === "navBar") {
-      // 회원 추가정보 입력이 완료되지 않은 경우
-      if (props.open && myInfo.userNickname === "익명") {
-        alert("회원 추가 정보가 없어 내 정보를 요청할 수 없습니다.");
-        props.close();
-        return;
-      }
-      // 내 정보 조회
-      else {
-        setImageSrc((imageSrc = myInfo.userProfileImagePath));
-        setNickname((nickname = myInfo.userNickname));
-        setMannerPoint((mannerPoint = myInfo.mannerPoint));
-        setInterest((interest = myInfo.interests));
-        setGender((gender = myInfo.gender));
-        setActiveAreas((activeAreas = myInfo.activeAreas));
+    // 다른 회원 정보 조회
+    if (myInfo.userNickname !== clickedUserNickname) {
+      if (props.open) {
+        getOtherInfoFunc(clickedUserId);
       }
     }
 
-    // 운동 대기방의 참여자목록에서 프로필 조회를 하는 경우 (내 정보 조회, 다른 회원 정보 조회 모두 가능)
-    if (props.path === "partyList") {
-      // 다른 회원 정보 조회
-      if (myInfo.userNickname !== clickedUserNickname) {
-        if (props.open) {
-          getOtherInfoFunc(clickedUserId);
-        }
-      }
-
-      // 내 정보 조회
-      if (myInfo.userNickname === clickedUserNickname) {
-        setImageSrc((imageSrc = myInfo.userProfileImagePath));
-        setNickname((nickname = myInfo.userNickname));
-        setMannerPoint((mannerPoint = myInfo.mannerPoint));
-        setInterest((interest = myInfo.interests));
-        setGender((gender = myInfo.gender));
-        setActiveAreas((activeAreas = myInfo.activeAreas));
-      }
+    // 내 정보 조회
+    if (myInfo.userNickname === clickedUserNickname) {
+      setImageSrc((imageSrc = myInfo.userProfileImagePath));
+      setNickname((nickname = myInfo.userNickname));
+      setMannerPoint((mannerPoint = myInfo.mannerPoint));
+      setInterest((interest = myInfo.interests));
+      setGender((gender = myInfo.gender));
+      setActiveAreas((activeAreas = myInfo.activeAreas));
     }
   }, [props.open]);
 

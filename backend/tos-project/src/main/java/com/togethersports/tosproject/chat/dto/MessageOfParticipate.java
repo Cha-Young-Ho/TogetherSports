@@ -11,7 +11,7 @@ import lombok.Getter;
 public class MessageOfParticipate {
 
     private Long id;
-    private String nickname;
+    private String userNickname;
     private int mannerPoint;
     private Gender gender;
 
