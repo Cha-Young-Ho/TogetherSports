@@ -2,7 +2,13 @@
 
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/79268661/173778023-c8d9adc8-f630-4b1d-a75e-10b1390e8b85.png" alt="text" width="number" />
+  <img style="
+border: 3px solid gold;
+border-radius: 7px;
+-moz-border-radius: 7px;
+-khtml-border-radius: 7px;
+-webkit-border-radius: 7px;
+       src="https://user-images.githubusercontent.com/79268661/173778023-c8d9adc8-f630-4b1d-a75e-10b1390e8b85.png" alt="text" width="number" />
 </p>
 
 
