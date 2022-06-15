@@ -1,7 +1,8 @@
 # TogetherSports
 
+
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/79268661/173773231-73cfbcef-a662-4877-878b-3f65fb8319c8.png" alt="text" width="number" />
+  <img src="https://user-images.githubusercontent.com/79268661/173778023-c8d9adc8-f630-4b1d-a75e-10b1390e8b85.png" alt="text" width="number" />
 </p>
 
 
