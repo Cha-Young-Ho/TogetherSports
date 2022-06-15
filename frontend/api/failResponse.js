@@ -14,7 +14,7 @@ const FailResponse = (codeNumber, prelastingToDo) => {
       break;
     case 1101: // 수정 필요
       alert("이미 가입된 유저입니다.");
-      router.replace("/");
+      window.location.href = "/";
       break;
     case 1102:
       break;
@@ -66,31 +66,40 @@ const FailResponse = (codeNumber, prelastingToDo) => {
     case 1300:
       break;
     case 1301:
-      postRefreshToken(localStorage.getItem("refreshToken")).then((res) => {
-        if (res.status.code === 5000) {
-          localStorage.setItem("accessToken", res.content.accessToken);
-          prelastingToDo();
-        } else {
-          localStorage.removeItem("accessToken");
-          localStorage.removeItem("refreshToken");
-        }
-      });
+      postRefreshToken(localStorage.getItem("refreshToken"))
+        .then((res) => {
+          if (res.status.code === 5000) {
+            localStorage.setItem("accessToken", res.content.accessToken);
+            prelastingToDo();
+          } else {
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
+          }
+        })
+        .catch((error) => {
+          FailResponse(error.response.data.status.code);
+        });
       break;
     case 1302:
-      postRefreshToken(localStorage.getItem("refreshToken")).then((res) => {
-        if (res.status.code === 5000) {
-          localStorage.setItem("accessToken", res.content.accessToken);
-          prelastingToDo();
-        } else {
-          localStorage.removeItem("accessToken");
-          localStorage.removeItem("refreshToken");
-        }
-      });
+      postRefreshToken(localStorage.getItem("refreshToken"))
+        .then((res) => {
+          if (res.status.code === 5000) {
+            localStorage.setItem("accessToken", res.content.accessToken);
+            prelastingToDo();
+          } else {
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
+          }
+        })
+        .catch((error) => {
+          FailResponse(error.response.data.status.code);
+        });
       break;
     case 1303:
-      alert("리프레시 토큰이 만료되었습니다.");
+      alert("로그인이 만료되었습니다. 다시 시도해 주세요.");
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
+      window.location.href = "/login";
       break;
     case 1304:
       alert("권한이 없는 토큰입니다.");

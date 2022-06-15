@@ -13,7 +13,7 @@ const FixedRoomAlarm = () => {
   };
   return (
     <>
-      <Link href="/room/createroom/roomsetting">
+      <Link href="/room/createroom/roomsetting" passHref>
         <img
           src="/room-create-button.png"
           className="roomRequestButton"

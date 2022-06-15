@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import SetRoomImages from "../rooms/setRoomImages";
 import { getRoomInfo, putUpdateRoom } from "../../api/rooms";
-import FailResponse from "../../api/failResponse";
+import { FailResponse } from "../../api/failResponse";
 import { useSelector } from "react-redux";
 import Head from "next/head";
 
