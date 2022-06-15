@@ -154,10 +154,10 @@ const RoomSchedule = () => {
         </div>
 
         <div className="button-wrapper">
-          <Link href="/room/createroom/roomsetting">
+          <Link href="/room/createroom/roomsetting" passHref>
             <button className="button-prev">이전</button>
           </Link>
-          <Link href="/room/createroom/roomtaginfo">
+          <Link href="/room/createroom/roomtaginfo" passHref>
             <button className="button-done" onClick={clickNextBtn}>
               다음
             </button>

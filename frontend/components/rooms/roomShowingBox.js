@@ -3,6 +3,7 @@ import router from "next/router";
 import moment from "moment";
 import { FailResponse } from "../../api/failResponse";
 import { useState } from "react";
+import Image from "next/image";
 
 const RoomShowingBox = (props) => {
   const DayOfTheWeek = {
@@ -55,13 +56,16 @@ const RoomShowingBox = (props) => {
         }}
       >
         <div className="thumbs-box">
-          <img
+          <Image
             src={
               props.datas.roomImagePath === ""
                 ? "/base_profileImage.jpg"
                 : `/images/${props.datas.roomImagePath}`
             }
-          ></img>
+            alt="picture of room"
+            width={250}
+            height={170}
+          ></Image>
           <div className="tags" onClick={handleTagLayout}>
             {props.datas.tags.length !== 0
               ? props.datas.tags.map((tag, index) => {

@@ -3,7 +3,7 @@ import { getRoomList } from "../../api/rooms";
 import { useDispatch, useSelector } from "react-redux";
 import RoomModal from "../modals/roomModal";
 import RoomShowingBox from "./roomShowingBox";
-import FailResponse from "../../api/failResponse";
+import { FailResponse } from "../../api/failResponse";
 import Loading from "../loading";
 
 let scrollHandlingTimer;
@@ -212,7 +212,7 @@ const FilteredRooms = () => {
         }
       })
       .catch((error) => {
-        if (error.response) {
+        if (error?.response?.data?.status) {
           FailResponse(error.response.data.status.code, func_getRoomList);
         }
       });
