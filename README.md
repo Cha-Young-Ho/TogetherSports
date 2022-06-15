@@ -1,6 +1,9 @@
 # TogetherSports
 ![KakaoTalk_Photo_2022-06-15-16-52-41](https://user-images.githubusercontent.com/79268661/173773231-73cfbcef-a662-4877-878b-3f65fb8319c8.png)
 
+![KakaoTalk_Photo_2022-06-15-16-53-35](https://user-images.githubusercontent.com/79268661/173773348-ee549b7b-d35c-41d7-82ec-6ebbf6ccbc9b.png)
+
+
 
 ## 도메인
 - together-sports.com
