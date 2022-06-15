@@ -8,7 +8,7 @@
 
 
 ## 도메인
-- together-sports.com
+- [together-sports.com](together-sports.com)
 
 ## Build and Run
 - Front End
