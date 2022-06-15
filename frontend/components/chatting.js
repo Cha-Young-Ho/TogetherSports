@@ -208,8 +208,8 @@ const Chatting = ({ chatOpen }) => {
       case 1503: //강퇴
         // 내가 강퇴당하면
         if (JSONBodys.content.id === myID) {
-          clientInfo.disconnect(() => alert("방장으로부터 강퇴되었습니다."));
-          router.replace("/");
+          alert("방장으로부터 강퇴되었습니다.");
+          router.push("/");
           return;
         }
 

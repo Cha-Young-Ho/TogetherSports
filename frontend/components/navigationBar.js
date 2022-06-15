@@ -7,6 +7,7 @@ import UserInfoModal from "./modals/navBarUserInfoModal";
 import { getMyInfo } from "../api/members";
 import { useDispatch, useSelector } from "react-redux";
 import FixedRequestAlarm from "./fixedRequestAlarm";
+import Image from "next/image";
 
 const NavigationBar = () => {
   const dispatch = useDispatch();
@@ -106,7 +107,7 @@ const NavigationBar = () => {
         });
       })
       .catch((error) => {
-        if (error.response.data.status) {
+        if (error?.response?.data?.status) {
           dispatch({
             type: "CHANGELOGINSTATUS",
             payload: {
@@ -130,15 +131,20 @@ const NavigationBar = () => {
         <div className="container_bg">
           <div className="groups">
             <div className="logo">
-              <Link href="/">
-                <img src="/logo-navbar.png" alt="Together Sports"></img>
+              <Link href="/" passHref>
+                <Image
+                  src="/logo-navbar.png"
+                  alt="Together Sports"
+                  width={138}
+                  height={60}
+                ></Image>
               </Link>
             </div>
             <div className="category">
-              <Link href="/room/roomlist">
+              <Link href="/room/roomlist" passHref>
                 <button className="tag">방 목록</button>
               </Link>
-              <Link href="/myroom">
+              <Link href="/myroom" passHref>
                 <button
                   className="tag"
                   onClick={(e) => {
@@ -151,7 +157,7 @@ const NavigationBar = () => {
                   내 일정
                 </button>
               </Link>
-              <Link href="/room/createroom/roomsetting">
+              <Link href="/room/createroom/roomsetting" passHref>
                 <button
                   className="tag"
                   onClick={(e) => {
@@ -170,17 +176,20 @@ const NavigationBar = () => {
             <div className="sign">
               {loginStatus === "false" ? (
                 <>
-                  <Link href="/login">
+                  <Link href="/login" passHref>
                     <button className="tag">로그인</button>
                   </Link>
                 </>
               ) : (
                 <>
                   <button className="user-box" onClick={openUserInfoModalFunc}>
-                    <img
+                    <Image
                       className="ProfileImage"
                       src={`/images/${myInfo.userProfileImagePath}`}
-                    ></img>
+                      alt="프로필 이미지"
+                      width={40}
+                      height={40}
+                    ></Image>
                     <div className="logOn">
                       {`${myInfo.userNickname}`} 님 반갑습니다!
                     </div>
@@ -275,8 +284,6 @@ const NavigationBar = () => {
         }
 
         .ProfileImage {
-          width: 40px;
-          height: 40px;
           border-radius: 50px;
           background-color: black;
           object-fit: cover;

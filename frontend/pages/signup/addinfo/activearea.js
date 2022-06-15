@@ -51,18 +51,21 @@ const ActiveArea = () => {
   const callUserRequest = (e) => {
     exception(e);
     postUserRequestFunc();
-    window.location.replace("/");
   };
 
   useEffect(() => {
-    if (
-      userRequestInfo.userNickname === "" &&
-      !userRequestInfo.interests.length
-    ) {
-      alert("비정상적인 접근입니다.");
-      router.replace("/");
-      return;
-    }
+    const startException = () => {
+      if (
+        userRequestInfo.userNickname === "" &&
+        !userRequestInfo.interests.length
+      ) {
+        alert("비정상적인 접근입니다.");
+        router.replace("/");
+        return;
+      }
+    };
+
+    startException();
   }, []);
 
   return (
