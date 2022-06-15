@@ -86,10 +86,7 @@ const NavigationBar = () => {
               userBirth: res.content.userBirth,
               mannerPoint: res.content.mannerPoint,
               activeAreas: res.content.activeAreas.map((el) => el),
-              userProfileImagePath:
-                res.content.userProfileImagePath === ""
-                  ? "/base_profileImage.jpg"
-                  : res.content.userProfileImagePath,
+              userProfileImagePath: res.content.userProfileImagePath,
               interests: res.content.interests.map((el) => el),
               gender: res.content.gender,
               isInformationRequired: res.content.isInformationRequired,
@@ -185,7 +182,7 @@ const NavigationBar = () => {
                   <button className="user-box" onClick={openUserInfoModalFunc}>
                     <Image
                       className="ProfileImage"
-                      src={`/images/${myInfo.userProfileImagePath}`}
+                      src={myInfo.userProfileImagePath}
                       alt="프로필 이미지"
                       width={40}
                       height={40}

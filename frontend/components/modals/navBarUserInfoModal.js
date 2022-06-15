@@ -7,7 +7,9 @@ const NavBarUserInfoModal = (props) => {
   const myInfo = useSelector((state) => state.myInfoReducer);
 
   // 조회하고자 하는 회원의 정보들
-  const [imageSrc, setImageSrc] = useState("/base_profileImage.jpg");
+  const [imageSrc, setImageSrc] = useState(
+    "https://together-sports.com/images/default_user_profile.jpeg"
+  );
   const [nickname, setNickname] = useState("");
   const [mannerPoint, setMannerPoint] = useState(0);
   const [interest, setInterest] = useState([]);

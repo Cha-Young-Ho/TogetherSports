@@ -60,7 +60,7 @@ const RoomShowingBox = (props) => {
             src={
               props.datas.roomImagePath === ""
                 ? "/base_profileImage.jpg"
-                : `/images/${props.datas.roomImagePath}`
+                : `${props.datas.roomImagePath}`
             }
             alt="picture of room"
             width={250}

@@ -23,7 +23,9 @@ const UserInfoModal = (props) => {
   const [userId, setUserId] = useState(0);
 
   // 조회하고자 하는 회원의 정보들
-  const [imageSrc, setImageSrc] = useState("/base_profileImage.jpg");
+  const [imageSrc, setImageSrc] = useState(
+    "https://together-sports.com/images/default_user_profile.jpeg"
+  );
   const [nickname, setNickname] = useState("");
   const [mannerPoint, setMannerPoint] = useState(0);
   const [interest, setInterest] = useState([]);
@@ -102,31 +104,18 @@ const UserInfoModal = (props) => {
   };
 
   // 매너지수 올리기
-  const upMannerPoint = (e) => {
-    const downButton = document.getElementsByClassName("button-down");
-
+  const upMannerPoint = () => {
     patchMannerPoint(clickedUserId, "UP")
       .then((res) => {
         {
-          // 그냥 올리기
+          // 올리기
           if (res.status.code === 1109) {
-            setMannerPoint((mannerPoint = mannerPoint + 1));
-            e.target.innerText = "▲";
-            downButton.innerText = "▽";
+            setMannerPoint((mannerPoint = res.content.mannerPoint));
             return;
           }
-          // 내렸던거 취소
-          if (res.status.code === 1108) {
-            setMannerPoint((mannerPoint = mannerPoint + 1));
-            e.target.innerText = "△";
-            downButton.innerText = "▽";
-            return;
-          }
-          // 올렸던거 취소
-          if (res.status.code === 1107) {
-            setMannerPoint((mannerPoint = mannerPoint - 1));
-            e.target.innerText = "△";
-            downButton.innerText = "▽";
+          // 이미 올린 경우
+          if (res.status.code === 1105) {
+            alert(res.status.message);
             return;
           }
         }
@@ -140,31 +129,18 @@ const UserInfoModal = (props) => {
   };
 
   // 매너지수 내리기
-  const downMannerPoint = (e) => {
-    const upButton = document.getElementsByClassName("button-up");
-
+  const downMannerPoint = () => {
     patchMannerPoint(clickedUserId, "DOWN")
       .then((res) => {
         {
-          // 그냥 내리기
+          // 내리기
           if (res.status.code === 1110) {
-            setMannerPoint((mannerPoint = mannerPoint - 1));
-            upButton.innerText = "△";
-            e.target.innerText = "▼";
+            setMannerPoint((mannerPoint = res.content.mannerPoint));
             return;
           }
-          // 올렸던거 취소
-          if (res.status.code === 1107) {
-            setMannerPoint((mannerPoint = mannerPoint - 1));
-            upButton.innerText = "△";
-            e.target.innerText = "▽";
-            return;
-          }
-          // 내렸던거 취소
-          if (res.status.code === 1108) {
-            setMannerPoint((mannerPoint = mannerPoint + 1));
-            upButton.innerText = "△";
-            e.target.innerText = "▽";
+          // 이미 내린 경우
+          if (res.status.code === 1106) {
+            alert(res.status.message);
             return;
           }
         }
@@ -262,40 +238,11 @@ const UserInfoModal = (props) => {
                 {mannerPoint}
                 {myInfo.userNickname === clickedUserNickname ? (
                   <></>
-                ) : mannerType === "UP" ? (
-                  <div>
-                    <button className="button-up" onClick={upMannerPoint}>
-                      ▲
-                    </button>
-                    <button className="button-down" onClick={downMannerPoint}>
-                      ▽
-                    </button>
-                  </div>
-                ) : mannerType === "DOWN" ? (
-                  <div>
-                    <button className="button-up" onClick={upMannerPoint}>
-                      △
-                    </button>
-                    <button className="button-down" onClick={downMannerPoint}>
-                      ▼
-                    </button>
-                  </div>
-                ) : mannerType === "DEFAULT" ? (
-                  <div>
-                    <button className="button-up" onClick={upMannerPoint}>
-                      △
-                    </button>
-                    <button className="button-down" onClick={downMannerPoint}>
-                      ▽
-                    </button>
-                  </div>
                 ) : (
-                  // 테스트를 위한 임시 태그
-                  // <div>
-                  //   <button onClick={upMannerPoint}>△</button>
-                  //   <button onClick={downMannerPoint}>▽</button>
-                  // </div>
-                  <></>
+                  <div>
+                    <button onClick={upMannerPoint}>∧</button>
+                    <button onClick={downMannerPoint}>∨</button>
+                  </div>
                 )}
               </div>
 
@@ -490,6 +437,7 @@ const UserInfoModal = (props) => {
           background-color: white;
           margin-right: 10px;
           cursor: pointer;
+          user-select: none;
         }
 
         .pf-interest,

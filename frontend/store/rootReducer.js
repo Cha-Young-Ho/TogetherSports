@@ -125,13 +125,7 @@ const roomRealTimeInfoInitialState = {
   updatedTime: "",
   host: "",
   creatorNickName: "",
-  roomImages: [
-    // 임시
-    {
-      order: 0,
-      imagePath: "/signup-logo.png",
-    },
-  ],
+  roomImages: [],
   tags: [],
   viewCount: 0,
   participants: [],
@@ -139,24 +133,13 @@ const roomRealTimeInfoInitialState = {
 
 // 방 설명 팝업에 쓰일 이미지 저장을 위한 초기값
 const saveRoomModalImagesInitialState = {
-  roomImages: [
-    // 임시
-    {
-      order: 0,
-      imagePath: "/signup-logo.png",
-    },
-  ],
+  roomImages: [],
 };
 
 // WS 실시간 알림 저장을 위한 초기값
 const saveRoomAlarmInitialState = {
   // 임시 텍스트
-  messages: [
-    // "사공지은님이 참여했습니다.",
-    // "이동길님이 퇴장했습니다.",
-    // "차영호님이 강퇴되었습니다.",
-    // "전세운님이 방장이 되었습니다.",
-  ],
+  messages: [],
 };
 
 // 다른 회원 정보 조회를 위한 초기값
