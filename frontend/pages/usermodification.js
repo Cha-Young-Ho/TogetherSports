@@ -36,10 +36,8 @@ const UserModification = () => {
   const [gender, setGender] = useState(userInfo.gender);
 
   // 프로필
-  const setProfileTemp = userInfo.userProfileImagePath.split("/");
-  const [profile, setProfile] = useState(
-    setProfileTemp[setProfileTemp.length - 1]
-  );
+  const getProfileImagePathFromRedux = userInfo.userProfileImagePath.split("/");
+  const [profile, setProfile] = useState("");
   const [extension, setExtension] = useState("");
   const [imagesrc, setImagesrc] = useState("");
 
@@ -193,31 +191,6 @@ const UserModification = () => {
     }));
   };
 
-  const func_PostUserRequest = () => {
-    postUserRequest(
-      validNickname,
-      userBirth,
-      activeAreas,
-      gender,
-      extension,
-      imagesrc,
-      Object.entries(interests)
-        .filter((exer) => {
-          if (exer[1]) return true;
-        })
-        .map((el) => el[0])
-    )
-      .then((res) => {
-        if (res.status.code === 5000) {
-          func_getMyInfo();
-        }
-      })
-      .catch((error) => {
-        FailResponse(error.response.data.status.code, func_PostUserRequest);
-        return;
-      });
-  };
-
   const func_getMyInfo = () => {
     getMyInfo()
       .then((res) => {
@@ -309,6 +282,31 @@ const UserModification = () => {
     }
   };
 
+  const func_PostUserRequest = () => {
+    postUserRequest(
+      validNickname,
+      userBirth,
+      activeAreas,
+      gender,
+      extension,
+      imagesrc,
+      Object.entries(interests)
+        .filter((exer) => {
+          if (exer[1]) return true;
+        })
+        .map((el) => el[0])
+    )
+      .then((res) => {
+        if (res.status.code === 5000) {
+          func_getMyInfo();
+        }
+      })
+      .catch((error) => {
+        FailResponse(error.response.data.status.code, func_PostUserRequest);
+        return;
+      });
+  };
+
   // 예외처리 및 수정버튼
   const clickUpdateUserInfo = (e) => {
     exception(e);
@@ -342,6 +340,17 @@ const UserModification = () => {
     });
 
     getBirthDay();
+
+    // 기본이미지가 아닐때만 input에 이름 뜨게
+    if (
+      getProfileImagePathFromRedux[getProfileImagePathFromRedux.length - 1] !==
+      "default_user_profile.jpeg"
+    ) {
+      setProfile(
+        (profile =
+          getProfileImagePathFromRedux[getProfileImagePathFromRedux.length - 1])
+      );
+    }
   }, []);
 
   return (

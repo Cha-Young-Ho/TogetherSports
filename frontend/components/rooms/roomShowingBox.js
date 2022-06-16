@@ -57,11 +57,7 @@ const RoomShowingBox = (props) => {
       >
         <div className="thumbs-box">
           <Image
-            src={
-              props.datas.roomImagePath === ""
-                ? "/base_profileImage.jpg"
-                : `${props.datas.roomImagePath}`
-            }
+            src={props.datas.roomImagePath}
             alt="picture of room"
             width={250}
             height={170}

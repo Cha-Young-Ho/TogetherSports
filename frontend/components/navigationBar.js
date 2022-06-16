@@ -54,7 +54,8 @@ const NavigationBar = () => {
               userNickname: "익명",
               userBirth: "yyyy-mm-dd",
               gender: "",
-              userProfileImagePath: "/base_profileImage.jpg",
+              userProfileImagePath:
+                "https://together-sports.com/images/default_user_profile.jpeg",
               activeAreas: [],
               interests: [],
               mannerPoint: "",
