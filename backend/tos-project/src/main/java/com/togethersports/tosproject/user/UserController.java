@@ -32,8 +32,8 @@ public class UserController {
 
     // 닉네임 중복확인
     @GetMapping("/api/user/duplication/nickname")
-    public ResponseEntity<Response> nicknameDuplicationCheck(@RequestParam String userNickname){
-        if(userService.nicknameDuplicationCheck(userNickname)){
+    public ResponseEntity<Response> nicknameDuplicationCheck(@CurrentUser User user, @RequestParam String userNickname){
+        if(userService.nicknameDuplicationCheck(userNickname, user)){
             // 존재하지 않을 경우
             return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, null));
         }
@@ -53,7 +53,7 @@ public class UserController {
     public ResponseEntity<Response> modifyMyInfo(@CurrentUser User user,
                                                  @RequestBody @Validated UserOfModifyInfo userOfOtherInfo){
 
-        userService.modifyMyInfo(user.getId(), userOfOtherInfo);
+        userService.modifyMyInfo(user, userOfOtherInfo);
         return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, null));
     }
     //내 정보 조회
