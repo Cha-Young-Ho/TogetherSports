@@ -80,7 +80,7 @@ const clickDetectionInitialState = {
 
 // 로그인 상태 확인용 초기값
 const loginStatusChangeInitialState = {
-  loginStatus: "false",
+  loginStatus: false,
 };
 
 // roomID 초기값

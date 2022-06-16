@@ -65,6 +65,8 @@ const Interest = () => {
         interests: interests,
       },
     });
+
+    router.push("/signup/addinfo/activearea");
   };
 
   useEffect(() => {
@@ -106,11 +108,9 @@ const Interest = () => {
           <Link href="/signup/addinfo/personalinfo" passHref>
             <button className="prev-button">이전</button>
           </Link>
-          <Link href="/signup/addinfo/activearea" passHref>
-            <div onClick={BtnClickedNext} className="next-button">
-              다음
-            </div>
-          </Link>
+          <div onClick={BtnClickedNext} className="next-button">
+            다음
+          </div>
         </div>
       </div>
 

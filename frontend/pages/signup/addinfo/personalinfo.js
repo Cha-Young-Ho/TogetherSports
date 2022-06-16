@@ -5,9 +5,11 @@ import { useDispatch } from "react-redux";
 import { getNicknameDuplicationCheck } from "../../../api/members";
 import UserInfoNavBar from "../../../components/userInfoNavBar";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 const PersonalInfo = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
 
   // 닉네임
   const [nickname, setNickname] = useState("");
@@ -180,6 +182,8 @@ const PersonalInfo = () => {
         imageSource: imagesrc,
       },
     });
+
+    router.push("/signup/addinfo/interest");
   };
 
   useEffect(getBirthDay, []);
@@ -293,11 +297,9 @@ const PersonalInfo = () => {
           </div>
         </div>
 
-        <Link href="/signup/addinfo/interest" passHref>
-          <button className="next-button" onClick={getNext}>
-            다음
-          </button>
-        </Link>
+        <button className="next-button" onClick={getNext}>
+          다음
+        </button>
       </div>
 
       <style jsx>{`
