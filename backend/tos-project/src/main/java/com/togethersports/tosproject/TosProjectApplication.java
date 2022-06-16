@@ -17,11 +17,4 @@ public class TosProjectApplication {
 		SpringApplication.run(TosProjectApplication.class, args);
 	}
 
-	@Value("${jwt.access-token-expiration-time}")
-	private Long expTime;
-
-	@Bean
-	public ApplicationRunner applicationRunner() {
-		return args -> System.out.println(expTime);
-	}
 }
