@@ -80,11 +80,11 @@ const getRoomList = (
 
   const promise =
     localStorage.getItem("accessToken") === null
-      ? axios.get("${API_ENDPOINT}/api/room", {
+      ? axios.get(`${API_ENDPOINT}/api/room`, {
           params: totalQueryString,
         })
       : axios.get(
-          "${API_ENDPOINT}/api/room",
+          `${API_ENDPOINT}/api/room`,
           {
             params: totalQueryString,
           },
@@ -188,7 +188,7 @@ const postCreateRoom = (
 ) => {
   const promise =
     localStorage.getItem("accessToken") === null
-      ? axios.post("${API_ENDPOINT}/api/room", {
+      ? axios.post(`${API_ENDPOINT}/api/room`, {
           roomTitle: roomTitle,
           roomContent: roomContent,
           roomArea: roomArea,
@@ -200,7 +200,7 @@ const postCreateRoom = (
           roomImages: roomImages,
         })
       : axios.post(
-          "${API_ENDPOINT}/api/room",
+          `${API_ENDPOINT}/api/room`,
           {
             roomTitle: roomTitle,
             roomContent: roomContent,
@@ -265,7 +265,7 @@ const putUpdateRoom = (
 ) => {
   const promise =
     localStorage.getItem("accessToken") === null
-      ? axios.put("${API_ENDPOINT}/api/room", {
+      ? axios.put(`${API_ENDPOINT}/api/room`, {
           roomId: roomId,
           roomTitle: roomTitle,
           roomContent: roomContent,
@@ -278,7 +278,7 @@ const putUpdateRoom = (
           roomImages: roomImages,
         })
       : axios.put(
-          "${API_ENDPOINT}/api/room",
+          `${API_ENDPOINT}/api/room`,
           {
             roomId: roomId,
             roomTitle: roomTitle,

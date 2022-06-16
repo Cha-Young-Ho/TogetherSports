@@ -10,45 +10,9 @@ const AddAreaModal = (props) => {
     (state) => state.filteringButtonClickDetectionReducer.reset
   );
 
-  const [rootLocations, setRootLocations] = useState([
-    "서울",
-    "대구",
-    "부산",
-    "광주",
-    "대전",
-    "경기도",
-    "경상도",
-    "대구광역시",
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "9",
-  ]);
+  const [rootLocations, setRootLocations] = useState([]);
   const [secondLocations, setSecondLocations] = useState([]);
-  const [thirdLocations, setThirdLocations] = useState([
-    "서울",
-    "대구",
-    "부산",
-    "광주",
-    "대전",
-    "경기도",
-    "경상도",
-    "대구광역시",
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "9",
-  ]);
+  const [thirdLocations, setThirdLocations] = useState([]);
   const [selectedAreas, setSelectedAreas] = useState([]);
 
   const [emphasisRoot, setEmphasisRoot] = useState("");
