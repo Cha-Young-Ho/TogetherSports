@@ -70,16 +70,17 @@ public class UserService {
     /**
      * 이메일 중복 체크를 위한 메소드
      * @param nickname : 입력받은 이메일
+     * @param user : 요청자 Entity
      * @return : 존재할경우 false, 존재하지 않을 경우 true
      */
-    public boolean nicknameDuplicationCheck(String nickname){
+    public boolean nicknameDuplicationCheck(String nickname, User user){
+        if(user.getNickname().equals(nickname)){
+            return true;
+        }
 
-        // 존재할 경우
         if(userRepository.existsByNickname(nickname)){
             return false;
         }
-
-        //존재하지 않을 경우
         return true;
     }
 
@@ -141,11 +142,11 @@ public class UserService {
 
     //회원 정보 수정 메소드
     @Transactional
-    public void modifyMyInfo(Long id, UserOfModifyInfo userOfModifyInfo){
-        if(userRepository.existsByNickname(userOfModifyInfo.getUserNickname())){
+    public void modifyMyInfo(User user, UserOfModifyInfo userOfModifyInfo){
+        if(!nicknameDuplicationCheck(userOfModifyInfo.getUserNickname(), user)){
             throw new NicknameDuplicationException("닉네임이 중복되었습니다.");
         }
-        User findUser = userRepository.findById(id)
+        User findUser = userRepository.findById(user.getId())
                 .orElseThrow(() -> new UserNotFoundException("사용자가 존재하지 않습니다."));
 
 
