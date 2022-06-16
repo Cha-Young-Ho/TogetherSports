@@ -6,11 +6,13 @@ import com.togethersports.tosproject.common.file.util.NameGenerator;
 import com.togethersports.tosproject.room.Room;
 import com.togethersports.tosproject.room.dto.ImageOfRoomCRUD;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class RoomImageService {
@@ -21,23 +23,19 @@ public class RoomImageService {
     private final StorageService storageService;
     public void registerRoomImage(List<ImageOfRoomCRUD> roomOfCreateList, Room room){
 
+
+
+        if(roomOfCreateList.size() == 0){
+            ImageOfRoomCRUD defaultImage = ImageOfRoomCRUD.builder()
+                    .imageSource("https://together-sports.com/images/default_room_image.png")
+                    .order(0)
+                    .roomImageExtension("png")
+                    .build();
+            RoomImage roomImage = RoomImage.of(defaultImage, room, "https://together-sports.com/images/default_room_image.png");
+            roomImageRepository.save(roomImage);
+            return;
+        }
         for(ImageOfRoomCRUD imageOfRoomCRUD : roomOfCreateList){
-
-            //방 이미지를 지정하지 않았을 경우
-            if(imageOfRoomCRUD.getImageSource() == null
-                || imageOfRoomCRUD.getImageSource().equals("정보 없음")){
-
-                //기본 이미지에 대한 DTO 생성(RoomImage 생성 메서드는 1개만 존재시키려는 의도)
-                //fixme 기본 이미지 경로 수정해야함
-                ImageOfRoomCRUD defaultImage = ImageOfRoomCRUD.builder()
-                        .imageSource("/Users/chayeongho/Pictures/User/User.png")
-                        .order(0)
-                        .roomImageExtension("png")
-                        .build();
-                RoomImage roomImage = RoomImage.of(defaultImage, room, null);
-                roomImageRepository.save(roomImage);
-                return;
-            }
 
             //방 이미지를 지정했을 경우
             //방 이미지 저장

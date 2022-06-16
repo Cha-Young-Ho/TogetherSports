@@ -70,16 +70,15 @@ public class UserMannerPointService {
         if(actualMannerPointStatus.equals(MannerPointStatus.UP)){
             //매너지수 올리기
             if(request.equals(MannerPointStatus.UP)){
-                doPointing(targetUser, -1, userMannerPointEntity);
 
-                return Response.of(MannerPointCode.MANNER_POINT_DOWN, MannerPointOfPointing.builder().mannerPoint(targetUser.getMannerPoint()).id(targetUser.getId()).build());
+                return Response.of(MannerPointCode.FAIL_MANNER_POINT_UP, null);
 
             }
             //매너지수 내리기
             if(request.equals(MannerPointStatus.DOWN)){
                 doPointing(targetUser, -1, userMannerPointEntity);
 
-                return Response.of(MannerPointCode.CANCEL_MANNER_POINT_UP, MannerPointOfPointing.builder().mannerPoint(targetUser.getMannerPoint()).id(targetUser.getId()).build());
+                return Response.of(MannerPointCode.MANNER_POINT_DOWN, MannerPointOfPointing.builder().mannerPoint(targetUser.getMannerPoint()).id(targetUser.getId()).build());
 
             }
         }
@@ -88,15 +87,15 @@ public class UserMannerPointService {
             // 매너지수 내리기
 
             if(request.equals(MannerPointStatus.DOWN)){
-                doPointing(targetUser, 1, userMannerPointEntity);
-                return Response.of(MannerPointCode.MANNER_POINT_UP, MannerPointOfPointing.builder().mannerPoint(targetUser.getMannerPoint()).id(targetUser.getId()).build());
+
+                return Response.of(MannerPointCode.FAIL_MANNER_POINT_DOWN, null);
 
             }
             // 매너지수 올리기 DOWN -> DEFAULT(db 삭제)
             if(request.equals(MannerPointStatus.UP)){
                 doPointing(targetUser, 1, userMannerPointEntity);
 
-                return Response.of(MannerPointCode.CANCEL_MANNER_POINT_DOWN, MannerPointOfPointing.builder().mannerPoint(targetUser.getMannerPoint()).id(targetUser.getId()).build());
+                return Response.of(MannerPointCode.MANNER_POINT_UP, MannerPointOfPointing.builder().mannerPoint(targetUser.getMannerPoint()).id(targetUser.getId()).build());
             }
         }
 

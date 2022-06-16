@@ -28,6 +28,7 @@ public class RoomOfList {
     private LocalDateTime startAppointmentDate;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime endAppointmentDate;
+    private String roomImagePath;
 
 
 
@@ -44,6 +45,7 @@ public class RoomOfList {
         this.tags = tags;
         this.endAppointmentDate = room.getEndAppointmentDate();
         this.startAppointmentDate = room.getStartAppointmentDate();
+        this.roomImagePath = room.getRoomImages().get(0).getImagePath();
     }
     public static RoomOfList of(Room room, List<String> tags){
 

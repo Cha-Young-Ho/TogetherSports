@@ -11,7 +11,6 @@ import java.util.Map;
  * <ul>
  *     <li>{@link #getOAuth2Id()} OAuth2 계정 식별자 반환</li>
  *     <li>{@link #getEmail()} ()} OAuth2 로그인 후 가져온 계정 이메일</li>
- *     <li>{@link #getNickname()} OAuth2 로그인 후 가져온 계정 닉네임 </li>
  *     <li>{@link #getOAuth2Provider()} OAuth2 서비스 제공자</li>
  * </ul>
  * <p>
@@ -40,12 +39,6 @@ public abstract class OAuth2UserInfo {
      * @return email
      */
     public abstract String getEmail();
-
-    /**
-     * 해당 SNS 계정에서 사용중인 닉네임
-     * @return nickname
-     */
-    public abstract String getNickname();
 
     /**
      * 해당 SNS 사업자 명

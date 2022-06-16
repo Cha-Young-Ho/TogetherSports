@@ -28,7 +28,7 @@ public class LocationDataInitializer implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        if (locationRepository.existsByName("서울특별시")) {
+        if (locationRepository.existsByName("서울")) {
             return;
         }
 
