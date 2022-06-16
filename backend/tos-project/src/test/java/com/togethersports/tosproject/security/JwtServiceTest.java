@@ -16,7 +16,7 @@ import java.util.Map;
 
 @Slf4j
 @ExtendWith(MockitoExtension.class)
-public class JwtTest {
+public class JwtServiceTest {
 
     @InjectMocks
     private JwtService jwtService;
