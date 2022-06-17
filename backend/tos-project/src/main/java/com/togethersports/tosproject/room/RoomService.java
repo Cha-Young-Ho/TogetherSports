@@ -217,7 +217,10 @@ public class RoomService {
     }
 
     public boolean getAttendance(Long userId, Long roomId){
-        return participantService.checkAttendance(userRepository.findById(userId).get(), roomRepository.findById(roomId).get());
+        UserAndRoomOfService userRoomEntities = findEntityById(userId, roomId);
+        User userEntity = userRoomEntities.getUser();
+        Room roomEntity = userRoomEntities.getRoom();
+        return participantService.checkAttendance(userEntity, roomEntity);
     }
 
     public RoomsOfMyRoom getMyRoom(User currentUser){

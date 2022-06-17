@@ -74,12 +74,21 @@ public class UserService {
      * @return : 존재할경우 false, 존재하지 않을 경우 true
      */
     public boolean nicknameDuplicationCheck(String nickname, User user){
-        if(user.getNickname().equals(nickname)){
+
+        User userEntity = userRepository.findById(user.getId())
+                .orElseThrow(() -> new UserNotFoundException("해당 유저를 찾을 수 없습니다."));
+
+
+        if(userEntity.getNickname() == null){
+            return true;
+        }
+
+        if(userEntity.getNickname().equals(nickname)){
             return true;
         }
 
         if(userRepository.existsByNickname(nickname)){
-            return false;
+            throw new NicknameDuplicationException("중복된 닉네임입니다.");
         }
         return true;
     }
