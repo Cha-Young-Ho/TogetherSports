@@ -108,6 +108,7 @@ public class User {
         newUser.provider = provider;
         newUser.role = Role.ROLE_USER;
         newUser.informationRequired = true;
+        newUser.userProfileImage = "https://together-sports.com/images/default_user_profile.jpeg";
         return newUser;
     }
 
