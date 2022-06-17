@@ -14,6 +14,7 @@ const RoomSchedule = () => {
 
   // calendar의 현재 선택된 날 받아오기 위한 함수
   const setSelectedDate = (date) => {
+    if (date.length === 9) date = date.slice(0, 8) + "0" + date.substr(8);
     setCurSelectedDate((curSelectedDate = date));
   };
 
@@ -33,6 +34,19 @@ const RoomSchedule = () => {
   ];
 
   const clickNextBtn = (e) => {
+    const today = moment(new Date());
+    const checkDate = moment([
+      curSelectedDate.substr(0, 4),
+      curSelectedDate.substring(5, 7) - 1,
+      curSelectedDate.substr(8, 10),
+    ]);
+
+    if (checkDate.diff(today, "days") <= -1) {
+      e.preventDefault();
+      alert("오늘보다 이전 날짜는 선택할 수 없습니다.");
+      return;
+    }
+
     //예외 처리
     if (curSelectedDate === "") {
       e.preventDefault();
