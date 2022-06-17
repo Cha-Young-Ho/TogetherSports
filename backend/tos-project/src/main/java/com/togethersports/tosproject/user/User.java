@@ -19,7 +19,7 @@ import java.util.List;
  * <p>
  * 사용자 계정 엔티티
  * </p>
- * <p>신규 계정을 생성하려면 {@link #createUser(Long, String, OAuth2Provider)} 참조</p>
+ * <p>신규 계정을 생성하려면 {@link #createUser(String, String, OAuth2Provider)} 참조</p>
  * <p>기존 계정 정보를 계정 엔티티로 변환하려면 {@link #convertUser(Long, String, Role)} 참조</p>
  *
  * @author seunjeon
@@ -36,7 +36,7 @@ public class User {
     private Long id;
 
     @Column(name = "USER_OAUTH2_ID")
-    private Long oauth2Id;
+    private String oauth2Id;
 
     @Column(name = "USER_EMAIL")
     private String email;
@@ -101,7 +101,7 @@ public class User {
      * @author seunjeon
      * @author younghoCha
      */
-    public static User createUser(Long oauth2Id, String email, OAuth2Provider provider) {
+    public static User createUser(String oauth2Id, String email, OAuth2Provider provider) {
         User newUser = new User();
         newUser.oauth2Id = oauth2Id;
         newUser.email = email;

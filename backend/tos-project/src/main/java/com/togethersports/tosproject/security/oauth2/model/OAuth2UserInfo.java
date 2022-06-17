@@ -32,7 +32,7 @@ public abstract class OAuth2UserInfo {
      * 해당 SNS 계정 고유식별자
      * @return id
      */
-    public abstract Long getOAuth2Id();
+    public abstract String getOAuth2Id();
 
     /**
      * 해당 SNS 계정 이메일 주소

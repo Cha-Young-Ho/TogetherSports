@@ -15,13 +15,13 @@ public class GoogleUser extends OAuth2UserInfo{
         super(attributes);
     }
     @Override
-    public Long getOAuth2Id() {
-        return (Long) super.attributes.get("id");
+    public String getOAuth2Id() {
+        return (String) super.attributes.get("sub");
     }
 
     @Override
     public String getEmail() {
-        return (String) super.attributes.get("name");
+        return (String) super.attributes.get("email");
     }
 
     @Override

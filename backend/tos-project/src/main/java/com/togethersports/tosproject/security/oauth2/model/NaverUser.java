@@ -12,18 +12,21 @@ import java.util.Map;
  */
 public class NaverUser extends OAuth2UserInfo{
 
+    private Map<String, Object> naverAccountAttributes;
+
     protected NaverUser(Map<String, Object> attributes) {
         super(attributes);
+        naverAccountAttributes = (Map<String, Object>) attributes.get(OAuth2Provider.NAVER.getAttributeKey());
     }
 
     @Override
-    public Long getOAuth2Id() {
-        return (Long) super.attributes.get("id");
+    public String getOAuth2Id() {
+        return (String) naverAccountAttributes.get("id");
     }
 
     @Override
     public String getEmail() {
-        return (String) super.attributes.get("email");
+        return (String) naverAccountAttributes.get("email");
     }
 
     @Override
