@@ -6,6 +6,7 @@ import { FailResponse } from "../../../api/failResponse";
 import RoomInfoNavBar from "../../../components/roomInfoNavBar";
 import SetRoomImages from "../../../components/rooms/setRoomImages";
 import Head from "next/head";
+import router from "next/router";
 
 const RoomTagInfo = () => {
   const roomInfo = useSelector((state) => state.createRoomReducer);
@@ -81,6 +82,7 @@ const RoomTagInfo = () => {
     }
   };
 
+  // 방 생성 시 예외 처리
   const exception = (e) => {
     if (roomImages === []) setRoomImages(null);
     else addOrder(roomImages, thumbnailIndex);
@@ -121,7 +123,8 @@ const RoomTagInfo = () => {
     )
       .then((res) => {
         if (res.status.code === 5000) {
-          alert("방을 성공적으로 생성하였습니다!");
+          // 해당 방으로 이동
+          router.push(`/room/${res.status.content.roomOfInfo.roomId}`);
         }
       })
       .catch((error) => {
@@ -206,11 +209,9 @@ const RoomTagInfo = () => {
           <Link href="/room/createroom/roomschedule" passHref>
             <button className="button-prev">이전</button>
           </Link>
-          <Link href="/" passHref>
-            <button className="button-done" onClick={createRoom}>
-              완료
-            </button>
-          </Link>
+          <button className="button-done" onClick={createRoom}>
+            완료
+          </button>
         </div>
       </div>
       <style jsx>{`

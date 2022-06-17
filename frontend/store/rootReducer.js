@@ -25,7 +25,8 @@ const myInfoInitialState = {
   userBirth: "yyyy-mm-dd",
   mannerPoint: 0,
   activeAreas: [],
-  userProfileImagePath: "/base_profileImage.jpg",
+  userProfileImagePath:
+    "https://together-sports.com/images/default_user_profile.jpeg",
   interests: [],
   gender: "",
   isInformationRequired: "false",
@@ -112,6 +113,7 @@ const saveRoomCountInitialState = {
   roomCount: 0,
 };
 
+// 운동 대기방 페이지 데이터 저장을 위한 초기값
 const roomRealTimeInfoInitialState = {
   roomTitle: "",
   roomContent: "",
@@ -125,7 +127,13 @@ const roomRealTimeInfoInitialState = {
   updatedTime: "",
   host: "",
   creatorNickName: "",
-  roomImages: [],
+  roomImages: [
+    {
+      imagePath: "https://together-sports.com/images/default_room_image.png",
+      order: 0,
+      roomImageExtension: "png",
+    },
+  ],
   tags: [],
   viewCount: 0,
   participants: [],
@@ -133,7 +141,13 @@ const roomRealTimeInfoInitialState = {
 
 // 방 설명 팝업에 쓰일 이미지 저장을 위한 초기값
 const saveRoomModalImagesInitialState = {
-  roomImages: [],
+  roomImages: [
+    {
+      imagePath: "https://together-sports.com/images/default_room_image.png",
+      order: 0,
+      roomImageExtension: "png",
+    },
+  ],
 };
 
 // WS 실시간 알림 저장을 위한 초기값
