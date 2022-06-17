@@ -10,6 +10,7 @@ import com.togethersports.tosproject.user.dto.UserOfMyInfo;
 import com.togethersports.tosproject.user.dto.UserOfOtherInfo;
 import com.togethersports.tosproject.user.exception.NicknameDuplicationException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
  * @author seunjeon
  * @author younghoCha
  */
-
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class UserController {
@@ -33,6 +34,7 @@ public class UserController {
     // 닉네임 중복확인
     @GetMapping("/api/user/duplication/nickname")
     public ResponseEntity<Response> nicknameDuplicationCheck(@CurrentUser User user, @RequestParam String userNickname){
+        log.info("user id = {}", user.getId());
         if(userService.nicknameDuplicationCheck(userNickname, user)){
             // 존재하지 않을 경우
             return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, null));
@@ -61,9 +63,6 @@ public class UserController {
     public ResponseEntity<Response> getMyInfo(@CurrentUser User user){
         UserOfMyInfo myInfo = userService.getMyInfo(user.getId());
 
-        if(myInfo.isInformationRequired()){
-            return ResponseEntity.ok(Response.of(UserCode.NOT_ENTERED_INFORMATION, myInfo));
-        }
         return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, myInfo));
     }
 

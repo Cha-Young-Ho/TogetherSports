@@ -7,10 +7,11 @@ import UserInfoModal from "./modals/navBarUserInfoModal";
 import { getMyInfo } from "../api/members";
 import { useDispatch, useSelector } from "react-redux";
 import FixedRequestAlarm from "./fixedRequestAlarm";
-import Image from "next/image";
+import { useRouter } from "next/router";
 
 const NavigationBar = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
 
   // 로그인 상태 임을 판별하는 변수
   const loginStatus = useSelector(
@@ -93,26 +94,35 @@ const NavigationBar = () => {
               isInformationRequired: res.content.isInformationRequired,
             },
           });
+
+          dispatch({
+            type: "CHANGELOGINSTATUS",
+            payload: {
+              loginStatus: true,
+            },
+          });
         } else {
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+
+          dispatch({
+            type: "CHANGELOGINSTATUS",
+            payload: {
+              loginStatus: false,
+            },
+          });
           FailResponse(res.status.code);
         }
-
-        dispatch({
-          type: "CHANGELOGINSTATUS",
-          payload: {
-            loginStatus: "true",
-          },
-        });
       })
       .catch((error) => {
         if (error?.response?.data?.status) {
           dispatch({
             type: "CHANGELOGINSTATUS",
             payload: {
-              loginStatus: "false",
+              loginStatus: false,
             },
           });
-          console.log(error.response);
+
           FailResponse(error.response.data.status.code, func_getMyInfo);
         }
       });
@@ -130,49 +140,44 @@ const NavigationBar = () => {
           <div className="groups">
             <div className="logo">
               <Link href="/" passHref>
-                <Image
-                  src="/logo-navbar.png"
-                  alt="Together Sports"
-                  width={138}
-                  height={60}
-                ></Image>
+                <img src="/logo-navbar.png" alt="Together Sports"></img>
               </Link>
             </div>
             <div className="category">
               <Link href="/room/roomlist" passHref>
                 <button className="tag">방 목록</button>
               </Link>
-              <Link href="/myroom" passHref>
-                <button
-                  className="tag"
-                  onClick={(e) => {
-                    if (myInfo.id === 0) {
-                      e.preventDefault();
-                      alert("로그인 및 추가정보가 필요한 기능입니다.");
-                    }
-                  }}
-                >
-                  내 일정
-                </button>
-              </Link>
-              <Link href="/room/createroom/roomsetting" passHref>
-                <button
-                  className="tag"
-                  onClick={(e) => {
-                    if (myInfo.id === 0) {
-                      e.preventDefault();
-                      alert("로그인 및 추가정보가 필요한 기능입니다.");
-                    }
-                  }}
-                >
-                  방 생성
-                </button>
-              </Link>
+              <button
+                className="tag"
+                onClick={(e) => {
+                  if (myInfo.id === 0) {
+                    e.preventDefault();
+                    alert("로그인 및 추가정보가 필요한 기능입니다.");
+                    return;
+                  }
+                  router.push("/myroom");
+                }}
+              >
+                내 일정
+              </button>
+              <button
+                className="tag"
+                onClick={(e) => {
+                  if (myInfo.id === 0) {
+                    e.preventDefault();
+                    alert("로그인 및 추가정보가 필요한 기능입니다.");
+                    return;
+                  }
+                  router.push("/room/createroom/roomsetting");
+                }}
+              >
+                방 생성
+              </button>
             </div>
           </div>
           <div>
             <div className="sign">
-              {loginStatus === "false" ? (
+              {!loginStatus ? (
                 <>
                   <Link href="/login" passHref>
                     <button className="tag">로그인</button>
@@ -181,13 +186,11 @@ const NavigationBar = () => {
               ) : (
                 <>
                   <button className="user-box" onClick={openUserInfoModalFunc}>
-                    <Image
+                    <img
                       className="ProfileImage"
                       src={myInfo.userProfileImagePath}
                       alt="프로필 이미지"
-                      width={40}
-                      height={40}
-                    ></Image>
+                    ></img>
                     <div className="logOn">
                       {`${myInfo.userNickname}`} 님 반갑습니다!
                     </div>
@@ -215,11 +218,7 @@ const NavigationBar = () => {
           </div>
         </div>
       </div>
-      {loginStatus === "true" && myInfo.isInformationRequired ? (
-        <FixedRequestAlarm />
-      ) : (
-        ""
-      )}
+      {loginStatus && myInfo.isInformationRequired ? <FixedRequestAlarm /> : ""}
 
       <style jsx>{`
         .header {
@@ -285,6 +284,8 @@ const NavigationBar = () => {
           border-radius: 50px;
           background-color: black;
           object-fit: cover;
+          width: 40px;
+          height: 40px;
         }
 
         .logOn {

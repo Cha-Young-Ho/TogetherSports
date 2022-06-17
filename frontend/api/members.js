@@ -19,6 +19,7 @@ const getNicknameDuplicationCheck = (nickname) => {
           headers: {
             "Content-type": "application/json; charset=UTF-8",
             Accept: "*/*",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
           params: {
             userNickname: nickname,
@@ -52,8 +53,8 @@ const getMyInfo = () => {
 const getOtherInfo = (userId) => {
   const promise =
     localStorage.getItem("accessToken") === null
-      ? axios.get(`${API_ENDPOINT}/api/user` + userId)
-      : axios.get(`${API_ENDPOINT}/api/user` + userId, {
+      ? axios.get(`${API_ENDPOINT}/api/user/${userId}`)
+      : axios.get(`${API_ENDPOINT}/api/user/${userId}`, {
           headers: {
             "Content-type": "application/json; charset=UTF-8",
             Accept: "*/*",

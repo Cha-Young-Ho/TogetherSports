@@ -9,9 +9,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { FailResponse } from "../api/failResponse";
 import Map from "../components/Map";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 const UserModification = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
 
   // 회원정보 초기값
   const userInfo = useSelector((state) => state.myInfoReducer);
@@ -63,15 +65,18 @@ const UserModification = () => {
   const checkNicknameDuplication = () => {
     if (nickname.length < 2) {
       alert("닉네임은 최소 2글자 이상 입력해주세요.");
+      return;
     } else if (userInfo.userNickname === nickname) {
       setIsNicknameCheck(true);
       setValidNickname(nickname);
       alert("사용 가능한 닉네임 입니다.");
-    } else {
-      getNicknameDuplicationCheck(nickname).then((res) => {
-        return;
-      });
+      return;
     }
+    // else {
+    //   getNicknameDuplicationCheck(nickname).then((res) => {
+    //     return;
+    //   });
+    // }
 
     getNicknameDuplicationCheck(nickname)
       .then((res) => {
@@ -198,26 +203,52 @@ const UserModification = () => {
           dispatch({
             type: "SAVEMYINFO",
             payload: {
+              id: res.content.id,
               userEmail: res.content.userEmail,
               userName: res.content.userName,
               userNickname: res.content.userNickname,
               userBirth: res.content.userBirth,
-              gender: res.content.gender,
-              userProfileImagePath: res.content.userProfileImagePath,
-              activeAreas: res.content.activeAreas,
-              interests: res.content.interests,
               mannerPoint: res.content.mannerPoint,
+              activeAreas: res.content.activeAreas.map((el) => el),
+              userProfileImagePath: res.content.userProfileImagePath,
+              interests: res.content.interests.map((el) => el),
+              gender: res.content.gender,
               isInformationRequired: res.content.isInformationRequired,
             },
           });
-          alert("성공적으로 수정 되었습니다.");
-          window.history.back();
-          return;
+
+          dispatch({
+            type: "CHANGELOGINSTATUS",
+            payload: {
+              loginStatus: true,
+            },
+          });
+
+          router.back();
+        } else {
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+
+          dispatch({
+            type: "CHANGELOGINSTATUS",
+            payload: {
+              loginStatus: false,
+            },
+          });
+          FailResponse(res.status.code);
         }
       })
       .catch((error) => {
-        FailResponse(error.response.data.status.code, func_getMyInfo);
-        return;
+        if (error.response) {
+          dispatch({
+            type: "CHANGELOGINSTATUS",
+            payload: {
+              loginStatus: false,
+            },
+          });
+
+          FailResponse(error.response.data.status.code, func_getMyInfo);
+        }
       });
   };
 

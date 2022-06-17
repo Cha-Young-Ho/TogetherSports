@@ -28,7 +28,7 @@ export default function Home() {
           }
         })
         .catch((error) => {
-          if (error.response.data.status) {
+          if (error?.response?.data?.status) {
             FailResponse(error.response.data.status.code, func_getRoomCount);
             return;
           }

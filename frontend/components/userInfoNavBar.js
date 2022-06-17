@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 const UserInfoNavBar = (props) => {
   return (
     <>
@@ -7,37 +5,31 @@ const UserInfoNavBar = (props) => {
       <div className="container">
         <div>
           <div>
-            <Image
+            <img
               src={`/personalinfo-${props.personal_atv}.png`}
               alt="인적사항"
               className="personalinfo"
-              width={90}
-              height={90}
-            ></Image>
+            ></img>
           </div>
           <p>인적사항</p>
         </div>
         <div>
           <div>
-            <Image
+            <img
               src={`/interests-${props.interest_atv}.png`}
               alt="관심종목"
               className="interests"
-              width={90}
-              height={90}
-            ></Image>
+            ></img>
           </div>
           <p>관심종목</p>
         </div>
         <div>
           <div>
-            <Image
+            <img
               src={`/activearea-${props.activearea_atv}.png`}
               alt="활동지역"
               className="activeareas"
-              width={90}
-              height={90}
-            ></Image>
+            ></img>
           </div>
           <p>활동지역</p>
         </div>
@@ -73,6 +65,8 @@ const UserInfoNavBar = (props) => {
         .activeareas {
           border-radius: 50px;
           margin: 10px;
+          width: 90px;
+          height: 90px;
         }
       `}</style>
     </>

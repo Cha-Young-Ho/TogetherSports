@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 const RoomInfoNavBar = (props) => {
   return (
     <>
@@ -7,37 +5,31 @@ const RoomInfoNavBar = (props) => {
       <div className="container">
         <div>
           <div>
-            <Image
+            <img
               src={`/roomsetting-${props.roomSetting_atv}.png`}
               alt="기본 정보 설정"
               className="roomsetting"
-              width={90}
-              height={90}
-            ></Image>
+            ></img>
           </div>
           <p>기본 정보 설정</p>
         </div>
         <div>
           <div>
-            <Image
+            <img
               src={`/roomschedule-${props.roomSchedule_atv}.png`}
               alt="일정 생성하기"
               className="roomschedule"
-              width={90}
-              height={90}
-            ></Image>
+            ></img>
           </div>
           <p>일정 생성하기</p>
         </div>
         <div>
           <div>
-            <Image
+            <img
               src={`/roomtaginfo-${props.roomTagInfo_atv}.png`}
               alt="태그 및 설명"
               className="roomtaginfo"
-              width={90}
-              height={90}
-            ></Image>
+            ></img>
           </div>
           <p>태그 및 설명</p>
         </div>
@@ -73,6 +65,8 @@ const RoomInfoNavBar = (props) => {
         .roomtaginfo {
           border-radius: 50px;
           margin: 10px;
+          width: 90px;
+          height: 90px;
         }
       `}</style>
     </>

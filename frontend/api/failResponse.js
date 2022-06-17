@@ -40,22 +40,22 @@ const FailResponse = (codeNumber, prelastingToDo) => {
       alert("해당 방의 일정 시간이 이미 지났습니다.");
       break;
     case 1203:
-      alert("누군가 방을 나갔습니다.");
+      console.log("누군가 방을 나갔습니다.");
       break;
     case 1204:
-      alert("누군가 강퇴당했습니다.");
+      console.log("누군가 강퇴당했습니다.");
       break;
     case 1205:
       alert("누군가 모임에 참여했습니다!");
       break;
     case 1206:
-      alert("누군가 채팅을 보냈습니다.");
+      console.log("누군가 채팅을 보냈습니다.");
       break;
     case 1207:
-      alert("방 정보가 업데이트 되었습니다.");
+      console.log("방 정보가 업데이트 되었습니다.");
       break;
     case 1208:
-      alert("방장이 변경 되었습니다.");
+      console.log("방장이 변경 되었습니다.");
       break;
     case 1209:
       alert("방에 참가 완료했습니다.");

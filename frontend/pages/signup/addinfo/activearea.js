@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import { postUserRequest } from "../../../api/members";
-import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { getMyInfo, postUserRequest } from "../../../api/members";
+import { useDispatch, useSelector } from "react-redux";
 import UserInfoNavBar from "../../../components/userInfoNavBar";
 import { FailResponse } from "../../../api/failResponse";
 import Link from "next/link";
@@ -14,6 +14,63 @@ const ActiveArea = () => {
   );
   const userRequestInfo = useSelector((state) => state.userRequestReducer);
   const router = useRouter();
+  const dispatch = useDispatch();
+
+  const func_getMyInfo = () => {
+    getMyInfo()
+      .then((res) => {
+        if (res.status.code === 5000) {
+          dispatch({
+            type: "SAVEMYINFO",
+            payload: {
+              id: res.content.id,
+              userEmail: res.content.userEmail,
+              userName: res.content.userName,
+              userNickname: res.content.userNickname,
+              userBirth: res.content.userBirth,
+              mannerPoint: res.content.mannerPoint,
+              activeAreas: res.content.activeAreas,
+              userProfileImagePath: res.content.userProfileImagePath,
+              interests: res.content.interests,
+              gender: res.content.gender,
+              isInformationRequired: res.content.isInformationRequired,
+            },
+          });
+
+          dispatch({
+            type: "CHANGELOGINSTATUS",
+            payload: {
+              loginStatus: true,
+            },
+          });
+
+          router.push("/");
+        } else {
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+          dispatch({
+            type: "CHANGELOGINSTATUS",
+            payload: {
+              loginStatus: false,
+            },
+          });
+          FailResponse(res.status.code);
+        }
+      })
+      .catch((error) => {
+        if (error?.response?.data?.status) {
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+          dispatch({
+            type: "CHANGELOGINSTATUS",
+            payload: {
+              loginStatus: false,
+            },
+          });
+          FailResponse(error.response.data.status.code, func_getMyInfo);
+        }
+      });
+  };
 
   const exception = (e) => {
     if (
@@ -38,13 +95,18 @@ const ActiveArea = () => {
       userRequestInfo.userProfileExtension,
       userRequestInfo.imageSource,
       userRequestInfo.interests
-    ).then((res) => {
-      if (res.status.code === 5000) {
-        alert("추가정보입력에 성공하였습니다!");
-      } else {
-        FailResponse(res.status.code, postUserRequestFunc);
-      }
-    });
+    )
+      .then((res) => {
+        if (res.status.code === 5000) {
+          func_getMyInfo();
+        } else {
+          FailResponse(res.status.code, postUserRequestFunc);
+        }
+      })
+      .catch((error) => {
+        if (error?.response?.data?.status)
+          FailResponse(error.response.data.status.code, postUserRequestFunc);
+      });
   };
 
   // 서버에 회원 추가정보입력 요청
@@ -92,11 +154,9 @@ const ActiveArea = () => {
           <Link href="/signup/addinfo/interest" passHref>
             <button className="prev-button">이전</button>
           </Link>
-          <Link href="/" passHref>
-            <div className="button-done" onClick={callUserRequest}>
-              완료
-            </div>
-          </Link>
+          <div className="button-done" onClick={callUserRequest}>
+            완료
+          </div>
         </div>
       </div>
 
