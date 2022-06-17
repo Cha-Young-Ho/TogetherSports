@@ -15,7 +15,7 @@ border-radius: 30px;
 
 
 ## ⚽️ 도메인
-- [together-sports.com](together-sports.com)
+- [together-sports.com](https://together-sports.com)
 
 ## 💡Build and Run
 - Front End
