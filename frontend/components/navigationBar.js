@@ -29,6 +29,7 @@ const NavigationBar = () => {
   };
   const closeUserInfoModalFun = () => {
     setUserInfoModalOpen(false);
+    document.body.style.overflow = "unset";
   };
 
   // 로그아웃 버튼 클릭

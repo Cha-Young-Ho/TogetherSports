@@ -115,7 +115,6 @@ const UserInfoModal = (props) => {
           alert(res.status.message);
           return;
         }
-
         FailResponse(res.status.code, upMannerPoint);
       })
       .catch((error) => {
@@ -168,7 +167,12 @@ const UserInfoModal = (props) => {
 
   return (
     <>
-      <div className={props.open ? "openModal modal" : "modal"}>
+      <div
+        className={props.open ? "openModal modal" : "modal"}
+        onClick={(e) => {
+          if (e.target.classList[1] === "openModal") props.close();
+        }}
+      >
         <div className="userinfo-modal-body">
           <div className="header">
             <button onClick={props.close}>&times;</button>
