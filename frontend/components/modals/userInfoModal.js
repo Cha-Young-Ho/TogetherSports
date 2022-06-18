@@ -105,19 +105,16 @@ const UserInfoModal = (props) => {
   const upMannerPoint = () => {
     patchMannerPoint(clickedUserId, "UP")
       .then((res) => {
-        {
-          // 올리기
-          if (res.status.code === 1109) {
-            setMannerPoint((mannerPoint = res.content.mannerPoint));
-            return;
-          }
-          // 이미 올린 경우
-          if (res.status.code === 1105) {
-            alert(res.status.message);
-            return;
-          }
+        // 올리기
+        if (res.status.code === 1109) {
+          setMannerPoint((mannerPoint = res.content.mannerPoint));
+          return;
         }
-
+        // 이미 올린 경우
+        if (res.status.code === 1105) {
+          alert(res.status.message);
+          return;
+        }
         FailResponse(res.status.code, upMannerPoint);
       })
       .catch((error) => {
@@ -172,7 +169,12 @@ const UserInfoModal = (props) => {
 
   return (
     <>
-      <div className={props.open ? "openModal modal" : "modal"}>
+      <div
+        className={props.open ? "openModal modal" : "modal"}
+        onClick={(e) => {
+          if (e.target.classList[1] === "openModal") props.close();
+        }}
+      >
         <div className="userinfo-modal-body">
           <div className="header">
             <button onClick={props.close}>&times;</button>

@@ -71,7 +71,10 @@ const Room = () => {
   // 방 수정하기
   const [modifyModalOpen, setModifyModalOpen] = useState(false);
   const openModifyModal = () => setModifyModalOpen(true);
-  const closeModifyModal = () => setModifyModalOpen(false);
+  const closeModifyModal = () => {
+    setModifyModalOpen(false);
+    document.body.style.overflow = "unset";
+  };
 
   // 접속자 목록 modal 관련 데이터
   const [participantListModalOpen, setParticipantListModalOpen] =
@@ -170,7 +173,6 @@ const Room = () => {
           FailResponse(error.response.data.status.code, onLeaveRoom);
         }
       });
-    // 여기서 참가자목록 같은걸 업데이트 할 필요가 있나?
   };
 
   // 방 삭제하기 -> 보류
@@ -178,7 +180,6 @@ const Room = () => {
     deleteRoom(roomId)
       .then((res) => {
         if (res.status.code === 5000) {
-          alert("방을 성공적으로 삭제하였습니다 !"); // 임시 텍스트
           router.push("/room/roomlist"); // 방 목록 페이지로 이동
         } else {
           FailResponse(res.status.code);

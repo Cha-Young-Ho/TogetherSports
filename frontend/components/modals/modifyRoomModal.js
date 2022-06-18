@@ -34,7 +34,7 @@ const ModifyRoomModal = (props) => {
   const getTagsFromRedux = useSelector(
     (state) => state.roomRealTimeInfoReducer.tags
   );
-  const [doneTagsSetting, setDoneTagsSetting] = useState(false);
+
   const [tags, setTags] = useState([]);
   const tagsAge = [
     "10대",
@@ -162,22 +162,25 @@ const ModifyRoomModal = (props) => {
 
   // 태그 초기값 세팅
   useEffect(() => {
-    getTagsFromRedux.map((tag) => {
-      setTags((prev) => [...prev, (tags = tag)]);
-    });
+    if (props.open) {
+      setTags([...getTagsFromRedux]);
 
-    if (getTagsFromRedux.length === tags.length) setDoneTagsSetting(true);
-  }, [getTagsFromRedux]);
+      document.body.style.overflow = "hidden";
+    }
+  }, [props.open]);
 
   useEffect(() => {
-    if (props.open) {
-      if (doneTagsSetting === true) tags.map((tag) => setPrevTags(tag));
-    }
-  }, [doneTagsSetting]);
+    tags.map((tag) => setPrevTags(tag));
+  }, [tags]);
 
   return (
     <>
-      <div className={props.open ? "openModal modal" : "modal"}>
+      <div
+        className={props.open ? "openModal modal" : "modal"}
+        onClick={(e) => {
+          if (e.target.classList[1] === "openModal") props.close();
+        }}
+      >
         {props.open ? (
           <>
             <Head>

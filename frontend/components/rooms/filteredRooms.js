@@ -35,62 +35,7 @@ const FilteredRooms = () => {
   const [roomID, setRoomID] = useState();
 
   // 현재 임시 데이터
-  const [eachRoomInfo, setEachRoomInfo] = useState([
-    {
-      roomId: "121",
-      roomTitle: "가가가가가가가가가가가가가가가가가가가가",
-      limitPeopleCount: "22",
-      participantCount: "1",
-      tags: ["20대만", "고수만", "20대만", "고수만", "20대입니다다다다"],
-      startAppointmentDate: "2022-04-18T19:00",
-      roomImagePath: "",
-    },
-    // {
-    //   roomId: "123",
-    //   roomTitle: "야구 한판 뛰실분?",
-    //   limitPeopleCount: "30",
-    //   participantCount: "1",
-    //   tags: ["20대만", "초보만"],
-    //   startAppointmentDate: "2022-04-19T22:30",
-    //   roomImagePath: "",
-    // },
-    // {
-    //   roomId: "121",
-    //   roomTitle: "축구 한판 뛰실분?",
-    //   limitPeopleCount: "22",
-    //   participantCount: "1",
-    //   tags: ["20대만", "고수만"],
-    //   startAppointmentDate: "2022-04-18T19:00",
-    //   roomImagePath: "",
-    // },
-    // {
-    //   roomId: "123",
-    //   roomTitle: "야구 한판 뛰실분?",
-    //   limitPeopleCount: "30",
-    //   participantCount: "1",
-    //   tags: ["20대만", "초보만"],
-    //   startAppointmentDate: "2022-04-19T22:30",
-    //   roomImagePath: "",
-    // },
-    // {
-    //   roomId: "121",
-    //   roomTitle: "축구 한판 뛰실분?",
-    //   limitPeopleCount: "22",
-    //   participantCount: "1",
-    //   tags: ["20대만", "고수만"],
-    //   startAppointmentDate: "2022-04-18T19:00",
-    //   roomImagePath: "",
-    // },
-    // {
-    //   roomId: "123",
-    //   roomTitle: "야구 한판 뛰실분?",
-    //   limitPeopleCount: "30",
-    //   participantCount: "1",
-    //   tags: ["20대만", "초보만"],
-    //   startAppointmentDate: "2022-04-19T22:30",
-    //   roomImagePath: "",
-    // },
-  ]);
+  const [eachRoomInfo, setEachRoomInfo] = useState([]);
 
   const openRoomExplainModal = () => {
     setRoomExplainModalOpen(true);
@@ -116,7 +61,7 @@ const FilteredRooms = () => {
         setSort("updateTime,DESC");
         break;
       case "임박한 시간순":
-        setSort("start,DESC");
+        setSort("start,ASC");
         break;
       case "참여자순":
         setSort("participant,DESC");
@@ -220,7 +165,7 @@ const FilteredRooms = () => {
 
   // 필터 적용 후 서버로 적용(1)
   const sendDatasToServer = () => {
-    func_getRoomList(0, 12, false, 1);
+    func_getRoomList(0, 12, true, 1);
 
     requestFilteringToFalse();
   };
@@ -230,7 +175,7 @@ const FilteredRooms = () => {
     if (!scrollHandlingTimer) {
       scrollHandlingTimer = setTimeout(() => {
         scrollHandlingTimer = null;
-        func_getRoomList(page, size, true, 1);
+        func_getRoomList(page, size, false, 1);
       }, 500);
     }
 
@@ -246,7 +191,6 @@ const FilteredRooms = () => {
     if (changeDectection.detection === "true") {
       checkException();
       sendDatasToServer();
-      saveDatasToLS();
     }
   }, [changeDectection.detection]);
 
@@ -257,23 +201,6 @@ const FilteredRooms = () => {
     setSort("updateTime,DESC");
     setSelectedSortType("최신순");
   }, [changeDectection.reset]);
-
-  // 사용성 개선을 위한 로컬스토리지 저장
-  const saveDatasToLS = () => {
-    const obj = JSON.stringify({
-      selectedArea: roomFilteringData.area,
-      startDate: roomFilteringData.startDate,
-      endDate: roomFilteringData.endDate,
-      startTime: roomFilteringData.startTime,
-      endTime: roomFilteringData.endTime,
-      containNoAdmittance: roomFilteringData.containNoAdmittance,
-      containTimeClosing: roomFilteringData.containTimeClosing,
-      requiredPeopleCount: roomFilteringData.requiredPeopleCount,
-      exercise: roomFilteringData.exercise,
-    });
-
-    localStorage.setItem("Filters", obj);
-  };
 
   // 화면 맨 아래 도착 시
   useEffect(() => {

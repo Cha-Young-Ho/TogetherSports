@@ -6,10 +6,11 @@ import { FailResponse } from "../../../api/failResponse";
 import RoomInfoNavBar from "../../../components/roomInfoNavBar";
 import SetRoomImages from "../../../components/rooms/setRoomImages";
 import Head from "next/head";
-import router from "next/router";
+import { useRouter } from "next/router";
 
 const RoomTagInfo = () => {
   const roomInfo = useSelector((state) => state.createRoomReducer);
+  const router = useRouter();
 
   // 방 설명
   const [roomContent, setRoomContent] = useState("");
@@ -124,12 +125,14 @@ const RoomTagInfo = () => {
       .then((res) => {
         if (res.status.code === 5000) {
           // 해당 방으로 이동
-          router.push(`/room/${res.status.content.roomOfInfo.roomId}`);
+          router.push(`/room/${res.status.content.createRoomId}`);
         }
       })
       .catch((error) => {
-        FailResponse(error.response.data.status.code, createRoomFunc);
-        return;
+        if (error?.response?.data?.status) {
+          FailResponse(error.response.data.status.code, createRoomFunc);
+          return;
+        }
       });
   };
 

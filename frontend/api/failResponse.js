@@ -31,7 +31,7 @@ const FailResponse = (codeNumber, prelastingToDo) => {
       alert("이미 매너지수를 내려서 내릴 수 없습니다.");
       break;
     case 1200:
-      alert("해당 방을 찾을 수 없습니다.");
+      console.log("해당 방을 찾을 수 없습니다.");
       break;
     case 1201:
       alert("인원이 가득 찼습니다.");
