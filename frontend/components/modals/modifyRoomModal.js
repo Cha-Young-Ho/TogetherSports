@@ -162,18 +162,16 @@ const ModifyRoomModal = (props) => {
 
   // 태그 초기값 세팅
   useEffect(() => {
-    getTagsFromRedux.map((tag) => {
-      setTags((prev) => [...prev, (tags = tag)]);
-    });
+    if (props.open) {
+      setTags([...getTagsFromRedux]);
 
-    if (getTagsFromRedux.length === tags.length) setDoneTagsSetting(true);
-  }, [getTagsFromRedux]);
+      if (getTagsFromRedux.length === tags.length) setDoneTagsSetting(true);
+    }
+  }, [props.open]);
 
   useEffect(() => {
-    if (props.open) {
-      if (doneTagsSetting === true) tags.map((tag) => setPrevTags(tag));
-    }
-  }, [doneTagsSetting]);
+    tags.map((tag) => setPrevTags(tag));
+  }, [tags]);
 
   return (
     <>
