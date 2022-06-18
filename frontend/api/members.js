@@ -155,7 +155,7 @@ const patchMannerPoint = (targetUserId, mannerPointStatus) => {
           mannerPointStatus: mannerPointStatus,
         })
       : axios.patch(
-          API_ENDPOINT + `api/user/manner_point`,
+          `${API_ENDPOINT}/api/user/manner_point`,
           {
             targetUserId: targetUserId,
             mannerPointStatus: mannerPointStatus,
