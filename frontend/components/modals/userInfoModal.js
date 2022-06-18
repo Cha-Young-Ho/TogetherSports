@@ -127,17 +127,15 @@ const UserInfoModal = (props) => {
   const downMannerPoint = () => {
     patchMannerPoint(clickedUserId, "DOWN")
       .then((res) => {
-        {
-          // 내리기
-          if (res.status.code === 1110) {
-            setMannerPoint((mannerPoint = res.content.mannerPoint));
-            return;
-          }
-          // 이미 내린 경우
-          if (res.status.code === 1106) {
-            alert(res.status.message);
-            return;
-          }
+        // 내리기
+        if (res.status.code === 1110) {
+          setMannerPoint((mannerPoint = res.content.mannerPoint));
+          return;
+        }
+        // 이미 내린 경우
+        if (res.status.code === 1106) {
+          alert(res.status.message);
+          return;
         }
 
         FailResponse(res.status.code, downMannerPoint);

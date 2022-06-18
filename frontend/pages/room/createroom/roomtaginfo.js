@@ -125,7 +125,7 @@ const RoomTagInfo = () => {
       .then((res) => {
         if (res.status.code === 5000) {
           // 해당 방으로 이동
-          router.push(`/room/${res.status.content.createRoomId}`);
+          router.push(`/room/${res.content.createdRoomId}`);
         }
       })
       .catch((error) => {
