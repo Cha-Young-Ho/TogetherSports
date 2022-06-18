@@ -5,14 +5,16 @@ import Head from "next/head";
 import Main1 from "../components/main/main1";
 import Main2 from "../components/main/main2";
 import Main3 from "../components/main/main3";
-import Link from "next/link";
 import { getRoomCount } from "../api/etc";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { FailResponse } from "../api/failResponse";
+import router from "next/router";
 
 export default function Home() {
   const dispatch = useDispatch();
+
+  const myInfo = useSelector((state) => state.myInfoReducer);
 
   useEffect(() => {
     const func_getRoomCount = () => {
@@ -49,9 +51,19 @@ export default function Home() {
           <Main1 />
           <Main2 />
           <Main3 />
-          <Link href="/room/createroom/roomsetting" passHref>
-            <button className="fadein">🔥방 생성하러 가기🔥</button>
-          </Link>
+          <button
+            className="fadein"
+            onClick={(e) => {
+              if (myInfo.id === 0) {
+                e.preventDefault();
+                alert("로그인 및 추가정보가 필요한 기능입니다.");
+                return;
+              }
+              router.push("/room/createroom/roomsetting");
+            }}
+          >
+            🔥방 생성하러 가기🔥
+          </button>
         </div>
         <Footer />
       </div>
