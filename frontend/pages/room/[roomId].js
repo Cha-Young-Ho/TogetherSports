@@ -17,6 +17,7 @@ import Head from "next/head";
 const Room = () => {
   const router = useRouter();
   const dispatch = useDispatch();
+
   const roomTitle = useSelector(
     (state) => state.roomRealTimeInfoReducer.roomTitle
   );
@@ -47,20 +48,11 @@ const Room = () => {
   const updatedTime = useSelector(
     (state) => state.roomRealTimeInfoReducer.updatedTime
   );
-  // const creatorNickName = useSelector(
-  //   (state) => state.roomRealTimeInfoReducer.creatorNickName
-  // );
-  // const roomImages = useSelector(
-  //   (state) => state.roomRealTimeInfoReducer.roomImages
-  // );
   const host = useSelector((state) => state.roomRealTimeInfoReducer.host);
   const tags = useSelector((state) => state.roomRealTimeInfoReducer.tags);
   const viewCount = useSelector(
     (state) => state.roomRealTimeInfoReducer.viewCount
   );
-  // const participants = useSelector(
-  //   (state) => state.roomRealTimeInfoReducer.participants
-  // );
 
   const { roomId } = router.query;
   const [chatOpen, setChatOpen] = useState(false);
@@ -215,12 +207,24 @@ const Room = () => {
         <div className="main-info">
           <div className="header">
             <div className="viewCount">
-              <p>{`조회수 : ${viewCount}`}</p>
-              <p>{`생성 일시 : ${createdTime.substr(0, 16)}`}</p>
+              <p>{`${viewCount}명이 봤어요!`}</p>
+              <p>{`${createdTime.slice(0, 4)}년 ${createdTime.slice(
+                5,
+                7
+              )}월 ${createdTime.slice(8, 10)}일 ${createdTime.slice(
+                11,
+                13
+              )}시 ${createdTime.slice(14, 16)}분에 생성`}</p>
               {updatedTime === "" ? (
                 <></>
               ) : (
-                <p>{`최근 수정 : ${updatedTime.substr(0, 16)}`}</p>
+                <p>{`${updatedTime.slice(0, 4)}년 ${updatedTime.slice(
+                  5,
+                  7
+                )}월 ${updatedTime.slice(8, 10)}일 ${updatedTime.slice(
+                  11,
+                  13
+                )}시 ${updatedTime.slice(14, 16)}분에 마지막으로 수정`}</p>
               )}
             </div>
 
