@@ -9,8 +9,9 @@ import StompJS from "stompjs";
 
 let clientInfo;
 let nowMessage = "";
-let pre_userId;
-let pre_sendAt;
+let scrollHandlingTimer;
+let page = 0;
+let size = 20;
 const Chatting = ({ chatOpen }) => {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -19,67 +20,26 @@ const Chatting = ({ chatOpen }) => {
   const [messageToServer, setMessageToServer] = useState("");
   const [showingMessages, setShowingMessages] = useState([
     // {
-    //   userId: 0,
-    //   nickname: "테스트",
-    //   userProfileImagePath: "/base_profileImage.jpg",
-    //   message: "ㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱ",
-    //   sendAt: "2022-05-09T17:42:22.302111",
-    // },
-    // {
-    //   userId: 0,
-    //   nickname: "테스트",
-    //   userProfileImagePath: "/base_profileImage.jpg",
-    //   message: "1",
-    //   sendAt: "2022-05-09T17:42:22.302111",
-    // },
-    // {
     //   userId: 1,
     //   nickname: "테스트",
     //   userProfileImagePath: "/base_profileImage.jpg",
     //   message: "ㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱ",
-    //   sendAt: "2022-05-09T17:43:22.302111",
-    // },
-    // {
-    //   userId: 1,
-    //   nickname: "테스트",
-    //   userProfileImagePath: "/base_profileImage.jpg",
-    //   message: "1",
-    //   sendAt: "2022-05-09T17:44:22.302111",
-    // },
-    // {
-    //   userId: 1,
-    //   nickname: "테스트",
-    //   userProfileImagePath: "/base_profileImage.jpg",
-    //   message: "2",
-    //   sendAt: "2022-05-09T17:44:22.302111",
-    // },
-    // {
-    //   userId: 1,
-    //   nickname: "테스트",
-    //   userProfileImagePath: "/base_profileImage.jpg",
-    //   message: "2",
-    //   sendAt: "2022-05-09T17:44:22.302111",
-    // },
-    // {
-    //   userId: 1,
-    //   nickname: "테스트",
-    //   userProfileImagePath: "/base_profileImage.jpg",
-    //   message: "1",
-    //   sendAt: "2022-05-09T17:45:22.302111",
-    // },
-    // {
-    //   userId: 0,
-    //   nickname: "테스트",
-    //   userProfileImagePath: "/base_profileImage.jpg",
-    //   message: "1",
-    //   sendAt: "2022-05-09T17:45:22.302111",
+    //   sendAt: "2022-05-09T17:42:22.302111",
     // },
   ]);
   const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT;
 
+  // 스크롤 위치값
+  const [scrollInfo, setScrollInfo] = useState({
+    scrollY: 0,
+    offsetHeight: 0,
+    scrollTop: 0,
+  });
+
   const connect = (type) => {
     const sockJS = new SockJS(`${API_ENDPOINT}/api/websocket`);
     clientInfo = Stomp.over(sockJS);
+    clientInfo.debug = null;
 
     clientInfo.connect(
       {
@@ -264,11 +224,12 @@ const Chatting = ({ chatOpen }) => {
     });
   };
 
-  const func_getChatInfo = () => {
-    getChatInfo(roomId)
+  const func_getChatInfo = (pageNum, sizeNum) => {
+    getChatInfo(roomId, pageNum, sizeNum)
       .then((res) => {
         if (res.status.code === 5000) {
-          setShowingMessages(res.content.content);
+          setShowingMessages((prev) => [...res.content.content, ...prev]);
+          page += 1;
         } else {
           FailResponse(res.status.code);
         }
@@ -288,12 +249,38 @@ const Chatting = ({ chatOpen }) => {
     }
   }, [roomId]);
 
+  // 새로운 채팅 생길 시 스크롤이 맨 밑일 때 맨 아래로 화면 강제 이동
   useEffect(() => {
-    document.getElementsByClassName("dialog")[0].scrollTop =
-      document.getElementsByClassName("dialog")[0].scrollHeight;
+    if (
+      scrollInfo.offsetHeight + scrollInfo.scrollTop ===
+      scrollInfo.scrollHeight
+    ) {
+      document.getElementsByClassName("dialog")[0].scrollTop =
+        document.getElementsByClassName("dialog")[0].scrollHeight;
+    }
   }, [showingMessages]);
 
+  // 채팅 맨 위 도착시
   useEffect(() => {
+    if (scrollInfo.scrollTop === 0) {
+      if (!scrollHandlingTimer) {
+        scrollHandlingTimer = setTimeout(() => {
+          scrollHandlingTimer = null;
+          func_getChatInfo(page, size);
+        }, 800);
+      }
+    }
+  }, [scrollInfo]);
+
+  useEffect(() => {
+    // 스크롤 관련 쓰로틀링
+    if (!scrollHandlingTimer) {
+      scrollHandlingTimer = setTimeout(() => {
+        scrollHandlingTimer = null;
+        func_getChatInfo(page, size);
+      }, 500);
+    }
+
     return () => {
       if (clientInfo) clientInfo.disconnect();
       dispatch({
@@ -308,7 +295,16 @@ const Chatting = ({ chatOpen }) => {
   return (
     <>
       <div className="chatting">
-        <div className="dialog">
+        <div
+          className="dialog"
+          onScroll={(e) => {
+            setScrollInfo({
+              scrollTop: e.target.scrollTop,
+              offsetHeight: e.target.offsetHeight,
+              scrollHeight: e.target.scrollHeight,
+            });
+          }}
+        >
           <div className="messages">
             {showingMessages.length ? (
               showingMessages.map((messages, index) => {
@@ -319,10 +315,18 @@ const Chatting = ({ chatOpen }) => {
 
                 const now_userId = messages.userId;
 
-                if (now_userId === myID) {
-                  pre_userId = now_userId;
-                  pre_sendAt = now_sendAt;
+                const pre_sendAt =
+                  index === 0
+                    ? ""
+                    : `${showingMessages[index - 1].sendAt.substr(
+                        11,
+                        2
+                      )} : ${showingMessages[index - 1].sendAt.substr(14, 2)}`;
 
+                const pre_userId =
+                  index === 0 ? "" : showingMessages[index - 1].userId;
+
+                if (now_userId === myID) {
                   return (
                     <div key={index} className="my-message">
                       <div className="chat-body">
@@ -334,9 +338,6 @@ const Chatting = ({ chatOpen }) => {
                 }
 
                 if (pre_sendAt !== now_sendAt || pre_userId !== now_userId) {
-                  pre_userId = now_userId;
-                  pre_sendAt = now_sendAt;
-
                   return (
                     <div key={index} className="other-message">
                       <img
@@ -354,9 +355,6 @@ const Chatting = ({ chatOpen }) => {
                     </div>
                   );
                 }
-
-                pre_userId = now_userId;
-                pre_sendAt = now_sendAt;
 
                 return (
                   <div key={index} className="dupID-message">

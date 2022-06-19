@@ -3,8 +3,12 @@ import router from "next/router";
 import moment from "moment";
 import { FailResponse } from "../../api/failResponse";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 const RoomShowingBox = (props) => {
+  // 로그인 시 저장되는 데이터
+  const myInfo = useSelector((state) => state.myInfoReducer);
+
   const DayOfTheWeek = {
     1: "월요일",
     2: "화요일",
@@ -18,6 +22,12 @@ const RoomShowingBox = (props) => {
 
   // 해당 방에 이미 참가중인지 여부 체크
   const isAttendance = () => {
+    if (myInfo.isInformationRequired === "false") {
+      props.setRoomID ? props.setRoomID(props.datas.roomId) : "";
+      props.openRoomExplainModal ? props.openRoomExplainModal() : "";
+      return;
+    }
+
     getAvailability(props.datas.roomId)
       .then((res) => {
         if (res.status.code === 1214 && res.content.attendance) {

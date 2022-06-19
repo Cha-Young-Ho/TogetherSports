@@ -155,17 +155,32 @@ const getChildLocations = (name) => {
   return dataPromise;
 };
 
-const getChatInfo = (roomSequenceId) => {
+// 채팅 정보 조회
+const getChatInfo = (roomSequenceId, page, size) => {
   const promise =
     localStorage.getItem("accessToken") === null
-      ? axios.get(`${API_ENDPOINT}/api/room/${roomSequenceId}/chat`)
-      : axios.get(`${API_ENDPOINT}/api/room/${roomSequenceId}/chat`, {
-          headers: {
-            "Content-type": "application/json; charset=UTF-8",
-            Accept: "*/*",
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      ? axios.get(`${API_ENDPOINT}/api/room/${roomSequenceId}/chat`, {
+          params: {
+            page: page,
+            size: size,
           },
-        });
+        })
+      : axios.get(
+          `${API_ENDPOINT}/api/room/${roomSequenceId}/chat`,
+          {
+            params: {
+              page: page,
+              size: size,
+            },
+          },
+          {
+            headers: {
+              "Content-type": "application/json; charset=UTF-8",
+              Accept: "*/*",
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+          }
+        );
 
   const dataPromise = promise.then((res) => res.data);
 

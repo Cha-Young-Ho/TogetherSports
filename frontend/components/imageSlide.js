@@ -40,11 +40,6 @@ const ImageSlide = (props) => {
     // }
   }, []);
 
-  useEffect(() => {
-    console.log("방 설명 : ", roomInfoImageArr);
-    console.log("운동대기방 : ", roomDetailImageArr);
-  });
-
   return (
     <>
       <div className="slideshow-container">
