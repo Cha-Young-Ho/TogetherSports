@@ -13,8 +13,6 @@ const PersonalInfo = () => {
 
   // 닉네임
   const [nickname, setNickname] = useState("");
-
-  //기본 값 false
   const [isNicknameCheck, setIsNicknameCheck] = useState(false);
 
   // 생년월일
@@ -30,14 +28,15 @@ const PersonalInfo = () => {
   const [profile, setProfile] = useState("");
   const [extension, setExtension] = useState("");
   const [imagesrc, setImagesrc] = useState("");
+  const [uploadType, setUploadType] = useState("");
 
   // 닉네임 중복확인
   const checkNicknameDuplication = () => {
     if (nickname.length < 2 || nickname.length > 8) {
       alert("닉네임은 2글자 이상 ~ 8글자 이내로 입력해주세요.");
+      return;
     } else {
       getNicknameDuplicationCheck(nickname).then((res) => {
-        console.log(res.status.message);
         if (res.status.code === 5000) {
           setIsNicknameCheck(true);
           alert("사용 가능한 닉네임입니다.");
@@ -124,9 +123,7 @@ const PersonalInfo = () => {
 
   // 예외처리 및 다음 페이지 실행
   const getNext = (e) => {
-    const checkNickname = $("#input-nickname").val();
-
-    if (checkNickname === "" || checkNickname === null) {
+    if (nickname === "" || nickname === null) {
       e.preventDefault();
       alert("닉네임을 입력해주세요.");
       return false;
@@ -134,24 +131,9 @@ const PersonalInfo = () => {
 
     // 닉네임에 공백이 있을 경우
     const blank_pattern = /[\s]/g;
-    if (blank_pattern.test(checkNickname) === true) {
+    if (blank_pattern.test(nickname) === true) {
       e.preventDefault();
       alert("닉네임을 공백없이 입력해주세요.");
-      return false;
-    }
-
-    // 닉네임에 특수문자 사용했을 경우 (추후 수정 예정)
-    // const special_pattern = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
-    // if (special_pattern.test(checkNickname) === true) {
-    //   e.preventDefault();
-    //   alert("닉네임에 특수문자는 사용할 수 없습니다.");
-    //   return false;
-    // }
-
-    // 닉네임 길이 제한
-    if (checkNickname.length < 2 && checkNickname.length > 8) {
-      e.preventDefault();
-      alert("닉네임은 최소 2글자 최대 8글자까지 입력 가능합니다.");
       return false;
     }
 
@@ -175,8 +157,13 @@ const PersonalInfo = () => {
     }
 
     if (extension === "" || imagesrc === "") {
-      setExtension(null);
-      setImagesrc(null);
+      setExtension((extension = null));
+      setImagesrc((imagesrc = null));
+      setUploadType((uploadType = null));
+    }
+
+    if (extension !== "" && imagesrc !== "") {
+      setUploadType((uploadType = "UPLOAD"));
     }
 
     dispatch({
@@ -187,6 +174,7 @@ const PersonalInfo = () => {
         gender: gender,
         userProfileExtension: extension,
         imageSource: imagesrc,
+        uploadType: uploadType,
       },
     });
 

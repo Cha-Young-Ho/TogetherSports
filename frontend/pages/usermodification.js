@@ -42,6 +42,7 @@ const UserModification = () => {
   const [profile, setProfile] = useState("");
   const [extension, setExtension] = useState("");
   const [imagesrc, setImagesrc] = useState("");
+  const [uploadType, setUploadType] = useState("");
 
   // 관심종목
   const [interests, setInterests] = useState({});
@@ -63,8 +64,8 @@ const UserModification = () => {
 
   // 닉네임 중복확인
   const checkNicknameDuplication = () => {
-    if (nickname.length < 2) {
-      alert("닉네임은 최소 2글자 이상 입력해주세요.");
+    if (nickname.length < 2 || nickname.length > 8) {
+      alert("닉네임은 2글자 이상 ~ 8글자 이내로 입력해주세요.");
       return;
     } else if (userInfo.userNickname === nickname) {
       setIsNicknameCheck(true);
@@ -72,11 +73,6 @@ const UserModification = () => {
       alert("사용 가능한 닉네임 입니다.");
       return;
     }
-    // else {
-    //   getNicknameDuplicationCheck(nickname).then((res) => {
-    //     return;
-    //   });
-    // }
 
     getNicknameDuplicationCheck(nickname)
       .then((res) => {
@@ -271,21 +267,6 @@ const UserModification = () => {
     if (blank_pattern.test(validNickname) === true) {
       e.preventDefault();
       alert("닉네임을 공백없이 입력해주세요.");
-      return false;
-    }
-
-    // 닉네임에 특수문자 사용했을 경우 (추후 수정 예정)
-    // const special_pattern = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
-    // if (special_pattern.test(checkNickname) === true) {
-    //   e.preventDefault();
-    //   alert("닉네임에 특수문자는 사용할 수 없습니다.");
-    //   return false;
-    // }
-
-    // 닉네임 길이 제한
-    if (validNickname.length < 2 && validNickname.length > 8) {
-      e.preventDefault();
-      alert("닉네임은 최소 2글자 최대 8글자까지 입력 가능합니다.");
       return false;
     }
 

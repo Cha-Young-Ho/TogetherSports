@@ -77,6 +77,7 @@ const postUserRequest = (
   gender,
   userProfileExtension,
   imageSource,
+  uploadType,
   interests
 ) => {
   const promise =
@@ -89,8 +90,9 @@ const postUserRequest = (
           userProfileImage: {
             userProfileExtension: userProfileExtension,
             imageSource: imageSource,
+            uploadType: uploadType,
           },
-          interests: interests, //--> 5개까지
+          interests: interests,
         })
       : axios.post(
           `${API_ENDPOINT}/api/user`,
@@ -103,7 +105,7 @@ const postUserRequest = (
               userProfileExtension: userProfileExtension,
               imageSource: imageSource,
             },
-            interests: interests, //--> 5개까지
+            interests: interests,
           },
           {
             headers: {

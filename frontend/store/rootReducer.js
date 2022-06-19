@@ -9,10 +9,9 @@ const signupInitialState = {
   userBirth: "",
   activeAreas: [],
   gender: "",
-  userProfileImage: {
-    userProfileExtension: "",
-    imageSource: "",
-  },
+  userProfileExtension: "",
+  imageSource: "",
+  uploadType: "",
   interests: [],
 };
 
@@ -213,10 +212,8 @@ const userRequestReducer = (state = signupInitialState, action) => {
         userNickname: action.payload.userNickname,
         userBirth: action.payload.userBirth,
         gender: action.payload.gender,
-        userProfileImage: {
-          userProfileExtension: action.payload.userProfileExtension,
-          imageSource: action.payload.imageSource,
-        },
+        userProfileExtension: action.payload.userProfileExtension,
+        imageSource: action.payload.imageSource,
       };
     case INTERESTS:
       return {

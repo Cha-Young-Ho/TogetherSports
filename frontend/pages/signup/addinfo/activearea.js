@@ -94,6 +94,7 @@ const ActiveArea = () => {
       userRequestInfo.gender,
       userRequestInfo.userProfileExtension,
       userRequestInfo.imageSource,
+      userRequestInfo.uploadType,
       userRequestInfo.interests
     )
       .then((res) => {
