@@ -174,9 +174,9 @@ const UserInfoModal = (props) => {
         }}
       >
         <div className="userinfo-modal-body">
-          <div className="header">
-            <button onClick={props.close}>&times;</button>
-          </div>
+          <button className="close-popup-button" onClick={props.close}>
+            &times;
+          </button>
 
           <div className="section">
             <div className="left-section">
@@ -296,18 +296,13 @@ const UserInfoModal = (props) => {
           justify-content: center;
           align-items: center;
           padding: 15px;
-          /* overflow: auto; */
-        }
-
-        .header {
-          width: 100%;
           position: relative;
         }
 
-        .header > button {
+        .close-popup-button {
           position: absolute;
-          top: 0px;
-          right: 0px;
+          top: 10px;
+          right: 10px;
           color: #999;
           font-size: 3rem;
           background-color: white;
