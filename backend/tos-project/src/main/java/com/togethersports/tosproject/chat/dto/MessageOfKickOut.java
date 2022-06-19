@@ -13,5 +13,5 @@ import lombok.Getter;
 public class MessageOfKickOut {
 
     private Long id;
-    private String nickname;
+    private String userNickname;
 }

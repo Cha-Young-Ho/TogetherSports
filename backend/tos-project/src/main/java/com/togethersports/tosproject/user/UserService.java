@@ -181,6 +181,7 @@ public class UserService {
 
         List<String> parsedInterestList = parsingEntityUtils.parsingInterestsEntityToString(user.getInterests());
 
+
        return UserOfMyInfo.builder()
                .id(user.getId())
                .userBirth(user.getUserBirth())
