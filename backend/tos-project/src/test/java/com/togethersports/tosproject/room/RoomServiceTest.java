@@ -144,8 +144,6 @@ public class RoomServiceTest {
         Room room =Room.of(roomOfCreate, user);
         Participant participant = Participant.of(user, room);
 
-
-
         //mocking
         given(userRepository.save(any())).willReturn(getTestUser());
         given(userRepository.findById(any())).willReturn(Optional.of(getTestUser()));
@@ -153,13 +151,12 @@ public class RoomServiceTest {
         given(roomRepository.findById(any())).willReturn(Optional.of(room));
         given(participantRepository.save(any())).willReturn(participant);
         Room roomEntity = roomRepository.findById(room.getId()).get();
+
         //when
         roomService.participateRoom(user, roomEntity.getId());
 
         //then
     }
-
-
 
     private RoomOfCreate roomOfCreate(){
 
@@ -171,7 +168,6 @@ public class RoomServiceTest {
 
         tags.add("20대");
         tags.add("고수만");
-
         return RoomOfCreate.builder()
                 .roomArea("서울특별시 강남구 역삼동")
                 .roomContent("초보만")

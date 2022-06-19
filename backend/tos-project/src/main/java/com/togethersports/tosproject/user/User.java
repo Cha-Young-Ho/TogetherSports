@@ -109,6 +109,8 @@ public class User {
         newUser.role = Role.ROLE_USER;
         newUser.informationRequired = true;
         newUser.userProfileImage = "https://together-sports.com/images/default_user_profile.jpeg";
+        //fixme : 익명 수정
+        newUser.nickname = "익명";
         return newUser;
     }
 

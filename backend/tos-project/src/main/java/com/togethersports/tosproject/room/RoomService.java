@@ -104,7 +104,7 @@ public class RoomService {
 
         participantService.save(user, room);
 
-        return Response.of(CommonCode.GOOD_REQUEST, null);
+        return Response.of(CommonCode.GOOD_REQUEST, RoomOfCreated.builder().createdRoomId(roomEntity.getId()).build());
     }
 
     //방 설명 페이지 조회
@@ -345,7 +345,7 @@ public class RoomService {
         WsResponse wsResponse = WsResponse.of(ChatCode.SYSTEM_USER_KICKED_OUT,
                 MessageOfKickOut.builder()
                         .id(kickedOutUser.getId())
-                        .nickname(kickedOutUser.getNickname())
+                        .userNickname(kickedOutUser.getNickname())
                         .build());
 
         //강퇴 WS 메세지 보내기
@@ -358,7 +358,7 @@ public class RoomService {
         Response response = Response.of(
                 RoomCode.KICKED_OUT, MessageOfKickOut.builder()
                 .id(kickedOutUser.getId())
-                .nickname(kickedOutUser.getNickname())
+                .userNickname(kickedOutUser.getNickname())
                 .build());
         return response;
     }
