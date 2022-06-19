@@ -7,17 +7,24 @@ import Head from "next/head";
 
 const ModifyRoomModal = (props) => {
   const roomId = props.roomId;
+
+  const [changeRoomTitle, setChangeRoomTitle] = useState("");
   const roomTitle = useSelector(
     (state) => state.roomRealTimeInfoReducer.roomTitle
   );
+
+  const [changeLimitPeopleCount, setChangeLimitPeopleCount] = useState(0);
+  const limitPeopleCount = useSelector(
+    (state) => state.roomRealTimeInfoReducer.limitPeopleCount
+  );
+
+  const [changeRoomContent, setChangeRoomContent] = useState("");
   const roomContent = useSelector(
     (state) => state.roomRealTimeInfoReducer.roomContent
   );
+
   const roomArea = useSelector(
     (state) => state.roomRealTimeInfoReducer.roomArea
-  );
-  const limitPeopleCount = useSelector(
-    (state) => state.roomRealTimeInfoReducer.limitPeopleCount
   );
   const exercise = useSelector(
     (state) => state.roomRealTimeInfoReducer.exercise
@@ -115,13 +122,14 @@ const ModifyRoomModal = (props) => {
     return setRoomImages((roomImages = thumbnail.concat(arr)));
   };
 
+  // 방 수정 요청 함수
   const updateRoomFunc = () => {
     putUpdateRoom(
       roomId,
-      roomTitle,
-      roomContent,
+      changeRoomTitle,
+      changeRoomContent,
       roomArea,
-      limitPeopleCount,
+      changeLimitPeopleCount,
       exercise,
       tags,
       startAppointmentDate,
@@ -197,7 +205,7 @@ const ModifyRoomModal = (props) => {
                     minLength="1"
                     maxLength="20"
                     placeholder={roomTitle}
-                    onChange={(e) => setRoomTitle(e.target.value)}
+                    onChange={(e) => setChangeRoomTitle(e.target.value)}
                   ></input>
                 </div>
 
@@ -209,7 +217,7 @@ const ModifyRoomModal = (props) => {
                     placeholder={limitPeopleCount}
                     onChange={(e) => {
                       e.target.value = e.target.value.replace(/[^0-9]/g, "");
-                      setLimitPeopleCount(e.target.value);
+                      setChangeLimitPeopleCount(e.target.value);
                     }}
                   ></input>
                   <p>명</p>
@@ -221,7 +229,7 @@ const ModifyRoomModal = (props) => {
                 <div className="roomNotice-wrapper">
                   <p>방 설명 작성</p>
                   <textarea
-                    onChange={(e) => setRoomContent(e.target.value)}
+                    onChange={(e) => setChangeRoomContent(e.target.value)}
                     defaultValue={roomContent}
                   ></textarea>
                 </div>

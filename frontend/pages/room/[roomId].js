@@ -168,21 +168,21 @@ const Room = () => {
   };
 
   // 방 삭제하기 -> 보류
-  const onDeleteRoom = () => {
-    deleteRoom(roomId)
-      .then((res) => {
-        if (res.status.code === 5000) {
-          router.push("/room/roomlist"); // 방 목록 페이지로 이동
-        } else {
-          FailResponse(res.status.code);
-        }
-      })
-      .catch((error) => {
-        if (error.response) {
-          FailResponse(error.response.data.status.code, onDeleteRoom);
-        }
-      });
-  };
+  // const onDeleteRoom = () => {
+  //   deleteRoom(roomId)
+  //     .then((res) => {
+  //       if (res.status.code === 5000) {
+  //         router.push("/room/roomlist"); // 방 목록 페이지로 이동
+  //       } else {
+  //         FailResponse(res.status.code);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       if (error.response) {
+  //         FailResponse(error.response.data.status.code, onDeleteRoom);
+  //       }
+  //     });
+  // };
 
   useEffect(() => {
     if (roomId) {
@@ -363,11 +363,11 @@ const Room = () => {
           </div>
         </div>
 
-        {myNickname === host ? (
+        {/* {myNickname === host ? (
           <button className="button-deleteRoom">방 삭제하기</button>
         ) : (
           <></>
-        )}
+        )} */}
 
         <img
           src="/floatingAlarm.png"

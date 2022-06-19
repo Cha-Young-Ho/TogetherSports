@@ -115,6 +115,13 @@ const PersonalInfo = () => {
     setExtension(imageFileExtension);
   };
 
+  // 프로필 이미지 삭제 및 초기화 함수
+  const deleteProfileImage = () => {
+    setProfile((profile = ""));
+    setExtension((extension = ""));
+    setImagesrc((imagesrc = ""));
+  };
+
   // 예외처리 및 다음 페이지 실행
   const getNext = (e) => {
     const checkNickname = $("#input-nickname").val();
@@ -282,18 +289,26 @@ const PersonalInfo = () => {
             </div>
           </div>
 
-          <div className="content-profile">
-            <p>프로필</p>
-            <input readOnly value={profile} />
-            <label htmlFor="filename">
-              <p>파일찾기</p>
-            </label>
-            <input
-              type="file"
-              id="filename"
-              accept=".jpg, .jpeg, .png"
-              onChange={onClickProfileImage}
-            />
+          <div className="content-profiles">
+            <div className="content-profile">
+              <p>프로필</p>
+              <input readOnly value={profile} />
+              <label htmlFor="filename">
+                <p>파일찾기</p>
+              </label>
+              <input
+                type="file"
+                id="filename"
+                accept=".jpg, .jpeg, .png"
+                onChange={onClickProfileImage}
+              />
+            </div>
+            <button
+              className="delete-profile-button"
+              onClick={deleteProfileImage}
+            >
+              삭제
+            </button>
           </div>
         </div>
 
@@ -503,10 +518,17 @@ const PersonalInfo = () => {
           background: #08555f;
         }
 
-        .content-profile {
+        .content-profiles {
           width: 100%;
           height: 40px;
           margin: 40px 0;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+        }
+
+        .content-profile {
+          width: 90%;
           padding: 5px 10px 5px 14px;
           border-radius: 10px;
           border: solid 1px #e8e8e8;
@@ -516,7 +538,7 @@ const PersonalInfo = () => {
         }
 
         .content-profile input {
-          width: 450px;
+          width: 390px;
           height: 30px;
           border-style: none;
           font-size: 1.4em;
@@ -545,6 +567,17 @@ const PersonalInfo = () => {
           padding: 0;
           border: 0;
           overflow: hidden;
+        }
+
+        .delete-profile-button {
+          margin-left: 10px;
+          width: 50px;
+          height: 30px;
+          border-radius: 5px;
+          background-color: #08555f;
+          color: white;
+          border: none;
+          cursor: pointer;
         }
 
         .next-button {
