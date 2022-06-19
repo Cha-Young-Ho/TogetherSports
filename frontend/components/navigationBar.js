@@ -151,7 +151,7 @@ const NavigationBar = () => {
               <button
                 className="tag"
                 onClick={(e) => {
-                  if (myInfo.id === 0) {
+                  if (myInfo.isInformationRequired === "false") {
                     e.preventDefault();
                     alert("로그인 및 추가정보가 필요한 기능입니다.");
                     return;
@@ -164,7 +164,7 @@ const NavigationBar = () => {
               <button
                 className="tag"
                 onClick={(e) => {
-                  if (myInfo.id === 0) {
+                  if (myInfo.isInformationRequired === "false") {
                     e.preventDefault();
                     alert("로그인 및 추가정보가 필요한 기능입니다.");
                     return;
