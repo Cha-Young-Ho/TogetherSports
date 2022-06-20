@@ -1,5 +1,6 @@
 package com.togethersports.tosproject.room.dto;
 
+import com.togethersports.tosproject.common.code.UploadType;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -13,6 +14,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class ImageOfRoomCRUD {
+    private UploadType uploadType;
     private int order;
     private String roomImageExtension;
     private String imageSource;
