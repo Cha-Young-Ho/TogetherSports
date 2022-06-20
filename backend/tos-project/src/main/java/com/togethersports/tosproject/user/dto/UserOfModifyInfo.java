@@ -1,6 +1,7 @@
 package com.togethersports.tosproject.user.dto;
 
 import com.togethersports.tosproject.area.ActiveArea;
+import com.togethersports.tosproject.common.code.UploadType;
 import com.togethersports.tosproject.user.Gender;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,6 +41,7 @@ public class UserOfModifyInfo {
     @Setter
     @Getter
     public static class UserProfileImage {
+        private UploadType uploadType;
         private String userProfileExtension;
         private String imageSource;
     }

@@ -1,6 +1,7 @@
 package com.togethersports.tosproject.user;
 
 import com.togethersports.tosproject.common.code.CommonCode;
+import com.togethersports.tosproject.common.code.UploadType;
 import com.togethersports.tosproject.common.dto.Response;
 import com.togethersports.tosproject.common.file.service.StorageService;
 import com.togethersports.tosproject.common.file.util.Base64Decoder;
@@ -166,6 +167,10 @@ public class UserService {
             return;
         }
 
+//        if(userOfModifyInfo.getUserProfileImage().getUploadType().equals(UploadType.KEEP)){
+//            findUser.updateUser(userOfModifyInfo, interests, null);
+//        }
+
         String encodedImageSource = userOfModifyInfo.getUserProfileImage().getImageSource();
         byte[] imageSource = base64Decoder.decode(encodedImageSource);
         String fileName = nameGenerator.generateRandomName().concat(".")
@@ -212,6 +217,5 @@ public class UserService {
 
         return response;
     }
-
 
 }

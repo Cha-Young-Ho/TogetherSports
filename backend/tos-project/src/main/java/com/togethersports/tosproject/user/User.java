@@ -139,7 +139,9 @@ public class User {
         this.userBirth = userOfModifyInfo.getUserBirth();
         this.interests = interests;
         this.activeAreas = userOfModifyInfo.getActiveAreas();
-        this.userProfileImage = userProfileImage;
+        if(userProfileImage != null){
+            this.userProfileImage = userProfileImage;
+        }
         this.nickname = userOfModifyInfo.getUserNickname();
         this.informationRequired = false;
     }
