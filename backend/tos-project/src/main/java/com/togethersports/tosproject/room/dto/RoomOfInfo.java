@@ -85,7 +85,7 @@ public class RoomOfInfo {
         this.roomContent = roomEntity.getRoomContent();
         this.viewCount = roomEntity.getViewCount();
         this.createdTime = roomEntity.getCreatedTime();
-        this.updatedTime = roomEntity.getUpdatedTime();
+
     }
 
     public static RoomOfInfo of(Room roomEntity, List<ImageOfRoomInfo> roomImages, List<String> tags){
