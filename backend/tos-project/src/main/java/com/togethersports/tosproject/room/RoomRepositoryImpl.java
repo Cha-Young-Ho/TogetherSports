@@ -173,7 +173,7 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom{
                 }
             }
         }
-        return new OrderSpecifier(Order.DESC, room.updatedTime);
+        return new OrderSpecifier(Order.DESC, room.createdTime);
     }
 
     /**

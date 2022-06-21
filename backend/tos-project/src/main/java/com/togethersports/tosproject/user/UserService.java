@@ -1,7 +1,9 @@
 package com.togethersports.tosproject.user;
 
 import com.togethersports.tosproject.common.code.CommonCode;
+import com.togethersports.tosproject.common.code.ResponseCode;
 import com.togethersports.tosproject.common.code.UploadType;
+import com.togethersports.tosproject.common.dto.FileOfImageSource;
 import com.togethersports.tosproject.common.dto.Response;
 import com.togethersports.tosproject.common.file.service.StorageService;
 import com.togethersports.tosproject.common.file.util.Base64Decoder;
@@ -11,6 +13,7 @@ import com.togethersports.tosproject.interest.Interest;
 import com.togethersports.tosproject.mannerpoint.MannerPointStatus;
 import com.togethersports.tosproject.mannerpoint.UserMannerPointService;
 import com.togethersports.tosproject.security.oauth2.model.OAuth2Provider;
+import com.togethersports.tosproject.user.code.UserCode;
 import com.togethersports.tosproject.user.dto.*;
 import com.togethersports.tosproject.user.exception.NicknameDuplicationException;
 import com.togethersports.tosproject.user.exception.NotEnteredInformationException;
@@ -216,6 +219,19 @@ public class UserService {
 
 
         return response;
+    }
+    public Response getProfileImageSource(User user){
+        User userEntity = userRepository.findById(user.getId())
+                .orElseThrow(() -> new UserNotFoundException("해당 유저를 찾을 수 없습니다."));
+
+        if(userEntity.getUserProfileImage().equals("https://together-sports.com/images/default_user_profile.jpeg")){
+            return Response.of(UserCode.DEFAULT_PROFILE_IMAGE, null);
+        }
+        FileOfImageSource fileOfImageSource =
+                storageService.getFileSourceAndExtension(userEntity.getUserProfileImage());
+
+        return Response.of(CommonCode.GOOD_REQUEST, fileOfImageSource);
+
     }
 
 }

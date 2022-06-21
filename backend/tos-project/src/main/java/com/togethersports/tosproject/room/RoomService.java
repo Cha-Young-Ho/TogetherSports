@@ -11,6 +11,7 @@ import com.togethersports.tosproject.common.code.CommonCode;
 import com.togethersports.tosproject.common.dto.Response;
 import com.togethersports.tosproject.common.dto.WsResponse;
 import com.togethersports.tosproject.common.util.ParsingEntityUtils;
+import com.togethersports.tosproject.image.RoomImage;
 import com.togethersports.tosproject.image.RoomImageService;
 import com.togethersports.tosproject.participant.Participant;
 import com.togethersports.tosproject.participant.ParticipantService;
@@ -544,6 +545,28 @@ public class RoomService {
 
     // 나가기 시 방장 위임
     public void delegateOfOut(Long roomId, Long userId){
+
+    }
+
+    public Response getRoomImageSources(Long roomId, User user){
+
+        UserAndRoomOfService userAndRoomOfService = findEntityById(user.getId(), roomId);
+        Room roomEntity = userAndRoomOfService.getRoom();
+        User userEntity = userAndRoomOfService.getUser();
+
+        if(userEntity.getId() != roomEntity.getHost().getId()){
+            return Response.of(RoomCode.NO_PERMISSION, null);
+        }
+        List<RoomImage> roomImageList = roomEntity.getRoomImages();
+        if(roomImageList.size() == 1 && roomImageList.get(0).getImagePath().equals("https://together-sports.com/images/default_room_image.png")){
+            return Response.of(RoomCode.DEFAULT_ROOM_IMAGE, null);
+        }
+        List<ImageSourcesOfRoom> roomImageSourceList = new ArrayList<>();
+        for(RoomImage roomImage : roomImageList){
+            roomImageSourceList.add(roomImageService.getRoomImageSources(roomImage));
+        }
+
+        return Response.of(CommonCode.GOOD_REQUEST, roomImageSourceList);
 
     }
 
