@@ -79,6 +79,7 @@ public class ChatPreHandler implements ChannelInterceptor {
                * 메세지 보내기
          */
         if(command.equals(StompCommand.DISCONNECT)){
+            log.info("message = ", message);
             log.info("message header = ", message.getHeaders());
 
 

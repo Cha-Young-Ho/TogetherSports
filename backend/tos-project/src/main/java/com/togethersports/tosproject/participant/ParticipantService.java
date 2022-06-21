@@ -1,13 +1,20 @@
 package com.togethersports.tosproject.participant;
 
 
+import com.togethersports.tosproject.chat.ChatController;
+import com.togethersports.tosproject.chat.code.ChatCode;
+import com.togethersports.tosproject.common.dto.Response;
+import com.togethersports.tosproject.common.dto.WsResponse;
+import com.togethersports.tosproject.participant.dto.UserOfOffline;
 import com.togethersports.tosproject.participant.exception.NotParticipateRoomException;
 import com.togethersports.tosproject.room.Room;
 import com.togethersports.tosproject.room.RoomRepository;
+import com.togethersports.tosproject.room.code.RoomCode;
 import com.togethersports.tosproject.room.dto.UserAndRoomOfService;
 import com.togethersports.tosproject.room.exception.NotFoundRoomException;
 import com.togethersports.tosproject.user.User;
 import com.togethersports.tosproject.user.UserRepository;
+import com.togethersports.tosproject.user.code.UserCode;
 import com.togethersports.tosproject.user.exception.UserNotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -31,6 +38,7 @@ public class ParticipantService {
     private final ParticipantRepository participantRepository;
     private final UserRepository userRepository;
     private final RoomRepository roomRepository;
+    private final ChatController chatController;
 
     @Transactional
     public boolean save(User user, Room room){
@@ -140,6 +148,34 @@ public class ParticipantService {
                 .room(roomEntity)
                 .user(userEntity)
                 .build();
+
+    }
+    /*
+    participant에 session id 1:N으로 매핑해야 한다.
+    그리고 모든 Session이 끊길 경우에 방에 오프라인 메세지를 보내야 한다.
+     */
+
+    //오프라인
+    public void offline(String sessionId, Long roomId){
+        Participant participant = participantRepository.findBySocketSessionId(sessionId);
+        User userEntity = participant.getUser();
+
+        chatController.sendServerMessage(roomId, WsResponse.of(ChatCode.SYSTEM_USER_OFFLINE, UserOfOffline.builder()
+                .userId(userEntity.getId())
+                .userNickname(userEntity.getNickname())
+                .build()));
+    }
+
+    //온라인
+    public void online(String sessionId, Long roomId){
+
+        Participant participant = participantRepository.findBySocketSessionId(sessionId);
+        User userEntity = participant.getUser();
+
+        chatController.sendServerMessage(roomId, WsResponse.of(ChatCode.SYSTEM_USER_OFFLINE, UserOfOffline.builder()
+                .userId(userEntity.getId())
+                .userNickname(userEntity.getNickname())
+                .build()));
 
     }
 
