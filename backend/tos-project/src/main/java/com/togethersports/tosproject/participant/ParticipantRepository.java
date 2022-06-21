@@ -11,4 +11,5 @@ public interface ParticipantRepository extends JpaRepository<Participant, Long> 
     boolean existsByUserAndRoom(User user, Room room);
 
     Optional<Participant> findByUserAndRoom(User user, Room room);
+    Participant findBySocketSessionId(String sessionId);
 }

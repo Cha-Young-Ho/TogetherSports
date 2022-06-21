@@ -98,7 +98,6 @@ public class RoomService {
 
         //tag 저장
         tagService.saveTagFromRoomCreation(tagList, roomEntity);
-
         // -- Image --
         // image 로컬에 저장
         roomImageService.registerRoomImage(roomOfCreate.getRoomImages(), roomEntity);
@@ -134,6 +133,9 @@ public class RoomService {
 
         //방 인원
         //ToDo 방 인원 체크 로직 추가해야함(참여 인원 > 변경 최대 인원 -> 변경 불가)
+        if(roomEntity.getParticipants().size() > roomOfUpdate.getLimitPeopleCount()){
+            return Response.of(RoomCode.NOT_MODIFY_PARTICIPANT_COUNT, null);
+        }
 
         //-- Tag --
         // Tag Service 에서 모든 DB값 삭제 후, 넘어온 값들로 새롭게 매핑
