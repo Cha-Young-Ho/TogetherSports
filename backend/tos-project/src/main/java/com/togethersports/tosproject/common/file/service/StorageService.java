@@ -1,5 +1,7 @@
 package com.togethersports.tosproject.common.file.service;
 
+import com.togethersports.tosproject.common.dto.FileOfImageSource;
+
 /**
  * <h1>StorageService</h1>
  * <p>
@@ -29,4 +31,5 @@ public interface StorageService {
      * @return file Base64 로 인코딩된 값
      */
     String getFileSource(String path);
+    FileOfImageSource getFileSourceAndExtension(String path);
 }

@@ -1,5 +1,6 @@
 package com.togethersports.tosproject.common.file.service;
 
+import com.togethersports.tosproject.common.dto.FileOfImageSource;
 import com.togethersports.tosproject.common.file.exception.FileUploadException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -60,6 +61,25 @@ public class FileStorageService implements StorageService{
         try (FileInputStream fis = new FileInputStream(target)) {
             byte[] raw = fis.readAllBytes();
             return Base64.getEncoder().encodeToString(raw);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public FileOfImageSource getFileSourceAndExtension(String path) {
+        String extension = path.substring(path.lastIndexOf(".") + 1);
+        String relPath = path.substring(location.length());
+        String absPath = storageRoot + relPath;
+        File target = new File(absPath);
+
+        try (FileInputStream fis = new FileInputStream(target)) {
+            byte[] raw = fis.readAllBytes();
+            return FileOfImageSource.builder()
+                    .imageSource(Base64.getEncoder().encodeToString(raw))
+                    .extension(extension)
+                    .build();
         } catch (IOException e) {
             e.printStackTrace();
             return null;
