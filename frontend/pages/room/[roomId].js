@@ -45,9 +45,6 @@ const Room = () => {
   const createdTime = useSelector(
     (state) => state.roomRealTimeInfoReducer.createdTime
   );
-  const updatedTime = useSelector(
-    (state) => state.roomRealTimeInfoReducer.updatedTime
-  );
   const host = useSelector((state) => state.roomRealTimeInfoReducer.host);
   const tags = useSelector((state) => state.roomRealTimeInfoReducer.tags);
   const viewCount = useSelector(
@@ -111,7 +108,6 @@ const Room = () => {
               startAppointmentDate: roomInfo.startAppointmentDate,
               endAppointmentDate: roomInfo.endAppointmentDate,
               createdTime: roomInfo.createdTime,
-              updatedTime: roomInfo.updatedTime,
               host: roomInfo.host,
               creatorNickName: roomInfo.creatorNickName,
               roomImages: roomInfo.roomImages,
@@ -215,18 +211,7 @@ const Room = () => {
               )}월 ${createdTime.slice(8, 10)}일 ${createdTime.slice(
                 11,
                 13
-              )}시 ${createdTime.slice(14, 16)}분에 생성`}</p>
-              {updatedTime === "" ? (
-                <></>
-              ) : (
-                <p>{`${updatedTime.slice(0, 4)}년 ${updatedTime.slice(
-                  5,
-                  7
-                )}월 ${updatedTime.slice(8, 10)}일 ${updatedTime.slice(
-                  11,
-                  13
-                )}시 ${updatedTime.slice(14, 16)}분에 마지막으로 수정`}</p>
-              )}
+              )}시 ${createdTime.slice(14, 16)}분에 생성된 방이에요!`}</p>
             </div>
 
             <div className="long-line"></div>

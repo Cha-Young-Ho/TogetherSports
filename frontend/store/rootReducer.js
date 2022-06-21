@@ -124,7 +124,6 @@ const roomRealTimeInfoInitialState = {
   startAppointmentDate: "",
   endAppointmentDate: "",
   createdTime: "",
-  updatedTime: "",
   host: "",
   creatorNickName: "",
   roomImages: [
@@ -484,7 +483,6 @@ const roomRealTimeInfoReducer = (
         startAppointmentDate: action.payload.startAppointmentDate,
         endAppointmentDate: action.payload.endAppointmentDate,
         createdTime: action.payload.createdTime,
-        updatedTime: action.payload.updatedTime,
         host: action.payload.host,
         creatorNickName: action.payload.createNickName,
         roomImages: action.payload.roomImages,
