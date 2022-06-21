@@ -3,7 +3,6 @@ package com.togethersports.tosproject.user;
 import com.togethersports.tosproject.common.code.CommonCode;
 import com.togethersports.tosproject.common.dto.Response;
 import com.togethersports.tosproject.security.annotation.CurrentUser;
-import com.togethersports.tosproject.user.code.UserCode;
 import com.togethersports.tosproject.user.dto.UserOfMannerPoint;
 import com.togethersports.tosproject.user.dto.UserOfModifyInfo;
 import com.togethersports.tosproject.user.dto.UserOfMyInfo;
@@ -70,6 +69,11 @@ public class UserController {
     public ResponseEntity<Response> doMannerPointing(@CurrentUser User user, @RequestBody UserOfMannerPoint userOfMannerPoint){
         Response response = userService.mannerPointUp(user, userOfMannerPoint);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/api/user/imageSource")
+    public ResponseEntity<Response> getProfileImageSource(@CurrentUser User user){
+        return ResponseEntity.ok(userService.getProfileImageSource(user));
     }
 
 
