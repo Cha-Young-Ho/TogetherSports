@@ -6,6 +6,7 @@ import com.togethersports.tosproject.common.file.util.Base64Decoder;
 import com.togethersports.tosproject.common.file.util.NameGenerator;
 import com.togethersports.tosproject.room.Room;
 import com.togethersports.tosproject.room.dto.ImageOfRoomCRUD;
+import com.togethersports.tosproject.room.dto.ImageSourcesOfRoom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -83,6 +84,17 @@ public class RoomImageService {
 
         //사진 로컬 및 DB 저장
         registerRoomImage(imageList, room);
+
+    }
+
+    public ImageSourcesOfRoom getRoomImageSources(RoomImage roomImage){
+
+        return ImageSourcesOfRoom.builder()
+                .imageExtension(roomImage.getRoomImageExtension())
+                .imageSource(storageService.getFileSource(roomImage.getImagePath()))
+                .order(roomImage.getOrder())
+                .build();
+
 
     }
 }
