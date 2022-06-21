@@ -28,7 +28,6 @@ const PersonalInfo = () => {
   const [profile, setProfile] = useState("");
   const [extension, setExtension] = useState("");
   const [imagesrc, setImagesrc] = useState("");
-  const [uploadType, setUploadType] = useState("");
 
   // 닉네임 중복확인
   const checkNicknameDuplication = () => {
@@ -159,11 +158,6 @@ const PersonalInfo = () => {
     if (extension === "" || imagesrc === "") {
       setExtension((extension = null));
       setImagesrc((imagesrc = null));
-      setUploadType((uploadType = null));
-    }
-
-    if (extension !== "" && imagesrc !== "") {
-      setUploadType((uploadType = "UPLOAD"));
     }
 
     dispatch({
@@ -174,7 +168,6 @@ const PersonalInfo = () => {
         gender: gender,
         userProfileExtension: extension,
         imageSource: imagesrc,
-        uploadType: uploadType,
       },
     });
 

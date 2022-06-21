@@ -11,7 +11,6 @@ const signupInitialState = {
   gender: "",
   userProfileExtension: "",
   imageSource: "",
-  uploadType: "",
   interests: [],
 };
 

@@ -42,7 +42,6 @@ const UserModification = () => {
   const [profile, setProfile] = useState("");
   const [extension, setExtension] = useState("");
   const [imagesrc, setImagesrc] = useState("");
-  const [uploadType, setUploadType] = useState("");
 
   // 관심종목
   const [interests, setInterests] = useState({});

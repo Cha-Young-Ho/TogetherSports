@@ -77,7 +77,6 @@ const postUserRequest = (
   gender,
   userProfileExtension,
   imageSource,
-  uploadType,
   interests
 ) => {
   const promise =
@@ -90,7 +89,6 @@ const postUserRequest = (
           userProfileImage: {
             userProfileExtension: userProfileExtension,
             imageSource: imageSource,
-            uploadType: uploadType,
           },
           interests: interests,
         })
