@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author younghoCha
  */
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class ChatController {
@@ -65,7 +66,6 @@ public class ChatController {
     //채팅 내역 조회
     @GetMapping("/api/room/{roomId}/chat")
     public ResponseEntity<Response> getChatInfo(@PathVariable Long roomId, Pageable pageable){
-
         return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, chatService.getChatHistory(pageable, roomId)));
     }
 

@@ -228,7 +228,10 @@ const Chatting = ({ chatOpen }) => {
     getChatInfo(roomId, pageNum, sizeNum)
       .then((res) => {
         if (res.status.code === 5000) {
-          setShowingMessages((prev) => [...res.content.content, ...prev]);
+          setShowingMessages((prev) => [
+            ...res.content.content.reverse(),
+            ...prev,
+          ]);
           page += 1;
         } else {
           FailResponse(res.status.code);
@@ -236,14 +239,17 @@ const Chatting = ({ chatOpen }) => {
       })
       .catch((error) => {
         if (error.response) {
-          FailResponse(error.response.data.status.code, func_getChatInfo);
+          FailResponse(
+            error.response.data.status.code,
+            func_getChatInfo(page, size)
+          );
         }
       });
   };
 
   useEffect(() => {
     if (chatOpen && roomId !== "") {
-      func_getChatInfo();
+      func_getChatInfo(page, size);
 
       connect();
     }

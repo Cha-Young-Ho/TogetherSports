@@ -2,16 +2,17 @@ package com.togethersports.tosproject.security.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.togethersports.tosproject.security.jwt.JwtProperties;
+import com.togethersports.tosproject.security.jwt.handler.CustomLogoutHandler;
+import com.togethersports.tosproject.security.jwt.handler.CustomLogoutSuccessHandler;
 import com.togethersports.tosproject.security.jwt.handler.JwtTokenRenewalExceptionHandler;
+import com.togethersports.tosproject.security.jwt.matcher.LogoutRequestMatcher;
 import com.togethersports.tosproject.security.jwt.service.JwtService;
 import com.togethersports.tosproject.security.jwt.service.RefreshTokenService;
 import com.togethersports.tosproject.security.jwt.filter.JwtAuthenticationFilter;
 import com.togethersports.tosproject.security.jwt.filter.JwtRefreshFilter;
-import com.togethersports.tosproject.security.jwt.handler.CustomLogoutHandler;
 import com.togethersports.tosproject.security.jwt.handler.JwtAuthenticationFailureHandler;
 import com.togethersports.tosproject.security.jwt.matcher.FilterSkipMatcher;
 import com.togethersports.tosproject.security.jwt.provider.JwtAuthenticationProvider;
-import com.togethersports.tosproject.security.jwt.util.JwtTokenFactory;
 import com.togethersports.tosproject.security.oauth2.handler.OAuth2LoginAuthenticationSuccessHandler;
 import com.togethersports.tosproject.security.oauth2.service.CustomOAuth2UserService;
 import com.togethersports.tosproject.user.User;
@@ -29,6 +30,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -60,15 +63,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private OAuth2LoginAuthenticationSuccessHandler oAuth2LoginAuthenticationSuccessHandler;
 
-    @Autowired
-    private CustomLogoutHandler logoutHandler;
-
     // jwt beans
     @Autowired
     private JwtProperties jwtProperties;
-
-    @Autowired
-    private JwtTokenFactory jwtTokenFactory;
 
     @Autowired
     private JwtAuthenticationProvider jwtAuthenticationProvider;
@@ -87,6 +84,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private JwtTokenRenewalExceptionHandler jwtTokenRenewalExceptionHandler;
+    @Autowired
+    private CustomLogoutHandler customLogoutHandler;
+    @Autowired
+    private CustomLogoutSuccessHandler customLogoutSuccessHandler;
 
     // jwt 갱신 필터
     public Filter jwtRefreshFilter() throws Exception {
@@ -101,7 +102,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // jwt 인증 필터
     public Filter jwtAuthenticationFilter() throws Exception {
         FilterSkipMatcher filterSkipMatcher = new FilterSkipMatcher(
-                List.of("/api/refresh"),
+                List.of("/api/refresh", "/api/logout"),
                 List.of("/api/**")
         );
         JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(filterSkipMatcher);
@@ -124,10 +125,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.cors();
+
         //logout
         http.logout()
-                .logoutUrl("/api/logout")
-                .addLogoutHandler(logoutHandler)
+                .logoutRequestMatcher(new LogoutRequestMatcher())
+                .addLogoutHandler(customLogoutHandler)
+                .logoutSuccessHandler(customLogoutSuccessHandler)
                 .permitAll();
 
         // OAuth2 filter chain configuration
