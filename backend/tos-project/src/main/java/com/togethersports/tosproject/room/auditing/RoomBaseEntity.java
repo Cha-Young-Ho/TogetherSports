@@ -29,7 +29,4 @@ public class RoomBaseEntity {
     @Column(updatable = false)
     private LocalDateTime createdTime;
 
-    @JsonIgnore
-    @LastModifiedDate
-    private LocalDateTime updatedTime;
 }
