@@ -4,6 +4,7 @@ import {
   getMyInfo,
   getNicknameDuplicationCheck,
   postUserRequest,
+  getProfileImageSource,
 } from "../api/members";
 import { useDispatch, useSelector } from "react-redux";
 import { FailResponse } from "../api/failResponse";
@@ -63,8 +64,8 @@ const UserModification = () => {
 
   // 닉네임 중복확인
   const checkNicknameDuplication = () => {
-    if (nickname.length < 2) {
-      alert("닉네임은 최소 2글자 이상 입력해주세요.");
+    if (nickname.length < 2 || nickname.length > 8) {
+      alert("닉네임은 2글자 이상 ~ 8글자 이내로 입력해주세요.");
       return;
     } else if (userInfo.userNickname === nickname) {
       setIsNicknameCheck(true);
@@ -72,11 +73,6 @@ const UserModification = () => {
       alert("사용 가능한 닉네임 입니다.");
       return;
     }
-    // else {
-    //   getNicknameDuplicationCheck(nickname).then((res) => {
-    //     return;
-    //   });
-    // }
 
     getNicknameDuplicationCheck(nickname)
       .then((res) => {
@@ -274,21 +270,6 @@ const UserModification = () => {
       return false;
     }
 
-    // 닉네임에 특수문자 사용했을 경우 (추후 수정 예정)
-    // const special_pattern = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
-    // if (special_pattern.test(checkNickname) === true) {
-    //   e.preventDefault();
-    //   alert("닉네임에 특수문자는 사용할 수 없습니다.");
-    //   return false;
-    // }
-
-    // 닉네임 길이 제한
-    if (validNickname.length < 2 && validNickname.length > 8) {
-      e.preventDefault();
-      alert("닉네임은 최소 2글자 최대 8글자까지 입력 가능합니다.");
-      return false;
-    }
-
     // 닉네임 중복체크를 하지 않은 경우
     if (!isNicknameCheck) {
       e.preventDefault();
@@ -353,6 +334,35 @@ const UserModification = () => {
     func_PostUserRequest();
   };
 
+  const getProfileImageSourceFunc = () => {
+    getProfileImageSource()
+      .then((res) => {
+        // 프로필 설정 안 한 경우
+        if (res.status.code === 1111) {
+          setProfile((profile = "프로필을 설정해보세요!"));
+        }
+
+        // 프로필 설정 한 경우
+        if (res.status.code === 5000) {
+          setProfile(
+            (profile =
+              getProfileImagePathFromRedux[
+                getProfileImagePathFromRedux.length - 1
+              ])
+          );
+          setImagesrc((imagesrc = res.content.profileImageSource));
+          setExtension((extension = res.content.imageExtension));
+        }
+      })
+      .catch((error) => {
+        FailResponse(
+          error.response.data.status.code,
+          getProfileImageSourceFunc
+        );
+        return;
+      });
+  };
+
   // 초기값 세팅
   useEffect(() => {
     // 관심 종목 세팅
@@ -379,16 +389,7 @@ const UserModification = () => {
 
     getBirthDay();
 
-    // 기본이미지가 아닐때만 input에 이름 뜨게
-    if (
-      getProfileImagePathFromRedux[getProfileImagePathFromRedux.length - 1] !==
-      "default_user_profile.jpeg"
-    ) {
-      setProfile(
-        (profile =
-          getProfileImagePathFromRedux[getProfileImagePathFromRedux.length - 1])
-      );
-    }
+    getProfileImageSourceFunc();
   }, []);
 
   return (

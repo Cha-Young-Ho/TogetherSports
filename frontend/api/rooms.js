@@ -187,6 +187,24 @@ const getChatInfo = (roomSequenceId, page, size) => {
   return dataPromise;
 };
 
+// 방 이미지 소스 조회
+const getRoomImageSource = (roomId) => {
+  const promise =
+    localStorage.getItem("accessToken") === null
+      ? axios.get(`${API_ENDPOINT}/api/room/${roomId}/imageSource`)
+      : axios.get(`${API_ENDPOINT}/api/room/${roomId}/imageSource`, {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            Accept: "*/*",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        });
+
+  const dataPromise = promise.then((res) => res.data);
+
+  return dataPromise;
+};
+
 // POST
 
 // 방 생성
@@ -418,6 +436,7 @@ export {
   getChatInfo,
   getMyRoomInfo,
   getAvailability,
+  getRoomImageSource,
   putUpdateRoom,
   postCreateRoom,
   postEnterRoom,
