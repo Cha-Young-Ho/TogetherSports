@@ -9,7 +9,9 @@ import com.togethersports.tosproject.room.dto.ImageOfRoomCRUD;
 import com.togethersports.tosproject.room.dto.ImageSourcesOfRoom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
@@ -23,10 +25,13 @@ public class RoomImageService {
     private final Base64Decoder base64Decoder;
     private final NameGenerator nameGenerator;
     private final StorageService storageService;
-    private final String DEFAULT_IMAGE = "https://together-sports.com/images/default_room_image.png";
+
+    @Value("${app.room.default-image.etc}")
+    private final String DEFAULT_ROOM_ETC_IMAGE;
+
     public void registerRoomImage(List<ImageOfRoomCRUD> roomOfCreateList, Room room){
 
-        List<RoomImage> roomImageEntity = room.getRoomImages();
+
 
         //이미지가 없을 경우
         if(roomOfCreateList.size() == 0){
@@ -34,20 +39,17 @@ public class RoomImageService {
 
             //이미지 설정
             ImageOfRoomCRUD defaultImage = ImageOfRoomCRUD.builder()
-                    .imageSource(DEFAULT_IMAGE)
+                    .imageSource(DEFAULT_ROOM_ETC_IMAGE)
                     .order(0)
                     .roomImageExtension("png")
                     .build();
-            RoomImage roomImage = RoomImage.of(defaultImage, room, DEFAULT_IMAGE);
+            RoomImage roomImage = RoomImage.of(defaultImage, room, DEFAULT_ROOM_ETC_IMAGE);
             roomImageRepository.save(roomImage);
             return;
         }
 
         //이미지가 있을 경우
         for(ImageOfRoomCRUD imageOfRoomCRUD : roomOfCreateList){
-
-
-
 
             //방 이미지를 지정했을 경우
             //방 이미지 저장
@@ -68,6 +70,12 @@ public class RoomImageService {
     }
 
     public void updateRoomImage(List<ImageOfRoomCRUD> imageList, Room room){
+        //로컬 사진 모두 삭제
+        List<RoomImage> roomImageList = room.getRoomImages();
+        for(RoomImage roomImage : roomImageList){
+            storageService.delete(roomImage.getImagePath());
+        }
+
         //사진 모두 삭제
         roomImageRepository.deleteAllByRoomId(room.getId());
 
