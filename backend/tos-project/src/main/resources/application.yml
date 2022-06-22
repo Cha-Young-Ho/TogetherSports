@@ -29,4 +29,9 @@ spring:
 app:
   storage:
     root: /Users/chayeongho
-    location: /Desktop
+    location: /Users/chayeongho
+  user:
+    default-image: https://together-sports.com/images/default_user_profile.jpeg
+  room:
+    default-image:
+      etc: https://together-sports.com/imgaes/default_room_image.png

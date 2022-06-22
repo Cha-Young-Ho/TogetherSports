@@ -38,7 +38,7 @@ public class ParticipantService {
     private final ParticipantRepository participantRepository;
     private final UserRepository userRepository;
     private final RoomRepository roomRepository;
-    private final ChatController chatController;
+    //private final ChatController chatController;
 
     @Transactional
     public boolean save(User user, Room room){
@@ -156,27 +156,27 @@ public class ParticipantService {
      */
 
     //오프라인
-    public void offline(String sessionId, Long roomId){
-        Participant participant = participantRepository.findBySocketSessionId(sessionId);
-        User userEntity = participant.getUser();
-
-        chatController.sendServerMessage(roomId, WsResponse.of(ChatCode.SYSTEM_USER_OFFLINE, UserOfOffline.builder()
-                .userId(userEntity.getId())
-                .userNickname(userEntity.getNickname())
-                .build()));
-    }
-
-    //온라인
-    public void online(String sessionId, Long roomId){
-
-        Participant participant = participantRepository.findBySocketSessionId(sessionId);
-        User userEntity = participant.getUser();
-
-        chatController.sendServerMessage(roomId, WsResponse.of(ChatCode.SYSTEM_USER_OFFLINE, UserOfOffline.builder()
-                .userId(userEntity.getId())
-                .userNickname(userEntity.getNickname())
-                .build()));
-
-    }
+//    public void offline(String sessionId, Long roomId){
+//        Participant participant = participantRepository.findBySocketSessionId(sessionId);
+//        User userEntity = participant.getUser();
+//
+//        chatController.sendServerMessage(roomId, WsResponse.of(ChatCode.SYSTEM_USER_OFFLINE, UserOfOffline.builder()
+//                .userId(userEntity.getId())
+//                .userNickname(userEntity.getNickname())
+//                .build()));
+//    }
+//
+//    //온라인
+//    public void online(String sessionId, Long roomId){
+//
+//        Participant participant = participantRepository.findBySocketSessionId(sessionId);
+//        User userEntity = participant.getUser();
+//
+//        chatController.sendServerMessage(roomId, WsResponse.of(ChatCode.SYSTEM_USER_OFFLINE, UserOfOffline.builder()
+//                .userId(userEntity.getId())
+//                .userNickname(userEntity.getNickname())
+//                .build()));
+//
+//    }
 
 }
