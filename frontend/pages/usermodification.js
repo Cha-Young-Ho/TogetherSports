@@ -4,6 +4,7 @@ import {
   getMyInfo,
   getNicknameDuplicationCheck,
   postUserRequest,
+  getProfileImageSource,
 } from "../api/members";
 import { useDispatch, useSelector } from "react-redux";
 import { FailResponse } from "../api/failResponse";
@@ -333,6 +334,35 @@ const UserModification = () => {
     func_PostUserRequest();
   };
 
+  const getProfileImageSourceFunc = () => {
+    getProfileImageSource()
+      .then((res) => {
+        // 프로필 설정 안 한 경우
+        if (res.status.code === 1111) {
+          setProfile((profile = "프로필을 설정해보세요!"));
+        }
+
+        // 프로필 설정 한 경우
+        if (res.status.code === 5000) {
+          setProfile(
+            (profile =
+              getProfileImagePathFromRedux[
+                getProfileImagePathFromRedux.length - 1
+              ])
+          );
+          setImagesrc((imagesrc = res.content.profileImageSource));
+          setExtension((extension = res.content.imageExtension));
+        }
+      })
+      .catch((error) => {
+        FailResponse(
+          error.response.data.status.code,
+          getProfileImageSourceFunc
+        );
+        return;
+      });
+  };
+
   // 초기값 세팅
   useEffect(() => {
     // 관심 종목 세팅
@@ -359,16 +389,7 @@ const UserModification = () => {
 
     getBirthDay();
 
-    // 기본이미지가 아닐때만 input에 이름 뜨게
-    if (
-      getProfileImagePathFromRedux[getProfileImagePathFromRedux.length - 1] !==
-      "default_user_profile.jpeg"
-    ) {
-      setProfile(
-        (profile =
-          getProfileImagePathFromRedux[getProfileImagePathFromRedux.length - 1])
-      );
-    }
+    getProfileImageSourceFunc();
   }, []);
 
   return (
