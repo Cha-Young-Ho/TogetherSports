@@ -28,5 +28,5 @@ spring:
 # together sports application properties
 app:
   storage:
-    root: /Users/chayeongho/Pictures/User
-    location: /images
+    root: /Users/chayeongho
+    location: /Desktop
