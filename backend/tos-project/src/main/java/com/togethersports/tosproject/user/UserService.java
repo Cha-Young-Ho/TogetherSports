@@ -19,6 +19,7 @@ import com.togethersports.tosproject.user.exception.NicknameDuplicationException
 import com.togethersports.tosproject.user.exception.NotEnteredInformationException;
 import com.togethersports.tosproject.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,6 +49,9 @@ public class UserService {
     private final NameGenerator nameGenerator;
     private final ParsingEntityUtils parsingEntityUtils;
     private final UserMannerPointService userMannerPointService;
+
+    @Value("${app.user.default-image}")
+    private String defaultProfileImage;
 
 
     /**
@@ -162,18 +166,37 @@ public class UserService {
         User findUser = userRepository.findById(user.getId())
                 .orElseThrow(() -> new UserNotFoundException("사용자가 존재하지 않습니다."));
 
-
         List<Interest> interests = parsingEntityUtils.parsingStringToInterestsEntity(userOfModifyInfo.getInterests());
-        if(userOfModifyInfo.getUserProfileImage().getImageSource() == null){
+        //기존에 기본 파일일 경우
+        if(findUser.getUserProfileImage().equals(defaultProfileImage)) {
+            //기본 -> 기본
+            if(userOfModifyInfo.getUserProfileImage().getImageSource() == null || userOfModifyInfo.getUserProfileImage().getImageSource().equals("")){
+                findUser.updateUser(userOfModifyInfo, interests, defaultProfileImage);
+                return;
+            }
+            //기본 -> 설정
 
-            findUser.updateUser(userOfModifyInfo, interests, "https://together-sports.com/images/default_user_profile.jpeg");
+            //파일 등록
+            String encodedImageSource = userOfModifyInfo.getUserProfileImage().getImageSource();
+            byte[] imageSource = base64Decoder.decode(encodedImageSource);
+            String fileName = nameGenerator.generateRandomName().concat(".")
+                    .concat(userOfModifyInfo.getUserProfileImage().getUserProfileExtension());
+            String imagePath = storageService.store(imageSource, fileName);
+            findUser.updateUser(userOfModifyInfo, interests, imagePath);
+            return;
+        }
+        //기존 삭제
+        storageService.delete(findUser.getUserProfileImage());
+
+        //설정 -> 기본
+        if(userOfModifyInfo.getUserProfileImage().getImageSource() == null || userOfModifyInfo.getUserProfileImage().getImageSource().equals("")){
+
+            findUser.updateUser(userOfModifyInfo, interests, defaultProfileImage);
             return;
         }
 
-//        if(userOfModifyInfo.getUserProfileImage().getUploadType().equals(UploadType.KEEP)){
-//            findUser.updateUser(userOfModifyInfo, interests, null);
-//        }
-
+        //설정 -> 설정
+        //파일 등록
         String encodedImageSource = userOfModifyInfo.getUserProfileImage().getImageSource();
         byte[] imageSource = base64Decoder.decode(encodedImageSource);
         String fileName = nameGenerator.generateRandomName().concat(".")
@@ -224,7 +247,7 @@ public class UserService {
         User userEntity = userRepository.findById(user.getId())
                 .orElseThrow(() -> new UserNotFoundException("해당 유저를 찾을 수 없습니다."));
 
-        if(userEntity.getUserProfileImage().equals("https://together-sports.com/images/default_user_profile.jpeg")){
+        if(userEntity.getUserProfileImage().equals(defaultProfileImage)){
             return Response.of(UserCode.DEFAULT_PROFILE_IMAGE, null);
         }
         FileOfImageSource fileOfImageSource =

@@ -38,7 +38,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class ChatController {
 
     private final ChatService chatService;
-    private final ParticipantService participantService;
     private final SimpMessageSendingOperations sendingOperations;
     //방 채팅
     @MessageMapping("/room/{roomId}/chat")

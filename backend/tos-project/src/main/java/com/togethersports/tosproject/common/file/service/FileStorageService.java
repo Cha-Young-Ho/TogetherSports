@@ -2,6 +2,7 @@ package com.togethersports.tosproject.common.file.service;
 
 import com.togethersports.tosproject.common.dto.FileOfImageSource;
 import com.togethersports.tosproject.common.file.exception.FileUploadException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import java.util.Base64;
  *
  * @author seunjeon
  */
+@Slf4j
 @Service
 public class FileStorageService implements StorageService{
 
@@ -46,9 +48,13 @@ public class FileStorageService implements StorageService{
 
     @Override
     public void delete(String path) {
+        log.info("path = {}", path);
         String relPath = path.substring(location.length());
+        log.info("relPath = {}", relPath);
         String absPath = storageRoot + relPath;
+        log.info("absPath = {}", absPath);
         File target = new File(absPath);
+        log.info("수행");
         target.delete();
     }
 
