@@ -67,6 +67,24 @@ const getOtherInfo = (userId) => {
   return dataPromise;
 };
 
+// 프로필 이미지 소스 조회
+const getProfileImageSource = () => {
+  const promise =
+    localStorage.getItem("accessToken") === null
+      ? axios.get(`${API_ENDPOINT}/api/user/imageSource`)
+      : axios.get(`${API_ENDPOINT}/api/user/imageSource`, {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            Accept: "*/*",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        });
+
+  const dataPromise = promise.then((res) => res.data);
+
+  return dataPromise;
+}
+
 // POST
 
 // 회원 추가정보입력 요청 및 회원 정보 수정
@@ -178,6 +196,7 @@ export {
   getNicknameDuplicationCheck,
   getMyInfo,
   getOtherInfo,
+  getProfileImageSource,
   postUserRequest,
   postLogOut,
   patchMannerPoint,
