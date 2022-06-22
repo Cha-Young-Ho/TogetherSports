@@ -177,11 +177,7 @@ public class UserService {
             //기본 -> 설정
 
             //파일 등록
-            String encodedImageSource = userOfModifyInfo.getUserProfileImage().getImageSource();
-            byte[] imageSource = base64Decoder.decode(encodedImageSource);
-            String fileName = nameGenerator.generateRandomName().concat(".")
-                    .concat(userOfModifyInfo.getUserProfileImage().getUserProfileExtension());
-            String imagePath = storageService.store(imageSource, fileName);
+            String imagePath = registerImage(userOfModifyInfo);
             findUser.updateUser(userOfModifyInfo, interests, imagePath);
             return;
         }
@@ -197,11 +193,7 @@ public class UserService {
 
         //설정 -> 설정
         //파일 등록
-        String encodedImageSource = userOfModifyInfo.getUserProfileImage().getImageSource();
-        byte[] imageSource = base64Decoder.decode(encodedImageSource);
-        String fileName = nameGenerator.generateRandomName().concat(".")
-                .concat(userOfModifyInfo.getUserProfileImage().getUserProfileExtension());
-        String imagePath = storageService.store(imageSource, fileName);
+        String imagePath = registerImage(userOfModifyInfo);
         findUser.updateUser(userOfModifyInfo, interests, imagePath);
     }
 
@@ -255,6 +247,14 @@ public class UserService {
 
         return Response.of(CommonCode.GOOD_REQUEST, fileOfImageSource);
 
+    }
+
+    public String registerImage(UserOfModifyInfo userOfModifyInfo){
+        String encodedImageSource = userOfModifyInfo.getUserProfileImage().getImageSource();
+        byte[] imageSource = base64Decoder.decode(encodedImageSource);
+        String fileName = nameGenerator.generateRandomName().concat(".")
+                .concat(userOfModifyInfo.getUserProfileImage().getUserProfileExtension());
+        return storageService.store(imageSource, fileName);
     }
 
 }
