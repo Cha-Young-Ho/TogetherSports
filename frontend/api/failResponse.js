@@ -63,6 +63,8 @@ const FailResponse = (codeNumber, prelastingToDo) => {
     case 1210:
       alert("방에 참가 실패했습니다.");
       break;
+    case 1217:
+      alert("해당 기능을 수행할 권한이 없습니다.");
     case 1300:
       break;
     case 1301:
