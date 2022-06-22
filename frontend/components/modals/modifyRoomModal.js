@@ -239,6 +239,7 @@ const ModifyRoomModal = (props) => {
                     getImageData={getImageData}
                     getThumbnailData={getThumbnailIndex}
                     path={"modifyRoom"}
+                    roomId={roomId}
                   />
                 </div>
 
