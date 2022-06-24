@@ -23,25 +23,43 @@ const ParticipantList = (props) => {
     <>
       {participantArr.length !== 0 ? (
         participantArr.map((participant, index) => {
-          // 방장이라면
-          if (participant.userNickname === host) {
-            return (
-              <button
-                className="participant"
-                onClick={() => {
-                  onClickUserInfo(participant.id, participant.userNickname);
-                }}
-                key={index}
-              >
-                <div className="profile">
-                  <div></div>
-                  <p>{participant.userNickname}</p>
-                </div>
-                <p>방장</p>
-              </button>
-            );
+          if (participant.status === "online") {
+            // 방장이라면
+            if (participant.userNickname === host) {
+              return (
+                <button
+                  className="participant"
+                  onClick={() => {
+                    onClickUserInfo(participant.id, participant.userNickname);
+                  }}
+                  key={index}
+                >
+                  <div className="profile">
+                    <div></div>
+                    <p>{participant.userNickname}</p>
+                  </div>
+                  <p>방장</p>
+                </button>
+              );
+            } else {
+              return (
+                <button
+                  className="participant"
+                  onClick={() => {
+                    onClickUserInfo(participant.id, participant.userNickname);
+                  }}
+                  key={index}
+                >
+                  <div className="profile">
+                    <div></div>
+                    <p>{participant.userNickname}</p>
+                  </div>
+                </button>
+              );
+            }
           } else {
             return (
+              // **** 오프라인으로 변경필요 ****
               <button
                 className="participant"
                 onClick={() => {
@@ -53,6 +71,7 @@ const ParticipantList = (props) => {
                   <div></div>
                   <p>{participant.userNickname}</p>
                 </div>
+                <p>오프라인</p>
               </button>
             );
           }

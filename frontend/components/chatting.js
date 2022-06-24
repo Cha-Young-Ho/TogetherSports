@@ -17,6 +17,9 @@ const Chatting = ({ chatOpen }) => {
   const dispatch = useDispatch();
   const roomId = useSelector((state) => state.saveRoomIdReducer.roomId);
   const myID = useSelector((state) => state.myInfoReducer.id);
+  const participants = useSelector(
+    (state) => state.roomRealTimeInfoReducer.participants
+  );
   const [messageToServer, setMessageToServer] = useState("");
   const [showingMessages, setShowingMessages] = useState([
     // {
@@ -148,7 +151,6 @@ const Chatting = ({ chatOpen }) => {
           },
         });
         break;
-
       case 1502: //퇴장
         // 내가 퇴장하면
         if (JSONBodys.content.id === myID) {
@@ -164,7 +166,6 @@ const Chatting = ({ chatOpen }) => {
           },
         });
         break;
-
       case 1503: //강퇴
         // 내가 강퇴당하면
         if (JSONBodys.content.id === myID) {
@@ -180,7 +181,6 @@ const Chatting = ({ chatOpen }) => {
           },
         });
         break;
-
       case 1504: //방장위임
         dispatch({
           type: "CHANGEHOST",
@@ -193,6 +193,38 @@ const Chatting = ({ chatOpen }) => {
           type: "SAVEROOMALARM",
           payload: {
             messages: `${JSONBodys.content.afterHostNickname}님이 방장이 되었습니다.`,
+          },
+        });
+        break;
+      case 1508: // 온라인
+        dispatch({
+          type: "CHANGEPARTICIPANTSTATUS",
+          payload: {
+            participants: participants.map((user) => {
+              if (user.id === JSONBodys.content.id) {
+                return {
+                  id: user.id,
+                  userNickname: user.userNickname,
+                  status: "online",
+                };
+              }
+            }),
+          },
+        });
+        break;
+      case 1509: // 오프라인
+        dispatch({
+          type: "CHANGEPARTICIPANTSTATUS",
+          payload: {
+            participants: participants.map((user) => {
+              if (user.id === JSONBodys.content.id) {
+                return {
+                  id: user.id,
+                  userNickname: user.userNickname,
+                  status: "offline",
+                };
+              }
+            }),
           },
         });
         break;
