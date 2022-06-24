@@ -197,6 +197,7 @@ const SAVEROOMHOST = "SAVEROOMHOST";
 const SAVEROOMCOUNT = "SAVEROOMCOUNT";
 const SAVEROOMINFOS = "SAVEROOMINFOS";
 const CHANGEHOST = "CHANGEHOST";
+const CHANGEPARTICIPANTSTATUS = "CHANGEPARTICIPANTSTATUS";
 const SAVEROOMMODALIMAGES = "SAVEROOMMODALIMAGES";
 const SAVEROOMALARM = "SAVEROOMALARM";
 const SAVEOTHERINFO = "SAVEOTHERINFO";
@@ -490,6 +491,11 @@ const roomRealTimeInfoReducer = (
       return {
         ...state,
         host: action.payload.host,
+      };
+    case CHANGEPARTICIPANTSTATUS:
+      return {
+        ...state,
+        participants: action.payload.participants,
       };
     default:
       return state;
