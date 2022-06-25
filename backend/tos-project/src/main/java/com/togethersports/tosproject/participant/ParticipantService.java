@@ -12,6 +12,8 @@ import com.togethersports.tosproject.room.RoomRepository;
 import com.togethersports.tosproject.room.code.RoomCode;
 import com.togethersports.tosproject.room.dto.UserAndRoomOfService;
 import com.togethersports.tosproject.room.exception.NotFoundRoomException;
+import com.togethersports.tosproject.session.SocketSession;
+import com.togethersports.tosproject.session.SocketSessionService;
 import com.togethersports.tosproject.user.User;
 import com.togethersports.tosproject.user.UserRepository;
 import com.togethersports.tosproject.user.code.UserCode;
@@ -38,7 +40,8 @@ public class ParticipantService {
     private final ParticipantRepository participantRepository;
     private final UserRepository userRepository;
     private final RoomRepository roomRepository;
-    //private final ChatController chatController;
+    private final SocketSessionService socketSessionService;
+
 
     @Transactional
     public boolean save(User user, Room room){
@@ -61,8 +64,6 @@ public class ParticipantService {
     }
 
     public boolean checkAttendance(User user, Room room){
-        boolean attendance = participantRepository.existsByUserAndRoom(user, room);
-
 
         return participantRepository.existsByUserAndRoom(user, room);
     }
@@ -104,27 +105,22 @@ public class ParticipantService {
     }
 
     @Transactional
-    public void verifySession(String sessionId, Long roomId, Long userId){
+    public Participant verifySession(String sessionId, Long roomId, Long userId){
         User userEntity = findUserEntityById(userId);
         Room roomEntity = findRoomEntityById(roomId);
         Participant participantEntity = participantRepository.findByUserAndRoom(userEntity, roomEntity)
                 .orElseThrow(() -> new NotParticipateRoomException("해당 방에 참여하지 않은 유저입니다."));
 
-        participantEntity.updateSessionId(sessionId);
+        return participantEntity;
+    }
 
+    public void saveSession(String sessionId, Participant participant){
+
+
+        socketSessionService.saveSessionId(sessionId, participant);
 
 
     }
-
-//    @Transactional
-//    public String getSessionid(){
-//
-//
-//        Participant participant = participantRepository.findByUserIdAndRoomId(1L, 1L)
-//                .orElseThrow(() -> new NotParticipateRoomException());
-//
-//        return participant.getSocketSessionId();
-//    }
 
     // 유저 엔티티 찾기
     public User findUserEntityById(Long userId){
@@ -150,33 +146,50 @@ public class ParticipantService {
                 .build();
 
     }
-    /*
-    participant에 session id 1:N으로 매핑해야 한다.
-    그리고 모든 Session이 끊길 경우에 방에 오프라인 메세지를 보내야 한다.
-     */
+    @Transactional
+    public Participant findParticipantBySessionId(String sessionId){
+        Participant participant = socketSessionService.findParticipantBySessionId(sessionId);
+        return participant;
+    }
 
-    //오프라인
-//    public void offline(String sessionId, Long roomId){
-//        Participant participant = participantRepository.findBySocketSessionId(sessionId);
-//        User userEntity = participant.getUser();
-//
-//        chatController.sendServerMessage(roomId, WsResponse.of(ChatCode.SYSTEM_USER_OFFLINE, UserOfOffline.builder()
-//                .userId(userEntity.getId())
-//                .userNickname(userEntity.getNickname())
-//                .build()));
-//    }
-//
-//    //온라인
-//    public void online(String sessionId, Long roomId){
-//
-//        Participant participant = participantRepository.findBySocketSessionId(sessionId);
-//        User userEntity = participant.getUser();
-//
-//        chatController.sendServerMessage(roomId, WsResponse.of(ChatCode.SYSTEM_USER_OFFLINE, UserOfOffline.builder()
-//                .userId(userEntity.getId())
-//                .userNickname(userEntity.getNickname())
-//                .build()));
-//
-//    }
+    public void deleteSession(String sessionId, Participant participant){
+
+        participant.sessionRemove(sessionId);
+        socketSessionService.deleteSession(sessionId, participant);
+        participant.checkOnOffline();
+    }
+
+
+    public boolean checkOffline(String sessionId){
+        Participant participant = findParticipantBySessionId(sessionId);
+
+        if(participant.getSocketSessionList().size() <= 1){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean checkOnline(){
+        return true;
+    }
+
+    public void offline(String sessionId){
+        Participant participant = findParticipantBySessionId(sessionId);
+        int i = 0;
+        for(SocketSession socketSession : participant.getSocketSessionList()){
+            if(socketSession.getSocketSessionId().equals(sessionId)){
+                participant.getSocketSessionList().remove(i);
+            }
+            i++;
+        }
+
+
+    }
+
+    public void online(String sessionId){
+
+    }
+
+
 
 }

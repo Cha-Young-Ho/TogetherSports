@@ -12,6 +12,7 @@ import com.togethersports.tosproject.common.util.ParsingEntityUtils;
 import com.togethersports.tosproject.interest.Interest;
 import com.togethersports.tosproject.mannerpoint.MannerPointStatus;
 import com.togethersports.tosproject.mannerpoint.UserMannerPointService;
+import com.togethersports.tosproject.participant.Participant;
 import com.togethersports.tosproject.security.oauth2.model.OAuth2Provider;
 import com.togethersports.tosproject.user.code.UserCode;
 import com.togethersports.tosproject.user.dto.*;
@@ -106,7 +107,7 @@ public class UserService {
      * @param otherUserId : 전달받은 user id
      * @return USerOfOtherInfo : 다른 회원 정보에 대한 DTO
      */
-    public UserOfParticipantInfo getParticipantInfo(Long otherUserId){
+    public UserOfParticipantInfo getParticipantInfo(Long otherUserId, Participant participant){
 
         //유저 엔티티
         User userEntity = userRepository.findById(otherUserId)
@@ -124,6 +125,7 @@ public class UserService {
                 .userNickname(userEntity.getNickname())
                 .mannerPoint(userEntity.getMannerPoint())
                 .userProfileImagePath(userEntity.getUserProfileImage())
+                .status(participant.getStatus())
                 .build();
 
     }
