@@ -1,7 +1,7 @@
 import SearchBar from "../../components/rooms/searchBar";
 import RoomFilter from "../../components/rooms/filter";
 import FilteredRooms from "../../components/rooms/filteredRooms";
-import FixedRoomAlarm from "../../components/fixedRoomAlarm";
+import CreateRoomModal from "../../components/modals/createRoomModal";
 import Head from "next/head";
 
 const Roomlist = () => {
@@ -15,7 +15,7 @@ const Roomlist = () => {
         <RoomFilter />
         <FilteredRooms />
       </div>
-      <FixedRoomAlarm />
+      <CreateRoomModal />
       <style jsx>{`
         .root-wrapper {
           width: 100%;

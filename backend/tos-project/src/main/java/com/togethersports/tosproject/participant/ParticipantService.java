@@ -1,13 +1,22 @@
 package com.togethersports.tosproject.participant;
 
 
+import com.togethersports.tosproject.chat.ChatController;
+import com.togethersports.tosproject.chat.code.ChatCode;
+import com.togethersports.tosproject.common.dto.Response;
+import com.togethersports.tosproject.common.dto.WsResponse;
+import com.togethersports.tosproject.participant.dto.UserOfOffline;
 import com.togethersports.tosproject.participant.exception.NotParticipateRoomException;
 import com.togethersports.tosproject.room.Room;
 import com.togethersports.tosproject.room.RoomRepository;
+import com.togethersports.tosproject.room.code.RoomCode;
 import com.togethersports.tosproject.room.dto.UserAndRoomOfService;
 import com.togethersports.tosproject.room.exception.NotFoundRoomException;
+import com.togethersports.tosproject.session.SocketSession;
+import com.togethersports.tosproject.session.SocketSessionService;
 import com.togethersports.tosproject.user.User;
 import com.togethersports.tosproject.user.UserRepository;
+import com.togethersports.tosproject.user.code.UserCode;
 import com.togethersports.tosproject.user.exception.UserNotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -31,6 +40,8 @@ public class ParticipantService {
     private final ParticipantRepository participantRepository;
     private final UserRepository userRepository;
     private final RoomRepository roomRepository;
+    private final SocketSessionService socketSessionService;
+
 
     @Transactional
     public boolean save(User user, Room room){
@@ -53,8 +64,6 @@ public class ParticipantService {
     }
 
     public boolean checkAttendance(User user, Room room){
-        boolean attendance = participantRepository.existsByUserAndRoom(user, room);
-
 
         return participantRepository.existsByUserAndRoom(user, room);
     }
@@ -96,27 +105,22 @@ public class ParticipantService {
     }
 
     @Transactional
-    public void verifySession(String sessionId, Long roomId, Long userId){
+    public Participant verifySession(String sessionId, Long roomId, Long userId){
         User userEntity = findUserEntityById(userId);
         Room roomEntity = findRoomEntityById(roomId);
         Participant participantEntity = participantRepository.findByUserAndRoom(userEntity, roomEntity)
                 .orElseThrow(() -> new NotParticipateRoomException("해당 방에 참여하지 않은 유저입니다."));
 
-        participantEntity.updateSessionId(sessionId);
+        return participantEntity;
+    }
 
+    public void saveSession(String sessionId, Participant participant){
+
+
+        socketSessionService.saveSessionId(sessionId, participant);
 
 
     }
-
-//    @Transactional
-//    public String getSessionid(){
-//
-//
-//        Participant participant = participantRepository.findByUserIdAndRoomId(1L, 1L)
-//                .orElseThrow(() -> new NotParticipateRoomException());
-//
-//        return participant.getSocketSessionId();
-//    }
 
     // 유저 엔티티 찾기
     public User findUserEntityById(Long userId){
@@ -142,5 +146,50 @@ public class ParticipantService {
                 .build();
 
     }
+    @Transactional
+    public Participant findParticipantBySessionId(String sessionId){
+        Participant participant = socketSessionService.findParticipantBySessionId(sessionId);
+        return participant;
+    }
+
+    public void deleteSession(String sessionId, Participant participant){
+
+        participant.sessionRemove(sessionId);
+        socketSessionService.deleteSession(sessionId, participant);
+        participant.checkOnOffline();
+    }
+
+
+    public boolean checkOffline(String sessionId){
+        Participant participant = findParticipantBySessionId(sessionId);
+
+        if(participant.getSocketSessionList().size() <= 1){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean checkOnline(){
+        return true;
+    }
+
+    public void offline(String sessionId){
+        Participant participant = findParticipantBySessionId(sessionId);
+        int i = 0;
+        for(SocketSession socketSession : participant.getSocketSessionList()){
+            if(socketSession.getSocketSessionId().equals(sessionId)){
+                participant.getSocketSessionList().remove(i);
+            }
+            i++;
+        }
+
+
+    }
+
+    public void online(String sessionId){
+
+    }
+
+
 
 }

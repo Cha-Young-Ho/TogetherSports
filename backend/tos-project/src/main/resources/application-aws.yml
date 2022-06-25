@@ -1,4 +1,14 @@
 # aws deployment environment application setting
+
+# https setting
+server:
+  port: 8443
+  ssl:
+    key-store: /home/ubuntu/spring-ssl/keystore.p12
+    key-store-password: 123456
+    key-store-type: PKCS12
+    key-alias: ts
+
 # spring properties
 spring:
   datasource:

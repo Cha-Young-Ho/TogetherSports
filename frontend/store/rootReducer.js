@@ -9,10 +9,8 @@ const signupInitialState = {
   userBirth: "",
   activeAreas: [],
   gender: "",
-  userProfileImage: {
-    userProfileExtension: "",
-    imageSource: "",
-  },
+  userProfileExtension: "",
+  imageSource: "",
   interests: [],
 };
 
@@ -25,7 +23,8 @@ const myInfoInitialState = {
   userBirth: "yyyy-mm-dd",
   mannerPoint: 0,
   activeAreas: [],
-  userProfileImagePath: "/base_profileImage.jpg",
+  userProfileImagePath:
+    "https://together-sports.com/images/default_user_profile.jpeg",
   interests: [],
   gender: "",
   isInformationRequired: "false",
@@ -80,7 +79,7 @@ const clickDetectionInitialState = {
 
 // 로그인 상태 확인용 초기값
 const loginStatusChangeInitialState = {
-  loginStatus: "false",
+  loginStatus: false,
 };
 
 // roomID 초기값
@@ -112,6 +111,7 @@ const saveRoomCountInitialState = {
   roomCount: 0,
 };
 
+// 운동 대기방 페이지 데이터 저장을 위한 초기값
 const roomRealTimeInfoInitialState = {
   roomTitle: "",
   roomContent: "",
@@ -122,14 +122,13 @@ const roomRealTimeInfoInitialState = {
   startAppointmentDate: "",
   endAppointmentDate: "",
   createdTime: "",
-  updatedTime: "",
   host: "",
   creatorNickName: "",
   roomImages: [
-    // 임시
     {
+      imagePath: "https://together-sports.com/images/default_room_image.png",
       order: 0,
-      imagePath: "/signup-logo.png",
+      roomImageExtension: "png",
     },
   ],
   tags: [],
@@ -140,10 +139,10 @@ const roomRealTimeInfoInitialState = {
 // 방 설명 팝업에 쓰일 이미지 저장을 위한 초기값
 const saveRoomModalImagesInitialState = {
   roomImages: [
-    // 임시
     {
+      imagePath: "https://together-sports.com/images/default_room_image.png",
       order: 0,
-      imagePath: "/signup-logo.png",
+      roomImageExtension: "png",
     },
   ],
 };
@@ -151,12 +150,7 @@ const saveRoomModalImagesInitialState = {
 // WS 실시간 알림 저장을 위한 초기값
 const saveRoomAlarmInitialState = {
   // 임시 텍스트
-  messages: [
-    // "사공지은님이 참여했습니다.",
-    // "이동길님이 퇴장했습니다.",
-    // "차영호님이 강퇴되었습니다.",
-    // "전세운님이 방장이 되었습니다.",
-  ],
+  messages: [],
 };
 
 // 다른 회원 정보 조회를 위한 초기값
@@ -203,6 +197,7 @@ const SAVEROOMHOST = "SAVEROOMHOST";
 const SAVEROOMCOUNT = "SAVEROOMCOUNT";
 const SAVEROOMINFOS = "SAVEROOMINFOS";
 const CHANGEHOST = "CHANGEHOST";
+const CHANGEPARTICIPANTSTATUS = "CHANGEPARTICIPANTSTATUS";
 const SAVEROOMMODALIMAGES = "SAVEROOMMODALIMAGES";
 const SAVEROOMALARM = "SAVEROOMALARM";
 const SAVEOTHERINFO = "SAVEOTHERINFO";
@@ -216,10 +211,8 @@ const userRequestReducer = (state = signupInitialState, action) => {
         userNickname: action.payload.userNickname,
         userBirth: action.payload.userBirth,
         gender: action.payload.gender,
-        userProfileImage: {
-          userProfileExtension: action.payload.userProfileExtension,
-          imageSource: action.payload.imageSource,
-        },
+        userProfileExtension: action.payload.userProfileExtension,
+        imageSource: action.payload.imageSource,
       };
     case INTERESTS:
       return {
@@ -487,7 +480,6 @@ const roomRealTimeInfoReducer = (
         startAppointmentDate: action.payload.startAppointmentDate,
         endAppointmentDate: action.payload.endAppointmentDate,
         createdTime: action.payload.createdTime,
-        updatedTime: action.payload.updatedTime,
         host: action.payload.host,
         creatorNickName: action.payload.createNickName,
         roomImages: action.payload.roomImages,
@@ -499,6 +491,11 @@ const roomRealTimeInfoReducer = (
       return {
         ...state,
         host: action.payload.host,
+      };
+    case CHANGEPARTICIPANTSTATUS:
+      return {
+        ...state,
+        participants: action.payload.participants,
       };
     default:
       return state;

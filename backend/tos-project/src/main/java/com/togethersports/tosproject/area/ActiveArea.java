@@ -17,7 +17,7 @@ import javax.persistence.*;
  *     사용자가 활동 지역으로 선택한 주소를 저장하며 사용자별 최대 5개까지 지정될 수 있다.
  * </p>
  * <p>
- *     신규 활동 지역을 생성하려면 다음 메소드를 참조 {@link #createActiveArea(String)}
+ *     신규 활동 지역을 생성하려면 다음 메소드를 참조
  * </p>
  * @see User
  * @author seunjeon
@@ -53,7 +53,6 @@ public class ActiveArea {
         this.location = location;
 
     }
-
     protected ActiveArea() {}
 
     /**

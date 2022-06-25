@@ -2,6 +2,7 @@ package com.togethersports.tosproject.chat;
 
 
 import com.togethersports.tosproject.chat.code.ChatCode;
+import com.togethersports.tosproject.chat.dto.ChatOfOnOffline;
 import com.togethersports.tosproject.chat.dto.ChatOfPubRoom;
 import com.togethersports.tosproject.chat.dto.ClientMessage;
 import com.togethersports.tosproject.common.code.CommonCode;
@@ -32,16 +33,39 @@ import org.springframework.web.bind.annotation.RestController;
  * @author younghoCha
  */
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class ChatController {
 
     private final ChatService chatService;
-    private final ParticipantService participantService;
     private final SimpMessageSendingOperations sendingOperations;
     //방 채팅
     @MessageMapping("/room/{roomId}/chat")
     public void chat(ClientMessage message, @DestinationVariable Long roomId, @Header Long userId) {
+
+        if(message.getMessageType() != null) {
+            log.info("여기 수행했음");
+            if (message.getMessageType().equals(SystemMessageType.OFFLINE)) {
+                WsResponse response = WsResponse.of(ChatCode.SYSTEM_USER_OFFLINE,
+                        ChatOfOnOffline.builder()
+                                .id(message.getUserId())
+                                .nickname(message.getUserNickname())
+                                .build());
+                sendingOperations.convertAndSend("/topic/room/" + roomId + "/chat", response);
+                return;
+            }
+
+            if(message.getMessageType().equals(SystemMessageType.ONLINE)){
+                WsResponse response = WsResponse.of(ChatCode.SYSTEM_USER_ONLINE,
+                        ChatOfOnOffline.builder()
+                                .id(message.getUserId())
+                                .nickname(message.getUserNickname())
+                                .build());
+                sendingOperations.convertAndSend("/topic/room/" + roomId + "/chat", response);
+                return;
+            }
+        }
 //        if (ChatMessage.MessageType.ENTER.equals(message.getType())) {
 //            message.setMessage(message.getSender()+"님이 입장하였습니다.");
 //        }
@@ -65,7 +89,6 @@ public class ChatController {
     //채팅 내역 조회
     @GetMapping("/api/room/{roomId}/chat")
     public ResponseEntity<Response> getChatInfo(@PathVariable Long roomId, Pageable pageable){
-
         return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, chatService.getChatHistory(pageable, roomId)));
     }
 

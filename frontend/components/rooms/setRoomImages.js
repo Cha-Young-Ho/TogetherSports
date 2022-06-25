@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { getRoomImageSource } from "../../api/rooms";
+import { FailResponse } from "../../api/failResponse";
 
 const SetRoomImages = (props) => {
   const [inputImageName, setInputImageName] = useState(""); // input에 표시할 이미지 이름
@@ -7,10 +9,6 @@ const SetRoomImages = (props) => {
   const [roomImage, setRoomImage] = useState([]); // 서버로 보낼 데이터
   const [imagePreview, setImagePreview] = useState([]); // 프리뷰를 담을 배열
   const [thumbnailIndex, setThumbnailIndex] = useState(0); // 대표사진을 설정할 인덱스
-
-  const getRoomImagesFromRedux = useSelector(
-    (state) => state.roomRealTimeInfoReducer.roomImages
-  );
 
   // 이미지 선택 함수
   const onClickImage = (e) => {
@@ -96,6 +94,45 @@ const SetRoomImages = (props) => {
     setThumbnailIndex((thumbnailIndex = targetIndex)); // 대표사진 바꾸기
   };
 
+  const getRoomImageSourceFunc = (roomId) => {
+    getRoomImageSource(roomId)
+      .then((res) => {
+        // 이미지 설정 안 한 경우
+        if (res.status.code === 1216) {
+          setInputImageName((inputImageName = "방 이미지를 설정해보세요!"));
+        }
+
+        // 이미지 설정 한 경우
+        if (res.status.code === 5000) {
+          res.content
+            .sort((a, b) => a.order - b.order)
+            .map((image) => {
+              setRoomImage((prev) => [
+                ...prev,
+                (roomImage = {
+                  roomImageExtension: image.roomImageExtension,
+                  imageSource: image.imageSource,
+                }),
+              ]);
+            });
+
+          // 프리뷰 세팅
+          res.content
+            .sort((a, b) => a.order - b.order)
+            .map((image) => {
+              setImagePreview((prev) => [
+                ...prev,
+                (imagePreview = image.imageSource),
+              ]);
+            });
+        }
+      })
+      .catch((error) => {
+        FailResponse(error.response.data.status.code, getRoomImageSourceFunc);
+        return;
+      });
+  };
+
   // roomtaginfo, modifyroommodal
   useEffect(() => {
     if (props.getImageData) {
@@ -115,30 +152,7 @@ const SetRoomImages = (props) => {
   // 방 수정 팝업에 기본값 세팅
   useEffect(() => {
     if (props.path === "modifyRoom") {
-      // 사용자가 이미지 설정을 최소 1개라도 한 경우
-      if (getRoomImagesFromRedux[0].roomImageExtension !== undefined) {
-        getRoomImagesFromRedux
-          .sort((a, b) => a.order - b.order)
-          .map((image) =>
-            setRoomImage((prev) => [
-              ...prev,
-              (roomImage = {
-                roomImageExtension: image.roomImageExtension,
-                imageSource: image.imageSource,
-              }),
-            ])
-          );
-
-        // 기본 이미지 프리뷰 세팅
-        getRoomImagesFromRedux
-          .sort((a, b) => a.order - b.order)
-          .map((image) => {
-            setImagePreview((prev) => [
-              ...prev,
-              (imagePreview = image.imageSource),
-            ]);
-          });
-      }
+      getRoomImageSourceFunc(props.roomId);
     }
   }, []);
 

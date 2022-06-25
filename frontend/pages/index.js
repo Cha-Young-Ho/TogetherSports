@@ -5,38 +5,40 @@ import Head from "next/head";
 import Main1 from "../components/main/main1";
 import Main2 from "../components/main/main2";
 import Main3 from "../components/main/main3";
-import Link from "next/link";
 import { getRoomCount } from "../api/etc";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { FailResponse } from "../api/failResponse";
-
-/* 수정 필요 */
-// 방 생성하기 누를 때 로그인여부에 따라 막기
+import router from "next/router";
 
 export default function Home() {
   const dispatch = useDispatch();
 
-  const func_getRoomCount = () => {
-    getRoomCount()
-      .then((res) => {
-        if (res.status.code === 5000) {
-          dispatch({
-            type: "SAVEROOMCOUNT",
-            payload: {
-              roomCount: res.content.count,
-            },
-          });
-        }
-      })
-      .catch((error) => {
-        if (error.response) {
-          FailResponse(error.response.data.status.code, func_getRoomCount);
-          return;
-        }
-      });
-  };
-  useEffect(func_getRoomCount, []);
+  const myInfo = useSelector((state) => state.myInfoReducer);
+
+  useEffect(() => {
+    const func_getRoomCount = () => {
+      getRoomCount()
+        .then((res) => {
+          if (res.status.code === 5000) {
+            dispatch({
+              type: "SAVEROOMCOUNT",
+              payload: {
+                roomCount: res.content.count,
+              },
+            });
+          }
+        })
+        .catch((error) => {
+          if (error?.response?.data?.status) {
+            FailResponse(error.response.data.status.code, func_getRoomCount);
+            return;
+          }
+        });
+    };
+
+    func_getRoomCount();
+  }, []);
 
   return (
     <>
@@ -49,9 +51,19 @@ export default function Home() {
           <Main1 />
           <Main2 />
           <Main3 />
-          <Link href="/room/createroom/roomsetting">
-            <button className="fadein">🔥방 생성하러 가기🔥</button>
-          </Link>
+          <button
+            className="fadein"
+            onClick={(e) => {
+              if (myInfo.id === 0) {
+                e.preventDefault();
+                alert("로그인 및 추가정보가 필요한 기능입니다.");
+                return;
+              }
+              router.push("/room/createroom/roomsetting");
+            }}
+          >
+            🔥방 생성하러 가기🔥
+          </button>
         </div>
         <Footer />
       </div>

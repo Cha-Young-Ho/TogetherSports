@@ -68,9 +68,7 @@ public class RefreshTokenService {
     }
 
     public void removeRefreshTokenByToken(String refreshToken){
-
         // 기존에 존재하던 refresh Token 제거
         refreshTokenRepository.deleteByToken(refreshToken);
-
     }
 }
