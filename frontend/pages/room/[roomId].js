@@ -140,7 +140,7 @@ const Room = () => {
         }
       })
       .catch((error) => {
-        if (error.response) {
+        if (error?.response?.data?.status) {
           FailResponse(error.response.data.status.code, func_getRoomDetail);
         }
       });
@@ -157,28 +157,11 @@ const Room = () => {
         }
       })
       .catch((error) => {
-        if (error.response) {
+        if (error?.response?.data?.status) {
           FailResponse(error.response.data.status.code, onLeaveRoom);
         }
       });
   };
-
-  // 방 삭제하기 -> 보류
-  // const onDeleteRoom = () => {
-  //   deleteRoom(roomId)
-  //     .then((res) => {
-  //       if (res.status.code === 5000) {
-  //         router.push("/room/roomlist"); // 방 목록 페이지로 이동
-  //       } else {
-  //         FailResponse(res.status.code);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       if (error.response) {
-  //         FailResponse(error.response.data.status.code, onDeleteRoom);
-  //       }
-  //     });
-  // };
 
   useEffect(() => {
     if (roomId) {
