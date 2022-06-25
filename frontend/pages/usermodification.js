@@ -39,7 +39,6 @@ const UserModification = () => {
   const [gender, setGender] = useState(userInfo.gender);
 
   // 프로필
-  const getProfileImagePathFromRedux = userInfo.userProfileImagePath.split("/");
   const [profile, setProfile] = useState("");
   const [extension, setExtension] = useState("");
   const [imagesrc, setImagesrc] = useState("");
@@ -344,12 +343,7 @@ const UserModification = () => {
 
         // 프로필 설정 한 경우
         if (res.status.code === 5000) {
-          setProfile(
-            (profile =
-              getProfileImagePathFromRedux[
-                getProfileImagePathFromRedux.length - 1
-              ])
-          );
+          setProfile((profile = "프로필을 변경하시겠습니까?"));
           setImagesrc((imagesrc = res.content.profileImageSource));
           setExtension((extension = res.content.imageExtension));
         }

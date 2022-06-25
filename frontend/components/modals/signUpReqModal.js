@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useState } from "react";
 
-const FixedRequestAlarm = () => {
+const SignUpReqModal = () => {
   const [miniMode, setMiniMode] = useState(false);
 
   return (
@@ -128,4 +128,4 @@ const FixedRequestAlarm = () => {
   );
 };
 
-export default FixedRequestAlarm;
+export default SignUpReqModal;
