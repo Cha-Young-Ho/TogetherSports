@@ -35,7 +35,10 @@ const ParticipantList = (props) => {
                   key={index}
                 >
                   <div className="profile">
-                    <div></div>
+                    <img
+                      src={participant.userProfileImagePath}
+                      alt="profile"
+                    ></img>
                     <p>{participant.userNickname}</p>
                   </div>
                   <p>방장</p>
@@ -51,29 +54,57 @@ const ParticipantList = (props) => {
                   key={index}
                 >
                   <div className="profile">
-                    <div></div>
+                    <img
+                      src={participant.userProfileImagePath}
+                      alt="profile"
+                    ></img>
                     <p>{participant.userNickname}</p>
                   </div>
                 </button>
               );
             }
           } else {
-            return (
-              // **** 오프라인으로 변경필요 ****
-              <button
-                className="participant"
-                onClick={() => {
-                  onClickUserInfo(participant.id, participant.userNickname);
-                }}
-                key={index}
-              >
-                <div className="profile">
-                  <div></div>
-                  <p>{participant.userNickname}</p>
-                </div>
-                <p>오프라인</p>
-              </button>
-            );
+            // 방장이라면
+            if (participant.userNickname === host) {
+              return (
+                <button
+                  className="participant offline"
+                  onClick={() => {
+                    onClickUserInfo(participant.id, participant.userNickname);
+                  }}
+                  key={index}
+                >
+                  <div className="profile">
+                    <img
+                      src={participant.userProfileImagePath}
+                      alt="profile"
+                    ></img>
+                    <p>{participant.userNickname}</p>
+                  </div>
+                  <p>방장(오프라인)</p>
+                </button>
+              );
+            } else {
+              return (
+                // **** 오프라인으로 변경필요 ****
+                <button
+                  className="participant offline"
+                  onClick={() => {
+                    onClickUserInfo(participant.id, participant.userNickname);
+                  }}
+                  key={index}
+                >
+                  <div className="profile">
+                    <img
+                      src={participant.userProfileImagePath}
+                      alt="profile"
+                    ></img>
+                    <p>{participant.userNickname}</p>
+                  </div>
+                  <p>오프라인</p>
+                </button>
+              );
+            }
           }
         })
       ) : (
@@ -97,10 +128,15 @@ const ParticipantList = (props) => {
 
         p {
           font-size: 1.1em;
+          font-weight: 600;
         }
 
         .participant > p {
           font-weight: bold;
+        }
+
+        .offline {
+          background-color: #f0f0f0;
         }
 
         .profile {
@@ -109,12 +145,11 @@ const ParticipantList = (props) => {
           align-items: center;
         }
 
-        .profile div {
+        .profile img {
           width: 30px;
           height: 30px;
           margin-right: 10px;
           border-radius: 100%;
-          box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.16);
           background-color: #009baf;
         }
       `}</style>

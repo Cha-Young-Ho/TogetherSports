@@ -270,7 +270,7 @@ const Chatting = ({ chatOpen }) => {
         }
       })
       .catch((error) => {
-        if (error.response) {
+        if (error?.response?.data?.status) {
           FailResponse(
             error.response.data.status.code,
             func_getChatInfo(page, size)
