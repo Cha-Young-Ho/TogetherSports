@@ -17,4 +17,5 @@ public class ChatBaseEntity {
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime sendAt;
+
 }

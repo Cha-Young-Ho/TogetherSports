@@ -17,7 +17,9 @@ public enum ChatCode implements ResponseCode {
     ROOM_UPDATED("Room",1505, "방 정보가 업데이트 되었습니다."),
     SYSTEM_USER_DELEGATED("System",1504, "방장이 위임되었습니다."),
     USER_CHAT_PUBLISH("User", 1506, "유저 1명이 채팅을 보냈습니다."),
-    SYSTEM_HOST_OUT("System", 1507, "방장이 방을 나갔습니다.");
+    SYSTEM_HOST_OUT("System", 1507, "방장이 방을 나갔습니다."),
+    SYSTEM_USER_ONLINE("System", 1508, "유저 1명이 온라인이 되었습니다."),
+    SYSTEM_USER_OFFLINE("System", 1509, "유저 1명이 오프라인이 되었습니다.");
 
     private final String type;
     private final int code;

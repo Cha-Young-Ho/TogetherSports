@@ -3,9 +3,11 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import RoomInfoNavBar from "../../../components/roomInfoNavBar";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 const RoomSetting = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
   const myInfo = useSelector((state) => state.myInfoReducer.userNickname);
   //방 제목
   const [roomTitle, setRoomTitle] = useState("");
@@ -140,18 +142,21 @@ const RoomSetting = () => {
     ) {
       e.preventDefault();
       alert("빈칸을 모두 설정해주세요!");
+      return;
     }
 
     // 종목 선택 안 한 경우
     if (exercise === "선택") {
       e.preventDefault();
       alert("종목을 선택해주세요!");
+      return;
     }
 
     // 최소 인원 2명
     if (limitPeopleCount < 2) {
       e.preventDefault();
       alert("최소 인원은 2명 이상이어야 합니다!");
+      return;
     }
 
     dispatch({
@@ -163,6 +168,8 @@ const RoomSetting = () => {
         roomArea: roomArea.areaDetail,
       },
     });
+
+    router.push("/room/createroom/roomschedule");
   };
 
   return (
@@ -263,11 +270,9 @@ const RoomSetting = () => {
           </div>
         </div>
 
-        <Link href="/room/createroom/roomschedule">
-          <button className="button-next" onClick={getNext}>
-            다음
-          </button>
-        </Link>
+        <button className="button-next" onClick={getNext}>
+          다음
+        </button>
       </div>
       <style jsx>{`
         input:focus {

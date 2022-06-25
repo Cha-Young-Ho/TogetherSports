@@ -1,23 +1,30 @@
 import { useEffect, useState } from "react";
 import SetRoomImages from "../rooms/setRoomImages";
 import { getRoomInfo, putUpdateRoom } from "../../api/rooms";
-import FailResponse from "../../api/failResponse";
+import { FailResponse } from "../../api/failResponse";
 import { useSelector } from "react-redux";
 import Head from "next/head";
 
 const ModifyRoomModal = (props) => {
   const roomId = props.roomId;
+
+  const [changeRoomTitle, setChangeRoomTitle] = useState("");
   const roomTitle = useSelector(
     (state) => state.roomRealTimeInfoReducer.roomTitle
   );
+
+  const [changeLimitPeopleCount, setChangeLimitPeopleCount] = useState(0);
+  const limitPeopleCount = useSelector(
+    (state) => state.roomRealTimeInfoReducer.limitPeopleCount
+  );
+
+  const [changeRoomContent, setChangeRoomContent] = useState("");
   const roomContent = useSelector(
     (state) => state.roomRealTimeInfoReducer.roomContent
   );
+
   const roomArea = useSelector(
     (state) => state.roomRealTimeInfoReducer.roomArea
-  );
-  const limitPeopleCount = useSelector(
-    (state) => state.roomRealTimeInfoReducer.limitPeopleCount
   );
   const exercise = useSelector(
     (state) => state.roomRealTimeInfoReducer.exercise
@@ -34,7 +41,7 @@ const ModifyRoomModal = (props) => {
   const getTagsFromRedux = useSelector(
     (state) => state.roomRealTimeInfoReducer.tags
   );
-  const [doneTagsSetting, setDoneTagsSetting] = useState(false);
+
   const [tags, setTags] = useState([]);
   const tagsAge = [
     "10대",
@@ -115,13 +122,14 @@ const ModifyRoomModal = (props) => {
     return setRoomImages((roomImages = thumbnail.concat(arr)));
   };
 
+  // 방 수정 요청 함수
   const updateRoomFunc = () => {
     putUpdateRoom(
       roomId,
-      roomTitle,
-      roomContent,
+      changeRoomTitle,
+      changeRoomContent,
       roomArea,
-      limitPeopleCount,
+      changeLimitPeopleCount,
       exercise,
       tags,
       startAppointmentDate,
@@ -162,20 +170,25 @@ const ModifyRoomModal = (props) => {
 
   // 태그 초기값 세팅
   useEffect(() => {
-    getTagsFromRedux.map((tag) => {
-      setTags((prev) => [...prev, (tags = tag)]);
-    });
+    if (props.open) {
+      setTags([...getTagsFromRedux]);
 
-    if (getTagsFromRedux.length === tags.length) setDoneTagsSetting(true);
-  }, [getTagsFromRedux]);
+      document.body.style.overflow = "hidden";
+    }
+  }, [props.open]);
 
   useEffect(() => {
-    if (doneTagsSetting && tags.length) tags.map((tag) => setPrevTags(tag));
-  }, [doneTagsSetting]);
+    tags.map((tag) => setPrevTags(tag));
+  }, [tags]);
 
   return (
     <>
-      <div className={props.open ? "openModal modal" : "modal"}>
+      <div
+        className={props.open ? "openModal modal" : "modal"}
+        onClick={(e) => {
+          if (e.target.classList[1] === "openModal") props.close();
+        }}
+      >
         {props.open ? (
           <>
             <Head>
@@ -192,7 +205,7 @@ const ModifyRoomModal = (props) => {
                     minLength="1"
                     maxLength="20"
                     placeholder={roomTitle}
-                    onChange={(e) => setRoomTitle(e.target.value)}
+                    onChange={(e) => setChangeRoomTitle(e.target.value)}
                   ></input>
                 </div>
 
@@ -204,7 +217,7 @@ const ModifyRoomModal = (props) => {
                     placeholder={limitPeopleCount}
                     onChange={(e) => {
                       e.target.value = e.target.value.replace(/[^0-9]/g, "");
-                      setLimitPeopleCount(e.target.value);
+                      setChangeLimitPeopleCount(e.target.value);
                     }}
                   ></input>
                   <p>명</p>
@@ -216,7 +229,7 @@ const ModifyRoomModal = (props) => {
                 <div className="roomNotice-wrapper">
                   <p>방 설명 작성</p>
                   <textarea
-                    onChange={(e) => setRoomContent(e.target.value)}
+                    onChange={(e) => setChangeRoomContent(e.target.value)}
                     defaultValue={roomContent}
                   ></textarea>
                 </div>
@@ -226,6 +239,7 @@ const ModifyRoomModal = (props) => {
                     getImageData={getImageData}
                     getThumbnailData={getThumbnailIndex}
                     path={"modifyRoom"}
+                    roomId={roomId}
                   />
                 </div>
 

@@ -1,5 +1,6 @@
 package com.togethersports.tosproject.chat.dto;
 
+import com.togethersports.tosproject.chat.SystemMessageType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,7 +16,10 @@ import lombok.Setter;
 @Builder
 @Getter
 public class ClientMessage {
+    private SystemMessageType messageType;
     private Long roomId;
     private String target;
     private String message;
+    private String userNickname;
+    private Long userId;
 }

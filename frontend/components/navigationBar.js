@@ -7,9 +7,11 @@ import UserInfoModal from "./modals/navBarUserInfoModal";
 import { getMyInfo } from "../api/members";
 import { useDispatch, useSelector } from "react-redux";
 import FixedRequestAlarm from "./fixedRequestAlarm";
+import { useRouter } from "next/router";
 
 const NavigationBar = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
 
   // 로그인 상태 임을 판별하는 변수
   const loginStatus = useSelector(
@@ -27,6 +29,7 @@ const NavigationBar = () => {
   };
   const closeUserInfoModalFun = () => {
     setUserInfoModalOpen(false);
+    document.body.style.overflow = "unset";
   };
 
   // 로그아웃 버튼 클릭
@@ -53,7 +56,8 @@ const NavigationBar = () => {
               userNickname: "익명",
               userBirth: "yyyy-mm-dd",
               gender: "",
-              userProfileImagePath: "/base_profileImage.jpg",
+              userProfileImagePath:
+                "https://together-sports.com/images/default_user_profile.jpeg",
               activeAreas: [],
               interests: [],
               mannerPoint: "",
@@ -85,32 +89,38 @@ const NavigationBar = () => {
               userBirth: res.content.userBirth,
               mannerPoint: res.content.mannerPoint,
               activeAreas: res.content.activeAreas.map((el) => el),
-              userProfileImagePath:
-                res.content.userProfileImagePath === ""
-                  ? "/base_profileImage.jpg"
-                  : res.content.userProfileImagePath,
+              userProfileImagePath: res.content.userProfileImagePath,
               interests: res.content.interests.map((el) => el),
               gender: res.content.gender,
               isInformationRequired: res.content.isInformationRequired,
             },
           });
-        } else {
-          FailResponse(res.status.code);
-        }
 
-        dispatch({
-          type: "CHANGELOGINSTATUS",
-          payload: {
-            loginStatus: "true",
-          },
-        });
-      })
-      .catch((error) => {
-        if (error.response) {
           dispatch({
             type: "CHANGELOGINSTATUS",
             payload: {
-              loginStatus: "false",
+              loginStatus: true,
+            },
+          });
+        } else {
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+
+          dispatch({
+            type: "CHANGELOGINSTATUS",
+            payload: {
+              loginStatus: false,
+            },
+          });
+          FailResponse(res.status.code);
+        }
+      })
+      .catch((error) => {
+        if (error?.response?.data?.status) {
+          dispatch({
+            type: "CHANGELOGINSTATUS",
+            payload: {
+              loginStatus: false,
             },
           });
 
@@ -130,47 +140,47 @@ const NavigationBar = () => {
         <div className="container_bg">
           <div className="groups">
             <div className="logo">
-              <Link href="/">
+              <Link href="/" passHref>
                 <img src="/logo-navbar.png" alt="Together Sports"></img>
               </Link>
             </div>
             <div className="category">
-              <Link href="/room/roomlist">
+              <Link href="/room/roomlist" passHref>
                 <button className="tag">방 목록</button>
               </Link>
-              <Link href="/myroom">
-                <button
-                  className="tag"
-                  onClick={(e) => {
-                    if (myInfo.id === 0) {
-                      e.preventDefault();
-                      alert("로그인 및 추가정보가 필요한 기능입니다.");
-                    }
-                  }}
-                >
-                  내 일정
-                </button>
-              </Link>
-              <Link href="/room/createroom/roomsetting">
-                <button
-                  className="tag"
-                  onClick={(e) => {
-                    if (myInfo.id === 0) {
-                      e.preventDefault();
-                      alert("로그인 및 추가정보가 필요한 기능입니다.");
-                    }
-                  }}
-                >
-                  방 생성
-                </button>
-              </Link>
+              <button
+                className="tag"
+                onClick={(e) => {
+                  if (myInfo.isInformationRequired === "false") {
+                    e.preventDefault();
+                    alert("로그인 및 추가정보가 필요한 기능입니다.");
+                    return;
+                  }
+                  router.push("/myroom");
+                }}
+              >
+                내 일정
+              </button>
+              <button
+                className="tag"
+                onClick={(e) => {
+                  if (myInfo.isInformationRequired === "false") {
+                    e.preventDefault();
+                    alert("로그인 및 추가정보가 필요한 기능입니다.");
+                    return;
+                  }
+                  router.push("/room/createroom/roomsetting");
+                }}
+              >
+                방 생성
+              </button>
             </div>
           </div>
           <div>
             <div className="sign">
-              {loginStatus === "false" ? (
+              {!loginStatus ? (
                 <>
-                  <Link href="/login">
+                  <Link href="/login" passHref>
                     <button className="tag">로그인</button>
                   </Link>
                 </>
@@ -179,7 +189,8 @@ const NavigationBar = () => {
                   <button className="user-box" onClick={openUserInfoModalFunc}>
                     <img
                       className="ProfileImage"
-                      src={`/images/${myInfo.userProfileImagePath}`}
+                      src={myInfo.userProfileImagePath}
+                      alt="프로필 이미지"
                     ></img>
                     <div className="logOn">
                       {`${myInfo.userNickname}`} 님 반갑습니다!
@@ -208,11 +219,7 @@ const NavigationBar = () => {
           </div>
         </div>
       </div>
-      {loginStatus === "true" && myInfo.isInformationRequired ? (
-        <FixedRequestAlarm />
-      ) : (
-        ""
-      )}
+      {loginStatus && myInfo.isInformationRequired ? <FixedRequestAlarm /> : ""}
 
       <style jsx>{`
         .header {
@@ -275,11 +282,11 @@ const NavigationBar = () => {
         }
 
         .ProfileImage {
-          width: 40px;
-          height: 40px;
           border-radius: 50px;
           background-color: black;
           object-fit: cover;
+          width: 40px;
+          height: 40px;
         }
 
         .logOn {

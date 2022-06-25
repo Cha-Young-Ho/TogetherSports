@@ -11,6 +11,9 @@ import Head from "next/head";
 const RoomModal = (props) => {
   const dispatch = useDispatch();
 
+  // 로그인 시 저장되는 데이터
+  const myInfo = useSelector((state) => state.myInfoReducer);
+
   /* response content 담을 변수들 */
   const [roomId, setRoomId] = useState(0); // 참여페이지로 넘어가기 위한 roomId
   const [creatorNickName, setCreatorNickName] = useState(""); // 방 생성자
@@ -27,6 +30,11 @@ const RoomModal = (props) => {
   const [viewCount, setViewCount] = useState(0);
 
   const enterRoom = (e) => {
+    if (myInfo.isInformationRequired === "false") {
+      alert("로그인 및 추가정보가 필요합니다.");
+      return;
+    }
+
     postEnterRoom(roomId)
       .then((res) => {
         if (res.status.code === 1209) {

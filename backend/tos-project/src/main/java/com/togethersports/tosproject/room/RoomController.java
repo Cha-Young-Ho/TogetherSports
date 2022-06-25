@@ -138,6 +138,13 @@ public class RoomController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/api/room/{roomId}/imageSource")
+    public ResponseEntity getRoomImageSources(@PathVariable Long roomId, @CurrentUser User user){
+
+        return ResponseEntity.ok(roomService.getRoomImageSources(roomId, user));
+
+    }
+
 
 
 }

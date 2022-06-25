@@ -38,11 +38,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-
 @AutoConfigureMockMvc
 @SpringBootTest
 public class RoomControllerTest {
-
     @Autowired
     private JwtProperties jwtProperties;
 
@@ -54,6 +52,7 @@ public class RoomControllerTest {
 
     @Mock
     private ChatService chatService;
+
     @Mock
     private RoomService roomService;
 
@@ -71,41 +70,38 @@ public class RoomControllerTest {
         this.testRoomUtils = new TestRoomUtils();
     }
 
-
-//    @DisplayName("방 생성에 성공한다.")
-//    @Test
-//    @WithMockUser
-//    public void createRoomOnSuccess() throws Exception{
-//
-//
-//        //given
-//        User user = getTestUser();
-//        Map<String, Object> payload = new HashMap<>();
-//        payload.put("sub", user.getId());
-//        payload.put("email", user.getEmail());
-//        payload.put("role", user.getRole());
-//
-//        String accessToken = jwtService.createToken(jwtProperties.getAccessTokenSigningKey(),
-//                jwtProperties.getAccessTokenExpirationTime(),
-//                ChronoUnit.MINUTES,
-//                payload);
-//        RoomOfCreate roomOfCreate = testRoomUtils.getRoomOfCreate();
-//
-//        //mocking
-//        //when
-//        MockHttpServletRequestBuilder request = post("/api/room")
-//                .content(objectMapper.writeValueAsString(roomOfCreate))
-//                .header("Authorization", accessToken)
-//                .contentType(MediaType.APPLICATION_JSON);
-//
-//        //then
-//        MvcResult result = mockMvc.perform(request)
-//                .andExpect(status().isOk())
-//                .andReturn();
-//
-//    }
+    @DisplayName("방 생성에 성공한다.")
+    @Test
+    @WithMockUser
+    public void createRoomOnSuccess() throws Exception{
 
 
+        //given
+        User user = getTestUser();
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("sub", user.getId());
+        payload.put("email", user.getEmail());
+        payload.put("role", user.getRole());
+
+        String accessToken = jwtService.createToken(jwtProperties.getAccessTokenSigningKey(),
+                jwtProperties.getAccessTokenExpirationTime(),
+                ChronoUnit.MINUTES,
+                payload);
+        RoomOfCreate roomOfCreate = testRoomUtils.getRoomOfCreate();
+
+        //mocking
+        //when
+        MockHttpServletRequestBuilder request = post("/api/room")
+                .content(objectMapper.writeValueAsString(roomOfCreate))
+                .header("Authorization", accessToken)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        //then
+        MvcResult result = mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andReturn();
+
+    }
 
     @DisplayName("방의 Validation 검증에 실패한다.")
     @Test
@@ -138,13 +134,17 @@ public class RoomControllerTest {
     private User getTestUser(){
 
         User testUser = User.convertUser(1L, "test@naver.com", Role.ROLE_ADMIN);
+
         List<ActiveArea> activeAreas = new ArrayList<>();
+
         activeAreas.add(ActiveArea.createActiveArea("신월동", 12L, 13L));
 
         List<String> interestList = new ArrayList<>();
+
         interestList.add("야구");
 
         UserOfModifyInfo.UserProfileImage userProfileImage = new UserOfModifyInfo.UserProfileImage();
+
         userProfileImage.setUserProfileExtension("png");
         userProfileImage.setImageSource("ab");
 
@@ -161,13 +161,11 @@ public class RoomControllerTest {
                 .userProfileImage(userProfileImage)
                 .build(), interests, "userProfileImage");
         return testUser;
-
     }
 
     @DisplayName("방 조회에 성공한다.")
     @Test
     public void getRoomInfoOnSuccess() throws Exception{
-
         //given
 
         //when
@@ -209,7 +207,6 @@ public class RoomControllerTest {
         //when
 
         //then
-
     }
 
     @DisplayName("방 참가에 성공한다.")
