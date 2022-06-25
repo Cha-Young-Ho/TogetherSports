@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 
-const FixedRoomAlarm = () => {
+const CreateRoomModal = () => {
   const userId = useSelector((state) => state.myInfoReducer.id);
   const router = useRouter();
 
@@ -39,4 +39,4 @@ const FixedRoomAlarm = () => {
   );
 };
 
-export default FixedRoomAlarm;
+export default CreateRoomModal;

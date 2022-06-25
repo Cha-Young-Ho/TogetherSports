@@ -95,8 +95,10 @@ const UserInfoModal = (props) => {
         }
       })
       .catch((error) => {
-        FailResponse(error.response.data.status.code, getOtherInfoFunc);
-        props.close();
+        if (error?.response?.data?.status) {
+          FailResponse(error.response.data.status.code, getOtherInfoFunc);
+          props.close();
+        }
       });
     // return;
   };
@@ -118,8 +120,10 @@ const UserInfoModal = (props) => {
         FailResponse(res.status.code, upMannerPoint);
       })
       .catch((error) => {
-        FailResponse(error.response.data.status.code, upMannerPoint);
-        return;
+        if (error?.response?.data?.status) {
+          FailResponse(error.response.data.status.code, upMannerPoint);
+          return;
+        }
       });
   };
 

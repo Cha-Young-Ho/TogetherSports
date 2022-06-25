@@ -140,7 +140,7 @@ const Room = () => {
         }
       })
       .catch((error) => {
-        if (error.response) {
+        if (error?.response?.data?.status) {
           FailResponse(error.response.data.status.code, func_getRoomDetail);
         }
       });
@@ -157,28 +157,11 @@ const Room = () => {
         }
       })
       .catch((error) => {
-        if (error.response) {
+        if (error?.response?.data?.status) {
           FailResponse(error.response.data.status.code, onLeaveRoom);
         }
       });
   };
-
-  // 방 삭제하기 -> 보류
-  // const onDeleteRoom = () => {
-  //   deleteRoom(roomId)
-  //     .then((res) => {
-  //       if (res.status.code === 5000) {
-  //         router.push("/room/roomlist"); // 방 목록 페이지로 이동
-  //       } else {
-  //         FailResponse(res.status.code);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       if (error.response) {
-  //         FailResponse(error.response.data.status.code, onDeleteRoom);
-  //       }
-  //     });
-  // };
 
   useEffect(() => {
     if (roomId) {
@@ -204,7 +187,7 @@ const Room = () => {
         <div className="main-info">
           <div className="header">
             <div className="viewCount">
-              <p>{`${viewCount}명이 봤어요!`}</p>
+              <p>{`${viewCount}명이 이 방을 조회했어요!`}</p>
               <p>{`${createdTime.slice(0, 4)}년 ${createdTime.slice(
                 5,
                 7
