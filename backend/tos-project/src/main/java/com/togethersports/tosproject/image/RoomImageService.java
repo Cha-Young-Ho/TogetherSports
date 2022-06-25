@@ -26,8 +26,8 @@ public class RoomImageService {
     private final NameGenerator nameGenerator;
     private final StorageService storageService;
 
-    @Value("${app.room.default-image.etc}")
-    private final String DEFAULT_ROOM_ETC_IMAGE;
+
+    private final String DEFAULT_ROOM_ETC_IMAGE = "https://together-sports.com/imgaes/default_room_image.png";
 
     public void registerRoomImage(List<ImageOfRoomCRUD> roomOfCreateList, Room room){
 

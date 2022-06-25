@@ -214,7 +214,7 @@ public class RoomService {
         List<UserOfParticipantInfo> userOfParticipantInfoList = new ArrayList<>();
 
         for (Participant participant : participantList){
-            userOfParticipantInfoList.add(userService.getParticipantInfo(participant.getUser().getId()));
+            userOfParticipantInfoList.add(userService.getParticipantInfo(participant.getUser().getId(), participant));
         }
         return userOfParticipantInfoList;
     }
