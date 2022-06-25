@@ -6,7 +6,7 @@ import { FailResponse } from "../api/failResponse";
 import UserInfoModal from "./modals/navBarUserInfoModal";
 import { getMyInfo } from "../api/members";
 import { useDispatch, useSelector } from "react-redux";
-import FixedRequestAlarm from "./fixedRequestAlarm";
+import SignUpReqModal from "./modals/signUpReqModal";
 import { useRouter } from "next/router";
 
 const NavigationBar = () => {
@@ -219,7 +219,7 @@ const NavigationBar = () => {
           </div>
         </div>
       </div>
-      {loginStatus && myInfo.isInformationRequired ? <FixedRequestAlarm /> : ""}
+      {loginStatus && myInfo.isInformationRequired ? <SignUpReqModal /> : ""}
 
       <style jsx>{`
         .header {
