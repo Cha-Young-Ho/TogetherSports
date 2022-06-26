@@ -12,12 +12,13 @@ let nowMessage = "";
 let scrollHandlingTimer;
 let page = 0;
 let size = 20;
+let participants = [];
 const Chatting = ({ chatOpen }) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const roomId = useSelector((state) => state.saveRoomIdReducer.roomId);
   const myID = useSelector((state) => state.myInfoReducer.id);
-  const participants = useSelector(
+  const initParticipantArr = useSelector(
     (state) => state.roomRealTimeInfoReducer.participants
   );
   const [messageToServer, setMessageToServer] = useState("");
@@ -31,6 +32,9 @@ const Chatting = ({ chatOpen }) => {
     // },
   ]);
   const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT;
+
+  // 내가 방장인지 아닌지 확인하기 위한 변수
+  const myNickname = useSelector((state) => state.myInfoReducer.userNickname);
 
   // 스크롤 위치값
   const [scrollInfo, setScrollInfo] = useState({
@@ -203,11 +207,14 @@ const Chatting = ({ chatOpen }) => {
             participants: participants.map((user) => {
               if (user.id === JSONBodys.content.id) {
                 return {
+                  ...user,
                   id: user.id,
                   userNickname: user.userNickname,
-                  status: "online",
+                  status: "ONLINE",
                 };
               }
+
+              return user;
             }),
           },
         });
@@ -219,11 +226,14 @@ const Chatting = ({ chatOpen }) => {
             participants: participants.map((user) => {
               if (user.id === JSONBodys.content.id) {
                 return {
+                  ...user,
                   id: user.id,
                   userNickname: user.userNickname,
-                  status: "offline",
+                  status: "OFFLINE",
                 };
               }
+
+              return user;
             }),
           },
         });
@@ -280,8 +290,14 @@ const Chatting = ({ chatOpen }) => {
   };
 
   useEffect(() => {
-    if (chatOpen && roomId !== "") {
-      func_getChatInfo(page, size);
+    if (chatOpen && roomId !== 0) {
+      // 스크롤 관련 쓰로틀링
+      if (!scrollHandlingTimer) {
+        scrollHandlingTimer = setTimeout(() => {
+          scrollHandlingTimer = null;
+          func_getChatInfo(page, size);
+        }, 500);
+      }
 
       connect();
     }
@@ -300,7 +316,7 @@ const Chatting = ({ chatOpen }) => {
 
   // 채팅 맨 위 도착시
   useEffect(() => {
-    if (scrollInfo.scrollTop === 0) {
+    if (scrollInfo.scrollTop === 0 && roomId !== 0) {
       if (!scrollHandlingTimer) {
         scrollHandlingTimer = setTimeout(() => {
           scrollHandlingTimer = null;
@@ -311,13 +327,23 @@ const Chatting = ({ chatOpen }) => {
   }, [scrollInfo]);
 
   useEffect(() => {
-    // 스크롤 관련 쓰로틀링
-    if (!scrollHandlingTimer) {
-      scrollHandlingTimer = setTimeout(() => {
-        scrollHandlingTimer = null;
-        func_getChatInfo(page, size);
-      }, 500);
-    }
+    dispatch({
+      type: "CHANGEPARTICIPANTSTATUS",
+      payload: {
+        participants: participants.map((user) => {
+          if (user.userNickname === myNickname) {
+            return {
+              ...user,
+              id: user.id,
+              userNickname: user.userNickname,
+              status: "ONLINE",
+            };
+          }
+
+          return user;
+        }),
+      },
+    });
 
     return () => {
       if (clientInfo) clientInfo.disconnect();
@@ -329,6 +355,13 @@ const Chatting = ({ chatOpen }) => {
       });
     };
   }, []);
+
+  useEffect(() => {
+    if (initParticipantArr.length) {
+      console.log(" parti 변경됨", participants);
+      participants = [...initParticipantArr];
+    }
+  }, [initParticipantArr]);
 
   return (
     <>
