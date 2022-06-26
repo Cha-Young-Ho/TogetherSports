@@ -53,7 +53,9 @@ const ImageSlide = (props) => {
                       roomInfoImageArr.length
                     }`}</div>
                     <div className="image-container">
-                      <img src={image.imagePath} />
+                      <img
+                        src={`https://together-sports.com/${image.imagePath}`}
+                      />
                     </div>
                   </div>
                 );
@@ -67,7 +69,9 @@ const ImageSlide = (props) => {
                       roomDetailImageArr.length
                     }`}</div>
                     <div className="image-container">
-                      <img src={image.imagePath} />
+                      <img
+                        src={`https://together-sports.com/${image.imagePath}`}
+                      />
                     </div>
                   </div>
                 );

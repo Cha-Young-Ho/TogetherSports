@@ -36,7 +36,7 @@ const ParticipantList = (props) => {
                 >
                   <div className="profile">
                     <img
-                      src={participant.userProfileImagePath}
+                      src={`https://together-sports.com/${participant.userProfileImagePath}`}
                       alt="profile"
                     ></img>
                     <p>{participant.userNickname}</p>
@@ -55,7 +55,7 @@ const ParticipantList = (props) => {
                 >
                   <div className="profile">
                     <img
-                      src={participant.userProfileImagePath}
+                      src={`https://together-sports.com/${participant.userProfileImagePath}`}
                       alt="profile"
                     ></img>
                     <p>{participant.userNickname}</p>
@@ -76,7 +76,7 @@ const ParticipantList = (props) => {
                 >
                   <div className="profile">
                     <img
-                      src={participant.userProfileImagePath}
+                      src={`https://together-sports.com/${participant.userProfileImagePath}`}
                       alt="profile"
                     ></img>
                     <p>{participant.userNickname}</p>
@@ -96,7 +96,7 @@ const ParticipantList = (props) => {
                 >
                   <div className="profile">
                     <img
-                      src={participant.userProfileImagePath}
+                      src={`https://together-sports.com/${participant.userProfileImagePath}`}
                       alt="profile"
                     ></img>
                     <p>{participant.userNickname}</p>

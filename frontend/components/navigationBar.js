@@ -189,7 +189,7 @@ const NavigationBar = () => {
                   <button className="user-box" onClick={openUserInfoModalFunc}>
                     <img
                       className="ProfileImage"
-                      src={myInfo.userProfileImagePath}
+                      src={`https://together-sports.com/${myInfo.userProfileImagePath}`}
                       alt="프로필 이미지"
                     ></img>
                     <div className="logOn">

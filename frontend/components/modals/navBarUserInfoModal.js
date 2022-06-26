@@ -48,7 +48,10 @@ const NavBarUserInfoModal = (props) => {
 
           <div className="section">
             <div className="left-section">
-              <img src={imageSrc} className="pf-image"></img>
+              <img
+                src={`https://together-sports.com/${imageSrc}`}
+                className="pf-image"
+              ></img>
 
               <div className="buttons">
                 <Link href="/usermodification">
