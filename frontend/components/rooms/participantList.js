@@ -23,7 +23,7 @@ const ParticipantList = (props) => {
     <>
       {participantArr.length !== 0 ? (
         participantArr.map((participant, index) => {
-          if (participant.status === "online") {
+          if (participant.status === "ONLINE") {
             // 방장이라면
             if (participant.userNickname === host) {
               return (
