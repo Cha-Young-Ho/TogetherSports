@@ -80,7 +80,10 @@ const RoomShowingBox = (props) => {
         <div className="bodyLine">
           <h1>{`${props.datas.roomTitle}`}</h1>
           <p>
-            {`${props.datas.startAppointmentDate.slice(0, 10)} ${
+            {`${props.datas.exercise} ${props.datas.startAppointmentDate.slice(
+              0,
+              10
+            )} ${
               DayOfTheWeek[
                 moment(props.datas.startAppointmentDate).isoWeekday()
               ]
