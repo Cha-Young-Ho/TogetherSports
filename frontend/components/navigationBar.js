@@ -136,6 +136,10 @@ const NavigationBar = () => {
 
   return (
     <>
+      <head>
+        <meta name="viewport" content="width=1280" />
+      </head>
+
       <div className="header">
         <div className="container_bg">
           <div className="groups">
@@ -227,7 +231,7 @@ const NavigationBar = () => {
           justify-content: space-around;
           align-items: center;
           height: 82px;
-          min-height: 8vh;
+          max-height: 82px;
           border-bottom: 1px solid #e4e8eb;
           z-index: 90;
           position: fixed;
@@ -270,6 +274,7 @@ const NavigationBar = () => {
           position: relative;
           justify-content: center;
           font-size: 1.5rem;
+          white-space: nowrap;
         }
 
         .tag {
@@ -325,12 +330,6 @@ const NavigationBar = () => {
         .tag:active {
           top: 3px;
           box-shadow: none;
-        }
-
-        @media (max-width: 1300px) {
-          * {
-            display: none;
-          }
         }
       `}</style>
     </>
