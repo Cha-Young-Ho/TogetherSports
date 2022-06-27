@@ -49,10 +49,10 @@ public class RoomController {
     }
 
     //방 수정
-    @PutMapping("/api/room")
-    public ResponseEntity<Response> modifyRoomInfo(@RequestBody RoomOfUpdate roomOfUpdate){
+    @PutMapping("/api/room/{roomId}")
+    public ResponseEntity<Response> modifyRoomInfo(@RequestBody RoomOfUpdate roomOfUpdate, @PathVariable Long roomId){
 
-        Response response = roomService.modifyRoomInfo(roomOfUpdate);
+        Response response = roomService.modifyRoomInfo(roomOfUpdate, roomId);
 
         return ResponseEntity.ok(response);
 

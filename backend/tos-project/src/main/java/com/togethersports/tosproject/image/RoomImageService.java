@@ -1,6 +1,5 @@
 package com.togethersports.tosproject.image;
 
-import com.togethersports.tosproject.common.code.UploadType;
 import com.togethersports.tosproject.common.file.service.StorageService;
 import com.togethersports.tosproject.common.file.util.Base64Decoder;
 import com.togethersports.tosproject.common.file.util.NameGenerator;
@@ -9,9 +8,7 @@ import com.togethersports.tosproject.room.dto.ImageOfRoomCRUD;
 import com.togethersports.tosproject.room.dto.ImageSourcesOfRoom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
@@ -27,7 +24,7 @@ public class RoomImageService {
     private final StorageService storageService;
 
 
-    private final String DEFAULT_ROOM_ETC_IMAGE = "https://together-sports.com/imgaes/default_room_image.png";
+    private final String DEFAULT_ROOM_ETC_IMAGE = "/Users/chayeongho/스크린샷 2022-06-26 오후 5.58.05.png";
 
     public void registerRoomImage(List<ImageOfRoomCRUD> roomOfCreateList, Room room){
 
@@ -35,8 +32,6 @@ public class RoomImageService {
 
         //이미지가 없을 경우
         if(roomOfCreateList.size() == 0){
-            //기존 이미지 모두 삭제
-
             //이미지 설정
             ImageOfRoomCRUD defaultImage = ImageOfRoomCRUD.builder()
                     .imageSource(DEFAULT_ROOM_ETC_IMAGE)
@@ -70,9 +65,12 @@ public class RoomImageService {
     }
 
     public void updateRoomImage(List<ImageOfRoomCRUD> imageList, Room room){
-        //로컬 사진 모두 삭제
         List<RoomImage> roomImageList = room.getRoomImages();
+        //로컬 사진 모두 삭제
         for(RoomImage roomImage : roomImageList){
+            if(roomImage.getImagePath().equals(DEFAULT_ROOM_ETC_IMAGE)){
+
+            }
             storageService.delete(roomImage.getImagePath());
         }
 
@@ -93,5 +91,11 @@ public class RoomImageService {
                 .build();
 
 
+    }
+
+    public void deleteLocalImage(Room room){
+        for(RoomImage roomImage : room.getRoomImages()){
+            storageService.delete(roomImage.getImagePath());
+        }
     }
 }

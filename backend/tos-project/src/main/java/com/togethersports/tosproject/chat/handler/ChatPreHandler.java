@@ -16,6 +16,7 @@ import com.togethersports.tosproject.security.jwt.exception.JwtModulatedTokenExc
 import com.togethersports.tosproject.security.jwt.service.JwtService;
 import com.togethersports.tosproject.security.jwt.util.JwtUserConvertor;
 import com.togethersports.tosproject.user.User;
+import com.togethersports.tosproject.user.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.MalformedJwtException;
 import lombok.RequiredArgsConstructor;
@@ -53,6 +54,7 @@ public class ChatPreHandler implements ChannelInterceptor {
     private final JwtProperties jwtProperties;
     private final JwtUserConvertor jwtUserConvertor;
     private final ParticipantService participantService;
+    private final UserService userService;
 
     @Transactional
     @Override
@@ -97,10 +99,11 @@ public class ChatPreHandler implements ChannelInterceptor {
             verifySend(authorizationHeader, roomId, message);
 
             //JWT 유저 정보 받기 (리팩토링 필요)
-            User user = verifyJwt(authorizationHeader);
+            User tokenClaimUser = verifyJwt(authorizationHeader);
 
             //참가 엔티티 찾기
-            Participant participantEntity = participantService.verifySession(headerAccessor.getSessionId(), roomId, user.getId());
+            Participant participantEntity = participantService.verifySession(headerAccessor.getSessionId(), roomId, tokenClaimUser.getId());
+            User user = participantEntity.getUser();
 
             //참가자 엔티티의 session id 개수가 0개일 경우 -> 온라인 ws보내야함
             if(participantEntity.getStatus().equals(Status.OFFLINE)){
