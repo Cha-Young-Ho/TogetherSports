@@ -298,7 +298,7 @@ const putUpdateRoom = (
 ) => {
   const promise =
     localStorage.getItem("accessToken") === null
-      ? axios.put(`${API_ENDPOINT}/api/room`, {
+      ? axios.put(`${API_ENDPOINT}/api/room/${roomId}`, {
           roomId: roomId,
           roomTitle: roomTitle,
           roomContent: roomContent,
@@ -311,7 +311,7 @@ const putUpdateRoom = (
           roomImages: roomImages,
         })
       : axios.put(
-          `${API_ENDPOINT}/api/room`,
+          `${API_ENDPOINT}/api/room/${roomId}`,
           {
             roomId: roomId,
             roomTitle: roomTitle,

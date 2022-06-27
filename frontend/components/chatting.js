@@ -413,7 +413,7 @@ const Chatting = ({ chatOpen }) => {
                     <div key={index} className="other-message">
                       <img
                         className="msg-profileImg"
-                        src={messages.userProfileImagePath}
+                        src={`https://together-sports.com/${messages.userProfileImagePath}`}
                         alt="user pic"
                       ></img>
                       <div className="chat-container">
