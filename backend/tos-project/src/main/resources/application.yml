@@ -16,7 +16,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
@@ -29,9 +29,9 @@ spring:
 app:
   storage:
     root: /Users/chayeongho
-    location: /Users/chayeongho
+    location: /images
   user:
-    default-image: https://together-sports.com/images/default_user_profile.jpeg
+    default-image: /images/default_user_profile.jpeg
   room:
     default-image:
-      etc: https://together-sports.com/imgaes/default_room_image.png
+      etc: /imgaes/default_room_image.png

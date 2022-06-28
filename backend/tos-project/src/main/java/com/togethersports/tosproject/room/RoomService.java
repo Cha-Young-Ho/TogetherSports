@@ -128,7 +128,7 @@ public class RoomService {
 
     //방 수정
     @Transactional
-    public Response modifyRoomInfo(RoomOfUpdate roomOfUpdate){
+    public Response modifyRoomInfo(RoomOfUpdate roomOfUpdate, Long roomId){
         Room roomEntity = findRoomEntityById(roomOfUpdate.getId());
 
         //방 인원
@@ -393,6 +393,8 @@ public class RoomService {
 
             //방 인원이 0명인 경우 방삭제
             if(roomEntity.getParticipants().size() <= 0){
+                //방 이미지 모두 삭제
+                roomImageService.deleteLocalImage(roomEntity);
 
                 //나가기 처리(DB삭제)
                 roomRepository.deleteById(roomEntity.getId());
