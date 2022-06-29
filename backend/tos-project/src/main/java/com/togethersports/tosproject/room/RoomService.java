@@ -23,19 +23,12 @@ import com.togethersports.tosproject.tag.TagService;
 import com.togethersports.tosproject.user.User;
 import com.togethersports.tosproject.user.UserRepository;
 import com.togethersports.tosproject.user.UserService;
-import com.togethersports.tosproject.user.dto.UserOfOtherInfo;
 import com.togethersports.tosproject.user.dto.UserOfParticipantInfo;
 import com.togethersports.tosproject.user.exception.NotEnteredInformationException;
 import com.togethersports.tosproject.user.exception.UserNotFoundException;
-
-
-
-
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,7 +47,6 @@ import java.util.stream.Collectors;
  * @author younghoCha
  */
 
-@Slf4j
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -128,7 +120,7 @@ public class RoomService {
 
     //방 수정
     @Transactional
-    public Response modifyRoomInfo(RoomOfUpdate roomOfUpdate){
+    public Response modifyRoomInfo(RoomOfUpdate roomOfUpdate, Long roomId){
         Room roomEntity = findRoomEntityById(roomOfUpdate.getId());
 
         //방 인원
@@ -393,6 +385,8 @@ public class RoomService {
 
             //방 인원이 0명인 경우 방삭제
             if(roomEntity.getParticipants().size() <= 0){
+                //방 이미지 모두 삭제
+                roomImageService.deleteLocalImage(roomEntity);
 
                 //나가기 처리(DB삭제)
                 roomRepository.deleteById(roomEntity.getId());
@@ -545,11 +539,6 @@ public class RoomService {
         chatController.sendServerMessage(roomId, response);
     }
 
-    // 나가기 시 방장 위임
-    public void delegateOfOut(Long roomId, Long userId){
-
-    }
-
     public Response getRoomImageSources(Long roomId, User user){
 
         UserAndRoomOfService userAndRoomOfService = findEntityById(user.getId(), roomId);
@@ -560,7 +549,7 @@ public class RoomService {
             return Response.of(RoomCode.NO_PERMISSION, null);
         }
         List<RoomImage> roomImageList = roomEntity.getRoomImages();
-        if(roomImageList.size() == 1 && roomImageList.get(0).getImagePath().equals("https://together-sports.com/images/default_room_image.png")){
+        if(roomImageList.size() == 1 && roomImageList.get(0).getImagePath().equals("/images/default_room_image.png")){
             return Response.of(RoomCode.DEFAULT_ROOM_IMAGE, null);
         }
         List<ImageSourcesOfRoom> roomImageSourceList = new ArrayList<>();
