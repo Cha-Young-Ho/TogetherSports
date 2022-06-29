@@ -239,7 +239,8 @@ const UserModification = () => {
       });
   };
 
-  const exception = (e) => {
+  // 예외처리 및 수정버튼
+  const clickUpdateUserInfo = (e) => {
     const checkNickname = $("#input-nickname").val();
 
     if (checkNickname === "" || checkNickname === null) {
@@ -300,11 +301,6 @@ const UserModification = () => {
       setExtension(null);
       setImagesrc(null);
     }
-  };
-
-  // 예외처리 및 수정버튼
-  const clickUpdateUserInfo = (e) => {
-    exception(e);
 
     // 회원가입 요청 및 회원정보 수정
     func_PostUserRequest();
