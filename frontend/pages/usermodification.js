@@ -254,7 +254,33 @@ const UserModification = () => {
       });
   };
 
-  const exception = (e) => {
+  const func_PostUserRequest = () => {
+    postUserRequest(
+      validNickname,
+      userBirth,
+      activeAreas,
+      gender,
+      extension,
+      imagesrc,
+      Object.entries(interests)
+        .filter((exer) => {
+          if (exer[1]) return true;
+        })
+        .map((el) => el[0])
+    )
+      .then((res) => {
+        if (res.status.code === 5000) {
+          func_getMyInfo();
+        }
+      })
+      .catch((error) => {
+        FailResponse(error.response.data.status.code, func_PostUserRequest);
+        return;
+      });
+  };
+
+  // 예외처리 및 수정버튼
+  const clickUpdateUserInfo = (e) => {
     if (validNickname === "") {
       e.preventDefault();
       alert("닉네임을 입력해주세요.");
@@ -298,36 +324,6 @@ const UserModification = () => {
       setExtension(null);
       setImagesrc(null);
     }
-  };
-
-  const func_PostUserRequest = () => {
-    postUserRequest(
-      validNickname,
-      userBirth,
-      activeAreas,
-      gender,
-      extension,
-      imagesrc,
-      Object.entries(interests)
-        .filter((exer) => {
-          if (exer[1]) return true;
-        })
-        .map((el) => el[0])
-    )
-      .then((res) => {
-        if (res.status.code === 5000) {
-          func_getMyInfo();
-        }
-      })
-      .catch((error) => {
-        FailResponse(error.response.data.status.code, func_PostUserRequest);
-        return;
-      });
-  };
-
-  // 예외처리 및 수정버튼
-  const clickUpdateUserInfo = (e) => {
-    exception(e);
 
     // 회원가입 요청 및 회원정보 수정
     func_PostUserRequest();
