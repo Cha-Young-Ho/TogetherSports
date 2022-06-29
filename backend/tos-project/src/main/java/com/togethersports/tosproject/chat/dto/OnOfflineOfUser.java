@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class OfflineOfUser {
+public class OnOfflineOfUser {
     private SystemMessageType messageType;
     private String message;
     private String userNickname;

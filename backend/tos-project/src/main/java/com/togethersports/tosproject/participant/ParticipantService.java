@@ -32,7 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author younghoCha
  */
-@Slf4j
+
 @Service
 @RequiredArgsConstructor
 public class ParticipantService {
@@ -146,6 +146,7 @@ public class ParticipantService {
                 .build();
 
     }
+
     @Transactional
     public Participant findParticipantBySessionId(String sessionId){
         Participant participant = socketSessionService.findParticipantBySessionId(sessionId);
@@ -167,27 +168,6 @@ public class ParticipantService {
             return true;
         }
         return false;
-    }
-
-    public boolean checkOnline(){
-        return true;
-    }
-
-    public void offline(String sessionId){
-        Participant participant = findParticipantBySessionId(sessionId);
-        int i = 0;
-        for(SocketSession socketSession : participant.getSocketSessionList()){
-            if(socketSession.getSocketSessionId().equals(sessionId)){
-                participant.getSocketSessionList().remove(i);
-            }
-            i++;
-        }
-
-
-    }
-
-    public void online(String sessionId){
-
     }
 
 

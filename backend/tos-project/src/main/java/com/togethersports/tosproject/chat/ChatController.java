@@ -33,7 +33,6 @@ import org.springframework.web.bind.annotation.RestController;
  * @author younghoCha
  */
 
-@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class ChatController {
@@ -45,7 +44,6 @@ public class ChatController {
     public void chat(ClientMessage message, @DestinationVariable Long roomId, @Header Long userId) {
 
         if(message.getMessageType() != null) {
-            log.info("여기 수행했음");
             if (message.getMessageType().equals(SystemMessageType.OFFLINE)) {
                 WsResponse response = WsResponse.of(ChatCode.SYSTEM_USER_OFFLINE,
                         ChatOfOnOffline.builder()
@@ -66,9 +64,6 @@ public class ChatController {
                 return;
             }
         }
-//        if (ChatMessage.MessageType.ENTER.equals(message.getType())) {
-//            message.setMessage(message.getSender()+"님이 입장하였습니다.");
-//        }
 
         // 해당 방과 해당 유저가 존재하는지 확인
         chatService.checkValidate(userId, roomId);
@@ -91,15 +86,5 @@ public class ChatController {
     public ResponseEntity<Response> getChatInfo(@PathVariable Long roomId, Pageable pageable){
         return ResponseEntity.ok(Response.of(CommonCode.GOOD_REQUEST, chatService.getChatHistory(pageable, roomId)));
     }
-
-    private MessageHeaders createHeaders(String sessionId) {
-        SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor.create(SimpMessageType.MESSAGE);
-        headerAccessor.setSessionId(sessionId);
-        headerAccessor.setLeaveMutable(true);
-        return headerAccessor.getMessageHeaders();
-    }
-
-
-
 
 }
