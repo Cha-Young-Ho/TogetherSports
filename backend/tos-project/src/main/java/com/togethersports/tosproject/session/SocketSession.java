@@ -7,7 +7,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-
+/**
+ * <h1>SocketSession</h1>
+ * <p>
+ *     Socket의 Session 엔티티
+ * </p>
+ *
+ * @author younghoCha
+ */
 @Getter
 @Builder
 @Entity
