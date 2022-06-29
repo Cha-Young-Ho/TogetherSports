@@ -1,8 +1,10 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 
-const FixedRoomAlarm = () => {
+const CreateRoomModal = () => {
   const userId = useSelector((state) => state.myInfoReducer.id);
+  const router = useRouter();
 
   const checkingUserInfo = (e) => {
     if (userId === 0) {
@@ -10,16 +12,16 @@ const FixedRoomAlarm = () => {
       e.preventDefault();
       return;
     }
+
+    router.push("/room/createroom/roomsetting");
   };
   return (
     <>
-      <Link href="/room/createroom/roomsetting">
-        <img
-          src="/room-create-button.png"
-          className="roomRequestButton"
-          onClick={checkingUserInfo}
-        ></img>
-      </Link>
+      <img
+        src="/room-create-button.png"
+        className="roomRequestButton"
+        onClick={checkingUserInfo}
+      ></img>
 
       <style jsx>{`
         .roomRequestButton {
@@ -37,4 +39,4 @@ const FixedRoomAlarm = () => {
   );
 };
 
-export default FixedRoomAlarm;
+export default CreateRoomModal;

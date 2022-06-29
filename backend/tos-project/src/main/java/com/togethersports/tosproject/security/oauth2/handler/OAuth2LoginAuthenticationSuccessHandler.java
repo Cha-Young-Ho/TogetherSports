@@ -1,21 +1,15 @@
 package com.togethersports.tosproject.security.oauth2.handler;
 
 import com.togethersports.tosproject.security.jwt.JwtProperties;
-import com.togethersports.tosproject.security.jwt.service.RefreshTokenService;
 import com.togethersports.tosproject.security.jwt.service.JwtService;
+import com.togethersports.tosproject.security.jwt.service.RefreshTokenService;
 import com.togethersports.tosproject.security.oauth2.CustomOAuth2User;
 import com.togethersports.tosproject.security.util.ClientIpUtils;
 import com.togethersports.tosproject.user.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.acls.domain.BasePermission;
-import org.springframework.security.acls.domain.ObjectIdentityImpl;
-import org.springframework.security.acls.domain.PrincipalSid;
 import org.springframework.security.acls.jdbc.JdbcMutableAclService;
-import org.springframework.security.acls.model.MutableAcl;
-import org.springframework.security.acls.model.ObjectIdentity;
-import org.springframework.security.acls.model.Sid;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -37,10 +31,6 @@ import java.util.Map;
  * <p>
  * OAuth2 인증 성공 이후 처리를 담당하는 클래스
  * </p>
- * <p>
- * 인증 성공 이후 사용자 계정이 신규 계정인 경우 ACL 권한 정보를 생성한다.
- * </p>
- *
  * @author seunjeon
  */
 @Slf4j
@@ -51,7 +41,6 @@ public class OAuth2LoginAuthenticationSuccessHandler implements AuthenticationSu
     private final JwtService<User> jwtService;
     private final JwtProperties jwtProperties;
     private final RefreshTokenService refreshTokenService;
-    private final JdbcMutableAclService aclService;
 
     @Value("${app.oauth2.authorized-redirect-uri}")
     private String redirectUrl;
@@ -68,12 +57,6 @@ public class OAuth2LoginAuthenticationSuccessHandler implements AuthenticationSu
 
         // 추가정보 기입 여부
         boolean firstUser = oauth2User.isFirst();
-
-        // 신규 계정인 경우
-        if (firstUser) {
-            // 사용자 계정 ACL 권한 정보 생성
-            createUserAcl(loggedInUser);
-        }
 
         // 액세스 토큰 생성 - 만료기간은 분 단위로 설정
         String accessToken = jwtService.createToken(jwtProperties.getAccessTokenSigningKey(),
@@ -118,27 +101,4 @@ public class OAuth2LoginAuthenticationSuccessHandler implements AuthenticationSu
         return payload;
     }
 
-    /**
-     * 사용자 계정에 대한 acl 정보를 생성한다.<br>
-     * <pre>@AclCreate를 사용하지 않고 메소드를 이용하는 것은 spring security context 가 세팅되는 시간적 차이 때문이다.</pre>
-     *
-     * @param user acl 정보 생성 대상 사용자 도메인 객체 인스턴스
-     */
-    public void createUserAcl(User user) {
-        // acl object identity 생성 (도메인 객체 인스턴스 식별)
-        ObjectIdentity oi = new ObjectIdentityImpl(user);
-        MutableAcl acl = aclService.createAcl(oi);
-
-        // acl entry 생성 (권한 정보)
-        Sid sid = new PrincipalSid(String.valueOf(user.getId()));
-
-        // 자기 자신의 계정에 대한 모든 권한 부여
-        acl.insertAce(0, BasePermission.ADMINISTRATION, sid, true);
-        acl.insertAce(0, BasePermission.READ, sid, true);
-        acl.insertAce(0, BasePermission.CREATE, sid, true);
-        acl.insertAce(0, BasePermission.WRITE, sid, true);
-        acl.insertAce(0, BasePermission.DELETE, sid, true);
-
-        aclService.updateAcl(acl);
-    }
 }

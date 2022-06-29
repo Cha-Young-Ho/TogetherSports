@@ -64,9 +64,9 @@ const RoomInfoNavBar = (props) => {
         .roomschedule,
         .roomtaginfo {
           border-radius: 50px;
+          margin: 10px;
           width: 90px;
           height: 90px;
-          margin: 10px;
         }
       `}</style>
     </>

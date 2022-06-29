@@ -1,0 +1,1 @@
+DELETE http://localhost:8080/api/logout?refresh-token=eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTY5NDY4MzR9.v4T4MF6YlsMEDUSvC_PUMjLnWjtoCkdDfsUrOIVzFcg

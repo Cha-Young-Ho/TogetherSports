@@ -4,14 +4,17 @@ import {
   getMyInfo,
   getNicknameDuplicationCheck,
   postUserRequest,
+  getProfileImageSource,
 } from "../api/members";
 import { useDispatch, useSelector } from "react-redux";
 import { FailResponse } from "../api/failResponse";
 import Map from "../components/Map";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 const UserModification = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
 
   // 회원정보 초기값
   const userInfo = useSelector((state) => state.myInfoReducer);
@@ -22,6 +25,7 @@ const UserModification = () => {
 
   // 닉네임
   const [nickname, setNickname] = useState(userInfo.userNickname);
+  const [validNickname, setValidNickname] = useState("");
   const [isNicknameCheck, setIsNicknameCheck] = useState(false);
 
   // 생년월일
@@ -35,10 +39,7 @@ const UserModification = () => {
   const [gender, setGender] = useState(userInfo.gender);
 
   // 프로필
-  const setProfileTemp = userInfo.userProfileImagePath.split("/");
-  const [profile, setProfile] = useState(
-    setProfileTemp[setProfileTemp.length - 1]
-  );
+  const [profile, setProfile] = useState("");
   const [extension, setExtension] = useState("");
   const [imagesrc, setImagesrc] = useState("");
 
@@ -62,8 +63,13 @@ const UserModification = () => {
 
   // 닉네임 중복확인
   const checkNicknameDuplication = () => {
-    if (nickname.length < 2) {
-      alert("닉네임은 최소 2글자 이상 입력해주세요.");
+    if (nickname.length < 2 || nickname.length > 8) {
+      alert("닉네임은 2글자 이상 ~ 8글자 이내로 입력해주세요.");
+      return;
+    } else if (userInfo.userNickname === nickname) {
+      setIsNicknameCheck(true);
+      setValidNickname(nickname);
+      alert("사용 가능한 닉네임 입니다.");
       return;
     }
 
@@ -71,6 +77,7 @@ const UserModification = () => {
       .then((res) => {
         if (res.status.code === 5000) {
           setIsNicknameCheck(true);
+          setValidNickname(nickname);
           alert("사용 가능한 닉네임입니다.");
         } else {
           setNickname("");
@@ -162,6 +169,13 @@ const UserModification = () => {
     encodeFileToBase64(file);
   };
 
+  // 프로필 이미지 삭제 및 초기화 함수
+  const deleteProfileImage = () => {
+    setProfile((profile = ""));
+    setExtension((extension = ""));
+    setImagesrc((imagesrc = ""));
+  };
+
   // 관심 종목 선택시
   const changeInterests = (e) => {
     if (e.target.classList[2] === "clicked") {
@@ -184,9 +198,65 @@ const UserModification = () => {
     }));
   };
 
+  const func_getMyInfo = () => {
+    getMyInfo()
+      .then((res) => {
+        if (res.status.code === 5000) {
+          dispatch({
+            type: "SAVEMYINFO",
+            payload: {
+              id: res.content.id,
+              userEmail: res.content.userEmail,
+              userName: res.content.userName,
+              userNickname: res.content.userNickname,
+              userBirth: res.content.userBirth,
+              mannerPoint: res.content.mannerPoint,
+              activeAreas: res.content.activeAreas.map((el) => el),
+              userProfileImagePath: res.content.userProfileImagePath,
+              interests: res.content.interests.map((el) => el),
+              gender: res.content.gender,
+              isInformationRequired: res.content.isInformationRequired,
+            },
+          });
+
+          dispatch({
+            type: "CHANGELOGINSTATUS",
+            payload: {
+              loginStatus: true,
+            },
+          });
+
+          router.back();
+        } else {
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+
+          dispatch({
+            type: "CHANGELOGINSTATUS",
+            payload: {
+              loginStatus: false,
+            },
+          });
+          FailResponse(res.status.code);
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          dispatch({
+            type: "CHANGELOGINSTATUS",
+            payload: {
+              loginStatus: false,
+            },
+          });
+
+          FailResponse(error.response.data.status.code, func_getMyInfo);
+        }
+      });
+  };
+
   const func_PostUserRequest = () => {
     postUserRequest(
-      nickname,
+      validNickname,
       userBirth,
       activeAreas,
       gender,
@@ -209,41 +279,9 @@ const UserModification = () => {
       });
   };
 
-  const func_getMyInfo = () => {
-    getMyInfo()
-      .then((res) => {
-        if (res.status.code === 5000) {
-          dispatch({
-            type: "SAVEMYINFO",
-            payload: {
-              userEmail: res.content.userEmail,
-              userName: res.content.userName,
-              userNickname: res.content.userNickname,
-              userBirth: res.content.userBirth,
-              gender: res.content.gender,
-              userProfileImagePath: res.content.userProfileImagePath,
-              activeAreas: res.content.activeAreas,
-              interests: res.content.interests,
-              mannerPoint: res.content.mannerPoint,
-              isInformationRequired: res.content.isInformationRequired,
-            },
-          });
-          alert("성공적으로 수정 되었습니다.");
-          window.history.back();
-          return;
-        }
-      })
-      .catch((error) => {
-        FailResponse(error.response.data.status.code, func_getMyInfo);
-        return;
-      });
-  };
-
   // 예외처리 및 수정버튼
   const clickUpdateUserInfo = (e) => {
-    const checkNickname = $("#input-nickname").val();
-
-    if (checkNickname === "" || checkNickname === null) {
+    if (validNickname === "") {
       e.preventDefault();
       alert("닉네임을 입력해주세요.");
       return false;
@@ -251,24 +289,9 @@ const UserModification = () => {
 
     // 닉네임에 공백이 있을 경우
     const blank_pattern = /[\s]/g;
-    if (blank_pattern.test(checkNickname) === true) {
+    if (blank_pattern.test(validNickname) === true) {
       e.preventDefault();
       alert("닉네임을 공백없이 입력해주세요.");
-      return false;
-    }
-
-    // 닉네임에 특수문자 사용했을 경우 (추후 수정 예정)
-    // const special_pattern = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
-    // if (special_pattern.test(checkNickname) === true) {
-    //   e.preventDefault();
-    //   alert("닉네임에 특수문자는 사용할 수 없습니다.");
-    //   return false;
-    // }
-
-    // 닉네임 길이 제한
-    if (checkNickname.length < 2 && checkNickname.length > 8) {
-      e.preventDefault();
-      alert("닉네임은 최소 2글자 최대 8글자까지 입력 가능합니다.");
       return false;
     }
 
@@ -306,6 +329,30 @@ const UserModification = () => {
     func_PostUserRequest();
   };
 
+  const getProfileImageSourceFunc = () => {
+    getProfileImageSource()
+      .then((res) => {
+        // 프로필 설정 안 한 경우
+        if (res.status.code === 1111) {
+          setProfile((profile = "프로필을 설정해보세요!"));
+        }
+
+        // 프로필 설정 한 경우
+        if (res.status.code === 5000) {
+          setProfile((profile = "프로필을 변경하시겠습니까?"));
+          setImagesrc((imagesrc = res.content.profileImageSource));
+          setExtension((extension = res.content.imageExtension));
+        }
+      })
+      .catch((error) => {
+        FailResponse(
+          error.response.data.status.code,
+          getProfileImageSourceFunc
+        );
+        return;
+      });
+  };
+
   // 초기값 세팅
   useEffect(() => {
     // 관심 종목 세팅
@@ -331,6 +378,8 @@ const UserModification = () => {
     });
 
     getBirthDay();
+
+    getProfileImageSourceFunc();
   }, []);
 
   return (
@@ -416,18 +465,26 @@ const UserModification = () => {
               </div>
             </div>
 
-            <div className="content-profile">
-              <p>프로필</p>
-              <input readOnly value={profile} />
-              <label htmlFor="filename">
-                <p>파일찾기</p>
-              </label>
-              <input
-                type="file"
-                id="filename"
-                accept=".jpg, .jpeg, .png"
-                onChange={onClickProfileImage}
-              />
+            <div className="content-profiles">
+              <div className="content-profile">
+                <p>프로필</p>
+                <input readOnly value={profile} />
+                <label htmlFor="filename">
+                  <p>파일찾기</p>
+                </label>
+                <input
+                  type="file"
+                  id="filename"
+                  accept=".jpg, .jpeg, .png"
+                  onChange={onClickProfileImage}
+                />
+              </div>
+              <button
+                className="delete-profile-button"
+                onClick={deleteProfileImage}
+              >
+                삭제
+              </button>
             </div>
           </div>
         </div>
@@ -667,10 +724,17 @@ const UserModification = () => {
           background: #08555f;
         }
 
-        .content-profile {
+        .content-profiles {
           width: 100%;
           height: 40px;
-          margin: 30px 0;
+          margin: 40px 0;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+        }
+
+        .content-profile {
+          width: 90%;
           padding: 5px 10px 5px 14px;
           border-radius: 10px;
           border: solid 1px #e8e8e8;
@@ -680,7 +744,7 @@ const UserModification = () => {
         }
 
         .content-profile input {
-          width: 450px;
+          width: 390px;
           height: 30px;
           border-style: none;
           font-size: 1.4em;
@@ -709,6 +773,17 @@ const UserModification = () => {
           padding: 0;
           border: 0;
           overflow: hidden;
+        }
+
+        .delete-profile-button {
+          margin-left: 10px;
+          width: 50px;
+          height: 30px;
+          border-radius: 5px;
+          background-color: #08555f;
+          color: white;
+          border: none;
+          cursor: pointer;
         }
 
         // 관심 종목 Grid

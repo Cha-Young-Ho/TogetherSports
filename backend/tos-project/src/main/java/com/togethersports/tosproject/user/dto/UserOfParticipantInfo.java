@@ -2,6 +2,7 @@ package com.togethersports.tosproject.user.dto;
 
 import com.togethersports.tosproject.area.ActiveArea;
 import com.togethersports.tosproject.mannerpoint.MannerPointStatus;
+import com.togethersports.tosproject.participant.Status;
 import com.togethersports.tosproject.user.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,5 +23,6 @@ public class UserOfParticipantInfo {
     private List<ActiveArea> activeAreas;
     private List<String> interests;
     private String userProfileImagePath;
+    private Status status;
 
 }

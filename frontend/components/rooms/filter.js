@@ -236,21 +236,6 @@ const Filter = () => {
     }
   }, [addAreaClickDetection.add]);
 
-  useEffect(() => {
-    const FilterObj = JSON.parse(localStorage.getItem("Filters"));
-
-    if (FilterObj) {
-      setSelectedAreas(FilterObj.selectedArea);
-      setStartTime(FilterObj.startTime);
-      setEndTime(FilterObj.endTime);
-      setContainNoAdmittance(FilterObj.containNoAdmittance);
-      setContainTimeClosing(FilterObj.containTimeClosing);
-      setCurStartFilteringDate(FilterObj.startDate);
-      setCurEndFilteringDate(FilterObj.endDate);
-      setEnterAccessPeople(FilterObj.requiredPeopleCount);
-    }
-  }, []);
-
   return (
     <>
       <div className="filter-wrapper">

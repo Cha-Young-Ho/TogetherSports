@@ -2,12 +2,14 @@ package com.togethersports.tosproject.participant;
 
 
 import com.togethersports.tosproject.room.Room;
+import com.togethersports.tosproject.session.SocketSession;
 import com.togethersports.tosproject.user.User;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * <h1>Participant</h1>
@@ -25,9 +27,10 @@ import javax.persistence.*;
 public class Participant {
 
     @Builder(access = AccessLevel.PRIVATE)
-    private Participant(User user, Room room){
+    private Participant(User user, Room room, Status status){
         this.user = user;
         this.room = room;
+        this.status = status;
     }
 
     private Participant(){
@@ -46,19 +49,50 @@ public class Participant {
     @JoinColumn(name = "ROOM_ID")
     private Room room;
 
-    @Column(name = "SOCKET_SESSION_ID")
-    private String socketSessionId;
+    @Column(name = "STATUS")
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    @OneToMany(mappedBy = "participant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<SocketSession> socketSessionList;
 
     public static Participant of(User user, Room room){
         return Participant.builder()
                 .user(user)
                 .room(room)
+                .status(Status.ONLINE)
                 .build();
     }
 
-    public void updateSessionId(String sessionId){
-        this.socketSessionId = sessionId;
+    public void online(){
+        this.status = Status.ONLINE;
     }
+
+    public void offline(){
+        this.status = Status.OFFLINE;
+    }
+
+    public void checkOnOffline(){
+        if(this.socketSessionList.size() <= 0){
+            offline();
+            return;
+        }
+
+        online();
+    }
+
+    public void sessionRemove(String sessionId){
+        int i = 0;
+        for(SocketSession socketSession : getSocketSessionList()){
+            if(socketSession.getSocketSessionId().equals(sessionId)){
+                getSocketSessionList().remove(i);
+                break;
+            }
+            i++;
+        }
+    }
+
+
 
 
 }

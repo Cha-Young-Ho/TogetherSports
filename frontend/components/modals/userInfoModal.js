@@ -23,7 +23,7 @@ const UserInfoModal = (props) => {
   const [userId, setUserId] = useState(0);
 
   // 조회하고자 하는 회원의 정보들
-  const [imageSrc, setImageSrc] = useState("/base_profileImage.jpg");
+  const [imageSrc, setImageSrc] = useState("");
   const [nickname, setNickname] = useState("");
   const [mannerPoint, setMannerPoint] = useState(0);
   const [interest, setInterest] = useState([]);
@@ -95,78 +95,51 @@ const UserInfoModal = (props) => {
         }
       })
       .catch((error) => {
-        FailResponse(error.response.data.status.code, getOtherInfoFunc);
-        props.close();
+        if (error?.response?.data?.status) {
+          FailResponse(error.response.data.status.code, getOtherInfoFunc);
+          props.close();
+        }
       });
     // return;
   };
 
   // 매너지수 올리기
-  const upMannerPoint = (e) => {
-    const downButton = document.getElementsByClassName("button-down");
-
+  const upMannerPoint = () => {
     patchMannerPoint(clickedUserId, "UP")
       .then((res) => {
-        {
-          // 그냥 올리기
-          if (res.status.code === 1109) {
-            setMannerPoint((mannerPoint = mannerPoint + 1));
-            e.target.innerText = "▲";
-            downButton.innerText = "▽";
-            return;
-          }
-          // 내렸던거 취소
-          if (res.status.code === 1108) {
-            setMannerPoint((mannerPoint = mannerPoint + 1));
-            e.target.innerText = "△";
-            downButton.innerText = "▽";
-            return;
-          }
-          // 올렸던거 취소
-          if (res.status.code === 1107) {
-            setMannerPoint((mannerPoint = mannerPoint - 1));
-            e.target.innerText = "△";
-            downButton.innerText = "▽";
-            return;
-          }
+        // 올리기
+        if (res.status.code === 1109) {
+          setMannerPoint((mannerPoint = res.content.mannerPoint));
+          return;
         }
-
+        // 이미 올린 경우
+        if (res.status.code === 1105) {
+          alert(res.status.message);
+          return;
+        }
         FailResponse(res.status.code, upMannerPoint);
       })
       .catch((error) => {
-        FailResponse(error.response.data.status.code, upMannerPoint);
-        return;
+        if (error?.response?.data?.status) {
+          FailResponse(error.response.data.status.code, upMannerPoint);
+          return;
+        }
       });
   };
 
   // 매너지수 내리기
-  const downMannerPoint = (e) => {
-    const upButton = document.getElementsByClassName("button-up");
-
+  const downMannerPoint = () => {
     patchMannerPoint(clickedUserId, "DOWN")
       .then((res) => {
-        {
-          // 그냥 내리기
-          if (res.status.code === 1110) {
-            setMannerPoint((mannerPoint = mannerPoint - 1));
-            upButton.innerText = "△";
-            e.target.innerText = "▼";
-            return;
-          }
-          // 올렸던거 취소
-          if (res.status.code === 1107) {
-            setMannerPoint((mannerPoint = mannerPoint - 1));
-            upButton.innerText = "△";
-            e.target.innerText = "▽";
-            return;
-          }
-          // 내렸던거 취소
-          if (res.status.code === 1108) {
-            setMannerPoint((mannerPoint = mannerPoint + 1));
-            upButton.innerText = "△";
-            e.target.innerText = "▽";
-            return;
-          }
+        // 내리기
+        if (res.status.code === 1110) {
+          setMannerPoint((mannerPoint = res.content.mannerPoint));
+          return;
+        }
+        // 이미 내린 경우
+        if (res.status.code === 1106) {
+          alert(res.status.message);
+          return;
         }
 
         FailResponse(res.status.code, downMannerPoint);
@@ -198,15 +171,23 @@ const UserInfoModal = (props) => {
 
   return (
     <>
-      <div className={props.open ? "openModal modal" : "modal"}>
+      <div
+        className={props.open ? "openModal modal" : "modal"}
+        onClick={(e) => {
+          if (e.target.classList[1] === "openModal") props.close();
+        }}
+      >
         <div className="userinfo-modal-body">
-          <div className="header">
-            <button onClick={props.close}>&times;</button>
-          </div>
+          <button className="close-popup-button" onClick={props.close}>
+            &times;
+          </button>
 
           <div className="section">
             <div className="left-section">
-              <img src={imageSrc} className="pf-image"></img>
+              <img
+                src={`https://together-sports.com/${imageSrc}`}
+                className="pf-image"
+              ></img>
 
               <div className="buttons">
                 {myInfo.userNickname === clickedUserNickname ? (
@@ -262,40 +243,11 @@ const UserInfoModal = (props) => {
                 {mannerPoint}
                 {myInfo.userNickname === clickedUserNickname ? (
                   <></>
-                ) : mannerType === "UP" ? (
-                  <div>
-                    <button className="button-up" onClick={upMannerPoint}>
-                      ▲
-                    </button>
-                    <button className="button-down" onClick={downMannerPoint}>
-                      ▽
-                    </button>
-                  </div>
-                ) : mannerType === "DOWN" ? (
-                  <div>
-                    <button className="button-up" onClick={upMannerPoint}>
-                      △
-                    </button>
-                    <button className="button-down" onClick={downMannerPoint}>
-                      ▼
-                    </button>
-                  </div>
-                ) : mannerType === "DEFAULT" ? (
-                  <div>
-                    <button className="button-up" onClick={upMannerPoint}>
-                      △
-                    </button>
-                    <button className="button-down" onClick={downMannerPoint}>
-                      ▽
-                    </button>
-                  </div>
                 ) : (
-                  // 테스트를 위한 임시 태그
-                  // <div>
-                  //   <button onClick={upMannerPoint}>△</button>
-                  //   <button onClick={downMannerPoint}>▽</button>
-                  // </div>
-                  <></>
+                  <div>
+                    <button onClick={upMannerPoint}>∧</button>
+                    <button onClick={downMannerPoint}>∨</button>
+                  </div>
                 )}
               </div>
 
@@ -351,18 +303,13 @@ const UserInfoModal = (props) => {
           justify-content: center;
           align-items: center;
           padding: 15px;
-          /* overflow: auto; */
-        }
-
-        .header {
-          width: 100%;
           position: relative;
         }
 
-        .header > button {
+        .close-popup-button {
           position: absolute;
-          top: 0px;
-          right: 0px;
+          top: 10px;
+          right: 10px;
           color: #999;
           font-size: 3rem;
           background-color: white;
@@ -490,6 +437,7 @@ const UserInfoModal = (props) => {
           background-color: white;
           margin-right: 10px;
           cursor: pointer;
+          user-select: none;
         }
 
         .pf-interest,

@@ -1,8 +1,7 @@
 import TextLogo from "./textLogo";
-import Link from "next/link";
 import useScrollFadeIn from "./useScrollFadeIn";
-import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import router from "next/router";
 
 const Main2 = () => {
   const animatedItem1 = useScrollFadeIn("up", 0.5, 0.1);
@@ -13,6 +12,29 @@ const Main2 = () => {
   const roomCount = useSelector(
     (state) => state.saveRoomCountReducer.roomCount
   );
+
+  // 로그인 상태 임을 판별하는 변수
+  const loginStatus = useSelector(
+    (state) => state.loginStatusChangeReducer.loginStatus
+  );
+
+  // 내정보 받기
+  const getMyUserId = useSelector((state) => state.myInfoReducer.id);
+
+  const signUpFunc = (e) => {
+    if (!loginStatus) {
+      router.push("/login");
+      return;
+    }
+    if (loginStatus && getMyUserId === 0) {
+      router.push("/signup/addinfo/personalinfo");
+      return;
+    }
+    if (loginStatus && getMyNickname !== 0) {
+      alert("이미 회원입니다 :)");
+      e.preventDefault();
+    }
+  };
 
   return (
     <>
@@ -37,11 +59,13 @@ const Main2 = () => {
             </div>
           </div>
 
-          <Link href="/login">
-            <div className="right-section" {...animatedItem4}>
-              <img src={"/main2.png"} />
-            </div>
-          </Link>
+          <div
+            className="right-section"
+            {...animatedItem4}
+            onClick={(e) => signUpFunc(e)}
+          >
+            <img src={"/main2.png"} />
+          </div>
         </div>
       </div>
       <style jsx>{`
