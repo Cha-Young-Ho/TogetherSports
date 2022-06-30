@@ -18,7 +18,7 @@ import java.util.Base64;
  *
  * @author seunjeon
  */
-@Slf4j
+
 @Service
 public class FileStorageService implements StorageService{
 
@@ -48,20 +48,15 @@ public class FileStorageService implements StorageService{
 
     @Override
     public void delete(String path) {
-        log.info("path = {}", path);
         String relPath = path.substring(location.length());
-        log.info("relPath = {}", relPath);
         String absPath = storageRoot + relPath;
-        log.info("absPath = {}", absPath);
         File target = new File(absPath);
-        log.info("수행");
         target.delete();
     }
 
     @Override
     public String getFileSource(String path) {
         String relPath = path.substring(location.length());
-        log.info("path = {}", path);
         String absPath = relPath;
         File target = new File(path);
 
@@ -79,7 +74,7 @@ public class FileStorageService implements StorageService{
         String extension = path.substring(path.lastIndexOf(".") + 1);
         String relPath = path.substring(location.length());
         String absPath = storageRoot + relPath;
-        File target = new File(absPath);
+        File target = new File(path);
 
         try (FileInputStream fis = new FileInputStream(target)) {
             byte[] raw = fis.readAllBytes();

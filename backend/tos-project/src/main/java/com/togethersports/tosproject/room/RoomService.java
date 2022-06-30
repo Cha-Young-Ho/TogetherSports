@@ -27,6 +27,7 @@ import com.togethersports.tosproject.user.dto.UserOfParticipantInfo;
 import com.togethersports.tosproject.user.exception.NotEnteredInformationException;
 import com.togethersports.tosproject.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -46,7 +47,7 @@ import java.util.stream.Collectors;
  *
  * @author younghoCha
  */
-
+@Slf4j
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -71,13 +72,6 @@ public class RoomService {
             throw new NotEnteredInformationException();
         }
 
-        /*
-         * 방 엔티티 만들기
-         * 1. List<String>을 List<Tag>로 변환 후 저장
-         * 2. List<Image>를 모두 저장
-         * 3. 엔티티 생성
-         * 4. 저장
-         */
         //방 엔티티 만들기
         Room roomEntity = Room.of(roomOfCreate, userEntity);
 
@@ -121,7 +115,12 @@ public class RoomService {
     //방 수정
     @Transactional
     public Response modifyRoomInfo(RoomOfUpdate roomOfUpdate, Long roomId){
-        Room roomEntity = findRoomEntityById(roomOfUpdate.getId());
+        Room roomEntity = findRoomEntityById(roomId);
+        log.info("roomOfupdate = {}", roomOfUpdate);
+        log.info(roomOfUpdate.getRoomArea());
+        log.info(roomOfUpdate.getRoomTitle());
+        log.info(roomOfUpdate.getRoomContent());
+        log.info("size = {}", roomOfUpdate.getRoomImages().size());
 
         //방 인원
         //ToDo 방 인원 체크 로직 추가해야함(참여 인원 > 변경 최대 인원 -> 변경 불가)
@@ -131,7 +130,7 @@ public class RoomService {
 
         //-- Tag --
         // Tag Service 에서 모든 DB값 삭제 후, 넘어온 값들로 새롭게 매핑
-        List<Tag> tagList = parsingEntityUtils.parsingStringToTagEntity(roomOfUpdate.getTag());
+        List<Tag> tagList = parsingEntityUtils.parsingStringToTagEntity(roomOfUpdate.getTags());
         tagService.modifyTagFromRoomUpdate(tagList, roomEntity);
 
         //-- Image --
@@ -549,7 +548,10 @@ public class RoomService {
             return Response.of(RoomCode.NO_PERMISSION, null);
         }
         List<RoomImage> roomImageList = roomEntity.getRoomImages();
-        if(roomImageList.size() == 1 && roomImageList.get(0).getImagePath().equals("/images/default_room_image.png")){
+        log.info("room size = {}", roomImageList.size());
+        log.info("room List get 0 = {}", roomImageList.get(0));
+        log.info("room image path = {}", roomImageList.get(0).getImagePath());
+        if(roomImageList.size() == 1 && roomImageList.get(0).getImagePath().equals("/images/default_room_.jpeg")){
             return Response.of(RoomCode.DEFAULT_ROOM_IMAGE, null);
         }
         List<ImageSourcesOfRoom> roomImageSourceList = new ArrayList<>();

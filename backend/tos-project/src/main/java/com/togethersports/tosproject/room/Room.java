@@ -91,11 +91,11 @@ public class Room extends RoomBaseEntity {
 
     //방 이미지
     @JsonIgnore
-    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RoomImage> roomImages;
 
     //태그
-    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Tag> tags;
 
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -155,6 +155,17 @@ public class Room extends RoomBaseEntity {
             }
             i++;
         }
+    }
+    public void deleteImage(){
+
+        this.roomImages.clear();
+
+        //this.roomImages.remove(roomImage);
+
+    }
+
+    public void deleteTag(){
+        this.tags.clear();
     }
 
 }
