@@ -58,7 +58,7 @@ public class FileStorageService implements StorageService{
     public String getFileSource(String path) {
         String relPath = path.substring(location.length());
         String absPath = relPath;
-        File target = new File(path);
+        File target = new File(absPath);
 
         try (FileInputStream fis = new FileInputStream(target)) {
             byte[] raw = fis.readAllBytes();
@@ -74,7 +74,7 @@ public class FileStorageService implements StorageService{
         String extension = path.substring(path.lastIndexOf(".") + 1);
         String relPath = path.substring(location.length());
         String absPath = storageRoot + relPath;
-        File target = new File(path);
+        File target = new File(absPath);
 
         try (FileInputStream fis = new FileInputStream(target)) {
             byte[] raw = fis.readAllBytes();

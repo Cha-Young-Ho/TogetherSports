@@ -28,6 +28,7 @@ import com.togethersports.tosproject.user.exception.NotEnteredInformationExcepti
 import com.togethersports.tosproject.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -47,7 +48,7 @@ import java.util.stream.Collectors;
  *
  * @author younghoCha
  */
-@Slf4j
+
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -60,6 +61,9 @@ public class RoomService {
     private final RoomImageService roomImageService;
     private final UserService userService;
     private final ChatController chatController;
+
+    @Value("${app.room.default-image.etc}")
+    private String DEFAULT_ROOM_ETC_IMAGE;
 
     //방 생성
     public Response createRoom(User user, RoomOfCreate roomOfCreate){
@@ -116,14 +120,8 @@ public class RoomService {
     @Transactional
     public Response modifyRoomInfo(RoomOfUpdate roomOfUpdate, Long roomId){
         Room roomEntity = findRoomEntityById(roomId);
-        log.info("roomOfupdate = {}", roomOfUpdate);
-        log.info(roomOfUpdate.getRoomArea());
-        log.info(roomOfUpdate.getRoomTitle());
-        log.info(roomOfUpdate.getRoomContent());
-        log.info("size = {}", roomOfUpdate.getRoomImages().size());
 
         //방 인원
-        //ToDo 방 인원 체크 로직 추가해야함(참여 인원 > 변경 최대 인원 -> 변경 불가)
         if(roomEntity.getParticipants().size() > roomOfUpdate.getLimitPeopleCount()){
             return Response.of(RoomCode.NOT_MODIFY_PARTICIPANT_COUNT, null);
         }
@@ -548,10 +546,7 @@ public class RoomService {
             return Response.of(RoomCode.NO_PERMISSION, null);
         }
         List<RoomImage> roomImageList = roomEntity.getRoomImages();
-        log.info("room size = {}", roomImageList.size());
-        log.info("room List get 0 = {}", roomImageList.get(0));
-        log.info("room image path = {}", roomImageList.get(0).getImagePath());
-        if(roomImageList.size() == 1 && roomImageList.get(0).getImagePath().equals("/images/default_room_.jpeg")){
+        if(roomImageList.size() == 1 && roomImageList.get(0).getImagePath().equals(DEFAULT_ROOM_ETC_IMAGE)){
             return Response.of(RoomCode.DEFAULT_ROOM_IMAGE, null);
         }
         List<ImageSourcesOfRoom> roomImageSourceList = new ArrayList<>();

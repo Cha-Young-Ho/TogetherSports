@@ -8,6 +8,7 @@ import com.togethersports.tosproject.room.dto.ImageOfRoomCRUD;
 import com.togethersports.tosproject.room.dto.ImageSourcesOfRoom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,16 +25,16 @@ public class RoomImageService {
     private final NameGenerator nameGenerator;
     private final StorageService storageService;
 
+    @Value("${app.storage.root}")
+    private String storageRoot;
 
-    private final String DEFAULT_ROOM_ETC_IMAGE = "/images/default_room_.jpeg";
+    @Value("${app.room.default-image.etc}")
+    private String DEFAULT_ROOM_ETC_IMAGE;
+
 
     public void registerRoomImage(List<ImageOfRoomCRUD> roomOfCreateList, Room room){
-
-        log.info("roomImage 업데이트 dto size == {}", roomOfCreateList.size());
-
         //이미지가 없을 경우
         if(roomOfCreateList.size() == 0){
-            log.info("여기가 진행되면 안된다.");
             //이미지 설정
             ImageOfRoomCRUD defaultImage = ImageOfRoomCRUD.builder()
                     .imageSource(DEFAULT_ROOM_ETC_IMAGE)
