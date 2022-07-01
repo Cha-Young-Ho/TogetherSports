@@ -173,7 +173,10 @@ const SetRoomImages = (props) => {
           />
         </div>
 
-        <p>* 선택된 사진이 대표사진이 됩니다!</p>
+        <p>
+          * 선택된 사진이 <b>대표사진</b>이 됩니다! 사진 설정을 안 하면{" "}
+          <b>기본이미지</b>로 설정됩니다!
+        </p>
 
         <div className="previews">
           {imagePreview.map((preview, index) => {

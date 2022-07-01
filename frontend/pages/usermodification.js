@@ -321,8 +321,8 @@ const UserModification = () => {
     }
 
     if (extension === "" || imagesrc === "") {
-      setExtension(null);
-      setImagesrc(null);
+      setExtension((extension = null));
+      setImagesrc((imagesrc = null));
     }
 
     // 회원가입 요청 및 회원정보 수정
@@ -483,7 +483,7 @@ const UserModification = () => {
                 className="delete-profile-button"
                 onClick={deleteProfileImage}
               >
-                삭제
+                기본이미지로 변경
               </button>
             </div>
           </div>
@@ -734,7 +734,7 @@ const UserModification = () => {
         }
 
         .content-profile {
-          width: 90%;
+          width: 79%;
           padding: 5px 10px 5px 14px;
           border-radius: 10px;
           border: solid 1px #e8e8e8;
@@ -744,7 +744,7 @@ const UserModification = () => {
         }
 
         .content-profile input {
-          width: 390px;
+          width: 320px;
           height: 30px;
           border-style: none;
           font-size: 1.4em;
@@ -777,10 +777,10 @@ const UserModification = () => {
 
         .delete-profile-button {
           margin-left: 10px;
-          width: 50px;
+          width: 120px;
           height: 30px;
           border-radius: 5px;
-          background-color: #08555f;
+          background-color: #d8d8d8;
           color: white;
           border: none;
           cursor: pointer;

@@ -156,13 +156,19 @@ const ModifyRoomModal = (props) => {
       ? setRoomImages(null)
       : addOrder(roomImages, thumbnailIndex);
 
-    if (roomTitle === "" || limitPeopleCount === 0) {
-      alert("입력이 올바르지 않은 정보가 있습니다");
+    if (changeRoomTitle === "") {
+      alert("제목을 입력해주세요!");
       e.preventDefault();
       return;
     }
 
-    if (roomContent === "") setRoomContent(null);
+    if (changeLimitPeopleCount < 2) {
+      alert("최소 인원은 2명 이상이어야 합니다!");
+      e.preventDefault();
+      return;
+    }
+
+    if (changeRoomContent === "") setRoomContent(null);
     if (tags.length === 0) setTags(null);
 
     updateRoomFunc();
@@ -180,6 +186,15 @@ const ModifyRoomModal = (props) => {
   useEffect(() => {
     tags.map((tag) => setPrevTags(tag));
   }, [tags]);
+
+  useEffect(() => {
+    if (props.open && roomTitle)
+      setChangeRoomTitle((changeRoomTitle = roomTitle));
+    if (props.open && roomContent)
+      setChangeRoomContent((changeRoomContent = roomContent));
+    if (props.open && limitPeopleCount)
+      setChangeLimitPeopleCount((changeLimitPeopleCount = limitPeopleCount));
+  }, [roomTitle, roomContent, limitPeopleCount]);
 
   return (
     <>
