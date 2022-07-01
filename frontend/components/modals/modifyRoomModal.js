@@ -188,12 +188,13 @@ const ModifyRoomModal = (props) => {
   }, [tags]);
 
   useEffect(() => {
-    if (props.open) {
+    if (props.open && roomTitle)
       setChangeRoomTitle((changeRoomTitle = roomTitle));
+    if (props.open && roomContent)
       setChangeRoomContent((changeRoomContent = roomContent));
+    if (props.open && limitPeopleCount)
       setChangeLimitPeopleCount((changeLimitPeopleCount = limitPeopleCount));
-    }
-  }, [props.open]);
+  }, [roomTitle, roomContent, limitPeopleCount]);
 
   return (
     <>
