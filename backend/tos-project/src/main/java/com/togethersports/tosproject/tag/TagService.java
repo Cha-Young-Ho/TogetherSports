@@ -22,7 +22,7 @@ public class TagService {
     }
 
     public void modifyTagFromRoomUpdate(List<Tag> tagList, Room room){
-        tagRepository.deleteAllByRoomId(room.getId());
+        room.deleteTag();
 
         for (Tag tag : tagList){
             tag.updateRoom(room);

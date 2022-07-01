@@ -8,7 +8,9 @@ import com.togethersports.tosproject.room.dto.ImageOfRoomCRUD;
 import com.togethersports.tosproject.room.dto.ImageSourcesOfRoom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -23,13 +25,14 @@ public class RoomImageService {
     private final NameGenerator nameGenerator;
     private final StorageService storageService;
 
+    @Value("${app.storage.root}")
+    private String storageRoot;
 
-    private final String DEFAULT_ROOM_ETC_IMAGE = "/Users/chayeongho/스크린샷 2022-06-26 오후 5.58.05.png";
+    @Value("${app.room.default-image.etc}")
+    private String DEFAULT_ROOM_ETC_IMAGE;
+
 
     public void registerRoomImage(List<ImageOfRoomCRUD> roomOfCreateList, Room room){
-
-
-
         //이미지가 없을 경우
         if(roomOfCreateList.size() == 0){
             //이미지 설정
@@ -63,19 +66,22 @@ public class RoomImageService {
 
         }
     }
-
+    @Transactional
     public void updateRoomImage(List<ImageOfRoomCRUD> imageList, Room room){
+
         List<RoomImage> roomImageList = room.getRoomImages();
         //로컬 사진 모두 삭제
         for(RoomImage roomImage : roomImageList){
-            if(roomImage.getImagePath().equals(DEFAULT_ROOM_ETC_IMAGE)){
 
+            if(roomImage.getImagePath().equals(DEFAULT_ROOM_ETC_IMAGE)){
+                continue;
             }
+
             storageService.delete(roomImage.getImagePath());
+
         }
 
-        //사진 모두 삭제
-        roomImageRepository.deleteAllByRoomId(room.getId());
+        room.deleteImage();
 
         //사진 로컬 및 DB 저장
         registerRoomImage(imageList, room);

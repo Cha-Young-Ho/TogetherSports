@@ -16,7 +16,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     show-sql: true
     properties:
       hibernate:
@@ -28,10 +28,10 @@ spring:
 # together sports application properties
 app:
   storage:
-    root: /Users/chayeongho
+    root: /Users/chayeongho/images
     location: /images
   user:
-    default-image: /images/default_user_profile.jpeg
+    default-image: images/default_user_profile.jpeg
   room:
     default-image:
-      etc: /imgaes/default_room_image.png
+      etc: images/default_room_image.png

@@ -14,7 +14,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class ImageOfRoomCRUD {
-    private UploadType uploadType;
+
     private int order;
     private String roomImageExtension;
     private String imageSource;
