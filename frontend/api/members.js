@@ -141,14 +141,9 @@ const postUserRequest = (
 const postLogOut = () => {
   const promise =
     localStorage.getItem("accessToken") === null
-      ? axios.post(`${API_ENDPOINT}/api/logout`, {
-          refreshToken: localStorage.getItem("refreshToken"),
-        })
+      ? axios.post(`${API_ENDPOINT}/api/logout?refresh-token=${localStorage.getItem("refreshToken")}`)
       : axios.post(
-          API_ENDPOINT + "api/logout",
-          {
-            refreshToken: localStorage.getItem("refreshToken"),
-          },
+        `${API_ENDPOINT}/api/logout?refresh-token=${localStorage.getItem("refreshToken")}`,
           {
             headers: {
               "Content-type": "application/json; charset=UTF-8",
