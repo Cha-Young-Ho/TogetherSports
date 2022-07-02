@@ -65,37 +65,7 @@ const RoomShowingBox = (props) => {
         }}
       >
         <div className="thumbs-box">
-          {/* <img src={props.datas.roomImagePath} alt="picture of room"></img> */}
-          <img
-            src={
-              props.datas.exercise === "축구"
-                ? "/list_soccer.png"
-                : props.datas.exercise === "야구"
-                ? "/list_baseball.png"
-                : props.datas.exercise === "농구"
-                ? "/list_basketball.png"
-                : props.datas.exercise === "당구"
-                ? "/list_billiards.png"
-                : props.datas.exercise === "탁구"
-                ? "/list_tableTennis.png"
-                : props.datas.exercise === "헬스"
-                ? "/list_health.png"
-                : props.datas.exercise === "자전거"
-                ? "/list_bicycle.png"
-                : props.datas.exercise === "골프"
-                ? "/list_golf.png"
-                : props.datas.exercise === "등산"
-                ? "/list_hiking.png"
-                : props.datas.exercise === "런닝"
-                ? "/list_running.png"
-                : props.datas.exercise === "배드민턴"
-                ? "/list_badminton.png"
-                : props.datas.exercise === "기타"
-                ? "/list_etc.png"
-                : "https://together-sports.com/images/default_room_image.png"
-            }
-            alt="picture of room"
-          ></img>
+          <img src={props.datas.roomImagePath} alt="picture of room"></img>
           <div className="tags" onClick={handleTagLayout}>
             {props.datas.tags.length !== 0
               ? props.datas.tags.map((tag, index) => {
