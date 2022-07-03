@@ -112,6 +112,9 @@ const Interest = () => {
             다음
           </div>
         </div>
+        <p className="warning-tag">
+          * 이전을 누르면 입력했던 정보가 재입력 해야합니다.
+        </p>
       </div>
 
       <style jsx>{`
@@ -169,7 +172,7 @@ const Interest = () => {
         }
 
         .button-wrapper {
-          margin: 50px 0;
+          margin-top: 50px;
           display: flex;
           flex-direction: row;
           justify-content: center;
@@ -202,6 +205,11 @@ const Interest = () => {
           outline: 0;
           cursor: pointer;
           border-radius: 10px;
+        }
+
+        .warning-tag {
+          margin-bottom: 50px;
+          font-size: 0.8rem;
         }
       `}</style>
     </>

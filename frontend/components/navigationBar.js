@@ -64,7 +64,9 @@ const NavigationBar = () => {
               isInformationRequired: "",
             },
           });
+
           alert("로그아웃 되었습니다.");
+          router.replace("/");
           return;
         }
       })

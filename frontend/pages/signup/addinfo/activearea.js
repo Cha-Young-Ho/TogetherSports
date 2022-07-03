@@ -158,6 +158,9 @@ const ActiveArea = () => {
             완료
           </div>
         </div>
+        <p className="warning-tag">
+          * 이전을 누르면 입력했던 정보가 재입력 해야합니다.
+        </p>
       </div>
 
       <style jsx>{`
@@ -187,7 +190,7 @@ const ActiveArea = () => {
         }
 
         .button-wrapper {
-          margin: 50px 0;
+          margin-top: 50px;
           display: flex;
           flex-direction: row;
           justify-content: center;
@@ -215,19 +218,24 @@ const ActiveArea = () => {
           height: 40px;
           background-color: #08555f;
           color: white;
-          font-size: 1.5rem;y
+          font-size: 1.5rem;
           border: 0;
           border-radius: 10px;
           outline: 0;
           cursor: pointer;
         }
 
-        .map-wrapper{
+        .map-wrapper {
           width: 800px;
           height: 500px;
           margin: 30px 0;
           border-radius: 10px;
           border: solid 1px #e8e8e8;
+        }
+
+        .warning-tag {
+          margin-top: 5px;
+          margin-bottom: 50px;
         }
       `}</style>
     </>

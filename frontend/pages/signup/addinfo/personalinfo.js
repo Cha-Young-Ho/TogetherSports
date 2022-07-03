@@ -13,6 +13,7 @@ const PersonalInfo = () => {
 
   // 닉네임
   const [nickname, setNickname] = useState("");
+  const [validNickname, setValidNickname] = useState("");
   const [isNicknameCheck, setIsNicknameCheck] = useState(false);
 
   // 생년월일
@@ -38,9 +39,12 @@ const PersonalInfo = () => {
       getNicknameDuplicationCheck(nickname).then((res) => {
         if (res.status.code === 5000) {
           setIsNicknameCheck(true);
+          setValidNickname(nickname);
           alert("사용 가능한 닉네임입니다.");
         } else {
           setNickname("");
+          setValidNickname("");
+          setIsNicknameCheck(false);
           alert("이미 사용중인 닉네임입니다.");
         }
       });
@@ -163,7 +167,7 @@ const PersonalInfo = () => {
     dispatch({
       type: "PERSONALINFO",
       payload: {
-        userNickname: nickname,
+        userNickname: validNickname,
         userBirth: userBirth,
         gender: gender,
         userProfileExtension: extension,
