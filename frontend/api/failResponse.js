@@ -19,7 +19,7 @@ const FailResponse = (codeNumber, prelastingToDo) => {
     case 1102:
       break;
     case 1103:
-      alert("중복된 닉네임이 있습니다.");
+      alert("중복된 닉네임입니다.");
       break;
     case 1104:
       alert("잘못된 데이터가 포함되었습니다.");
