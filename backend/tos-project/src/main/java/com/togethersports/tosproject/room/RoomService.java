@@ -547,7 +547,7 @@ public class RoomService {
             return Response.of(RoomCode.NO_PERMISSION, null);
         }
         List<RoomImage> roomImageList = roomEntity.getRoomImages();
-        if(roomImageList.size() == 1 && roomImageList.get(0).getImagePath().equals(imageProperties.getImageProperties().get("Etc"))){
+        if(roomImageList.size() == 1 && roomImageList.get(0).getImagePath().equals(imageProperties.getImageProperties().get("etc"))){
             return Response.of(RoomCode.DEFAULT_ROOM_IMAGE, null);
         }
         List<ImageSourcesOfRoom> roomImageSourceList = new ArrayList<>();
