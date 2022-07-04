@@ -13,6 +13,7 @@ import com.togethersports.tosproject.common.dto.WsResponse;
 import com.togethersports.tosproject.common.util.ParsingEntityUtils;
 import com.togethersports.tosproject.image.RoomImage;
 import com.togethersports.tosproject.image.RoomImageService;
+import com.togethersports.tosproject.image.dto.ImageProperties;
 import com.togethersports.tosproject.participant.Participant;
 import com.togethersports.tosproject.participant.ParticipantService;
 import com.togethersports.tosproject.room.code.RoomCode;
@@ -61,9 +62,8 @@ public class RoomService {
     private final RoomImageService roomImageService;
     private final UserService userService;
     private final ChatController chatController;
+    private final ImageProperties imageProperties;
 
-    @Value("${app.room.default-image.etc}")
-    private String DEFAULT_ROOM_ETC_IMAGE;
 
     //방 생성
     public Response createRoom(User user, RoomOfCreate roomOfCreate){
@@ -322,6 +322,7 @@ public class RoomService {
         // 요청 유저가 방장인지 확인
         if(requestUser.getId() != roomEntity.getHost().getId()){
             // 해당하는 사람이 방장이 아님.
+            return Response.of(RoomCode.NO_PERMISSION, null);
         }
 
         // 요청자 및 위임받는 유저 방에 참여했는지 확인
@@ -546,7 +547,7 @@ public class RoomService {
             return Response.of(RoomCode.NO_PERMISSION, null);
         }
         List<RoomImage> roomImageList = roomEntity.getRoomImages();
-        if(roomImageList.size() == 1 && roomImageList.get(0).getImagePath().equals(DEFAULT_ROOM_ETC_IMAGE)){
+        if(roomImageList.size() == 1 && roomImageList.get(0).getImagePath().equals(imageProperties.getImageProperties().get("Etc"))){
             return Response.of(RoomCode.DEFAULT_ROOM_IMAGE, null);
         }
         List<ImageSourcesOfRoom> roomImageSourceList = new ArrayList<>();
