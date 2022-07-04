@@ -35,3 +35,35 @@ app:
   room:
     default-image:
       etc: images/default_room_image.png
+  room-default-images:
+      soccer: images/default_soccer_room_image.png
+      golf : images/default_golf_room_image.png
+      fishing : images/default_fishing_room_image.png
+      baseball: images/default_baseball_room_image.png
+      hiking : images/default_hiking_room_image.png
+      bicycle : images/default_bicycle_room_image.png
+      billiards : images/default_billiards_room_image.png
+      gym : images/default_gym_room_image.png
+      running : images/default_running_image.png
+      ping-pong : images/default_ping-pong_room_image.png
+      basketball : images/default_basketball_room_image.png
+      badminton : images/default_badminton_room_image.png
+      etc: images/default_room_image.png
+
+room:
+  images:
+    soccer: images/default_soccer_room_image.png
+    golf: images/default_golf_room_image.png
+    fishing: images/default_fishing_room_image.png
+    baseball: images/default_baseball_room_image.png
+    hiking: images/default_hiking_room_image.png
+    bicycle: images/default_bicycle_room_image.png
+    billiards: images/default_billiards_room_image.png
+    gym: images/default_gym_room_image.png
+    running: images/default_running_image.png
+    ping-pong: images/default_ping-pong_room_image.png
+    basketball: images/default_basketball_room_image.png
+    badminton: images/default_badminton_room_image.png
+    etc: images/default_room_image.png
+
+

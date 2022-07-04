@@ -3,6 +3,7 @@ package com.togethersports.tosproject.image;
 import com.togethersports.tosproject.common.file.service.StorageService;
 import com.togethersports.tosproject.common.file.util.Base64Decoder;
 import com.togethersports.tosproject.common.file.util.NameGenerator;
+import com.togethersports.tosproject.image.dto.ImageProperties;
 import com.togethersports.tosproject.room.Room;
 import com.togethersports.tosproject.room.dto.ImageOfRoomCRUD;
 import com.togethersports.tosproject.room.dto.ImageSourcesOfRoom;
@@ -11,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 
 
@@ -24,24 +24,24 @@ public class RoomImageService {
     private final Base64Decoder base64Decoder;
     private final NameGenerator nameGenerator;
     private final StorageService storageService;
+    private final ImageProperties imageProperties;
 
     @Value("${app.storage.root}")
     private String storageRoot;
 
-    @Value("${app.room.default-image.etc}")
-    private String DEFAULT_ROOM_ETC_IMAGE;
-
 
     public void registerRoomImage(List<ImageOfRoomCRUD> roomOfCreateList, Room room){
+
+
         //이미지가 없을 경우
         if(roomOfCreateList.size() == 0){
             //이미지 설정
             ImageOfRoomCRUD defaultImage = ImageOfRoomCRUD.builder()
-                    .imageSource(DEFAULT_ROOM_ETC_IMAGE)
+                    .imageSource(registDefaultImage(room.getExercise()))
                     .order(0)
                     .roomImageExtension("png")
                     .build();
-            RoomImage roomImage = RoomImage.of(defaultImage, room, DEFAULT_ROOM_ETC_IMAGE);
+            RoomImage roomImage = RoomImage.of(defaultImage, room, registDefaultImage(room.getExercise()));
             roomImageRepository.save(roomImage);
             return;
         }
@@ -73,7 +73,7 @@ public class RoomImageService {
         //로컬 사진 모두 삭제
         for(RoomImage roomImage : roomImageList){
 
-            if(roomImage.getImagePath().equals(DEFAULT_ROOM_ETC_IMAGE)){
+            if(imageProperties.getImageProperties().containsValue(roomImage.getImagePath())){
                 continue;
             }
 
@@ -103,5 +103,17 @@ public class RoomImageService {
         for(RoomImage roomImage : room.getRoomImages()){
             storageService.delete(roomImage.getImagePath());
         }
+    }
+
+    public String registDefaultImage(String exercise){
+
+        String path = imageProperties.getImageProperties().get(exercise);
+
+        if(path == null){
+            return imageProperties.getRoomDefaultImages().get("etc");
+        }
+
+        return path;
+
     }
 }

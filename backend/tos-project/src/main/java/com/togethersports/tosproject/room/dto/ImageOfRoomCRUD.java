@@ -1,6 +1,5 @@
 package com.togethersports.tosproject.room.dto;
 
-import com.togethersports.tosproject.common.code.UploadType;
 import lombok.Builder;
 import lombok.Getter;
 

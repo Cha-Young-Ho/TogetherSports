@@ -1,16 +1,14 @@
 package com.togethersports.tosproject.user;
 
 import com.togethersports.tosproject.common.code.CommonCode;
-import com.togethersports.tosproject.common.code.ResponseCode;
-import com.togethersports.tosproject.common.code.UploadType;
 import com.togethersports.tosproject.common.dto.FileOfImageSource;
 import com.togethersports.tosproject.common.dto.Response;
 import com.togethersports.tosproject.common.file.service.StorageService;
 import com.togethersports.tosproject.common.file.util.Base64Decoder;
 import com.togethersports.tosproject.common.file.util.NameGenerator;
 import com.togethersports.tosproject.common.util.ParsingEntityUtils;
+import com.togethersports.tosproject.image.dto.ImageProperties;
 import com.togethersports.tosproject.interest.Interest;
-import com.togethersports.tosproject.mannerpoint.MannerPointStatus;
 import com.togethersports.tosproject.mannerpoint.UserMannerPointService;
 import com.togethersports.tosproject.participant.Participant;
 import com.togethersports.tosproject.security.oauth2.model.OAuth2Provider;
@@ -20,6 +18,7 @@ import com.togethersports.tosproject.user.exception.NicknameDuplicationException
 import com.togethersports.tosproject.user.exception.NotEnteredInformationException;
 import com.togethersports.tosproject.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -40,6 +39,7 @@ import java.util.List;
  * @author younghoCha
  */
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserService {
@@ -50,9 +50,8 @@ public class UserService {
     private final NameGenerator nameGenerator;
     private final ParsingEntityUtils parsingEntityUtils;
     private final UserMannerPointService userMannerPointService;
+    private final ImageProperties imageProperties;
 
-    @Value("${app.user.default-image}")
-    private String defaultProfileImage;
 
 
     /**
@@ -170,10 +169,10 @@ public class UserService {
 
         List<Interest> interests = parsingEntityUtils.parsingStringToInterestsEntity(userOfModifyInfo.getInterests());
         //기존에 기본 파일일 경우
-        if(findUser.getUserProfileImage().equals(defaultProfileImage)) {
+        if(findUser.getUserProfileImage().equals(imageProperties.getImageProperties().get("Etc"))) {
             //기본 -> 기본
             if(userOfModifyInfo.getUserProfileImage().getImageSource() == null || userOfModifyInfo.getUserProfileImage().getImageSource().equals("")){
-                findUser.updateUser(userOfModifyInfo, interests, defaultProfileImage);
+                findUser.updateUser(userOfModifyInfo, interests, imageProperties.getImageProperties().get("Etc"));
                 return;
             }
             //기본 -> 설정
@@ -189,7 +188,7 @@ public class UserService {
         //설정 -> 기본
         if(userOfModifyInfo.getUserProfileImage().getImageSource() == null || userOfModifyInfo.getUserProfileImage().getImageSource().equals("")){
 
-            findUser.updateUser(userOfModifyInfo, interests, defaultProfileImage);
+            findUser.updateUser(userOfModifyInfo, interests, imageProperties.getImageProperties().get("Etc"));
             return;
         }
 
@@ -241,7 +240,7 @@ public class UserService {
         User userEntity = userRepository.findById(user.getId())
                 .orElseThrow(() -> new UserNotFoundException("해당 유저를 찾을 수 없습니다."));
 
-        if(userEntity.getUserProfileImage().equals(defaultProfileImage)){
+        if(userEntity.getUserProfileImage().equals(imageProperties.getImageProperties().get("Etc"))){
             return Response.of(UserCode.DEFAULT_PROFILE_IMAGE, null);
         }
         FileOfImageSource fileOfImageSource =
