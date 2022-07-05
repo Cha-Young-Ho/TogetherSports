@@ -83,7 +83,7 @@ const getProfileImageSource = () => {
   const dataPromise = promise.then((res) => res.data);
 
   return dataPromise;
-}
+};
 
 // POST
 
@@ -137,26 +137,6 @@ const postUserRequest = (
   return dataPromise;
 };
 
-// 로그아웃 요청
-const postLogOut = () => {
-  const promise =
-    localStorage.getItem("accessToken") === null
-      ? axios.post(`${API_ENDPOINT}/api/logout?refresh-token=${localStorage.getItem("refreshToken")}`)
-      : axios.post(
-        `${API_ENDPOINT}/api/logout?refresh-token=${localStorage.getItem("refreshToken")}`,
-          {
-            headers: {
-              "Content-type": "application/json; charset=UTF-8",
-              Accept: "*/*",
-            },
-          }
-        );
-
-  const dataPromise = promise.then((res) => res.data);
-
-  return dataPromise;
-};
-
 // PATCH
 
 // 매너지수 요청
@@ -187,12 +167,40 @@ const patchMannerPoint = (targetUserId, mannerPointStatus) => {
   return dataPromise;
 };
 
+// DELETE
+
+// 로그아웃 요청
+const deleteLogOut = () => {
+  const promise =
+    localStorage.getItem("accessToken") === null
+      ? axios.delete(
+          `${API_ENDPOINT}/api/logout?refresh-token=${localStorage.getItem(
+            "refreshToken"
+          )}`
+        )
+      : axios.delete(
+          `${API_ENDPOINT}/api/logout?refresh-token=${localStorage.getItem(
+            "refreshToken"
+          )}`,
+          {
+            headers: {
+              "Content-type": "application/json; charset=UTF-8",
+              Accept: "*/*",
+            },
+          }
+        );
+
+  const dataPromise = promise.then((res) => res.data);
+
+  return dataPromise;
+};
+
 export {
   getNicknameDuplicationCheck,
   getMyInfo,
   getOtherInfo,
   getProfileImageSource,
   postUserRequest,
-  postLogOut,
+  deleteLogOut,
   patchMannerPoint,
 };

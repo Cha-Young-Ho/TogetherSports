@@ -6,6 +6,7 @@ const ParticipantList = (props) => {
   const participantArr = useSelector(
     (state) => state.roomRealTimeInfoReducer.participants
   );
+  const myID = useSelector((state) => state.myInfoReducer.id);
 
   const onClickUserInfo = (userId, userNickname) => {
     props.participantListOpenModal();
@@ -23,6 +24,47 @@ const ParticipantList = (props) => {
     <>
       {participantArr.length !== 0 ? (
         participantArr.map((participant, index) => {
+          if (participant.id === myID) {
+            if (participant.userNickname === host) {
+              return (
+                <button
+                  className="participant"
+                  onClick={() => {
+                    onClickUserInfo(participant.id, participant.userNickname);
+                  }}
+                  key={index}
+                >
+                  <div className="profile">
+                    <img
+                      src={`https://together-sports.com/${participant.userProfileImagePath}`}
+                      alt="profile"
+                    ></img>
+                    <p>{`${participant.userNickname} (나)`}</p>
+                  </div>
+                  <p>방장</p>
+                </button>
+              );
+            } else {
+              return (
+                <button
+                  className="participant"
+                  onClick={() => {
+                    onClickUserInfo(participant.id, participant.userNickname);
+                  }}
+                  key={index}
+                >
+                  <div className="profile">
+                    <img
+                      src={`https://together-sports.com/${participant.userProfileImagePath}`}
+                      alt="profile"
+                    ></img>
+                    <p>{`${participant.userNickname} (나)`}</p>
+                  </div>
+                </button>
+              );
+            }
+          }
+
           if (participant.status === "ONLINE") {
             // 방장이라면
             if (participant.userNickname === host) {
@@ -86,7 +128,6 @@ const ParticipantList = (props) => {
               );
             } else {
               return (
-                // **** 오프라인으로 변경필요 ****
                 <button
                   className="participant offline"
                   onClick={() => {
