@@ -151,7 +151,7 @@ const ModifyRoomModal = (props) => {
   };
 
   // 수정 완료시
-  const clickDoneBtn = () => {
+  const clickDoneBtn = (e) => {
     roomImages.length === 0
       ? setRoomImages(null)
       : addOrder(roomImages, thumbnailIndex);
@@ -190,11 +190,17 @@ const ModifyRoomModal = (props) => {
   useEffect(() => {
     if (props.open && roomTitle)
       setChangeRoomTitle((changeRoomTitle = roomTitle));
+  }, [roomTitle]);
+
+  useEffect(() => {
     if (props.open && roomContent)
       setChangeRoomContent((changeRoomContent = roomContent));
+  }, [roomContent]);
+
+  useEffect(() => {
     if (props.open && limitPeopleCount)
       setChangeLimitPeopleCount((changeLimitPeopleCount = limitPeopleCount));
-  }, [roomTitle, roomContent, limitPeopleCount]);
+  }, [limitPeopleCount]);
 
   return (
     <>
@@ -308,7 +314,7 @@ const ModifyRoomModal = (props) => {
                 <button className="cancel-btn" onClick={props.close}>
                   수정 취소
                 </button>
-                <button className="done-btn" onClick={clickDoneBtn}>
+                <button className="done-btn" onClick={(e) => clickDoneBtn(e)}>
                   완료
                 </button>
               </div>

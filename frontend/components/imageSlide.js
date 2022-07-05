@@ -44,23 +44,26 @@ const ImageSlide = (props) => {
     <>
       <div className="slideshow-container">
         {props.path === "roomInfo"
-          ? roomInfoImageArr
-              .sort((a, b) => a.order - b.order)
-              .map((image, index) => {
-                return (
-                  <div className="slide fade" key={index}>
-                    <div className="number-text">{`${index + 1} / ${
-                      roomInfoImageArr.length
-                    }`}</div>
-                    <div className="image-container">
-                      <img
-                        src={`https://together-sports.com/${image.imagePath}`}
-                      />
+          ? Array.isArray(roomInfoImageArr)
+            ? roomInfoImageArr
+                .sort((a, b) => a.order - b.order)
+                .map((image, index) => {
+                  return (
+                    <div className="slide fade" key={index}>
+                      <div className="number-text">{`${index + 1} / ${
+                        roomInfoImageArr.length
+                      }`}</div>
+                      <div className="image-container">
+                        <img
+                          src={`https://together-sports.com/${image.imagePath}`}
+                        />
+                      </div>
                     </div>
-                  </div>
-                );
-              })
-          : roomDetailImageArr
+                  );
+                })
+            : ""
+          : Array.isArray(roomDetailImageArr)
+          ? roomDetailImageArr
               .sort((a, b) => a.order - b.order)
               .map((image, index) => {
                 return (
@@ -75,7 +78,8 @@ const ImageSlide = (props) => {
                     </div>
                   </div>
                 );
-              })}
+              })
+          : ""}
 
         <div className="buttons">
           <button className="prev-button" onClick={() => onChangeImage(-1)}>

@@ -44,6 +44,10 @@ export default function Home() {
     <>
       <Head>
         <title>Together Sports : 투스</title>
+        <meta
+          name="description"
+          content="언제든 원하는 운동을 하고 싶을 때 도와주는 운동 매칭 서비스입니다."
+        />
       </Head>
       <div className="container">
         <div>

@@ -1,7 +1,7 @@
 import BannerRoomCount from "./bannerRoomCount";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import Image from "next/image";
 
 const Banner = () => {
   const roomCount = useSelector(
@@ -11,7 +11,12 @@ const Banner = () => {
   return (
     <>
       <div className="container">
-        <img src="/banner_01.png"></img>
+        <Image
+          src="/banner_01.png"
+          width={1920}
+          height={930}
+          alt="배너"
+        ></Image>
         <div className="banner-contents">
           <p>아직 모집중인 방이 무려</p>
 
@@ -36,12 +41,6 @@ const Banner = () => {
           width: 100%;
           position: relative;
           background-color: rgba(0, 0, 0, 0.16);
-        }
-
-        img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
         }
 
         .banner-contents {
