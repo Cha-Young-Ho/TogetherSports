@@ -47,18 +47,18 @@ const UserModification = () => {
   const [interests, setInterests] = useState({});
   // 종목 유형
   const interestArray = [
-    "축구",
-    "야구",
-    "농구",
-    "당구",
-    "탁구",
-    "헬스",
-    "자전거",
-    "골프",
-    "등산",
-    "런닝",
-    "배드민턴",
-    "기타종목",
+    { name: "soccer", imgPath: "soccer.png" },
+    { name: "baseball", imgPath: "baseball.png" },
+    { name: "basketball", imgPath: "basketball.png" },
+    { name: "billiards", imgPath: "billiards.png" },
+    { name: "ping-pong", imgPath: "tableTennis.png" },
+    { name: "gym", imgPath: "health.png" },
+    { name: "bicycle", imgPath: "bicycle.png" },
+    { name: "golf", imgPath: "golf.png" },
+    { name: "hiking", imgPath: "hiking.png" },
+    { name: "running", imgPath: "running.png" },
+    { name: "badminton", imgPath: "badminton.png" },
+    { name: "etc", imgPath: "etc.png" },
   ];
 
   // 닉네임 중복확인
@@ -177,8 +177,9 @@ const UserModification = () => {
   };
 
   // 관심 종목 선택시
-  const changeInterests = (e) => {
-    if (e.target.classList[2] === "clicked") {
+  const changeInterests = (e, exercise) => {
+    if (e.target.classList[1] === "clicked") {
+      e.target.src = `/${exercise.imgPath}`;
       e.target.classList.remove("clicked");
     } else {
       if (
@@ -189,12 +190,13 @@ const UserModification = () => {
         alert("최대 5개 까지만 선택할 수 있습니다.");
         return;
       }
+      e.target.src = `/blur_${exercise.imgPath}`;
       e.target.classList.add("clicked");
     }
 
     setInterests((prev) => ({
       ...prev,
-      [e.target.innerText]: !interests[e.target.innerText],
+      [e.target.id]: !interests[e.target.id],
     }));
   };
 
@@ -501,15 +503,13 @@ const UserModification = () => {
           <div className="grid-interest">
             {interestArray.map((exercise, index) => {
               return (
-                <div
+                <button
                   key={index}
-                  onClick={changeInterests}
-                  className={`grid-items ${
-                    userInfo.interests.indexOf(exercise) === -1 ? `` : `clicked`
-                  }`}
+                  className="grid-items"
+                  onClick={(e) => changeInterests(e, exercise)}
                 >
-                  {exercise}
-                </div>
+                  <img id={exercise.name} src={`/${exercise.imgPath}`} />
+                </button>
               );
             })}
           </div>
@@ -801,25 +801,25 @@ const UserModification = () => {
           gap: 10px;
         }
 
-        // 관심 종목 items
         .grid-items {
+          width: 140px;
+          height: 140px;
           display: flex;
           align-items: center;
           justify-content: center;
-          background-color: gray;
-          color: white;
+          border: none;
           border-radius: 10px;
-          font-size: 1.5rem;
+          cursor: pointer;
         }
 
         .grid-items:hover {
           transition-duration: 0.5s;
           transform: scale(1.2);
-          background-color: #468f5b;
         }
 
-        .clicked {
-          background-color: #468f5b;
+        .grid-items img {
+          width: 100%;
+          height: 100%;
         }
 
         .button-tag-delete {

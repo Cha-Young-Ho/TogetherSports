@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from "react-redux";
 import Map from "../Map";
 import Head from "next/head";
 
-/* roomList에서 받은 각 room들의 roomId를 props로 받기 */
 const RoomModal = (props) => {
   const dispatch = useDispatch();
 
@@ -28,6 +27,21 @@ const RoomModal = (props) => {
   const [startAppointmentDate, setStartAppointmentDate] = useState("");
   const [endAppointmentDate, setEndAppointmentDate] = useState("");
   const [viewCount, setViewCount] = useState(0);
+
+  const exerciseArr = {
+    soccer: "축구",
+    baseball: "야구",
+    basketball: "농구",
+    "ping-pong": "탁구",
+    hiking: "등산",
+    running: "런닝",
+    billiards: "당구",
+    bicycle: "자전거",
+    badminton: "배드민턴",
+    gym: "헬스",
+    golf: "골프",
+    etc: "기타",
+  };
 
   const enterRoom = (e) => {
     if (myInfo.isInformationRequired === "false") {
@@ -179,7 +193,7 @@ const RoomModal = (props) => {
                     </div>
                     <div className="option-exercise">
                       <p>종목</p>
-                      <p>{exercise}</p>
+                      <p>{exerciseArr[exercise]}</p>
                     </div>
                     <div className="option-time">
                       <p>시간</p>

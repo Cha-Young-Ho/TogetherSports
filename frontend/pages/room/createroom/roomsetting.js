@@ -146,7 +146,7 @@ const RoomSetting = () => {
     }
 
     // 종목 선택 안 한 경우
-    if (exercise === "선택") {
+    if (exercise === "none") {
       e.preventDefault();
       alert("종목을 선택해주세요!");
       return;
@@ -216,19 +216,19 @@ const RoomSetting = () => {
                   value={exercise}
                   onChange={(e) => setExercise(e.target.value)}
                 >
-                  <option>선택</option>
-                  <option>축구</option>
-                  <option>야구</option>
-                  <option>농구</option>
-                  <option>당구</option>
-                  <option>탁구</option>
-                  <option>헬스</option>
-                  <option>자전거</option>
-                  <option>골프</option>
-                  <option>등산</option>
-                  <option>런닝</option>
-                  <option>배드민턴</option>
-                  <option>기타</option>
+                  <option value="none">선택</option>
+                  <option value="soccer">축구</option>
+                  <option value="baseball">야구</option>
+                  <option value="basketball">농구</option>
+                  <option value="billiards">당구</option>
+                  <option value="ping-pong">탁구</option>
+                  <option value="gym">헬스</option>
+                  <option value="bicycle">자전거</option>
+                  <option value="golf">골프</option>
+                  <option value="hiking">등산</option>
+                  <option value="running">런닝</option>
+                  <option value="badminton">배드민턴</option>
+                  <option value="etc">기타</option>
                 </select>
               </div>
 
