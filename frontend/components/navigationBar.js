@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
-import { postLogOut } from "../api/members";
+import { deleteLogOut } from "../api/members";
 import { FailResponse } from "../api/failResponse";
 import UserInfoModal from "./modals/navBarUserInfoModal";
 import { getMyInfo } from "../api/members";
@@ -34,7 +34,7 @@ const NavigationBar = () => {
 
   // 로그아웃 버튼 클릭
   const ClickLogout = () => {
-    postLogOut()
+    deleteLogOut()
       .then((res) => {
         if (res.status.code === 5000) {
           localStorage.removeItem("accessToken");
