@@ -159,7 +159,7 @@ const ActiveArea = () => {
           </div>
         </div>
         <p className="warning-tag">
-          * 이전을 누르면 입력했던 정보가 재입력 해야합니다.
+          * 이전을 누르면 입력했던 정보를 재입력 해야합니다.
         </p>
       </div>
 
