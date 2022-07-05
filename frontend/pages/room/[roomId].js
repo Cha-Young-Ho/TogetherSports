@@ -17,6 +17,20 @@ import Head from "next/head";
 const Room = () => {
   const router = useRouter();
   const dispatch = useDispatch();
+  const exerciseArr = {
+    soccer: "축구",
+    baseball: "야구",
+    basketball: "농구",
+    "ping-pong": "탁구",
+    hiking: "등산",
+    running: "런닝",
+    billiards: "당구",
+    bicycle: "자전거",
+    badminton: "배드민턴",
+    gym: "헬스",
+    golf: "골프",
+    etc: "기타",
+  };
 
   const roomTitle = useSelector(
     (state) => state.roomRealTimeInfoReducer.roomTitle
@@ -271,7 +285,7 @@ const Room = () => {
                 </div>
                 <div className="option">
                   <p>종목</p>
-                  <p>{exercise}</p>
+                  <p>{exerciseArr[exercise]}</p>
                 </div>
                 <div className="option-time">
                   <p>시간</p>

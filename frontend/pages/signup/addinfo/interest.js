@@ -11,18 +11,18 @@ const Interest = () => {
   const router = useRouter();
   const [interests, setInterests] = useState({});
   const interestArray = [
-    { name: "축구", imgPath: "soccer.png" },
-    { name: "야구", imgPath: "baseball.png" },
-    { name: "농구", imgPath: "basketball.png" },
-    { name: "당구", imgPath: "billiards.png" },
-    { name: "탁구", imgPath: "tableTennis.png" },
-    { name: "헬스", imgPath: "health.png" },
-    { name: "자전거", imgPath: "bicycle.png" },
-    { name: "골프", imgPath: "golf.png" },
-    { name: "등산", imgPath: "hiking.png" },
-    { name: "런닝", imgPath: "running.png" },
-    { name: "배드민턴", imgPath: "badminton.png" },
-    { name: "기타종목", imgPath: "etc.png" },
+    { name: "soccer", imgPath: "soccer.png" },
+    { name: "baseball", imgPath: "baseball.png" },
+    { name: "basketball", imgPath: "basketball.png" },
+    { name: "billiards", imgPath: "billiards.png" },
+    { name: "ping-pong", imgPath: "tableTennis.png" },
+    { name: "gym", imgPath: "health.png" },
+    { name: "bicycle", imgPath: "bicycle.png" },
+    { name: "golf", imgPath: "golf.png" },
+    { name: "hiking", imgPath: "hiking.png" },
+    { name: "running", imgPath: "running.png" },
+    { name: "badminton", imgPath: "badminton.png" },
+    { name: "etc", imgPath: "etc.png" },
   ];
 
   const changeInterests = (e, exercise) => {

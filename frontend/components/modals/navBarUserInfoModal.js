@@ -13,6 +13,20 @@ const NavBarUserInfoModal = (props) => {
   const [interest, setInterest] = useState([]);
   const [gender, setGender] = useState("");
   const [activeAreas, setActiveAreas] = useState([]);
+  const exerciseArr = {
+    soccer: "축구",
+    baseball: "야구",
+    basketball: "농구",
+    "ping-pong": "탁구",
+    hiking: "등산",
+    running: "런닝",
+    billiards: "당구",
+    bicycle: "자전거",
+    badminton: "배드민턴",
+    gym: "헬스",
+    golf: "골프",
+    etc: "기타",
+  };
 
   useEffect(() => {
     // 회원 추가정보 입력이 완료되지 않은 경우
@@ -90,7 +104,7 @@ const NavBarUserInfoModal = (props) => {
                 <p>관심 종목</p>
                 <div className="interests">
                   {interest.map((exercise, index) => {
-                    return <div key={index}>{exercise}</div>;
+                    return <div key={index}>{exerciseArr[exercise]}</div>;
                   })}
                 </div>
               </div>

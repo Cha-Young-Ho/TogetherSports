@@ -20,6 +20,21 @@ const RoomShowingBox = (props) => {
   };
   const [tagLayout, setTagLayout] = useState(true);
 
+  const exerciseArr = {
+    soccer: "축구",
+    baseball: "야구",
+    basketball: "농구",
+    "ping-pong": "탁구",
+    hiking: "등산",
+    running: "런닝",
+    billiards: "당구",
+    bicycle: "자전거",
+    badminton: "배드민턴",
+    gym: "헬스",
+    golf: "골프",
+    etc: "기타",
+  };
+
   // 해당 방에 이미 참가중인지 여부 체크
   const isAttendance = () => {
     if (myInfo.isInformationRequired === "false") {
@@ -80,10 +95,9 @@ const RoomShowingBox = (props) => {
         <div className="bodyLine">
           <h1>{`${props.datas.roomTitle}`}</h1>
           <p>
-            {`${props.datas.exercise} ${props.datas.startAppointmentDate.slice(
-              0,
-              10
-            )} ${
+            {`${
+              exerciseArr[props.datas.exercise]
+            } ${props.datas.startAppointmentDate.slice(0, 10)} ${
               DayOfTheWeek[
                 moment(props.datas.startAppointmentDate).isoWeekday()
               ]
