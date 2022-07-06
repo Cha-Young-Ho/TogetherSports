@@ -81,6 +81,7 @@ const UserModification = () => {
           alert("사용 가능한 닉네임입니다.");
         } else {
           setNickname("");
+          setValidNickname("");
           alert("이미 사용중인 닉네임입니다.");
         }
       })
@@ -243,7 +244,7 @@ const UserModification = () => {
         }
       })
       .catch((error) => {
-        if (error.response) {
+        if (error?.response?.data?.status) {
           dispatch({
             type: "CHANGELOGINSTATUS",
             payload: {
@@ -276,8 +277,10 @@ const UserModification = () => {
         }
       })
       .catch((error) => {
-        FailResponse(error.response.data.status.code, func_PostUserRequest);
-        return;
+        if (error?.response?.data?.status) {
+          FailResponse(error.response.data.status.code, func_PostUserRequest);
+          return;
+        }
       });
   };
 
@@ -286,7 +289,7 @@ const UserModification = () => {
     if (validNickname === "") {
       e.preventDefault();
       alert("닉네임을 입력해주세요.");
-      return false;
+      return;
     }
 
     // 닉네임에 공백이 있을 경우
@@ -294,13 +297,14 @@ const UserModification = () => {
     if (blank_pattern.test(validNickname) === true) {
       e.preventDefault();
       alert("닉네임을 공백없이 입력해주세요.");
-      return false;
+      return;
     }
 
     // 닉네임 중복체크를 하지 않은 경우
     if (!isNicknameCheck) {
       e.preventDefault();
       alert("닉네임 중복확인을 해주세요!");
+      return;
     }
 
     if (
@@ -347,11 +351,13 @@ const UserModification = () => {
         }
       })
       .catch((error) => {
-        FailResponse(
-          error.response.data.status.code,
-          getProfileImageSourceFunc
-        );
-        return;
+        if (error?.response?.data?.status) {
+          FailResponse(
+            error.response.data.status.code,
+            getProfileImageSourceFunc
+          );
+          return;
+        }
       });
   };
 
@@ -383,12 +389,6 @@ const UserModification = () => {
 
     getProfileImageSourceFunc();
   }, []);
-
-  useEffect(() => {
-    if (nickname) {
-      setValidNickname(nickname);
-    }
-  }, [nickname]);
 
   return (
     <>
