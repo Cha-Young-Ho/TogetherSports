@@ -141,6 +141,12 @@ public class Room extends RoomBaseEntity {
         this.roomContent = roomOfUpdate.getRoomContent();
     }
 
+    public void updateTag(List<Tag> tagList){
+        for (Tag tag : tagList){
+            this.tags.add(tag);
+        }
+    }
+
     //방장 위임
     public void updateHost(User user){
         this.host = user;
