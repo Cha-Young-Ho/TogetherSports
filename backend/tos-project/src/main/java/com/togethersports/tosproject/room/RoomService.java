@@ -49,7 +49,7 @@ import java.util.stream.Collectors;
  *
  * @author younghoCha
  */
-
+@Slf4j
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -106,9 +106,20 @@ public class RoomService {
         List<ImageOfRoomInfo> imageOfRoomInfos =
                 parsingEntityUtils.parsingRoomImageToRoomInfoImage(roomEntity.getRoomImages());
 
+
+
+        for(Tag tag : roomEntity.getTags()){
+            log.info("파싱 전 태그 확인하기 = {}", tag.getTag());
+        }
         //List<Tag> -> List<String>
         List<String> tag =
                 parsingEntityUtils.parsingTagEntityToString(roomEntity.getTags());
+
+        for(String tag2 : tag){
+            log.info("파싱 후 태그 확인하기 = {}", tag2);
+        }
+        log.info("파싱 후 tag = {}", tag.size());
+
         //조회수 증가
         roomEntity.plusViewCount();
 
@@ -137,6 +148,7 @@ public class RoomService {
 
         //-- update Room Entity --
         roomEntity.updateRoom(roomOfUpdate);
+
 
         //WS 메세지 보내기
         sendMessage(roomEntity.getId(), getWsRoomDetailInfo(roomEntity));
@@ -522,7 +534,8 @@ public class RoomService {
     }
 
     public WsResponse getWsRoomDetailInfo(Room roomEntity){
-
+        log.info("------------- 업데이트 ---------");
+        log.info("여기 확인해야함 = {}", roomEntity.getTags().size());
         return WsResponse.of(ChatCode.ROOM_UPDATED,
                 RoomOfParticipate.builder()
                         .roomOfInfo(getRoomInfo(roomEntity.getId()))
