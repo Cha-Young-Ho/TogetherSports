@@ -43,7 +43,7 @@ const NavigationBar = () => {
           dispatch({
             type: "CHANGELOGINSTATUS",
             payload: {
-              loginStatus: "false",
+              loginStatus: false,
             },
           });
 
@@ -131,10 +131,14 @@ const NavigationBar = () => {
       });
   };
 
-  // 서버로 로그인 요청
   useEffect(() => {
-    func_getMyInfo();
-  }, [loginStatus]);
+    if (
+      localStorage.getItem("accessToken") &&
+      localStorage.getItem("refreshToken")
+    ) {
+      func_getMyInfo();
+    }
+  }, []);
 
   return (
     <>
@@ -212,9 +216,9 @@ const NavigationBar = () => {
                     className="btn_signout"
                     onClick={() => {
                       ClickLogout();
-                      signOut({
-                        callbackUrl: "/",
-                      });
+                      // signOut({
+                      //   callbackUrl: "/",
+                      // });
                     }}
                   >
                     로그아웃
