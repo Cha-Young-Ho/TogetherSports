@@ -24,12 +24,25 @@ const UserInfoModal = (props) => {
 
   // 조회하고자 하는 회원의 정보들
   const [imageSrc, setImageSrc] = useState("");
-  const [nickname, setNickname] = useState("");
   const [mannerPoint, setMannerPoint] = useState(0);
   const [interest, setInterest] = useState([]);
   const [gender, setGender] = useState("");
   const [activeAreas, setActiveAreas] = useState([]);
-  const [mannerType, setMannerType] = useState("");
+
+  const exerciseArr = {
+    soccer: "축구",
+    baseball: "야구",
+    basketball: "농구",
+    "ping-pong": "탁구",
+    hiking: "등산",
+    running: "런닝",
+    billiards: "당구",
+    bicycle: "자전거",
+    badminton: "배드민턴",
+    gym: "헬스",
+    golf: "골프",
+    etc: "기타",
+  };
 
   // 방장 위임하기
   const delegateHostFunc = () => {
@@ -255,7 +268,7 @@ const UserInfoModal = (props) => {
                 <p>관심 종목</p>
                 <div className="interests">
                   {interest.map((exercise, index) => {
-                    return <div key={index}>{exercise}</div>;
+                    return <div key={index}>{exerciseArr[exercise]}</div>;
                   })}
                 </div>
               </div>
