@@ -65,9 +65,6 @@ public class RoomOfInfo {
     //방 생성 시간
     private LocalDateTime createdTime;
 
-    //방 수정 시간
-    private LocalDateTime updatedTime;
-
     @Builder(access = AccessLevel.PRIVATE)
     private RoomOfInfo(Room roomEntity, List<ImageOfRoomInfo> roomImages, List<String> tag){
         this.creatorNickName = roomEntity.getCreateUser().getNickname();
