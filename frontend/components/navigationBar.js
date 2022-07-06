@@ -1,15 +1,17 @@
 import Link from "next/link";
 import { signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
-import { postLogOut } from "../api/members";
+import { deleteLogOut } from "../api/members";
 import { FailResponse } from "../api/failResponse";
 import UserInfoModal from "./modals/navBarUserInfoModal";
 import { getMyInfo } from "../api/members";
 import { useDispatch, useSelector } from "react-redux";
-import FixedRequestAlarm from "./fixedRequestAlarm";
+import SignUpReqModal from "./modals/signUpReqModal";
+import { useRouter } from "next/router";
 
 const NavigationBar = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
 
   // 로그인 상태 임을 판별하는 변수
   const loginStatus = useSelector(
@@ -27,11 +29,12 @@ const NavigationBar = () => {
   };
   const closeUserInfoModalFun = () => {
     setUserInfoModalOpen(false);
+    document.body.style.overflow = "unset";
   };
 
   // 로그아웃 버튼 클릭
   const ClickLogout = () => {
-    postLogOut()
+    deleteLogOut()
       .then((res) => {
         if (res.status.code === 5000) {
           localStorage.removeItem("accessToken");
@@ -40,7 +43,7 @@ const NavigationBar = () => {
           dispatch({
             type: "CHANGELOGINSTATUS",
             payload: {
-              loginStatus: "false",
+              loginStatus: false,
             },
           });
 
@@ -53,14 +56,17 @@ const NavigationBar = () => {
               userNickname: "익명",
               userBirth: "yyyy-mm-dd",
               gender: "",
-              userProfileImagePath: "/base_profileImage.jpg",
+              userProfileImagePath:
+                "https://together-sports.com/images/default_user_profile.jpeg",
               activeAreas: [],
               interests: [],
               mannerPoint: "",
               isInformationRequired: "",
             },
           });
+
           alert("로그아웃 되었습니다.");
+          router.replace("/");
           return;
         }
       })
@@ -85,32 +91,38 @@ const NavigationBar = () => {
               userBirth: res.content.userBirth,
               mannerPoint: res.content.mannerPoint,
               activeAreas: res.content.activeAreas.map((el) => el),
-              userProfileImagePath:
-                res.content.userProfileImagePath === ""
-                  ? "/base_profileImage.jpg"
-                  : res.content.userProfileImagePath,
+              userProfileImagePath: res.content.userProfileImagePath,
               interests: res.content.interests.map((el) => el),
               gender: res.content.gender,
               isInformationRequired: res.content.isInformationRequired,
             },
           });
-        } else {
-          FailResponse(res.status.code);
-        }
 
-        dispatch({
-          type: "CHANGELOGINSTATUS",
-          payload: {
-            loginStatus: "true",
-          },
-        });
-      })
-      .catch((error) => {
-        if (error.response) {
           dispatch({
             type: "CHANGELOGINSTATUS",
             payload: {
-              loginStatus: "false",
+              loginStatus: true,
+            },
+          });
+        } else {
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+
+          dispatch({
+            type: "CHANGELOGINSTATUS",
+            payload: {
+              loginStatus: false,
+            },
+          });
+          FailResponse(res.status.code);
+        }
+      })
+      .catch((error) => {
+        if (error?.response?.data?.status) {
+          dispatch({
+            type: "CHANGELOGINSTATUS",
+            payload: {
+              loginStatus: false,
             },
           });
 
@@ -119,58 +131,66 @@ const NavigationBar = () => {
       });
   };
 
-  // 서버로 로그인 요청
   useEffect(() => {
-    func_getMyInfo();
-  }, [loginStatus]);
+    if (
+      localStorage.getItem("accessToken") &&
+      localStorage.getItem("refreshToken")
+    ) {
+      func_getMyInfo();
+    }
+  }, []);
 
   return (
     <>
+      <head>
+        <meta name="viewport" content="width=1280" />
+      </head>
+
       <div className="header">
         <div className="container_bg">
           <div className="groups">
             <div className="logo">
-              <Link href="/">
+              <Link href="/" passHref>
                 <img src="/logo-navbar.png" alt="Together Sports"></img>
               </Link>
             </div>
             <div className="category">
-              <Link href="/room/roomlist">
+              <Link href="/room/roomlist" passHref>
                 <button className="tag">방 목록</button>
               </Link>
-              <Link href="/myroom">
-                <button
-                  className="tag"
-                  onClick={(e) => {
-                    if (myInfo.id === 0) {
-                      e.preventDefault();
-                      alert("로그인 및 추가정보가 필요한 기능입니다.");
-                    }
-                  }}
-                >
-                  내 일정
-                </button>
-              </Link>
-              <Link href="/room/createroom/roomsetting">
-                <button
-                  className="tag"
-                  onClick={(e) => {
-                    if (myInfo.id === 0) {
-                      e.preventDefault();
-                      alert("로그인 및 추가정보가 필요한 기능입니다.");
-                    }
-                  }}
-                >
-                  방 생성
-                </button>
-              </Link>
+              <button
+                className="tag"
+                onClick={(e) => {
+                  if (myInfo.isInformationRequired) {
+                    e.preventDefault();
+                    alert("로그인 및 추가정보가 필요한 기능입니다.");
+                    return;
+                  }
+                  router.push("/myroom");
+                }}
+              >
+                내 일정
+              </button>
+              <button
+                className="tag"
+                onClick={(e) => {
+                  if (myInfo.isInformationRequired) {
+                    e.preventDefault();
+                    alert("로그인 및 추가정보가 필요한 기능입니다.");
+                    return;
+                  }
+                  router.push("/room/createroom/roomsetting");
+                }}
+              >
+                방 생성
+              </button>
             </div>
           </div>
           <div>
             <div className="sign">
-              {loginStatus === "false" ? (
+              {!loginStatus ? (
                 <>
-                  <Link href="/login">
+                  <Link href="/login" passHref>
                     <button className="tag">로그인</button>
                   </Link>
                 </>
@@ -179,7 +199,8 @@ const NavigationBar = () => {
                   <button className="user-box" onClick={openUserInfoModalFunc}>
                     <img
                       className="ProfileImage"
-                      src={`/images/${myInfo.userProfileImagePath}`}
+                      src={`https://together-sports.com/${myInfo.userProfileImagePath}`}
+                      alt="프로필 이미지"
                     ></img>
                     <div className="logOn">
                       {`${myInfo.userNickname}`} 님 반갑습니다!
@@ -195,9 +216,9 @@ const NavigationBar = () => {
                     className="btn_signout"
                     onClick={() => {
                       ClickLogout();
-                      signOut({
-                        callbackUrl: "/",
-                      });
+                      // signOut({
+                      //   callbackUrl: "/",
+                      // });
                     }}
                   >
                     로그아웃
@@ -208,11 +229,7 @@ const NavigationBar = () => {
           </div>
         </div>
       </div>
-      {loginStatus === "true" && myInfo.isInformationRequired ? (
-        <FixedRequestAlarm />
-      ) : (
-        ""
-      )}
+      {loginStatus && myInfo.isInformationRequired ? <SignUpReqModal /> : ""}
 
       <style jsx>{`
         .header {
@@ -220,7 +237,7 @@ const NavigationBar = () => {
           justify-content: space-around;
           align-items: center;
           height: 82px;
-          min-height: 8vh;
+          max-height: 82px;
           border-bottom: 1px solid #e4e8eb;
           z-index: 90;
           position: fixed;
@@ -263,6 +280,7 @@ const NavigationBar = () => {
           position: relative;
           justify-content: center;
           font-size: 1.5rem;
+          white-space: nowrap;
         }
 
         .tag {
@@ -275,11 +293,11 @@ const NavigationBar = () => {
         }
 
         .ProfileImage {
-          width: 40px;
-          height: 40px;
           border-radius: 50px;
           background-color: black;
           object-fit: cover;
+          width: 40px;
+          height: 40px;
         }
 
         .logOn {
@@ -293,6 +311,7 @@ const NavigationBar = () => {
           cursor: pointer;
           border: 0;
           background-color: #fff;
+          margin-bottom: 3px;
         }
 
         .btn_signout {
@@ -305,8 +324,8 @@ const NavigationBar = () => {
           position: relative;
           cursor: pointer;
           transition: 800ms ease all;
+          margin-bottom: 3px;
           font-size: 1.5rem;
-          font-family: "NanumBarunGothic";
         }
 
         .btn_signout:hover,
@@ -318,12 +337,6 @@ const NavigationBar = () => {
         .tag:active {
           top: 3px;
           box-shadow: none;
-        }
-
-        @media (max-width: 1300px) {
-          * {
-            display: none;
-          }
         }
       `}</style>
     </>
