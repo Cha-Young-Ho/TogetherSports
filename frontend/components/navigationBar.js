@@ -61,7 +61,7 @@ const NavigationBar = () => {
               activeAreas: [],
               interests: [],
               mannerPoint: "",
-              isInformationRequired: "",
+              isInformationRequired: true,
             },
           });
 
@@ -161,7 +161,7 @@ const NavigationBar = () => {
               <button
                 className="tag"
                 onClick={(e) => {
-                  if (myInfo.isInformationRequired === "false") {
+                  if (myInfo.isInformationRequired) {
                     e.preventDefault();
                     alert("로그인 및 추가정보가 필요한 기능입니다.");
                     return;
@@ -174,7 +174,7 @@ const NavigationBar = () => {
               <button
                 className="tag"
                 onClick={(e) => {
-                  if (myInfo.isInformationRequired === "false") {
+                  if (myInfo.isInformationRequired) {
                     e.preventDefault();
                     alert("로그인 및 추가정보가 필요한 기능입니다.");
                     return;
@@ -311,6 +311,7 @@ const NavigationBar = () => {
           cursor: pointer;
           border: 0;
           background-color: #fff;
+          margin-bottom: 3px;
         }
 
         .btn_signout {
@@ -323,8 +324,8 @@ const NavigationBar = () => {
           position: relative;
           cursor: pointer;
           transition: 800ms ease all;
+          margin-bottom: 3px;
           font-size: 1.5rem;
-          font-family: "NanumBarunGothic";
         }
 
         .btn_signout:hover,

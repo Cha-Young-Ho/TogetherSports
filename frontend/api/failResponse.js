@@ -9,6 +9,9 @@ const FailResponse = (codeNumber, prelastingToDo) => {
     case 1001:
       alert("입력값 검증에 실패하였습니다.");
       break;
+    case 1002:
+      alert("잘못된 데이터가 포함된 요청입니다.");
+      break;
     case 1100:
       alert("유저를 찾을 수 없습니다.");
       break;

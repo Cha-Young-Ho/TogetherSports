@@ -27,7 +27,7 @@ const myInfoInitialState = {
     "https://together-sports.com/images/default_user_profile.jpeg",
   interests: [],
   gender: "",
-  isInformationRequired: "false",
+  isInformationRequired: true,
 };
 
 // 닉네임 저장 초기값
