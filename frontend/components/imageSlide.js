@@ -12,17 +12,6 @@ const ImageSlide = (props) => {
     (state) => state.saveRoomModalImagesReducer.roomImages
   );
 
-  useEffect(() => {
-    if (props.path === "roomInfo") {
-      roomInfoImageArr !== null ? showSlides(slideIndex) : <></>;
-      // roomInfoImageArr.length !== 0 ? showSlides(slideIndex) : <></>;
-    }
-    if (props.path === "roomDetail") {
-      roomDetailImageArr !== null ? showSlides(slideIndex) : <></>;
-      // roomDetailImageArr.length !== 0 ? showSlides(slideIndex) : <></>;
-    }
-  }, []);
-
   const onChangeImage = (index) => {
     showSlides((slideIndex += index));
   };
@@ -39,48 +28,58 @@ const ImageSlide = (props) => {
     slides[slideIndex - 1].style.display = "table";
   };
 
+  useEffect(() => {
+    showSlides(slideIndex);
+    // if (props.path === "roomInfo") {
+    //   roomInfoImageArr !== null ? showSlides(slideIndex) : <></>;
+    //   // roomInfoImageArr.length !== 0 ? showSlides(slideIndex) : <></>;
+    // }
+    // if (props.path === "roomDetail") {
+    //   roomDetailImageArr !== null ? showSlides(slideIndex) : <></>;
+    //   // roomDetailImageArr.length !== 0 ? showSlides(slideIndex) : <></>;
+    // }
+  }, []);
+
   return (
     <>
       <div className="slideshow-container">
-        {props.path === "roomInfo" ? (
-          roomInfoImageArr !== null ? (
-            roomInfoImageArr
+        {props.path === "roomInfo"
+          ? Array.isArray(roomInfoImageArr)
+            ? roomInfoImageArr
+                .sort((a, b) => a.order - b.order)
+                .map((image, index) => {
+                  return (
+                    <div className="slide fade" key={index}>
+                      <div className="number-text">{`${index + 1} / ${
+                        roomInfoImageArr.length
+                      }`}</div>
+                      <div className="image-container">
+                        <img
+                          src={`https://together-sports.com/${image.imagePath}`}
+                        />
+                      </div>
+                    </div>
+                  );
+                })
+            : ""
+          : Array.isArray(roomDetailImageArr)
+          ? roomDetailImageArr
               .sort((a, b) => a.order - b.order)
               .map((image, index) => {
                 return (
                   <div className="slide fade" key={index}>
                     <div className="number-text">{`${index + 1} / ${
-                      roomInfoImageArr.length
+                      roomDetailImageArr.length
                     }`}</div>
                     <div className="image-container">
-                      {/* <img src={`/images/${image.imagePath}`} /> */}
-                      <img src={`/${image.imagePath}`} />
+                      <img
+                        src={`https://together-sports.com/${image.imagePath}`}
+                      />
                     </div>
                   </div>
                 );
               })
-          ) : (
-            <></>
-          )
-        ) : roomDetailImageArr !== null ? (
-          roomDetailImageArr
-            .sort((a, b) => a.order - b.order)
-            .map((image, index) => {
-              return (
-                <div className="slide fade" key={index}>
-                  <div className="number-text">{`${index + 1} / ${
-                    roomDetailImageArr.length
-                  }`}</div>
-                  <div className="image-container">
-                    {/* <img src={`/images/${image.imagePath}`} /> */}
-                    <img src={`/${image.imagePath}`} />
-                  </div>
-                </div>
-              );
-            })
-        ) : (
-          <></>
-        )}
+          : ""}
 
         <div className="buttons">
           <button className="prev-button" onClick={() => onChangeImage(-1)}>

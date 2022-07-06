@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useState } from "react";
 
-const FixedRequestAlarm = () => {
+const SignUpReqModal = () => {
   const [miniMode, setMiniMode] = useState(false);
 
   return (
@@ -17,7 +17,7 @@ const FixedRequestAlarm = () => {
               &times;
             </button>
             <p>회원추가 정보를 입력하지 않았어요!</p>
-            <Link href="/signup/addinfo/personalinfo">
+            <Link href="/signup/addinfo/personalinfo" passHref>
               <button className="btn-signup">입력하기</button>
             </Link>
           </div>
@@ -128,4 +128,4 @@ const FixedRequestAlarm = () => {
   );
 };
 
-export default FixedRequestAlarm;
+export default SignUpReqModal;

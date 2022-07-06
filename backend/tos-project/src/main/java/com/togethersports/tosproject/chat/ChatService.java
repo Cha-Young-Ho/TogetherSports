@@ -14,7 +14,9 @@ import com.togethersports.tosproject.user.UserRepository;
 import com.togethersports.tosproject.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
@@ -92,9 +94,12 @@ public class ChatService {
      * @return : 조회된 채팅 페이징
      */
     public Page<ChatOfHistory> getChatHistory(Pageable pageable, Long roomId){
+        Pageable page = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.ASC,"sendAt").ascending());
+
+
         Room roomEntity = roomRepository.findById(roomId)
                 .orElseThrow(() -> new NotFoundRoomException("해당 방을 찾을 수 없습니다."));
-        Page<ChatMessage> chatEntityList = chatRepository.findByRoom(roomEntity, pageable);
+        Page<ChatMessage> chatEntityList = chatRepository.findByRoomOrderBySendAtDesc(roomEntity, page);
         Page<ChatOfHistory> pageList = chatEntityList.map(
                 chat -> ChatOfHistory.builder()
                         .nickname(chat.getUser().getNickname())

@@ -1,20 +1,25 @@
 package com.togethersports.tosproject.user;
 
 import com.togethersports.tosproject.common.code.CommonCode;
+import com.togethersports.tosproject.common.dto.FileOfImageSource;
 import com.togethersports.tosproject.common.dto.Response;
 import com.togethersports.tosproject.common.file.service.StorageService;
 import com.togethersports.tosproject.common.file.util.Base64Decoder;
 import com.togethersports.tosproject.common.file.util.NameGenerator;
 import com.togethersports.tosproject.common.util.ParsingEntityUtils;
+import com.togethersports.tosproject.image.dto.ImageProperties;
 import com.togethersports.tosproject.interest.Interest;
-import com.togethersports.tosproject.mannerpoint.MannerPointStatus;
 import com.togethersports.tosproject.mannerpoint.UserMannerPointService;
+import com.togethersports.tosproject.participant.Participant;
 import com.togethersports.tosproject.security.oauth2.model.OAuth2Provider;
+import com.togethersports.tosproject.user.code.UserCode;
 import com.togethersports.tosproject.user.dto.*;
 import com.togethersports.tosproject.user.exception.NicknameDuplicationException;
 import com.togethersports.tosproject.user.exception.NotEnteredInformationException;
 import com.togethersports.tosproject.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +39,7 @@ import java.util.List;
  * @author younghoCha
  */
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserService {
@@ -44,6 +50,8 @@ public class UserService {
     private final NameGenerator nameGenerator;
     private final ParsingEntityUtils parsingEntityUtils;
     private final UserMannerPointService userMannerPointService;
+    private final ImageProperties imageProperties;
+
 
 
     /**
@@ -70,16 +78,26 @@ public class UserService {
     /**
      * 이메일 중복 체크를 위한 메소드
      * @param nickname : 입력받은 이메일
+     * @param user : 요청자 Entity
      * @return : 존재할경우 false, 존재하지 않을 경우 true
      */
-    public boolean nicknameDuplicationCheck(String nickname){
+    public boolean nicknameDuplicationCheck(String nickname, User user){
 
-        // 존재할 경우
-        if(userRepository.existsByNickname(nickname)){
-            return false;
+        User userEntity = userRepository.findById(user.getId())
+                .orElseThrow(() -> new UserNotFoundException("해당 유저를 찾을 수 없습니다."));
+
+
+        if(userEntity.getNickname() == null){
+            return true;
         }
 
-        //존재하지 않을 경우
+        if(userEntity.getNickname().equals(nickname)){
+            return true;
+        }
+
+        if(userRepository.existsByNickname(nickname)){
+            throw new NicknameDuplicationException("중복된 닉네임입니다.");
+        }
         return true;
     }
 
@@ -88,7 +106,7 @@ public class UserService {
      * @param otherUserId : 전달받은 user id
      * @return USerOfOtherInfo : 다른 회원 정보에 대한 DTO
      */
-    public UserOfParticipantInfo getParticipantInfo(Long otherUserId){
+    public UserOfParticipantInfo getParticipantInfo(Long otherUserId, Participant participant){
 
         //유저 엔티티
         User userEntity = userRepository.findById(otherUserId)
@@ -106,6 +124,7 @@ public class UserService {
                 .userNickname(userEntity.getNickname())
                 .mannerPoint(userEntity.getMannerPoint())
                 .userProfileImagePath(userEntity.getUserProfileImage())
+                .status(participant.getStatus())
                 .build();
 
     }
@@ -141,26 +160,41 @@ public class UserService {
 
     //회원 정보 수정 메소드
     @Transactional
-    public void modifyMyInfo(Long id, UserOfModifyInfo userOfModifyInfo){
-        if(userRepository.existsByNickname(userOfModifyInfo.getUserNickname())){
+    public void modifyMyInfo(User user, UserOfModifyInfo userOfModifyInfo){
+        if(!nicknameDuplicationCheck(userOfModifyInfo.getUserNickname(), user)){
             throw new NicknameDuplicationException("닉네임이 중복되었습니다.");
         }
-        User findUser = userRepository.findById(id)
+        User findUser = userRepository.findById(user.getId())
                 .orElseThrow(() -> new UserNotFoundException("사용자가 존재하지 않습니다."));
 
-
         List<Interest> interests = parsingEntityUtils.parsingStringToInterestsEntity(userOfModifyInfo.getInterests());
-        if(userOfModifyInfo.getUserProfileImage().getImageSource() == null){
+        //기존에 기본 파일일 경우
+        if(findUser.getUserProfileImage().equals(imageProperties.getImageProperties().get("Etc"))) {
+            //기본 -> 기본
+            if(userOfModifyInfo.getUserProfileImage().getImageSource() == null || userOfModifyInfo.getUserProfileImage().getImageSource().equals("")){
+                findUser.updateUser(userOfModifyInfo, interests, imageProperties.getImageProperties().get("Etc"));
+                return;
+            }
+            //기본 -> 설정
 
-            findUser.updateUser(userOfModifyInfo, interests, "https://together-sports.com/images/default_user_profile.jpeg");
+            //파일 등록
+            String imagePath = registerImage(userOfModifyInfo);
+            findUser.updateUser(userOfModifyInfo, interests, imagePath);
+            return;
+        }
+        //기존 삭제
+        storageService.delete(findUser.getUserProfileImage());
+
+        //설정 -> 기본
+        if(userOfModifyInfo.getUserProfileImage().getImageSource() == null || userOfModifyInfo.getUserProfileImage().getImageSource().equals("")){
+
+            findUser.updateUser(userOfModifyInfo, interests, imageProperties.getImageProperties().get("Etc"));
             return;
         }
 
-        String encodedImageSource = userOfModifyInfo.getUserProfileImage().getImageSource();
-        byte[] imageSource = base64Decoder.decode(encodedImageSource);
-        String fileName = nameGenerator.generateRandomName().concat(".")
-                .concat(userOfModifyInfo.getUserProfileImage().getUserProfileExtension());
-        String imagePath = storageService.store(imageSource, fileName);
+        //설정 -> 설정
+        //파일 등록
+        String imagePath = registerImage(userOfModifyInfo);
         findUser.updateUser(userOfModifyInfo, interests, imagePath);
     }
 
@@ -170,6 +204,7 @@ public class UserService {
 
 
         List<String> parsedInterestList = parsingEntityUtils.parsingInterestsEntityToString(user.getInterests());
+
 
        return UserOfMyInfo.builder()
                .id(user.getId())
@@ -201,6 +236,26 @@ public class UserService {
 
         return response;
     }
+    public Response getProfileImageSource(User user){
+        User userEntity = userRepository.findById(user.getId())
+                .orElseThrow(() -> new UserNotFoundException("해당 유저를 찾을 수 없습니다."));
 
+        if(userEntity.getUserProfileImage().equals(imageProperties.getImageProperties().get("Etc"))){
+            return Response.of(UserCode.DEFAULT_PROFILE_IMAGE, null);
+        }
+        FileOfImageSource fileOfImageSource =
+                storageService.getFileSourceAndExtension(userEntity.getUserProfileImage());
+
+        return Response.of(CommonCode.GOOD_REQUEST, fileOfImageSource);
+
+    }
+
+    public String registerImage(UserOfModifyInfo userOfModifyInfo){
+        String encodedImageSource = userOfModifyInfo.getUserProfileImage().getImageSource();
+        byte[] imageSource = base64Decoder.decode(encodedImageSource);
+        String fileName = nameGenerator.generateRandomName().concat(".")
+                .concat(userOfModifyInfo.getUserProfileImage().getUserProfileExtension());
+        return storageService.store(imageSource, fileName);
+    }
 
 }

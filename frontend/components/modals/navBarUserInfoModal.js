@@ -7,20 +7,37 @@ const NavBarUserInfoModal = (props) => {
   const myInfo = useSelector((state) => state.myInfoReducer);
 
   // 조회하고자 하는 회원의 정보들
-  const [imageSrc, setImageSrc] = useState("/base_profileImage.jpg");
+  const [imageSrc, setImageSrc] = useState("");
   const [nickname, setNickname] = useState("");
   const [mannerPoint, setMannerPoint] = useState(0);
   const [interest, setInterest] = useState([]);
   const [gender, setGender] = useState("");
   const [activeAreas, setActiveAreas] = useState([]);
+  const exerciseArr = {
+    soccer: "축구",
+    baseball: "야구",
+    basketball: "농구",
+    "ping-pong": "탁구",
+    hiking: "등산",
+    running: "런닝",
+    billiards: "당구",
+    bicycle: "자전거",
+    badminton: "배드민턴",
+    gym: "헬스",
+    golf: "골프",
+    etc: "기타",
+  };
 
   useEffect(() => {
     // 회원 추가정보 입력이 완료되지 않은 경우
-    if (props.open && myInfo.userNickname === "익명") {
-      alert("회원 추가 정보가 없어 내 정보를 요청할 수 없습니다.");
-      props.close();
-      return;
-    } else {
+    if (props.open) {
+      if (myInfo.userNickname === "익명") {
+        alert("회원 추가 정보가 없어 내 정보를 요청할 수 없습니다.");
+        props.close();
+        return;
+      }
+      document.body.style.overflow = "hidden";
+
       setImageSrc((imageSrc = myInfo.userProfileImagePath));
       setNickname((nickname = myInfo.userNickname));
       setMannerPoint((mannerPoint = myInfo.mannerPoint));
@@ -28,19 +45,27 @@ const NavBarUserInfoModal = (props) => {
       setGender((gender = myInfo.gender));
       setActiveAreas((activeAreas = myInfo.activeAreas));
     }
-  });
+  }, [props.open]);
 
   return (
     <>
-      <div className={props.open ? "openModal modal" : "modal"}>
+      <div
+        className={props.open ? "openModal modal" : "modal"}
+        onClick={(e) => {
+          if (e.target.classList[1] === "openModal") props.close();
+        }}
+      >
         <div className="userinfo-modal-body">
-          <div className="header">
-            <button onClick={props.close}>&times;</button>
-          </div>
+          <button className="close-popup-button" onClick={props.close}>
+            &times;
+          </button>
 
           <div className="section">
             <div className="left-section">
-              <img src={imageSrc} className="pf-image"></img>
+              <img
+                src={`https://together-sports.com/${imageSrc}`}
+                className="pf-image"
+              ></img>
 
               <div className="buttons">
                 <Link href="/usermodification">
@@ -79,7 +104,7 @@ const NavBarUserInfoModal = (props) => {
                 <p>관심 종목</p>
                 <div className="interests">
                   {interest.map((exercise, index) => {
-                    return <div key={index}>{exercise}</div>;
+                    return <div key={index}>{exerciseArr[exercise]}</div>;
                   })}
                 </div>
               </div>
@@ -112,7 +137,7 @@ const NavBarUserInfoModal = (props) => {
           display: flex;
           align-items: center;
           justify-content: center;
-          animation: modal-bg-show 0.3s; // 스르륵 효과
+          animation: modal-bg-show 0.3s;
         }
 
         .userinfo-modal-body {
@@ -127,18 +152,13 @@ const NavBarUserInfoModal = (props) => {
           justify-content: center;
           align-items: center;
           padding: 15px;
-          /* overflow: auto; */
-        }
-
-        .header {
-          width: 100%;
           position: relative;
         }
 
-        .header > button {
+        .close-popup-button {
           position: absolute;
-          top: 0px;
-          right: 0px;
+          top: 10px;
+          right: 10px;
           color: #999;
           font-size: 3rem;
           background-color: white;

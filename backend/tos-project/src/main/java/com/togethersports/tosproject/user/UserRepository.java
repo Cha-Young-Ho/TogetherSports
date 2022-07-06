@@ -5,13 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-/**
- * <h1>UserRepository</h1>
- * <p>사용자 계정 엔티티 CRUD 리포지토리</p>
- *
- * @author yunghocha
- * @author seunjeon
- */
 public interface UserRepository extends JpaRepository<User, Long> {
 
     /**

@@ -61,7 +61,7 @@ const NavigationBar = () => {
               activeAreas: [],
               interests: [],
               mannerPoint: "",
-              isInformationRequired: "",
+              isInformationRequired: true,
             },
           });
 

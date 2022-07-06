@@ -6,7 +6,6 @@ const SelectExercise = () => {
   const resetDetection = useSelector(
     (state) => state.filteringButtonClickDetectionReducer
   );
-  const [FilterObj, setFilterObj] = useState([]);
 
   const interestArray = [
     "축구",
@@ -23,6 +22,21 @@ const SelectExercise = () => {
     "기타종목",
   ];
 
+  const exerciseArr = {
+    축구: "soccer",
+    야구: "baseball",
+    농구: "basketball",
+    탁구: "ping-pong",
+    등산: "hiking",
+    런닝: "running",
+    당구: "billiards",
+    자전거: "bicycle",
+    배드민턴: "badminton",
+    헬스: "gym",
+    골프: "golf",
+    기타종목: "etc",
+  };
+
   const [interest, setInterest] = useState({});
 
   const clickExercises = (e) => {
@@ -34,7 +48,8 @@ const SelectExercise = () => {
 
     setInterest((prev) => ({
       ...prev,
-      [e.target.innerText]: !interest[e.target.innerText],
+      [exerciseArr[e.target.innerText]]:
+        !interest[exerciseArr[e.target.innerText]],
     }));
   };
 
@@ -45,6 +60,8 @@ const SelectExercise = () => {
         exercise: interest,
       },
     });
+
+    console.log(interest);
   }, [interest]);
 
   useEffect(() => {
@@ -75,19 +92,6 @@ const SelectExercise = () => {
     }
   }, [resetDetection.reset]);
 
-  useEffect(() => {
-    if (localStorage.getItem("Filters")) {
-      setFilterObj(JSON.parse(localStorage.getItem("Filters")).exercise);
-      // 관심 종목 세팅
-      for (const exercise of FilterObj) {
-        setInterest((prev) => ({
-          ...prev,
-          [exercise]: true,
-        }));
-      }
-    }
-  }, []);
-
   return (
     <>
       <div className="exercise-wrapper">
@@ -98,9 +102,7 @@ const SelectExercise = () => {
               return (
                 <button
                   key={index}
-                  className={`exercise ${
-                    FilterObj.indexOf(exercise) === -1 ? `` : `clicked`
-                  }`}
+                  className={`exercise`}
                   onClick={clickExercises}
                 >
                   {exercise}

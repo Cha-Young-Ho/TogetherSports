@@ -58,4 +58,5 @@ public class RoomImage {
                 .imageOfRoomCRUD(imageOfRoomCRUD)
                 .build();
     }
+
 }

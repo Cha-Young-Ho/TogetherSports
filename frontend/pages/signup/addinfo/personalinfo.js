@@ -5,14 +5,15 @@ import { useDispatch } from "react-redux";
 import { getNicknameDuplicationCheck } from "../../../api/members";
 import UserInfoNavBar from "../../../components/userInfoNavBar";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 const PersonalInfo = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
 
   // 닉네임
   const [nickname, setNickname] = useState("");
-
-  //기본 값 false
+  const [validNickname, setValidNickname] = useState("");
   const [isNicknameCheck, setIsNicknameCheck] = useState(false);
 
   // 생년월일
@@ -33,14 +34,17 @@ const PersonalInfo = () => {
   const checkNicknameDuplication = () => {
     if (nickname.length < 2 || nickname.length > 8) {
       alert("닉네임은 2글자 이상 ~ 8글자 이내로 입력해주세요.");
+      return;
     } else {
       getNicknameDuplicationCheck(nickname).then((res) => {
-        console.log(res.status.message);
         if (res.status.code === 5000) {
           setIsNicknameCheck(true);
+          setValidNickname(nickname);
           alert("사용 가능한 닉네임입니다.");
         } else {
           setNickname("");
+          setValidNickname("");
+          setIsNicknameCheck(false);
           alert("이미 사용중인 닉네임입니다.");
         }
       });
@@ -113,11 +117,16 @@ const PersonalInfo = () => {
     setExtension(imageFileExtension);
   };
 
+  // 프로필 이미지 삭제 및 초기화 함수
+  const deleteProfileImage = () => {
+    setProfile((profile = ""));
+    setExtension((extension = ""));
+    setImagesrc((imagesrc = ""));
+  };
+
   // 예외처리 및 다음 페이지 실행
   const getNext = (e) => {
-    const checkNickname = $("#input-nickname").val();
-
-    if (checkNickname === "" || checkNickname === null) {
+    if (nickname === "" || nickname === null) {
       e.preventDefault();
       alert("닉네임을 입력해주세요.");
       return false;
@@ -125,24 +134,9 @@ const PersonalInfo = () => {
 
     // 닉네임에 공백이 있을 경우
     const blank_pattern = /[\s]/g;
-    if (blank_pattern.test(checkNickname) === true) {
+    if (blank_pattern.test(nickname) === true) {
       e.preventDefault();
       alert("닉네임을 공백없이 입력해주세요.");
-      return false;
-    }
-
-    // 닉네임에 특수문자 사용했을 경우 (추후 수정 예정)
-    // const special_pattern = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
-    // if (special_pattern.test(checkNickname) === true) {
-    //   e.preventDefault();
-    //   alert("닉네임에 특수문자는 사용할 수 없습니다.");
-    //   return false;
-    // }
-
-    // 닉네임 길이 제한
-    if (checkNickname.length < 2 && checkNickname.length > 8) {
-      e.preventDefault();
-      alert("닉네임은 최소 2글자 최대 8글자까지 입력 가능합니다.");
       return false;
     }
 
@@ -166,20 +160,22 @@ const PersonalInfo = () => {
     }
 
     if (extension === "" || imagesrc === "") {
-      setExtension(null);
-      setImagesrc(null);
+      setExtension((extension = null));
+      setImagesrc((imagesrc = null));
     }
 
     dispatch({
       type: "PERSONALINFO",
       payload: {
-        userNickname: nickname,
+        userNickname: validNickname,
         userBirth: userBirth,
         gender: gender,
         userProfileExtension: extension,
         imageSource: imagesrc,
       },
     });
+
+    router.push("/signup/addinfo/interest");
   };
 
   useEffect(getBirthDay, []);
@@ -278,26 +274,32 @@ const PersonalInfo = () => {
             </div>
           </div>
 
-          <div className="content-profile">
-            <p>프로필</p>
-            <input readOnly value={profile} />
-            <label htmlFor="filename">
-              <p>파일찾기</p>
-            </label>
-            <input
-              type="file"
-              id="filename"
-              accept=".jpg, .jpeg, .png"
-              onChange={onClickProfileImage}
-            />
+          <div className="content-profiles">
+            <div className="content-profile">
+              <p>프로필</p>
+              <input readOnly value={profile} />
+              <label htmlFor="filename">
+                <p>파일찾기</p>
+              </label>
+              <input
+                type="file"
+                id="filename"
+                accept=".jpg, .jpeg, .png"
+                onChange={onClickProfileImage}
+              />
+            </div>
+            <button
+              className="delete-profile-button"
+              onClick={deleteProfileImage}
+            >
+              삭제
+            </button>
           </div>
         </div>
 
-        <Link href="/signup/addinfo/interest">
-          <button className="next-button" onClick={getNext}>
-            다음
-          </button>
-        </Link>
+        <button className="next-button" onClick={getNext}>
+          다음
+        </button>
       </div>
 
       <style jsx>{`
@@ -501,10 +503,17 @@ const PersonalInfo = () => {
           background: #08555f;
         }
 
-        .content-profile {
+        .content-profiles {
           width: 100%;
           height: 40px;
           margin: 40px 0;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+        }
+
+        .content-profile {
+          width: 90%;
           padding: 5px 10px 5px 14px;
           border-radius: 10px;
           border: solid 1px #e8e8e8;
@@ -514,7 +523,7 @@ const PersonalInfo = () => {
         }
 
         .content-profile input {
-          width: 450px;
+          width: 390px;
           height: 30px;
           border-style: none;
           font-size: 1.4em;
@@ -543,6 +552,17 @@ const PersonalInfo = () => {
           padding: 0;
           border: 0;
           overflow: hidden;
+        }
+
+        .delete-profile-button {
+          margin-left: 10px;
+          width: 50px;
+          height: 30px;
+          border-radius: 5px;
+          background-color: #08555f;
+          color: white;
+          border: none;
+          cursor: pointer;
         }
 
         .next-button {

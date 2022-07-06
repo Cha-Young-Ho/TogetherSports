@@ -5,13 +5,16 @@ import Link from "next/link";
 import { useDispatch } from "react-redux";
 import moment from "moment";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 const RoomSchedule = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
   const [curSelectedDate, setCurSelectedDate] = useState("");
 
   // calendar의 현재 선택된 날 받아오기 위한 함수
   const setSelectedDate = (date) => {
+    if (date.length === 9) date = date.slice(0, 8) + "0" + date.substr(8);
     setCurSelectedDate((curSelectedDate = date));
   };
 
@@ -31,6 +34,19 @@ const RoomSchedule = () => {
   ];
 
   const clickNextBtn = (e) => {
+    const today = moment(new Date());
+    const checkDate = moment([
+      curSelectedDate.substr(0, 4),
+      curSelectedDate.substring(5, 7) - 1,
+      curSelectedDate.substr(8, 10),
+    ]);
+
+    if (checkDate.diff(today, "days") <= -1) {
+      e.preventDefault();
+      alert("오늘보다 이전 날짜는 선택할 수 없습니다.");
+      return;
+    }
+
     //예외 처리
     if (curSelectedDate === "") {
       e.preventDefault();
@@ -90,6 +106,8 @@ const RoomSchedule = () => {
         ).padStart(2, 0)}:${String(endTime.minutes()).padStart(2, 0)}`,
       },
     });
+
+    router.push("/room/createroom/roomtaginfo");
   };
 
   return (
@@ -154,14 +172,12 @@ const RoomSchedule = () => {
         </div>
 
         <div className="button-wrapper">
-          <Link href="/room/createroom/roomsetting">
+          <Link href="/room/createroom/roomsetting" passHref>
             <button className="button-prev">이전</button>
           </Link>
-          <Link href="/room/createroom/roomtaginfo">
-            <button className="button-done" onClick={clickNextBtn}>
-              다음
-            </button>
-          </Link>
+          <button className="button-done" onClick={clickNextBtn}>
+            다음
+          </button>
         </div>
       </div>
       <style jsx>{`

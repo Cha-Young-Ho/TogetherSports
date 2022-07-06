@@ -49,10 +49,10 @@ public class RoomController {
     }
 
     //방 수정
-    @PutMapping("/api/room")
-    public ResponseEntity<Response> modifyRoomInfo(@RequestBody RoomOfUpdate roomOfUpdate){
+    @PutMapping("/api/room/{roomId}")
+    public ResponseEntity<Response> modifyRoomInfo(@RequestBody RoomOfUpdate roomOfUpdate, @PathVariable Long roomId){
 
-        Response response = roomService.modifyRoomInfo(roomOfUpdate);
+        Response response = roomService.modifyRoomInfo(roomOfUpdate, roomId);
 
         return ResponseEntity.ok(response);
 
@@ -136,6 +136,13 @@ public class RoomController {
         Response response = Response.of(RoomCode.NOT_PARTICIPATE_ROOM, AttendanceOfRoom.builder().attendance(attendance).build());
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/api/room/{roomId}/imageSource")
+    public ResponseEntity getRoomImageSources(@PathVariable Long roomId, @CurrentUser User user){
+
+        return ResponseEntity.ok(roomService.getRoomImageSources(roomId, user));
+
     }
 
 

@@ -1,23 +1,30 @@
 import { useEffect, useState } from "react";
 import SetRoomImages from "../rooms/setRoomImages";
 import { getRoomInfo, putUpdateRoom } from "../../api/rooms";
-import FailResponse from "../../api/failResponse";
+import { FailResponse } from "../../api/failResponse";
 import { useSelector } from "react-redux";
 import Head from "next/head";
 
 const ModifyRoomModal = (props) => {
   const roomId = props.roomId;
+
+  const [changeRoomTitle, setChangeRoomTitle] = useState("");
   const roomTitle = useSelector(
     (state) => state.roomRealTimeInfoReducer.roomTitle
   );
+
+  const [changeLimitPeopleCount, setChangeLimitPeopleCount] = useState(0);
+  const limitPeopleCount = useSelector(
+    (state) => state.roomRealTimeInfoReducer.limitPeopleCount
+  );
+
+  const [changeRoomContent, setChangeRoomContent] = useState("");
   const roomContent = useSelector(
     (state) => state.roomRealTimeInfoReducer.roomContent
   );
+
   const roomArea = useSelector(
     (state) => state.roomRealTimeInfoReducer.roomArea
-  );
-  const limitPeopleCount = useSelector(
-    (state) => state.roomRealTimeInfoReducer.limitPeopleCount
   );
   const exercise = useSelector(
     (state) => state.roomRealTimeInfoReducer.exercise
@@ -34,7 +41,7 @@ const ModifyRoomModal = (props) => {
   const getTagsFromRedux = useSelector(
     (state) => state.roomRealTimeInfoReducer.tags
   );
-  const [doneTagsSetting, setDoneTagsSetting] = useState(false);
+
   const [tags, setTags] = useState([]);
   const tagsAge = [
     "10대",
@@ -115,13 +122,14 @@ const ModifyRoomModal = (props) => {
     return setRoomImages((roomImages = thumbnail.concat(arr)));
   };
 
+  // 방 수정 요청 함수
   const updateRoomFunc = () => {
     putUpdateRoom(
       roomId,
-      roomTitle,
-      roomContent,
+      changeRoomTitle,
+      changeRoomContent,
       roomArea,
-      limitPeopleCount,
+      changeLimitPeopleCount,
       exercise,
       tags,
       startAppointmentDate,
@@ -143,39 +151,58 @@ const ModifyRoomModal = (props) => {
   };
 
   // 수정 완료시
-  const clickDoneBtn = () => {
+  const clickDoneBtn = (e) => {
     roomImages.length === 0
       ? setRoomImages(null)
       : addOrder(roomImages, thumbnailIndex);
 
-    if (roomTitle === "" || limitPeopleCount === 0) {
-      alert("입력이 올바르지 않은 정보가 있습니다");
+    if (changeRoomTitle === "") {
+      alert("제목을 입력해주세요!");
       e.preventDefault();
       return;
     }
 
-    if (roomContent === "") setRoomContent(null);
+    if (changeLimitPeopleCount < 2) {
+      alert("최소 인원은 2명 이상이어야 합니다!");
+      e.preventDefault();
+      return;
+    }
+
+    if (changeRoomContent === "") setRoomContent(null);
     if (tags.length === 0) setTags(null);
 
     updateRoomFunc();
   };
 
-  // 태그 초기값 세팅
   useEffect(() => {
-    getTagsFromRedux.map((tag) => {
-      setTags((prev) => [...prev, (tags = tag)]);
-    });
-
-    if (getTagsFromRedux.length === tags.length) setDoneTagsSetting(true);
-  }, [getTagsFromRedux]);
+    tags.map((tag) => setPrevTags(tag));
+  }, [tags]);
 
   useEffect(() => {
-    if (doneTagsSetting && tags.length) tags.map((tag) => setPrevTags(tag));
-  }, [doneTagsSetting]);
+    if (props.open) {
+      setTags([...getTagsFromRedux]);
+
+      document.body.style.overflow = "hidden";
+    }
+
+    if (props.open && roomTitle)
+      setChangeRoomTitle((changeRoomTitle = roomTitle));
+
+    if (props.open && roomContent)
+      setChangeRoomContent((changeRoomContent = roomContent));
+
+    if (props.open && limitPeopleCount)
+      setChangeLimitPeopleCount((changeLimitPeopleCount = limitPeopleCount));
+  }, [props.open]);
 
   return (
     <>
-      <div className={props.open ? "openModal modal" : "modal"}>
+      <div
+        className={props.open ? "openModal modal" : "modal"}
+        onClick={(e) => {
+          if (e.target.classList[1] === "openModal") props.close();
+        }}
+      >
         {props.open ? (
           <>
             <Head>
@@ -192,7 +219,7 @@ const ModifyRoomModal = (props) => {
                     minLength="1"
                     maxLength="20"
                     placeholder={roomTitle}
-                    onChange={(e) => setRoomTitle(e.target.value)}
+                    onChange={(e) => setChangeRoomTitle(e.target.value)}
                   ></input>
                 </div>
 
@@ -204,7 +231,7 @@ const ModifyRoomModal = (props) => {
                     placeholder={limitPeopleCount}
                     onChange={(e) => {
                       e.target.value = e.target.value.replace(/[^0-9]/g, "");
-                      setLimitPeopleCount(e.target.value);
+                      setChangeLimitPeopleCount(e.target.value);
                     }}
                   ></input>
                   <p>명</p>
@@ -216,7 +243,7 @@ const ModifyRoomModal = (props) => {
                 <div className="roomNotice-wrapper">
                   <p>방 설명 작성</p>
                   <textarea
-                    onChange={(e) => setRoomContent(e.target.value)}
+                    onChange={(e) => setChangeRoomContent(e.target.value)}
                     defaultValue={roomContent}
                   ></textarea>
                 </div>
@@ -226,6 +253,7 @@ const ModifyRoomModal = (props) => {
                     getImageData={getImageData}
                     getThumbnailData={getThumbnailIndex}
                     path={"modifyRoom"}
+                    roomId={roomId}
                   />
                 </div>
 
@@ -279,7 +307,7 @@ const ModifyRoomModal = (props) => {
                 <button className="cancel-btn" onClick={props.close}>
                   수정 취소
                 </button>
-                <button className="done-btn" onClick={clickDoneBtn}>
+                <button className="done-btn" onClick={(e) => clickDoneBtn(e)}>
                   완료
                 </button>
               </div>
