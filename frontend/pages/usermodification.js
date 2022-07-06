@@ -384,6 +384,12 @@ const UserModification = () => {
     getProfileImageSourceFunc();
   }, []);
 
+  useEffect(() => {
+    if (nickname) {
+      setValidNickname(nickname);
+    }
+  }, [nickname]);
+
   return (
     <>
       <Head>

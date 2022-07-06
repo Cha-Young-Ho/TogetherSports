@@ -174,33 +174,26 @@ const ModifyRoomModal = (props) => {
     updateRoomFunc();
   };
 
-  // 태그 초기값 세팅
+  useEffect(() => {
+    tags.map((tag) => setPrevTags(tag));
+  }, [tags]);
+
   useEffect(() => {
     if (props.open) {
       setTags([...getTagsFromRedux]);
 
       document.body.style.overflow = "hidden";
     }
-  }, [props.open]);
 
-  useEffect(() => {
-    tags.map((tag) => setPrevTags(tag));
-  }, [tags]);
-
-  useEffect(() => {
     if (props.open && roomTitle)
       setChangeRoomTitle((changeRoomTitle = roomTitle));
-  }, [roomTitle]);
 
-  useEffect(() => {
     if (props.open && roomContent)
       setChangeRoomContent((changeRoomContent = roomContent));
-  }, [roomContent]);
 
-  useEffect(() => {
     if (props.open && limitPeopleCount)
       setChangeLimitPeopleCount((changeLimitPeopleCount = limitPeopleCount));
-  }, [limitPeopleCount]);
+  }, [props.open]);
 
   return (
     <>
