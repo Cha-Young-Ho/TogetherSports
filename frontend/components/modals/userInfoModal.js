@@ -5,6 +5,8 @@ import { getOtherInfo, patchMannerPoint } from "../../api/members";
 import { FailResponse } from "../../api/failResponse";
 import { patchDelegateHost, deleteKickOutUser } from "../../api/rooms";
 
+const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT;
+
 const UserInfoModal = (props) => {
   const dispatch = useDispatch();
 
@@ -185,7 +187,7 @@ const UserInfoModal = (props) => {
           <div className="section">
             <div className="left-section">
               <img
-                src={`https://together-sports.com/${imageSrc}`}
+                src={`${API_ENDPOINT}${imageSrc}`}
                 className="pf-image"
               ></img>
 

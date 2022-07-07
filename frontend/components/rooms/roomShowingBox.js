@@ -5,6 +5,8 @@ import { FailResponse } from "../../api/failResponse";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 
+const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT;
+
 const RoomShowingBox = (props) => {
   // 로그인 시 저장되는 데이터
   const myInfo = useSelector((state) => state.myInfoReducer);
@@ -81,7 +83,7 @@ const RoomShowingBox = (props) => {
       >
         <div className="thumbs-box">
           <img
-            src={`https://together-sports${props.datas.roomImagePath}`}
+            src={`${API_ENDPOINT}${props.datas.roomImagePath}`}
             alt={"room"}
           ></img>
           <div className="tags" onClick={handleTagLayout}>

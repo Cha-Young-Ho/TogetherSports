@@ -2,6 +2,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
+const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT;
+
 const NavBarUserInfoModal = (props) => {
   // reducer에 저장된 내 정보 불러오기
   const myInfo = useSelector((state) => state.myInfoReducer);
@@ -63,7 +65,7 @@ const NavBarUserInfoModal = (props) => {
           <div className="section">
             <div className="left-section">
               <img
-                src={`https://together-sports.com/${imageSrc}`}
+                src={`${API_ENDPOINT}${imageSrc}`}
                 className="pf-image"
               ></img>
 
