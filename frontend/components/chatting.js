@@ -377,7 +377,7 @@ const Chatting = ({ chatOpen }) => {
           }}
         >
           <div className="messages">
-            {showingMessages.length ? (
+            {Array.isArray(showingMessages) ? (
               showingMessages.map((messages, index) => {
                 const now_sendAt = `${messages.sendAt.substr(
                   11,

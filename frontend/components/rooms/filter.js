@@ -261,7 +261,7 @@ const Filter = () => {
             <button className="directInput" onClick={openAreaModal}>
               지역추가
             </button>
-            {curSelectedAreas.length !== 0 ? (
+            {Array.isArray(curSelectedAreas) ? (
               curSelectedAreas.map((area, index) => {
                 return (
                   <div key={index} className="selected-area">
