@@ -216,9 +216,6 @@ const NavigationBar = () => {
                     className="btn_signout"
                     onClick={() => {
                       ClickLogout();
-                      // signOut({
-                      //   callbackUrl: "/",
-                      // });
                     }}
                   >
                     로그아웃

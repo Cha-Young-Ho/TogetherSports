@@ -15,7 +15,7 @@ const FloatingAlarm = (props) => {
           </div>
 
           <div className="alarms-wrapper">
-            {getMessagesFromRedux.length !== 0 ? (
+            {Array.isArray(getMessagesFromRedux) ? (
               getMessagesFromRedux.map((message, index) => {
                 if (index === getMessagesFromRedux.length - 1) {
                   return (

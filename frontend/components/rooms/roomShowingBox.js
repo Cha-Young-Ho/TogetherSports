@@ -37,7 +37,7 @@ const RoomShowingBox = (props) => {
 
   // 해당 방에 이미 참가중인지 여부 체크
   const isAttendance = () => {
-    if (myInfo.isInformationRequired === "false") {
+    if (!myInfo.isInformationRequired) {
       props.setRoomID ? props.setRoomID(props.datas.roomId) : "";
       props.openRoomExplainModal ? props.openRoomExplainModal() : "";
       return;
@@ -80,9 +80,12 @@ const RoomShowingBox = (props) => {
         }}
       >
         <div className="thumbs-box">
-          <img src={props.datas.roomImagePath} alt="picture of room"></img>
+          <img
+            src={`https://together-sports/${props.datas.roomImagePath}`}
+            alt={"room"}
+          ></img>
           <div className="tags" onClick={handleTagLayout}>
-            {props.datas.tags.length !== 0
+            {Array.isArray(props.datas.tags)
               ? props.datas.tags.map((tag, index) => {
                   return <p key={index}>{tag}</p>;
                 })
@@ -97,11 +100,11 @@ const RoomShowingBox = (props) => {
           <p>
             {`${
               exerciseArr[props.datas.exercise]
-            } ${props.datas.startAppointmentDate.slice(0, 10)} ${
+            } ${props?.datas?.startAppointmentDate?.slice(0, 10)} ${
               DayOfTheWeek[
                 moment(props.datas.startAppointmentDate).isoWeekday()
               ]
-            } ${props.datas.startAppointmentDate.slice(11)} 모임`}
+            } ${props?.datas?.startAppointmentDate?.slice(11)} 모임`}
           </p>
         </div>
       </div>

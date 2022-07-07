@@ -35,7 +35,11 @@ const FilteredRooms = () => {
   const [roomID, setRoomID] = useState();
 
   // 현재 임시 데이터
-  const [eachRoomInfo, setEachRoomInfo] = useState([]);
+  const [eachRoomInfo, setEachRoomInfo] = useState([
+    {
+      roomImagePath: "/",
+    },
+  ]);
 
   const openRoomExplainModal = () => {
     setRoomExplainModalOpen(true);
@@ -250,7 +254,7 @@ const FilteredRooms = () => {
           </div>
 
           <div className="rooms-wrapper">
-            {eachRoomInfo.length !== 0 ? (
+            {Array.isArray(eachRoomInfo) ? (
               <div className="rooms-grid">
                 {eachRoomInfo.map((datas, index) => {
                   return (

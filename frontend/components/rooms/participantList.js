@@ -22,7 +22,7 @@ const ParticipantList = (props) => {
 
   return (
     <>
-      {participantArr.length !== 0 ? (
+      {Array.isArray(participantArr) ? (
         participantArr.map((participant, index) => {
           if (participant.id === myID) {
             if (participant.userNickname === host) {
