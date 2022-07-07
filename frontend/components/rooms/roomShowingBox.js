@@ -37,7 +37,7 @@ const RoomShowingBox = (props) => {
 
   // 해당 방에 이미 참가중인지 여부 체크
   const isAttendance = () => {
-    if (!myInfo.isInformationRequired) {
+    if (myInfo.isInformationRequired) {
       props.setRoomID ? props.setRoomID(props.datas.roomId) : "";
       props.openRoomExplainModal ? props.openRoomExplainModal() : "";
       return;
@@ -81,7 +81,7 @@ const RoomShowingBox = (props) => {
       >
         <div className="thumbs-box">
           <img
-            src={`https://together-sports/${props.datas.roomImagePath}`}
+            src={`https://together-sports${props.datas.roomImagePath}`}
             alt={"room"}
           ></img>
           <div className="tags" onClick={handleTagLayout}>
