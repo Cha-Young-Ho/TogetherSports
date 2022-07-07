@@ -292,7 +292,7 @@ const NavigationBar = () => {
 
         .ProfileImage {
           border-radius: 50px;
-          background-color: black;
+          background-color: white;
           object-fit: cover;
           width: 40px;
           height: 40px;

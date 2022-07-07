@@ -35,11 +35,7 @@ const FilteredRooms = () => {
   const [roomID, setRoomID] = useState();
 
   // 현재 임시 데이터
-  const [eachRoomInfo, setEachRoomInfo] = useState([
-    {
-      roomImagePath: "/",
-    },
-  ]);
+  const [eachRoomInfo, setEachRoomInfo] = useState([]);
 
   const openRoomExplainModal = () => {
     setRoomExplainModalOpen(true);
