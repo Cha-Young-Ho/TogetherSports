@@ -4,27 +4,28 @@ spring:
       client:
         registration:
           kakao:
-            client-id: 5638a1ebad37df7a20b7a4e6e280ce63 # env
-            client-secret: rq7ZOvgXE2duGZ9rTdREjG86DApPuiOn # env
+            client-id: ${KAKAO_OAUTH2_CLIENT_ID}
+            client-secret: ${KAKAO_OAUTH2_CLIENT_SECRET}
             client-authentication-method: POST
             authorization-grant-type: authorization_code
-            redirect-uri: http://localhost:8080/login/oauth2/code/kakao # env
+            redirect-uri: ${HOST}:${PORT}/login/oauth2/code/kakao # env
             scope: profile_nickname, account_email
             client-name: Kakao
 
           google:
-            client-id: 96223095074-gf26tnpoii6102hdraiqqmiff5ftpqlv.apps.googleusercontent.com # env
-            client-secret: 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 # env
+            client-id: ${GOOGLE_OAUTH2_CLIENT_ID}
+            client-secret: ${GOOGLE_OAUTH2_CLIENT_SECRET}
+            redirect-uri: ${HOST}/login/oauth2/code/google
             scope:
               - profile
               - email
 
           naver:
-            client-id: LA8L8hj5X9Dn1rBjNMOa # env
-            client-secret: RJFDTSMbjm # env
+            client-id: ${NAVER_OAUTH2_CLIENT_ID}
+            client-secret: ${NAVER_OAUTH2_CLIENT_SECRET}
             client-authentication-method: POST
             authorization-grant-type: authorization_code
-            redirect-uri: http://localhost:8080/login/oauth2/code/naver # env
+            redirect-uri: ${HOST}:${PORT}/login/oauth2/code/naver # env
             scope: name, email
             client-name: Naver
 
@@ -42,7 +43,7 @@ spring:
 
 app:
   oauth2:
-    authorized-redirect-uri: http://localhost:3000/oauth/saving
+    authorized-redirect-uri: ${HOST}:${PORT}/oauth/saving
 
 jwt:
   access-token-signing-key: KWJ0fT7c7yeq6cPCAcikky1U+eRiXeqkStV3ZhkMkWE=

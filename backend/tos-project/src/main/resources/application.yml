@@ -48,7 +48,7 @@ app:
       ping-pong : /images/default_ping-pong_room_image.png
       basketball : /images/default_basketball_room_image.png
       badminton : /images/default_badminton_room_image.png
-      etc: /images/default_room_image.png
+      etc: /images/default_etc_room_image.png
 
 
 
