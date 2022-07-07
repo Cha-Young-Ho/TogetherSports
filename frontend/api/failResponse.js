@@ -20,6 +20,7 @@ const FailResponse = (codeNumber, prelastingToDo) => {
       window.location.href = "/";
       break;
     case 1102:
+      alert("추가 정보 입력 후 이용하실 수 있습니다.");
       break;
     case 1103:
       alert("중복된 닉네임입니다.");

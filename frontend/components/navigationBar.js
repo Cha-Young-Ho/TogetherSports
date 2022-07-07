@@ -143,10 +143,6 @@ const NavigationBar = () => {
 
   return (
     <>
-      <head>
-        <meta name="viewport" content="width=1280" />
-      </head>
-
       <div className="header">
         <div className="container_bg">
           <div className="groups">
@@ -288,11 +284,12 @@ const NavigationBar = () => {
           font-size: 1.5rem;
           cursor: pointer;
           transition: 0.5s ease all;
+          color: black;
         }
 
         .ProfileImage {
           border-radius: 50px;
-          background-color: black;
+          background-color: white;
           object-fit: cover;
           width: 40px;
           height: 40px;

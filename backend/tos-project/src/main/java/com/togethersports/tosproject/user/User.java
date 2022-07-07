@@ -108,7 +108,7 @@ public class User {
         newUser.provider = provider;
         newUser.role = Role.ROLE_USER;
         newUser.informationRequired = true;
-        newUser.userProfileImage = "images/default_user_profile.jpeg";
+        newUser.userProfileImage = "/images/default_user_profile.jpeg";
         //fixme : 익명 수정
         newUser.nickname = "익명";
         return newUser;

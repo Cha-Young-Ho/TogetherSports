@@ -76,8 +76,6 @@ const getRoomList = (
     sort: sort,
   };
 
-  console.log("방 필터 최종 쿼리스트링 = " + totalQueryString);
-
   const promise =
     localStorage.getItem("accessToken") === null
       ? axios.get(`${API_ENDPOINT}/api/room`, {
