@@ -7,6 +7,7 @@ import SockJS from "sockjs-client";
 import { FailResponse } from "../api/failResponse";
 import StompJS from "stompjs";
 
+const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT;
 let clientInfo;
 let nowMessage = "";
 let scrollHandlingTimer;
@@ -377,7 +378,7 @@ const Chatting = ({ chatOpen }) => {
           }}
         >
           <div className="messages">
-            {showingMessages.length ? (
+            {Array.isArray(showingMessages) ? (
               showingMessages.map((messages, index) => {
                 const now_sendAt = `${messages.sendAt.substr(
                   11,
@@ -413,7 +414,7 @@ const Chatting = ({ chatOpen }) => {
                     <div key={index} className="other-message">
                       <img
                         className="msg-profileImg"
-                        src={`https://together-sports.com/${messages.userProfileImagePath}`}
+                        src={`${API_ENDPOINT}${messages.userProfileImagePath}`}
                         alt="user pic"
                       ></img>
                       <div className="chat-container">

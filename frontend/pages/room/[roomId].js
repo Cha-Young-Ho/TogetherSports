@@ -201,7 +201,7 @@ const Room = () => {
         <div className="main-info">
           <div className="header">
             <div className="viewCount">
-              <p>{`${viewCount}명이 이 방을 조회했어요!`}</p>
+              <p>{`유저들이 ${viewCount}번 방문했어요!`}</p>
               <p>{`${createdTime.slice(0, 4)}년 ${createdTime.slice(
                 5,
                 7
@@ -214,7 +214,7 @@ const Room = () => {
             <div className="long-line"></div>
 
             <div className="tags">
-              {tags.length !== 0 ? (
+              {Array.isArray(tags) ? (
                 tags.map((tag, index) => {
                   return (
                     <div className="tag" key={index}>

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
+const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT;
+
 const ImageSlide = (props) => {
   const [slideIndex, setSlideIndex] = useState(1);
   // 운동 대기방 페이지 이미지
@@ -54,9 +56,7 @@ const ImageSlide = (props) => {
                         roomInfoImageArr.length
                       }`}</div>
                       <div className="image-container">
-                        <img
-                          src={`https://together-sports.com/${image.imagePath}`}
-                        />
+                        <img src={`${API_ENDPOINT}${image.imagePath}`} />
                       </div>
                     </div>
                   );
@@ -72,9 +72,7 @@ const ImageSlide = (props) => {
                       roomDetailImageArr.length
                     }`}</div>
                     <div className="image-container">
-                      <img
-                        src={`https://together-sports.com/${image.imagePath}`}
-                      />
+                      <img src={`${API_ENDPOINT}${image.imagePath}`} />
                     </div>
                   </div>
                 );

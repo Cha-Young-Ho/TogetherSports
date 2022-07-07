@@ -9,6 +9,8 @@ import { useDispatch, useSelector } from "react-redux";
 import SignUpReqModal from "./modals/signUpReqModal";
 import { useRouter } from "next/router";
 
+const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT;
+
 const NavigationBar = () => {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -56,8 +58,7 @@ const NavigationBar = () => {
               userNickname: "익명",
               userBirth: "yyyy-mm-dd",
               gender: "",
-              userProfileImagePath:
-                "https://together-sports.com/images/default_user_profile.jpeg",
+              userProfileImagePath: `${API_ENDPOINT}/images/default_user_profile.jpeg`,
               activeAreas: [],
               interests: [],
               mannerPoint: "",
@@ -199,7 +200,7 @@ const NavigationBar = () => {
                   <button className="user-box" onClick={openUserInfoModalFunc}>
                     <img
                       className="ProfileImage"
-                      src={`https://together-sports.com/${myInfo.userProfileImagePath}`}
+                      src={`${API_ENDPOINT}${myInfo.userProfileImagePath}`}
                       alt="프로필 이미지"
                     ></img>
                     <div className="logOn">
@@ -216,9 +217,6 @@ const NavigationBar = () => {
                     className="btn_signout"
                     onClick={() => {
                       ClickLogout();
-                      // signOut({
-                      //   callbackUrl: "/",
-                      // });
                     }}
                   >
                     로그아웃

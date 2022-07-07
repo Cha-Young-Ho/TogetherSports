@@ -1,5 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 
+const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT;
+
 const ParticipantList = (props) => {
   const dispatch = useDispatch();
   const host = useSelector((state) => state.roomRealTimeInfoReducer.host);
@@ -22,7 +24,7 @@ const ParticipantList = (props) => {
 
   return (
     <>
-      {participantArr.length !== 0 ? (
+      {Array.isArray(participantArr) ? (
         participantArr.map((participant, index) => {
           if (participant.id === myID) {
             if (participant.userNickname === host) {
@@ -36,7 +38,7 @@ const ParticipantList = (props) => {
                 >
                   <div className="profile">
                     <img
-                      src={`https://together-sports.com/${participant.userProfileImagePath}`}
+                      src={`${API_ENDPOINT}${participant.userProfileImagePath}`}
                       alt="profile"
                     ></img>
                     <p>{`${participant.userNickname} (나)`}</p>
@@ -55,7 +57,7 @@ const ParticipantList = (props) => {
                 >
                   <div className="profile">
                     <img
-                      src={`https://together-sports.com/${participant.userProfileImagePath}`}
+                      src={`${API_ENDPOINT}${participant.userProfileImagePath}`}
                       alt="profile"
                     ></img>
                     <p>{`${participant.userNickname} (나)`}</p>
@@ -78,7 +80,7 @@ const ParticipantList = (props) => {
                 >
                   <div className="profile">
                     <img
-                      src={`https://together-sports.com/${participant.userProfileImagePath}`}
+                      src={`${API_ENDPOINT}${participant.userProfileImagePath}`}
                       alt="profile"
                     ></img>
                     <p>{participant.userNickname}</p>
@@ -97,7 +99,7 @@ const ParticipantList = (props) => {
                 >
                   <div className="profile">
                     <img
-                      src={`https://together-sports.com/${participant.userProfileImagePath}`}
+                      src={`${API_ENDPOINT}${participant.userProfileImagePath}`}
                       alt="profile"
                     ></img>
                     <p>{participant.userNickname}</p>
@@ -118,7 +120,7 @@ const ParticipantList = (props) => {
                 >
                   <div className="profile">
                     <img
-                      src={`https://together-sports.com/${participant.userProfileImagePath}`}
+                      src={`${API_ENDPOINT}${participant.userProfileImagePath}`}
                       alt="profile"
                     ></img>
                     <p>{participant.userNickname}</p>
@@ -137,7 +139,7 @@ const ParticipantList = (props) => {
                 >
                   <div className="profile">
                     <img
-                      src={`https://together-sports.com/${participant.userProfileImagePath}`}
+                      src={`${API_ENDPOINT}${participant.userProfileImagePath}`}
                       alt="profile"
                     ></img>
                     <p>{participant.userNickname}</p>

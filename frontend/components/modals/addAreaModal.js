@@ -154,7 +154,7 @@ const AddAreaModal = (props) => {
             <div className="region-depth">
               <p>시/도</p>
               <div className="depth-list">
-                {rootLocations.length !== 0 ? (
+                {Array.isArray(rootLocations) ? (
                   rootLocations.map((location, index) => {
                     if (location === emphasisRoot) {
                       return (
@@ -182,7 +182,7 @@ const AddAreaModal = (props) => {
             <div className="region-depth">
               <p>시/군/구</p>
               <div className="depth-list">
-                {secondLocations.length !== 0 ? (
+                {Array.isArray(secondLocations) ? (
                   secondLocations.map((location, index) => {
                     if (location === emphasisSecond) {
                       return (
@@ -210,7 +210,7 @@ const AddAreaModal = (props) => {
             <div className="region-depth">
               <p>동/읍/면</p>
               <div className="depth-list">
-                {thirdLocations.length !== 0 ? (
+                {Array.isArray(thirdLocations) ? (
                   thirdLocations.map((location, index) => {
                     return (
                       <p key={index} onClick={clickThirdItem}>
@@ -227,7 +227,7 @@ const AddAreaModal = (props) => {
           <div className="tag-wrapper">
             <p>최대 3개까지 선택 가능합니다.</p>
             <div className="selected-areas">
-              {selectedAreas.length !== 0 ? (
+              {Array.isArray(selectedAreas) ? (
                 selectedAreas.map((area, index) => {
                   return (
                     <div key={index}>
