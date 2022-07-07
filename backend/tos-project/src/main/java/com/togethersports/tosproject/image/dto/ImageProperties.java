@@ -24,8 +24,4 @@ public class ImageProperties {
         return this.roomDefaultImages;
     }
 
-    @PostConstruct
-    public void test() {
-        System.out.println("roomDefaultImages = " + roomDefaultImages);
-    }
 }
