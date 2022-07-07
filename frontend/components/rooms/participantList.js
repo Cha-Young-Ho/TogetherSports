@@ -193,7 +193,7 @@ const ParticipantList = (props) => {
           height: 30px;
           margin-right: 10px;
           border-radius: 100%;
-          background-color: #009baf;
+          background-color: white;
         }
       `}</style>
     </>
