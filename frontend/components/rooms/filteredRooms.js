@@ -250,7 +250,7 @@ const FilteredRooms = () => {
           </div>
 
           <div className="rooms-wrapper">
-            {Array.isArray(eachRoomInfo) ? (
+            {Array.isArray(eachRoomInfo) && eachRoomInfo.length ? (
               <div className="rooms-grid">
                 {eachRoomInfo.map((datas, index) => {
                   return (
