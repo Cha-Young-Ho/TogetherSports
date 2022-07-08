@@ -1,6 +1,7 @@
 package com.togethersports.tosproject.area;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.togethersports.tosproject.room.Room;
 import com.togethersports.tosproject.user.User;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -32,9 +33,11 @@ public class ActiveArea {
     @JsonIgnore
     private Long id;
 
-    @Column(name = "USER_ID")
+    //등록된 방
     @JsonIgnore
-    private String userId;
+    @ManyToOne
+    @JoinColumn(name = "USER_ID")
+    private User user;
 
     @Column(name = "LOCATION")
     private String location; // 지역 주소 명
@@ -66,5 +69,9 @@ public class ActiveArea {
                 .longitude(longitude)
                 .latitude(latitude)
                 .build();
+    }
+
+    public void updateUser(User user){
+        this.user = user;
     }
 }

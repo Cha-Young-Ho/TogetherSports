@@ -26,18 +26,11 @@ public class TagService {
     }
     @Transactional
     public void modifyTagFromRoomUpdate(List<Tag> tagList, Room room){
-        log.info("받은 tag = {}", tagList.size());
         room.deleteTag();
-        log.info("delete 후 tag size = {}", room.getTags().size());
         for (Tag tag : tagList){
             tag.updateRoom(room);
             tagRepository.save(tag);
         }
-
         room.updateTag(tagList);
-
-        log.info("룸에 tag 넣고 난 후 size = {}", room.getTags().size());
-
-
     }
 }

@@ -22,7 +22,7 @@ import java.util.Map;
  * </p>
  * @author younghoCha
  */
-@Slf4j
+
 @RequiredArgsConstructor
 @RestController
 public class RoomController {
@@ -68,7 +68,6 @@ public class RoomController {
     //방 참가
     @PostMapping("/api/room/{roomId}/user")
     public ResponseEntity<Response> participateRoom(@CurrentUser User user,  @PathVariable Long roomId){
-        log.info("room id = {}", roomId);
         Response response = roomService.participateRoom(user, roomId);
 
         return ResponseEntity.ok(response);
