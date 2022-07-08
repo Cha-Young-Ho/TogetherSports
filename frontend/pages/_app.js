@@ -11,7 +11,7 @@ function MyApp({ Component }) {
         <meta charset="utf-8" />
         <meta
           name="viewport"
-          content="width=1920, height=device-height, initial-scale=1, maximum-scale=1, viewport-fit=cover"
+          content="width=1920, height=device-height, initial-scale=1, maximum-scale=1, viewport-fit: cover"
         />
         <meta name="author" content="Together Sports 개발팀" />
         <meta
