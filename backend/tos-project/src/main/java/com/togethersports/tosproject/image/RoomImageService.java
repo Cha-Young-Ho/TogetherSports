@@ -73,7 +73,7 @@ public class RoomImageService {
         //로컬 사진 모두 삭제
         for(RoomImage roomImage : roomImageList){
 
-            if(imageProperties.getImageProperties().containsValue(roomImage.getImagePath())){
+            if(imageProperties.checkDefaultImage(roomImage.getImagePath())){
                 continue;
             }
 
