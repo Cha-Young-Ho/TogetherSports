@@ -1,5 +1,6 @@
 package com.togethersports.tosproject.user;
 
+import com.togethersports.tosproject.area.ActiveAreaService;
 import com.togethersports.tosproject.common.code.CommonCode;
 import com.togethersports.tosproject.common.dto.FileOfImageSource;
 import com.togethersports.tosproject.common.dto.Response;
@@ -50,7 +51,9 @@ public class UserService {
     private final NameGenerator nameGenerator;
     private final ParsingEntityUtils parsingEntityUtils;
     private final UserMannerPointService userMannerPointService;
-    private final ImageProperties imageProperties;
+    private final ActiveAreaService activeAreaService;
+    @Value("${app.user.default-image}")
+    private String DEFAULT_IMAGE_PATH;
 
 
 
@@ -161,18 +164,21 @@ public class UserService {
     //회원 정보 수정 메소드
     @Transactional
     public void modifyMyInfo(User user, UserOfModifyInfo userOfModifyInfo){
+
         if(!nicknameDuplicationCheck(userOfModifyInfo.getUserNickname(), user)){
             throw new NicknameDuplicationException("닉네임이 중복되었습니다.");
         }
         User findUser = userRepository.findById(user.getId())
                 .orElseThrow(() -> new UserNotFoundException("사용자가 존재하지 않습니다."));
 
+        activeAreaService.modifyActiveArea(userOfModifyInfo.getActiveAreas(), findUser);
+
         List<Interest> interests = parsingEntityUtils.parsingStringToInterestsEntity(userOfModifyInfo.getInterests());
         //기존에 기본 파일일 경우
-        if(findUser.getUserProfileImage().equals(imageProperties.getImageProperties().get("Etc"))) {
+        if(findUser.getUserProfileImage().equals(DEFAULT_IMAGE_PATH)) {
             //기본 -> 기본
             if(userOfModifyInfo.getUserProfileImage().getImageSource() == null || userOfModifyInfo.getUserProfileImage().getImageSource().equals("")){
-                findUser.updateUser(userOfModifyInfo, interests, imageProperties.getImageProperties().get("Etc"));
+                findUser.updateUser(userOfModifyInfo, interests, DEFAULT_IMAGE_PATH);
                 return;
             }
             //기본 -> 설정
@@ -188,7 +194,7 @@ public class UserService {
         //설정 -> 기본
         if(userOfModifyInfo.getUserProfileImage().getImageSource() == null || userOfModifyInfo.getUserProfileImage().getImageSource().equals("")){
 
-            findUser.updateUser(userOfModifyInfo, interests, imageProperties.getImageProperties().get("Etc"));
+            findUser.updateUser(userOfModifyInfo, interests, DEFAULT_IMAGE_PATH);
             return;
         }
 
@@ -240,7 +246,7 @@ public class UserService {
         User userEntity = userRepository.findById(user.getId())
                 .orElseThrow(() -> new UserNotFoundException("해당 유저를 찾을 수 없습니다."));
 
-        if(userEntity.getUserProfileImage().equals(imageProperties.getImageProperties().get("Etc"))){
+        if(userEntity.getUserProfileImage().equals(DEFAULT_IMAGE_PATH)){
             return Response.of(UserCode.DEFAULT_PROFILE_IMAGE, null);
         }
         FileOfImageSource fileOfImageSource =

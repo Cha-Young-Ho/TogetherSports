@@ -1,17 +1,21 @@
 package com.togethersports.tosproject.user;
 
+import com.togethersports.tosproject.area.ActiveArea;
 import com.togethersports.tosproject.chat.ChatMessage;
+import com.togethersports.tosproject.interest.Interest;
 import com.togethersports.tosproject.participant.Participant;
 import com.togethersports.tosproject.room.Room;
-import com.togethersports.tosproject.user.dto.UserOfModifyInfo;
-import com.togethersports.tosproject.area.ActiveArea;
-import com.togethersports.tosproject.interest.Interest;
 import com.togethersports.tosproject.security.Role;
 import com.togethersports.tosproject.security.oauth2.model.OAuth2Provider;
-import lombok.*;
+import com.togethersports.tosproject.user.dto.UserOfModifyInfo;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,6 +32,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
+@Slf4j
 public class User {
 
     @Id
@@ -68,9 +73,9 @@ public class User {
     @JoinColumn(name = "USER_ID")
     private List<Interest> interests;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "USER_ID")
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<ActiveArea> activeAreas;
+
 
     @Column(name = "MANNER_POINT", columnDefinition = "int default 10")
     private int mannerPoint;
@@ -160,4 +165,19 @@ public class User {
             i++;
         }
     }
+
+    public void deleteActiveArea(){
+
+        log.info("is Empty 여부 = {}", !this.activeAreas.isEmpty());
+        if(!(this.activeAreas.isEmpty())) {
+            log.info("여기 실행되었어요");
+            this.activeAreas.clear();
+        }
+    }
+
+    public void updateActiveArea(ActiveArea activeAreaList){
+            this.activeAreas.add(activeAreaList);
+
+    }
+
 }

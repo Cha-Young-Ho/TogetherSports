@@ -49,7 +49,7 @@ import java.util.stream.Collectors;
  *
  * @author younghoCha
  */
-@Slf4j
+
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -106,19 +106,9 @@ public class RoomService {
         List<ImageOfRoomInfo> imageOfRoomInfos =
                 parsingEntityUtils.parsingRoomImageToRoomInfoImage(roomEntity.getRoomImages());
 
-
-
-        for(Tag tag : roomEntity.getTags()){
-            log.info("파싱 전 태그 확인하기 = {}", tag.getTag());
-        }
         //List<Tag> -> List<String>
         List<String> tag =
                 parsingEntityUtils.parsingTagEntityToString(roomEntity.getTags());
-
-        for(String tag2 : tag){
-            log.info("파싱 후 태그 확인하기 = {}", tag2);
-        }
-        log.info("파싱 후 tag = {}", tag.size());
 
         //조회수 증가
         roomEntity.plusViewCount();
@@ -398,7 +388,7 @@ public class RoomService {
                 //방 이미지 모두 삭제
                 roomImageService.deleteLocalImage(roomEntity);
 
-                //나가기 처리(DB삭제)
+                //나가기 처리(DB 삭제)
                 roomRepository.deleteById(roomEntity.getId());
 
                 Response response = Response.of(RoomCode.USER_OUT_FROM_ROOM, null);
@@ -444,7 +434,6 @@ public class RoomService {
             // 소켓 통신, 정보 발행
 
             return response;
-
 
         }
 
@@ -534,8 +523,6 @@ public class RoomService {
     }
 
     public WsResponse getWsRoomDetailInfo(Room roomEntity){
-        log.info("------------- 업데이트 ---------");
-        log.info("여기 확인해야함 = {}", roomEntity.getTags().size());
         return WsResponse.of(ChatCode.ROOM_UPDATED,
                 RoomOfParticipate.builder()
                         .roomOfInfo(getRoomInfo(roomEntity.getId()))
