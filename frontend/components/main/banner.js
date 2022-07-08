@@ -37,6 +37,10 @@ const Banner = () => {
           background-color: rgba(0, 0, 0, 0.16);
         }
 
+        .container > img {
+          width: 100%;
+        }
+
         .banner-contents {
           position: absolute;
           top: 0;
