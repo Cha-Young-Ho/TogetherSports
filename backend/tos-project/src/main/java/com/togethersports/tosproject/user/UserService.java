@@ -40,7 +40,6 @@ import java.util.List;
  * @author younghoCha
  */
 
-@Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserService {
@@ -52,6 +51,7 @@ public class UserService {
     private final ParsingEntityUtils parsingEntityUtils;
     private final UserMannerPointService userMannerPointService;
     private final ActiveAreaService activeAreaService;
+    private final ImageProperties imageProperties;
     @Value("${app.user.default-image}")
     private String DEFAULT_IMAGE_PATH;
 

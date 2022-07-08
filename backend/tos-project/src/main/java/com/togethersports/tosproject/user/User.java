@@ -32,7 +32,6 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-@Slf4j
 public class User {
 
     @Id
@@ -167,10 +166,7 @@ public class User {
     }
 
     public void deleteActiveArea(){
-
-        log.info("is Empty 여부 = {}", !this.activeAreas.isEmpty());
         if(!(this.activeAreas.isEmpty())) {
-            log.info("여기 실행되었어요");
             this.activeAreas.clear();
         }
     }
