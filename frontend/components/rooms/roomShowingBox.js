@@ -127,7 +127,7 @@ const RoomShowingBox = (props) => {
         }
 
         .thumbs-box {
-          width: 100%;
+          width: 250px;
           height: 170px;
           background-color: #53927d;
           border-top-left-radius: 10px;
@@ -135,7 +135,7 @@ const RoomShowingBox = (props) => {
         }
 
         .thumbs-box img {
-          width: 250px;
+          width: 100%;
           height: 170px;
           object-fit: cover;
         }

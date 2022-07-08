@@ -23,15 +23,7 @@ const Chatting = ({ chatOpen }) => {
     (state) => state.roomRealTimeInfoReducer.participants
   );
   const [messageToServer, setMessageToServer] = useState("");
-  const [showingMessages, setShowingMessages] = useState([
-    // {
-    //   userId: 1,
-    //   nickname: "테스트",
-    //   userProfileImagePath: "/base_profileImage.jpg",
-    //   message: "ㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱ",
-    //   sendAt: "2022-05-09T17:42:22.302111",
-    // },
-  ]);
+  const [showingMessages, setShowingMessages] = useState([]);
   const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT;
 
   // 내가 방장인지 아닌지 확인하기 위한 변수
@@ -39,7 +31,7 @@ const Chatting = ({ chatOpen }) => {
 
   // 스크롤 위치값
   const [scrollInfo, setScrollInfo] = useState({
-    scrollY: 0,
+    scrollHeight: 0,
     offsetHeight: 0,
     scrollTop: 0,
   });
@@ -359,7 +351,6 @@ const Chatting = ({ chatOpen }) => {
 
   useEffect(() => {
     if (initParticipantArr.length) {
-      console.log(" parti 변경됨", participants);
       participants = [...initParticipantArr];
     }
   }, [initParticipantArr]);

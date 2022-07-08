@@ -21,6 +21,7 @@ const CreateRoomModal = () => {
         src="/room-create-button.png"
         className="roomRequestButton"
         onClick={checkingUserInfo}
+        alt="방 생성 버튼"
       ></img>
 
       <style jsx>{`
