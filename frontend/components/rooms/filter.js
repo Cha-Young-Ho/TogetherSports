@@ -279,10 +279,12 @@ const Filter = () => {
           </div>
           <div className="categories">
             <p>시작일</p>
-            <button
+            <img
+              src="/calendar-modal-img.png"
               className="modalCalendar"
               onClick={openStartCalendarModal}
-            ></button>
+              alt="시작일"
+            ></img>
             <div className="date-showBox">
               {curStartFilteringDate.substring(0, 4)}
             </div>
@@ -310,10 +312,12 @@ const Filter = () => {
           </div>
           <div className="categories">
             <p>마감일</p>
-            <button
+            <img
+              src="/calendar-modal-img.png"
               className="modalCalendar"
               onClick={openEndCalendarModal}
-            ></button>
+              alt="마감일"
+            ></img>
             <div className="date-showBox">
               {curEndFilteringDate.substring(0, 4)}
             </div>
@@ -454,8 +458,6 @@ const Filter = () => {
           width: 30px;
           height: 25px;
           margin-right: 20px;
-          background-image: url("/calendar-modal-img.png");
-          background-size: cover;
           border: none;
           background-color: white;
           cursor: pointer;

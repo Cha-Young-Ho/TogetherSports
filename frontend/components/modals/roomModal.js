@@ -44,7 +44,7 @@ const RoomModal = (props) => {
   };
 
   const enterRoom = (e) => {
-    if (myInfo.isInformationRequired === "false") {
+    if (myInfo.isInformationRequired) {
       alert("로그인 및 추가정보가 필요합니다.");
       return;
     }

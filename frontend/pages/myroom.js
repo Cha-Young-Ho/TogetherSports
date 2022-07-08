@@ -42,7 +42,7 @@ const MyRoom = () => {
         }
       })
       .catch((error) => {
-        if (error.response) {
+        if (error?.response?.data?.status) {
           FailResponse(error.response.data.status.code, func_getMyRoomInfo);
         }
       });
