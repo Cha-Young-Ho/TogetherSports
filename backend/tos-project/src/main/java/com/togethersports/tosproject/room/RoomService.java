@@ -28,8 +28,6 @@ import com.togethersports.tosproject.user.dto.UserOfParticipantInfo;
 import com.togethersports.tosproject.user.exception.NotEnteredInformationException;
 import com.togethersports.tosproject.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -547,7 +545,7 @@ public class RoomService {
             return Response.of(RoomCode.NO_PERMISSION, null);
         }
         List<RoomImage> roomImageList = roomEntity.getRoomImages();
-        if(roomImageList.size() == 1 && roomImageList.get(0).getImagePath().equals(imageProperties.getImageProperties().get("etc"))){
+        if(roomImageList.size() == 1 && imageProperties.checkDefaultImage(roomImageList.get(0).getImagePath())){
             return Response.of(RoomCode.DEFAULT_ROOM_IMAGE, null);
         }
         List<ImageSourcesOfRoom> roomImageSourceList = new ArrayList<>();
