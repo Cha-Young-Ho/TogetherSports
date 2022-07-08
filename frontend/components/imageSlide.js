@@ -5,14 +5,70 @@ const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT;
 
 const ImageSlide = (props) => {
   const [slideIndex, setSlideIndex] = useState(1);
+
   // 운동 대기방 페이지 이미지
-  const roomDetailImageArr = useSelector(
-    (state) => state.roomRealTimeInfoReducer.roomImages
-  );
+  // const roomDetailImageArr = useSelector(
+  //   (state) => state.roomRealTimeInfoReducer.roomImages
+  // );
+  const [roomDetailImageArr, setRoomDetailImageArr] = useState([
+    {
+      order: 0,
+      imagePath: "/golf.png",
+      roomImageExtension: "png",
+    },
+    {
+      order: 1,
+      imagePath: "/chatting-send-button.png",
+      roomImageExtension: "png",
+    },
+    {
+      order: 2,
+      imagePath: "/logo-alarm-modal.png",
+      roomImageExtension: "png",
+    },
+    {
+      order: 3,
+      imagePath: "/naver-login.png",
+      roomImageExtension: "png",
+    },
+    {
+      order: 4,
+      imagePath: "/banner_01.png",
+      roomImageExtension: "png",
+    },
+  ]);
+
   // 방 설명 팝업 이미지
-  const roomInfoImageArr = useSelector(
-    (state) => state.saveRoomModalImagesReducer.roomImages
-  );
+  // const roomInfoImageArr = useSelector(
+  //   (state) => state.saveRoomModalImagesReducer.roomImages
+  // );
+  const [roomInfoImageArr, setRoomInfoImageArr] = useState([
+    {
+      order: 0,
+      imagePath: "/golf.png",
+      roomImageExtension: "png",
+    },
+    {
+      order: 1,
+      imagePath: "/chatting-send-button.png",
+      roomImageExtension: "png",
+    },
+    {
+      order: 2,
+      imagePath: "/logo-alarm-modal.png",
+      roomImageExtension: "png",
+    },
+    {
+      order: 3,
+      imagePath: "/naver-login.png",
+      roomImageExtension: "png",
+    },
+    {
+      order: 4,
+      imagePath: "/banner_01.png",
+      roomImageExtension: "png",
+    },
+  ]);
 
   const onChangeImage = (index) => {
     showSlides((slideIndex += index));
@@ -32,14 +88,6 @@ const ImageSlide = (props) => {
 
   useEffect(() => {
     showSlides(slideIndex);
-    // if (props.path === "roomInfo") {
-    //   roomInfoImageArr !== null ? showSlides(slideIndex) : <></>;
-    //   // roomInfoImageArr.length !== 0 ? showSlides(slideIndex) : <></>;
-    // }
-    // if (props.path === "roomDetail") {
-    //   roomDetailImageArr !== null ? showSlides(slideIndex) : <></>;
-    //   // roomDetailImageArr.length !== 0 ? showSlides(slideIndex) : <></>;
-    // }
   }, []);
 
   return (
@@ -56,7 +104,10 @@ const ImageSlide = (props) => {
                         roomInfoImageArr.length
                       }`}</div>
                       <div className="image-container">
-                        <img src={`${API_ENDPOINT}${image.imagePath}`} />
+                        <img
+                          src={`${API_ENDPOINT}${image.imagePath}`}
+                          className="roomInfoImage"
+                        />
                       </div>
                     </div>
                   );
@@ -72,7 +123,10 @@ const ImageSlide = (props) => {
                       roomDetailImageArr.length
                     }`}</div>
                     <div className="image-container">
-                      <img src={`${API_ENDPOINT}${image.imagePath}`} />
+                      <img
+                        src={`${API_ENDPOINT}${image.imagePath}`}
+                        className="roomDetailImage"
+                      />
                     </div>
                   </div>
                 );
@@ -92,12 +146,11 @@ const ImageSlide = (props) => {
       <style jsx>{`
         .slideshow-container {
           position: relative;
-          width: 100%;
+          width: 100%; // 이것을 건들면 버튼이 문제가 생기옵니다
           height: 100%;
         }
 
         .slide {
-          display: none;
           width: 100%;
           height: 100%;
           text-align: center;
@@ -108,10 +161,16 @@ const ImageSlide = (props) => {
           vertical-align: middle;
         }
 
-        img {
-          max-width: 100%;
-          max-height: 100%;
-          user-select: none;
+        .roomInfoImage {
+          width: 655px;
+          height: 345px;
+          object-fit: contain;
+        }
+
+        .roomDetailImage {
+          width: 310px;
+          height: 281px;
+          object-fit: contain;
         }
 
         .number-text {
