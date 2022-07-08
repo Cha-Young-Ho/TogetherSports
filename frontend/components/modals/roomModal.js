@@ -470,8 +470,8 @@ const RoomModal = (props) => {
         }
 
         .image {
-          width: 100%;
-          height: 55%;
+          width: 660px;
+          height: 350px;
         }
 
         .room-info {
