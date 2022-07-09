@@ -170,7 +170,7 @@ const ParticipantList = (props) => {
         }
 
         p {
-          font-size: 1.1em;
+          font-size: 1.1rem;
           font-weight: 600;
         }
 

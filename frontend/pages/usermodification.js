@@ -594,7 +594,7 @@ const UserModification = () => {
 
         .content-nickname p, .content-birth p, .content-gender p, .content-profile > p {
           font-weight: bold;
-          font-size: 1.5em;
+          font-size: 1.5rem;
           margin-right: 3px;
         }
 
@@ -614,7 +614,7 @@ const UserModification = () => {
           width: 440px;
           height: 30px;
           border-style: none;
-          font-size: 1.4em;
+          font-size: 1.4rem;
           padding: 5px;
           margin-left: 2px;
           margin-right: 5px;
@@ -706,7 +706,7 @@ const UserModification = () => {
         .male label,
         .female label {
           width: 30px;
-          font-size: 1.5em;
+          font-size: 1.5rem;
           font-weight: bold;
         }
 
@@ -759,7 +759,7 @@ const UserModification = () => {
           width: 320px;
           height: 30px;
           border-style: none;
-          font-size: 1.4em;
+          font-size: 1.4rem;
           padding: 5px;
           margin-left: 2px;
           margin-right: 5px;
@@ -774,7 +774,7 @@ const UserModification = () => {
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 1.3em;
+          font-size: 1.3rem;
           cursor: pointer;
         }
 

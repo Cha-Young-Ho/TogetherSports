@@ -121,7 +121,7 @@ const ImageSlide = (props) => {
 
         .number-text {
           color: black;
-          font-size: 1em;
+          font-size: 1rem;
           font-weight: bold;
           padding: 10px 10px;
           position: absolute;
@@ -143,7 +143,7 @@ const ImageSlide = (props) => {
           height: 40px;
           color: white;
           font-weight: bold;
-          font-size: 1.5em;
+          font-size: 1.5rem;
           transition: 0.5s ease;
           user-select: none;
           border: none;

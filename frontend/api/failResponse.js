@@ -123,7 +123,7 @@ const FailResponse = (codeNumber, prelastingToDo) => {
       alert("해당 행정구역은 하위 행정구역이 없습니다.");
       break;
     default:
-      alert("알 수 없는 이유로 실패했습니다.");
+      // alert("알 수 없는 이유로 실패했습니다.");
       break;
   }
 };

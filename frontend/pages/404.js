@@ -23,12 +23,12 @@ const NotFound = () => {
         }
 
         h1 {
-          font-size: 20em;
+          font-size: 20rem;
           color: #c4c4c4;
         }
 
         h3 {
-          font-size: 3em;
+          font-size: 3rem;
           margin: 10px 0;
           font-weight: normal;
         }
