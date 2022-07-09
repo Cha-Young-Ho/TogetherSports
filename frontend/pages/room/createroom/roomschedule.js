@@ -263,7 +263,7 @@ const RoomSchedule = () => {
           margin: 0 10px;
           border-radius: 10px;
           border: solid 1px #e8e8e8;
-          font-size: 1.5em;
+          font-size: 1.5rem;
         }
 
         .dateTime > div:nth-child(4) > select {

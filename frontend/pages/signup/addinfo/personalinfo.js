@@ -473,7 +473,7 @@ const PersonalInfo = () => {
         .male label,
         .female label {
           width: 30px;
-          font-size: 1.5em;
+          font-size: 1.5rem;
           font-weight: bold;
         }
 
@@ -526,7 +526,7 @@ const PersonalInfo = () => {
           width: 390px;
           height: 30px;
           border-style: none;
-          font-size: 1.4em;
+          font-size: 1.4rem;
           padding: 5px;
           margin-left: 2px;
           margin-right: 5px;
@@ -541,7 +541,7 @@ const PersonalInfo = () => {
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 1.3em;
+          font-size: 1.3rem;
           cursor: pointer;
         }
 

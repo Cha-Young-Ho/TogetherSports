@@ -7,68 +7,14 @@ const ImageSlide = (props) => {
   const [slideIndex, setSlideIndex] = useState(1);
 
   // 운동 대기방 페이지 이미지
-  // const roomDetailImageArr = useSelector(
-  //   (state) => state.roomRealTimeInfoReducer.roomImages
-  // );
-  const [roomDetailImageArr, setRoomDetailImageArr] = useState([
-    {
-      order: 0,
-      imagePath: "/golf.png",
-      roomImageExtension: "png",
-    },
-    {
-      order: 1,
-      imagePath: "/chatting-send-button.png",
-      roomImageExtension: "png",
-    },
-    {
-      order: 2,
-      imagePath: "/logo-alarm-modal.png",
-      roomImageExtension: "png",
-    },
-    {
-      order: 3,
-      imagePath: "/naver-login.png",
-      roomImageExtension: "png",
-    },
-    {
-      order: 4,
-      imagePath: "/banner_01.png",
-      roomImageExtension: "png",
-    },
-  ]);
+  const roomDetailImageArr = useSelector(
+    (state) => state.roomRealTimeInfoReducer.roomImages
+  );
 
   // 방 설명 팝업 이미지
-  // const roomInfoImageArr = useSelector(
-  //   (state) => state.saveRoomModalImagesReducer.roomImages
-  // );
-  const [roomInfoImageArr, setRoomInfoImageArr] = useState([
-    {
-      order: 0,
-      imagePath: "/golf.png",
-      roomImageExtension: "png",
-    },
-    {
-      order: 1,
-      imagePath: "/chatting-send-button.png",
-      roomImageExtension: "png",
-    },
-    {
-      order: 2,
-      imagePath: "/logo-alarm-modal.png",
-      roomImageExtension: "png",
-    },
-    {
-      order: 3,
-      imagePath: "/naver-login.png",
-      roomImageExtension: "png",
-    },
-    {
-      order: 4,
-      imagePath: "/banner_01.png",
-      roomImageExtension: "png",
-    },
-  ]);
+  const roomInfoImageArr = useSelector(
+    (state) => state.saveRoomModalImagesReducer.roomImages
+  );
 
   const onChangeImage = (index) => {
     showSlides((slideIndex += index));
@@ -175,7 +121,7 @@ const ImageSlide = (props) => {
 
         .number-text {
           color: black;
-          font-size: 1em;
+          font-size: 1rem;
           font-weight: bold;
           padding: 10px 10px;
           position: absolute;
@@ -197,7 +143,7 @@ const ImageSlide = (props) => {
           height: 40px;
           color: white;
           font-weight: bold;
-          font-size: 1.5em;
+          font-size: 1.5rem;
           transition: 0.5s ease;
           user-select: none;
           border: none;

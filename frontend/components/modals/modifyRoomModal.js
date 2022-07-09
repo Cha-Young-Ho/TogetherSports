@@ -441,7 +441,7 @@ const ModifyRoomModal = (props) => {
 
         .notice {
           margin-left: 10px;
-          font-size: 1.2em;
+          font-size: 1.2rem;
           color: #b5b5b5;
           font-weight: normal;
         }
