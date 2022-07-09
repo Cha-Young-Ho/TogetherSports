@@ -363,12 +363,21 @@ const UserModification = () => {
 
   // 초기값 세팅
   useEffect(() => {
+    const $grid_image = document.querySelectorAll(".grid-items >img");
+
     // 관심 종목 세팅
     for (const exercise of userInfo.interests) {
       setInterests((prev) => ({
         ...prev,
         [exercise]: true,
       }));
+
+      $grid_image.forEach((exer) => {
+        if (exer.id === exercise) {
+          exer.src = `/blur_${exer.id}.png`;
+          exer.classList.add("clicked");
+        }
+      });
     }
 
     dispatch({
@@ -512,6 +521,7 @@ const UserModification = () => {
                 <button
                   key={index}
                   className="grid-items"
+                  id={exercise.name}
                   onClick={(e) => changeInterests(e, exercise)}
                 >
                   <img id={exercise.name} src={`/${exercise.imgPath}`} />

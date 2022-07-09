@@ -1,17 +1,10 @@
-import Image from "next/image";
-
 const AlarmModal = (props) => {
   return (
     <>
       <div className={props.open ? "openModal modal" : "modal"}>
         {props.open ? (
           <div className="modal-body">
-            <Image
-              src="/logo-alarm-modal.png"
-              alt="logo pic"
-              width={25}
-              height={50}
-            ></Image>
+            <img src="/logo-alarm-modal.png" alt="logo pic"></img>
             <div className="content">{props.content}</div>
             <div className="buttons">
               <button className="left-button" onClick={props.result}>
@@ -54,6 +47,11 @@ const AlarmModal = (props) => {
           flex-direction: column;
           justify-content: center;
           align-items: center;
+        }
+
+        .modal-body {
+          width: 25px;
+          height: 50px;
         }
 
         .logo-image,
