@@ -7,68 +7,14 @@ const ImageSlide = (props) => {
   const [slideIndex, setSlideIndex] = useState(1);
 
   // 운동 대기방 페이지 이미지
-  // const roomDetailImageArr = useSelector(
-  //   (state) => state.roomRealTimeInfoReducer.roomImages
-  // );
-  const [roomDetailImageArr, setRoomDetailImageArr] = useState([
-    {
-      order: 0,
-      imagePath: "/golf.png",
-      roomImageExtension: "png",
-    },
-    {
-      order: 1,
-      imagePath: "/chatting-send-button.png",
-      roomImageExtension: "png",
-    },
-    {
-      order: 2,
-      imagePath: "/logo-alarm-modal.png",
-      roomImageExtension: "png",
-    },
-    {
-      order: 3,
-      imagePath: "/naver-login.png",
-      roomImageExtension: "png",
-    },
-    {
-      order: 4,
-      imagePath: "/banner_01.png",
-      roomImageExtension: "png",
-    },
-  ]);
+  const roomDetailImageArr = useSelector(
+    (state) => state.roomRealTimeInfoReducer.roomImages
+  );
 
   // 방 설명 팝업 이미지
-  // const roomInfoImageArr = useSelector(
-  //   (state) => state.saveRoomModalImagesReducer.roomImages
-  // );
-  const [roomInfoImageArr, setRoomInfoImageArr] = useState([
-    {
-      order: 0,
-      imagePath: "/golf.png",
-      roomImageExtension: "png",
-    },
-    {
-      order: 1,
-      imagePath: "/chatting-send-button.png",
-      roomImageExtension: "png",
-    },
-    {
-      order: 2,
-      imagePath: "/logo-alarm-modal.png",
-      roomImageExtension: "png",
-    },
-    {
-      order: 3,
-      imagePath: "/naver-login.png",
-      roomImageExtension: "png",
-    },
-    {
-      order: 4,
-      imagePath: "/banner_01.png",
-      roomImageExtension: "png",
-    },
-  ]);
+  const roomInfoImageArr = useSelector(
+    (state) => state.saveRoomModalImagesReducer.roomImages
+  );
 
   const onChangeImage = (index) => {
     showSlides((slideIndex += index));
