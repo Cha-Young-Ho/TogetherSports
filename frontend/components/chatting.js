@@ -24,7 +24,6 @@ const Chatting = ({ chatOpen }) => {
   );
   const [messageToServer, setMessageToServer] = useState("");
   const [showingMessages, setShowingMessages] = useState([]);
-  const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT;
 
   // 내가 방장인지 아닌지 확인하기 위한 변수
   const myNickname = useSelector((state) => state.myInfoReducer.userNickname);
@@ -337,6 +336,11 @@ const Chatting = ({ chatOpen }) => {
         }),
       },
     });
+
+    scrollHandlingTimer = setTimeout(() => {
+      scrollHandlingTimer = null;
+      func_getChatInfo(page, size);
+    }, 800);
 
     return () => {
       if (clientInfo) clientInfo.disconnect();
