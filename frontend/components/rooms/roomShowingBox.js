@@ -119,7 +119,7 @@ const RoomShowingBox = (props) => {
         }
 
         .slider-wrapper {
-          min-width: 250px;
+          width: 250px;
           margin: 0 10px;
           border-radius: 10px;
           cursor: pointer;
@@ -135,9 +135,8 @@ const RoomShowingBox = (props) => {
         }
 
         .thumbs-box img {
-          width: 100%;
+          width: 250px;
           height: 170px;
-          object-fit: cover;
           border-top-left-radius: 10px;
           border-top-right-radius: 10px;
         }

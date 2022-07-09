@@ -28,7 +28,6 @@ const ParticipantList = (props) => {
       {Array.isArray(participantArr) ? (
         participantArr.map((participant, index) => {
           if (participant.id === myID) {
-            console.log("나");
             if (participant.userNickname === host) {
               return (
                 <button

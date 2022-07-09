@@ -288,7 +288,7 @@ const Chatting = ({ chatOpen }) => {
         scrollHandlingTimer = setTimeout(() => {
           scrollHandlingTimer = null;
           func_getChatInfo(page, size);
-        }, 500);
+        }, 800);
       }
 
       connect();
@@ -298,8 +298,8 @@ const Chatting = ({ chatOpen }) => {
   // 새로운 채팅 생길 시 스크롤이 맨 밑일 때 맨 아래로 화면 강제 이동
   useEffect(() => {
     if (
-      scrollInfo.offsetHeight + scrollInfo.scrollTop ===
-      scrollInfo.scrollHeight
+      scrollInfo.offsetHeight + scrollInfo.scrollTop >=
+      scrollInfo.scrollHeight - 20
     ) {
       document.getElementsByClassName("dialog")[0].scrollTop =
         document.getElementsByClassName("dialog")[0].scrollHeight;
@@ -336,11 +336,6 @@ const Chatting = ({ chatOpen }) => {
         }),
       },
     });
-
-    scrollHandlingTimer = setTimeout(() => {
-      scrollHandlingTimer = null;
-      func_getChatInfo(page, size);
-    }, 800);
 
     return () => {
       if (clientInfo) clientInfo.disconnect();
@@ -559,8 +554,9 @@ const Chatting = ({ chatOpen }) => {
         }
 
         .msg-profileImg {
-          width: 50px;
-          height: 50px;
+          width: 35px;
+          height: 35px;
+          margin: 7.5px;
         }
 
         .chat-container {
