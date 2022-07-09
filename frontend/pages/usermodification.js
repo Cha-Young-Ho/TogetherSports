@@ -172,7 +172,7 @@ const UserModification = () => {
 
   // 프로필 이미지 삭제 및 초기화 함수
   const deleteProfileImage = () => {
-    setProfile((profile = ""));
+    setProfile((profile = "프로필을 설정해보세요!"));
     setExtension((extension = ""));
     setImagesrc((imagesrc = ""));
   };
