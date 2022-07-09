@@ -174,4 +174,11 @@ public class Room extends RoomBaseEntity {
         this.tags.clear();
     }
 
+    public void updateImage(RoomImage roomImage){
+        if(this.roomImages != null){
+
+            this.roomImages.add(roomImage);
+        }
+    }
+
 }

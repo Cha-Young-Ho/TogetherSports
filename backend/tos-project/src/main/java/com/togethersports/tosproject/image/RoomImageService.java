@@ -14,8 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
-
-@Slf4j
 @RequiredArgsConstructor
 @Service
 public class RoomImageService {
@@ -29,10 +27,8 @@ public class RoomImageService {
     @Value("${app.storage.root}")
     private String storageRoot;
 
-
+    @Transactional
     public void registerRoomImage(List<ImageOfRoomCRUD> roomOfCreateList, Room room){
-
-
         //이미지가 없을 경우
         if(roomOfCreateList.size() == 0){
             //이미지 설정
@@ -43,6 +39,7 @@ public class RoomImageService {
                     .build();
             RoomImage roomImage = RoomImage.of(defaultImage, room, registDefaultImage(room.getExercise()));
             roomImageRepository.save(roomImage);
+            room.updateImage(roomImage);
             return;
         }
 
@@ -62,7 +59,7 @@ public class RoomImageService {
 
             roomImageRepository.save(roomImage);
 
-
+            room.updateImage(roomImage);
 
         }
     }
