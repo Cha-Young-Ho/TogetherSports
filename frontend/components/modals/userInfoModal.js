@@ -176,7 +176,6 @@ const UserInfoModal = (props) => {
     // 내 정보 조회
     if (myInfo.userNickname === clickedUserNickname) {
       setImageSrc((imageSrc = myInfo.userProfileImagePath));
-      setNickname((nickname = myInfo.userNickname));
       setMannerPoint((mannerPoint = myInfo.mannerPoint));
       setInterest((interest = myInfo.interests));
       setGender((gender = myInfo.gender));

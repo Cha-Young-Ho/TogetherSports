@@ -8,6 +8,7 @@ const ParticipantList = (props) => {
   const participantArr = useSelector(
     (state) => state.roomRealTimeInfoReducer.participants
   );
+
   const myID = useSelector((state) => state.myInfoReducer.id);
 
   const onClickUserInfo = (userId, userNickname) => {
@@ -27,6 +28,7 @@ const ParticipantList = (props) => {
       {Array.isArray(participantArr) ? (
         participantArr.map((participant, index) => {
           if (participant.id === myID) {
+            console.log("나");
             if (participant.userNickname === host) {
               return (
                 <button
