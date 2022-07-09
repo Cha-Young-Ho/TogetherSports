@@ -345,12 +345,6 @@ const Room = () => {
           </div>
         </div>
 
-        {/* {myNickname === host ? (
-          <button className="button-deleteRoom">방 삭제하기</button>
-        ) : (
-          <></>
-        )} */}
-
         <img
           src="/floatingAlarm.png"
           className="button-alarm"
@@ -586,58 +580,6 @@ const Room = () => {
         .master p {
           font-size: 1.3rem;
         }
-
-        /* .chatting {
-          width: 100%;
-          height: 433px;
-          padding: 15px 15px;
-          border-radius: 15px;
-          box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
-          background-color: white;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-        }
-
-        .dialog {
-          width: 100%;
-          height: 90%;
-          margin-bottom: 10px;
-          overflow: scroll;
-          overflow-x: hidden;
-        }
-
-        .dialog-input {
-          width: 100%;
-          height: 30px;
-          display: flex;
-          flex-direction: row;
-          justify-content: space-between;
-          align-items: center;
-        }
-
-        .dialog-input input {
-          width: 300px;
-          height: 30px;
-          padding: 0 10px;
-          border: none;
-          border-radius: 15px;
-          background-color: #f4f4f4;
-        }
-
-        .dialog-input button {
-          width: 28px;
-          height: 28px;
-          border: none;
-          border-radius: 50%;
-          user-select: none;
-          cursor: pointer;
-        }
-
-        .dialog-input img {
-          width: 28px;
-          height: 28px;
-        } */
 
         .room-info > p,
         .location-info > div:nth-child(1) > p:nth-child(1) {

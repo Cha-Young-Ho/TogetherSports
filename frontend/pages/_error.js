@@ -2,9 +2,9 @@ const Error = () => {
   return (
     <>
       <div className="content-wrapper">
-        <h1>404</h1>
+        <h1>500</h1>
         <div></div>
-        <h3>페이지를 찾지 못했습니다 !</h3>
+        <h3>오류가 발생했습니다. 다시 시도해주세요.</h3>
         <div></div>
       </div>
 
