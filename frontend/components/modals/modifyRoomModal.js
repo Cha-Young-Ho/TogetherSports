@@ -141,10 +141,6 @@ const ModifyRoomModal = (props) => {
           alert("방을 성공적으로 수정하였습니다 !");
           props.close();
         }
-        if (res.content.code === 1218) {
-          alert("현재 참여 인원보다 많은 인원만 입력 가능합니다.");
-          return;
-        }
       })
       .catch((error) => {
         FailResponse(error.response.data.status.code, updateRoomFunc);

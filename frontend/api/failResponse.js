@@ -35,7 +35,7 @@ const FailResponse = (codeNumber, prelastingToDo) => {
       alert("이미 매너지수를 내려서 내릴 수 없습니다.");
       break;
     case 1200:
-      console.log("해당 방을 찾을 수 없습니다.");
+      alert("해당 방을 찾을 수 없습니다.");
       break;
     case 1201:
       alert("인원이 가득 찼습니다.");
@@ -69,7 +69,12 @@ const FailResponse = (codeNumber, prelastingToDo) => {
       break;
     case 1217:
       alert("해당 기능을 수행할 권한이 없습니다.");
+      break;
+    case 1218:
+      alert("현재 참여 인원보다 많은 인원만 입력 가능합니다.");
+      break;
     case 1300:
+      console.log("토큰이 존재하지 않습니다.");
       break;
     case 1301:
       postRefreshToken(localStorage.getItem("refreshToken"))
@@ -123,7 +128,7 @@ const FailResponse = (codeNumber, prelastingToDo) => {
       alert("해당 행정구역은 하위 행정구역이 없습니다.");
       break;
     default:
-      // alert("알 수 없는 이유로 실패했습니다.");
+      alert("오류가 발생했습니다. 재시도 후에도 안된다면 문의부탁드립니다.");
       break;
   }
 };
