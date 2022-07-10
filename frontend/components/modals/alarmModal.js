@@ -49,7 +49,7 @@ const AlarmModal = (props) => {
           align-items: center;
         }
 
-        .modal-body {
+        .modal-body > img {
           width: 25px;
           height: 50px;
         }
