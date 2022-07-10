@@ -100,6 +100,7 @@ const ImageSlide = (props) => {
           width: 100%;
           height: 100%;
           text-align: center;
+          display: none;
         }
 
         .image-container {
