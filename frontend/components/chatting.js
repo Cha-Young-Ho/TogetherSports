@@ -345,6 +345,9 @@ const Chatting = ({ chatOpen }) => {
           roomId: 0,
         },
       });
+
+      page = 0;
+      nowMessage = "";
     };
   }, []);
 

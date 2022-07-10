@@ -124,13 +124,7 @@ const roomRealTimeInfoInitialState = {
   createdTime: "",
   host: "",
   creatorNickName: "",
-  roomImages: [
-    {
-      imagePath: "https://together-sports.com/images/default_room_image.png",
-      order: 0,
-      roomImageExtension: "png",
-    },
-  ],
+  roomImages: [],
   tags: [],
   viewCount: 0,
   participants: [],
