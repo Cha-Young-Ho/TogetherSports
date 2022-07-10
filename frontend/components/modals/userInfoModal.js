@@ -10,7 +10,6 @@ const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT;
 const UserInfoModal = (props) => {
   const dispatch = useDispatch();
 
-  // reducer에 저장된 내 정보 불러오기
   const myInfo = useSelector((state) => state.myInfoReducer);
   const host = useSelector((state) => state.roomRealTimeInfoReducer.host);
 
@@ -21,8 +20,7 @@ const UserInfoModal = (props) => {
   );
 
   // 다른 회원정보 조회에서 받아온 유저의 id
-  // 필요없을 수도
-  const [userId, setUserId] = useState(0);
+  const [otherUserId, setOtherUserId] = useState(0);
 
   // 조회하고자 하는 회원의 정보들
   const [imageSrc, setImageSrc] = useState("");
@@ -48,7 +46,7 @@ const UserInfoModal = (props) => {
 
   // 방장 위임하기
   const delegateHostFunc = () => {
-    patchDelegateHost(props.roomId, userId)
+    patchDelegateHost(props.roomId, otherUserId)
       .then((res) => {
         if (res.status.code === 1208) {
           dispatch({
@@ -77,7 +75,7 @@ const UserInfoModal = (props) => {
 
   // 유저 강퇴하기
   const kickOutUserFunc = () => {
-    deleteKickOutUser(props.roomId, userId)
+    deleteKickOutUser(props.roomId, otherUserId)
       .then((res) => {
         if (res.status.code === 1204) {
           console.log(res.status.message);
@@ -99,14 +97,12 @@ const UserInfoModal = (props) => {
     getOtherInfo(userId)
       .then((res) => {
         if (res.status.code === 5000) {
-          setUserId((userId = res.content.id));
+          setOtherUserId((otherUserId = res.content.id));
           setImageSrc((imageSrc = res.content.userProfileImagePath));
-          setNickname((nickname = res.content.userNickname));
           setMannerPoint((mannerPoint = res.content.mannerPoint));
           setInterest((interest = res.content.interests));
           setGender((gender = res.content.gender));
           setActiveAreas((activeAreas = res.content.activeAreas));
-          setMannerType((mannerType = res.content.mannerType));
         }
       })
       .catch((error) => {
@@ -115,12 +111,11 @@ const UserInfoModal = (props) => {
           props.close();
         }
       });
-    // return;
   };
 
   // 매너지수 올리기
   const upMannerPoint = () => {
-    patchMannerPoint(clickedUserId, "UP")
+    patchMannerPoint(otherUserId, "UP")
       .then((res) => {
         // 올리기
         if (res.status.code === 1109) {
@@ -144,7 +139,7 @@ const UserInfoModal = (props) => {
 
   // 매너지수 내리기
   const downMannerPoint = () => {
-    patchMannerPoint(clickedUserId, "DOWN")
+    patchMannerPoint(otherUserId, "DOWN")
       .then((res) => {
         // 내리기
         if (res.status.code === 1110) {
@@ -172,14 +167,15 @@ const UserInfoModal = (props) => {
         getOtherInfoFunc(clickedUserId);
       }
     }
-
     // 내 정보 조회
-    if (myInfo.userNickname === clickedUserNickname) {
-      setImageSrc((imageSrc = myInfo.userProfileImagePath));
-      setMannerPoint((mannerPoint = myInfo.mannerPoint));
-      setInterest((interest = myInfo.interests));
-      setGender((gender = myInfo.gender));
-      setActiveAreas((activeAreas = myInfo.activeAreas));
+    else if (myInfo.userNickname === clickedUserNickname) {
+      if (props.open) {
+        setImageSrc((imageSrc = myInfo.userProfileImagePath));
+        setMannerPoint((mannerPoint = myInfo.mannerPoint));
+        setInterest((interest = myInfo.interests));
+        setGender((gender = myInfo.gender));
+        setActiveAreas((activeAreas = myInfo.activeAreas));
+      }
     }
   }, [props.open]);
 
