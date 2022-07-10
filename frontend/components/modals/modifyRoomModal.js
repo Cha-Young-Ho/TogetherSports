@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import SetRoomImages from "../rooms/setRoomImages";
-import { getRoomInfo, putUpdateRoom } from "../../api/rooms";
+import { putUpdateRoom } from "../../api/rooms";
 import { FailResponse } from "../../api/failResponse";
 import { useSelector } from "react-redux";
 import Head from "next/head";
@@ -138,10 +138,12 @@ const ModifyRoomModal = (props) => {
     )
       .then((res) => {
         if (res.status.code === 5000) {
-          console.log(res.status.message);
           alert("방을 성공적으로 수정하였습니다 !");
-
           props.close();
+        }
+        if (res.content.code === 1218) {
+          alert("현재 참여 인원보다 많은 인원만 입력 가능합니다.");
+          return;
         }
       })
       .catch((error) => {
