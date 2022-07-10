@@ -257,7 +257,7 @@ const UserModification = () => {
       });
   };
 
-  const func_PostUserRequest = () => {
+  const postUserRequestFunc = () => {
     postUserRequest(
       validNickname,
       userBirth,
@@ -278,7 +278,7 @@ const UserModification = () => {
       })
       .catch((error) => {
         if (error?.response?.data?.status) {
-          FailResponse(error.response.data.status.code, func_PostUserRequest);
+          FailResponse(error.response.data.status.code, postUserRequestFunc);
           return;
         }
       });
@@ -332,7 +332,7 @@ const UserModification = () => {
     }
 
     // 회원가입 요청 및 회원정보 수정
-    func_PostUserRequest();
+    postUserRequestFunc();
   };
 
   const getProfileImageSourceFunc = () => {
@@ -346,8 +346,8 @@ const UserModification = () => {
         // 프로필 설정 한 경우
         if (res.status.code === 5000) {
           setProfile((profile = "프로필을 변경하시겠습니까?"));
-          setImagesrc((imagesrc = res.content.profileImageSource));
-          setExtension((extension = res.content.imageExtension));
+          setImagesrc((imagesrc = res.content.imageSource));
+          setExtension((extension = res.content.extension));
         }
       })
       .catch((error) => {
