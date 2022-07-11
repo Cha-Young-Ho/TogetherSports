@@ -122,7 +122,8 @@ const SetRoomImages = (props) => {
             .map((image) => {
               setImagePreview((prev) => [
                 ...prev,
-                (imagePreview = image.imageSource),
+                (imagePreview =
+                  "data:image/확장자명;base64," + image.imageSource),
               ]);
             });
         }
