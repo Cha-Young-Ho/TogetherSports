@@ -57,7 +57,7 @@ public class FileStorageService implements StorageService{
     @Override
     public String getFileSource(String path) {
         String relPath = path.substring(location.length());
-        String absPath = relPath;
+        String absPath = storageRoot + relPath;
         File target = new File(absPath);
 
         try (FileInputStream fis = new FileInputStream(target)) {
