@@ -16,6 +16,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 /**
  * <h1>Room</h1>
@@ -75,7 +76,7 @@ public class Room extends RoomBaseEntity {
     //참여자
     //todo N : N 매핑
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
-    private List<Participant> participants;
+    private List<Participant> participants = new ArrayList<>();
 
     //방장
     @JsonIgnore
@@ -90,11 +91,11 @@ public class Room extends RoomBaseEntity {
 
     //방 이미지
     @JsonIgnore
-    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RoomImage> roomImages;
 
     //태그
-    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Tag> tags;
 
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -140,6 +141,12 @@ public class Room extends RoomBaseEntity {
         this.roomContent = roomOfUpdate.getRoomContent();
     }
 
+    public void updateTag(List<Tag> tagList){
+        for (Tag tag : tagList){
+            this.tags.add(tag);
+        }
+    }
+
     //방장 위임
     public void updateHost(User user){
         this.host = user;
@@ -153,6 +160,24 @@ public class Room extends RoomBaseEntity {
                 break;
             }
             i++;
+        }
+    }
+    public void deleteImage(){
+
+        this.roomImages.clear();
+
+        //this.roomImages.remove(roomImage);
+
+    }
+
+    public void deleteTag(){
+        this.tags.clear();
+    }
+
+    public void updateImage(RoomImage roomImage){
+        if(this.roomImages != null){
+
+            this.roomImages.add(roomImage);
         }
     }
 

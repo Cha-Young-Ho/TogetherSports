@@ -11,7 +11,9 @@ import com.togethersports.tosproject.common.code.CommonCode;
 import com.togethersports.tosproject.common.dto.Response;
 import com.togethersports.tosproject.common.dto.WsResponse;
 import com.togethersports.tosproject.common.util.ParsingEntityUtils;
+import com.togethersports.tosproject.image.RoomImage;
 import com.togethersports.tosproject.image.RoomImageService;
+import com.togethersports.tosproject.image.dto.ImageProperties;
 import com.togethersports.tosproject.participant.Participant;
 import com.togethersports.tosproject.participant.ParticipantService;
 import com.togethersports.tosproject.room.code.RoomCode;
@@ -22,19 +24,12 @@ import com.togethersports.tosproject.tag.TagService;
 import com.togethersports.tosproject.user.User;
 import com.togethersports.tosproject.user.UserRepository;
 import com.togethersports.tosproject.user.UserService;
-import com.togethersports.tosproject.user.dto.UserOfOtherInfo;
 import com.togethersports.tosproject.user.dto.UserOfParticipantInfo;
 import com.togethersports.tosproject.user.exception.NotEnteredInformationException;
 import com.togethersports.tosproject.user.exception.UserNotFoundException;
-
-
-
-
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,7 +48,6 @@ import java.util.stream.Collectors;
  * @author younghoCha
  */
 
-@Slf4j
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -66,6 +60,8 @@ public class RoomService {
     private final RoomImageService roomImageService;
     private final UserService userService;
     private final ChatController chatController;
+    private final ImageProperties imageProperties;
+
 
     //방 생성
     public Response createRoom(User user, RoomOfCreate roomOfCreate){
@@ -78,13 +74,6 @@ public class RoomService {
             throw new NotEnteredInformationException();
         }
 
-        /*
-         * 방 엔티티 만들기
-         * 1. List<String>을 List<Tag>로 변환 후 저장
-         * 2. List<Image>를 모두 저장
-         * 3. 엔티티 생성
-         * 4. 저장
-         */
         //방 엔티티 만들기
         Room roomEntity = Room.of(roomOfCreate, userEntity);
 
@@ -97,14 +86,13 @@ public class RoomService {
 
         //tag 저장
         tagService.saveTagFromRoomCreation(tagList, roomEntity);
-
         // -- Image --
         // image 로컬에 저장
         roomImageService.registerRoomImage(roomOfCreate.getRoomImages(), roomEntity);
 
         participantService.save(user, room);
 
-        return Response.of(CommonCode.GOOD_REQUEST, null);
+        return Response.of(CommonCode.GOOD_REQUEST, RoomOfCreated.builder().createdRoomId(roomEntity.getId()).build());
     }
 
     //방 설명 페이지 조회
@@ -119,6 +107,7 @@ public class RoomService {
         //List<Tag> -> List<String>
         List<String> tag =
                 parsingEntityUtils.parsingTagEntityToString(roomEntity.getTags());
+
         //조회수 증가
         roomEntity.plusViewCount();
 
@@ -128,15 +117,17 @@ public class RoomService {
 
     //방 수정
     @Transactional
-    public Response modifyRoomInfo(RoomOfUpdate roomOfUpdate){
-        Room roomEntity = findRoomEntityById(roomOfUpdate.getId());
+    public Response modifyRoomInfo(RoomOfUpdate roomOfUpdate, Long roomId){
+        Room roomEntity = findRoomEntityById(roomId);
 
         //방 인원
-        //ToDo 방 인원 체크 로직 추가해야함(참여 인원 > 변경 최대 인원 -> 변경 불가)
+        if(roomEntity.getParticipants().size() > roomOfUpdate.getLimitPeopleCount()){
+            return Response.of(RoomCode.NOT_MODIFY_PARTICIPANT_COUNT, null);
+        }
 
         //-- Tag --
         // Tag Service 에서 모든 DB값 삭제 후, 넘어온 값들로 새롭게 매핑
-        List<Tag> tagList = parsingEntityUtils.parsingStringToTagEntity(roomOfUpdate.getTag());
+        List<Tag> tagList = parsingEntityUtils.parsingStringToTagEntity(roomOfUpdate.getTags());
         tagService.modifyTagFromRoomUpdate(tagList, roomEntity);
 
         //-- Image --
@@ -145,6 +136,7 @@ public class RoomService {
 
         //-- update Room Entity --
         roomEntity.updateRoom(roomOfUpdate);
+
 
         //WS 메세지 보내기
         sendMessage(roomEntity.getId(), getWsRoomDetailInfo(roomEntity));
@@ -211,13 +203,16 @@ public class RoomService {
         List<UserOfParticipantInfo> userOfParticipantInfoList = new ArrayList<>();
 
         for (Participant participant : participantList){
-            userOfParticipantInfoList.add(userService.getParticipantInfo(participant.getUser().getId()));
+            userOfParticipantInfoList.add(userService.getParticipantInfo(participant.getUser().getId(), participant));
         }
         return userOfParticipantInfoList;
     }
 
     public boolean getAttendance(Long userId, Long roomId){
-        return participantService.checkAttendance(userRepository.findById(userId).get(), roomRepository.findById(roomId).get());
+        UserAndRoomOfService userRoomEntities = findEntityById(userId, roomId);
+        User userEntity = userRoomEntities.getUser();
+        Room roomEntity = userRoomEntities.getRoom();
+        return participantService.checkAttendance(userEntity, roomEntity);
     }
 
     public RoomsOfMyRoom getMyRoom(User currentUser){
@@ -327,6 +322,7 @@ public class RoomService {
         // 요청 유저가 방장인지 확인
         if(requestUser.getId() != roomEntity.getHost().getId()){
             // 해당하는 사람이 방장이 아님.
+            return Response.of(RoomCode.NO_PERMISSION, null);
         }
 
         // 요청자 및 위임받는 유저 방에 참여했는지 확인
@@ -342,7 +338,7 @@ public class RoomService {
         WsResponse wsResponse = WsResponse.of(ChatCode.SYSTEM_USER_KICKED_OUT,
                 MessageOfKickOut.builder()
                         .id(kickedOutUser.getId())
-                        .nickname(kickedOutUser.getNickname())
+                        .userNickname(kickedOutUser.getNickname())
                         .build());
 
         //강퇴 WS 메세지 보내기
@@ -355,7 +351,7 @@ public class RoomService {
         Response response = Response.of(
                 RoomCode.KICKED_OUT, MessageOfKickOut.builder()
                 .id(kickedOutUser.getId())
-                .nickname(kickedOutUser.getNickname())
+                .userNickname(kickedOutUser.getNickname())
                 .build());
         return response;
     }
@@ -387,8 +383,10 @@ public class RoomService {
 
             //방 인원이 0명인 경우 방삭제
             if(roomEntity.getParticipants().size() <= 0){
+                //방 이미지 모두 삭제
+                roomImageService.deleteLocalImage(roomEntity);
 
-                //나가기 처리(DB삭제)
+                //나가기 처리(DB 삭제)
                 roomRepository.deleteById(roomEntity.getId());
 
                 Response response = Response.of(RoomCode.USER_OUT_FROM_ROOM, null);
@@ -434,7 +432,6 @@ public class RoomService {
             // 소켓 통신, 정보 발행
 
             return response;
-
 
         }
 
@@ -524,7 +521,6 @@ public class RoomService {
     }
 
     public WsResponse getWsRoomDetailInfo(Room roomEntity){
-
         return WsResponse.of(ChatCode.ROOM_UPDATED,
                 RoomOfParticipate.builder()
                         .roomOfInfo(getRoomInfo(roomEntity.getId()))
@@ -539,8 +535,25 @@ public class RoomService {
         chatController.sendServerMessage(roomId, response);
     }
 
-    // 나가기 시 방장 위임
-    public void delegateOfOut(Long roomId, Long userId){
+    public Response getRoomImageSources(Long roomId, User user){
+
+        UserAndRoomOfService userAndRoomOfService = findEntityById(user.getId(), roomId);
+        Room roomEntity = userAndRoomOfService.getRoom();
+        User userEntity = userAndRoomOfService.getUser();
+
+        if(userEntity.getId() != roomEntity.getHost().getId()){
+            return Response.of(RoomCode.NO_PERMISSION, null);
+        }
+        List<RoomImage> roomImageList = roomEntity.getRoomImages();
+        if(roomImageList.size() == 1 && imageProperties.checkDefaultImage(roomImageList.get(0).getImagePath())){
+            return Response.of(RoomCode.DEFAULT_ROOM_IMAGE, null);
+        }
+        List<ImageSourcesOfRoom> roomImageSourceList = new ArrayList<>();
+        for(RoomImage roomImage : roomImageList){
+            roomImageSourceList.add(roomImageService.getRoomImageSources(roomImage));
+        }
+
+        return Response.of(CommonCode.GOOD_REQUEST, roomImageSourceList);
 
     }
 

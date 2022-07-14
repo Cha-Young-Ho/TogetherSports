@@ -7,9 +7,11 @@ import { useDispatch, useSelector } from "react-redux";
 import Map from "../Map";
 import Head from "next/head";
 
-/* roomList에서 받은 각 room들의 roomId를 props로 받기 */
 const RoomModal = (props) => {
   const dispatch = useDispatch();
+
+  // 로그인 시 저장되는 데이터
+  const myInfo = useSelector((state) => state.myInfoReducer);
 
   /* response content 담을 변수들 */
   const [roomId, setRoomId] = useState(0); // 참여페이지로 넘어가기 위한 roomId
@@ -26,7 +28,27 @@ const RoomModal = (props) => {
   const [endAppointmentDate, setEndAppointmentDate] = useState("");
   const [viewCount, setViewCount] = useState(0);
 
+  const exerciseArr = {
+    soccer: "축구",
+    baseball: "야구",
+    basketball: "농구",
+    "ping-pong": "탁구",
+    hiking: "등산",
+    running: "런닝",
+    billiards: "당구",
+    bicycle: "자전거",
+    badminton: "배드민턴",
+    gym: "헬스",
+    golf: "골프",
+    etc: "기타",
+  };
+
   const enterRoom = (e) => {
+    if (myInfo.isInformationRequired) {
+      alert("로그인 및 추가정보가 필요합니다.");
+      return;
+    }
+
     postEnterRoom(roomId)
       .then((res) => {
         if (res.status.code === 1209) {
@@ -171,7 +193,7 @@ const RoomModal = (props) => {
                     </div>
                     <div className="option-exercise">
                       <p>종목</p>
-                      <p>{exercise}</p>
+                      <p>{exerciseArr[exercise]}</p>
                     </div>
                     <div className="option-time">
                       <p>시간</p>
@@ -448,8 +470,8 @@ const RoomModal = (props) => {
         }
 
         .image {
-          width: 100%;
-          height: 55%;
+          width: 660px;
+          height: 350px;
         }
 
         .room-info {

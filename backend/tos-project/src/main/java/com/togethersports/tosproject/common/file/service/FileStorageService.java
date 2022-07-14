@@ -1,11 +1,16 @@
 package com.togethersports.tosproject.common.file.service;
 
+import com.togethersports.tosproject.common.dto.FileOfImageSource;
 import com.togethersports.tosproject.common.file.exception.FileUploadException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Base64;
 
 /**
  * <h1>FileStorageService</h1>
@@ -13,6 +18,7 @@ import java.io.IOException;
  *
  * @author seunjeon
  */
+
 @Service
 public class FileStorageService implements StorageService{
 
@@ -38,5 +44,47 @@ public class FileStorageService implements StorageService{
             throw new FileUploadException("파일 저장중 문제가 발생했습니다.");
         }
         return location + "/" + name;
+    }
+
+    @Override
+    public void delete(String path) {
+        String relPath = path.substring(location.length());
+        String absPath = storageRoot + relPath;
+        File target = new File(absPath);
+        target.delete();
+    }
+
+    @Override
+    public String getFileSource(String path) {
+        String relPath = path.substring(location.length());
+        String absPath = storageRoot + relPath;
+        File target = new File(absPath);
+
+        try (FileInputStream fis = new FileInputStream(target)) {
+            byte[] raw = fis.readAllBytes();
+            return Base64.getEncoder().encodeToString(raw);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public FileOfImageSource getFileSourceAndExtension(String path) {
+        String extension = path.substring(path.lastIndexOf(".") + 1);
+        String relPath = path.substring(location.length());
+        String absPath = storageRoot + relPath;
+        File target = new File(absPath);
+
+        try (FileInputStream fis = new FileInputStream(target)) {
+            byte[] raw = fis.readAllBytes();
+            return FileOfImageSource.builder()
+                    .imageSource(Base64.getEncoder().encodeToString(raw))
+                    .extension(extension)
+                    .build();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

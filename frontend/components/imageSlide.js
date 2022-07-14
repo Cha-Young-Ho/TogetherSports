@@ -1,27 +1,20 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
+const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT;
+
 const ImageSlide = (props) => {
   const [slideIndex, setSlideIndex] = useState(1);
+
   // 운동 대기방 페이지 이미지
   const roomDetailImageArr = useSelector(
     (state) => state.roomRealTimeInfoReducer.roomImages
   );
+
   // 방 설명 팝업 이미지
   const roomInfoImageArr = useSelector(
     (state) => state.saveRoomModalImagesReducer.roomImages
   );
-
-  useEffect(() => {
-    if (props.path === "roomInfo") {
-      roomInfoImageArr !== null ? showSlides(slideIndex) : <></>;
-      // roomInfoImageArr.length !== 0 ? showSlides(slideIndex) : <></>;
-    }
-    if (props.path === "roomDetail") {
-      roomDetailImageArr !== null ? showSlides(slideIndex) : <></>;
-      // roomDetailImageArr.length !== 0 ? showSlides(slideIndex) : <></>;
-    }
-  }, []);
 
   const onChangeImage = (index) => {
     showSlides((slideIndex += index));
@@ -39,48 +32,52 @@ const ImageSlide = (props) => {
     slides[slideIndex - 1].style.display = "table";
   };
 
+  useEffect(() => {
+    showSlides(slideIndex);
+  }, []);
+
   return (
     <>
       <div className="slideshow-container">
-        {props.path === "roomInfo" ? (
-          roomInfoImageArr !== null ? (
-            roomInfoImageArr
+        {props.path === "roomInfo"
+          ? Array.isArray(roomInfoImageArr)
+            ? roomInfoImageArr
+                .sort((a, b) => a.order - b.order)
+                .map((image, index) => {
+                  return (
+                    <div className="slide fade" key={index}>
+                      <div className="number-text">{`${index + 1} / ${
+                        roomInfoImageArr.length
+                      }`}</div>
+                      <div className="image-container">
+                        <img
+                          src={`${API_ENDPOINT}${image.imagePath}`}
+                          className="roomInfoImage"
+                        />
+                      </div>
+                    </div>
+                  );
+                })
+            : ""
+          : Array.isArray(roomDetailImageArr)
+          ? roomDetailImageArr
               .sort((a, b) => a.order - b.order)
               .map((image, index) => {
                 return (
                   <div className="slide fade" key={index}>
                     <div className="number-text">{`${index + 1} / ${
-                      roomInfoImageArr.length
+                      roomDetailImageArr.length
                     }`}</div>
                     <div className="image-container">
-                      {/* <img src={`/images/${image.imagePath}`} /> */}
-                      <img src={`/${image.imagePath}`} />
+                      <img
+                        src={`${API_ENDPOINT}${image.imagePath}`}
+                        className="roomDetailImage"
+                      />
                     </div>
                   </div>
                 );
               })
-          ) : (
-            <></>
-          )
-        ) : roomDetailImageArr !== null ? (
-          roomDetailImageArr
-            .sort((a, b) => a.order - b.order)
-            .map((image, index) => {
-              return (
-                <div className="slide fade" key={index}>
-                  <div className="number-text">{`${index + 1} / ${
-                    roomDetailImageArr.length
-                  }`}</div>
-                  <div className="image-container">
-                    {/* <img src={`/images/${image.imagePath}`} /> */}
-                    <img src={`/${image.imagePath}`} />
-                  </div>
-                </div>
-              );
-            })
-        ) : (
-          <></>
-        )}
+          : ""}
 
         <div className="buttons">
           <button className="prev-button" onClick={() => onChangeImage(-1)}>
@@ -95,15 +92,15 @@ const ImageSlide = (props) => {
       <style jsx>{`
         .slideshow-container {
           position: relative;
-          width: 100%;
+          width: 100%; // 이것을 건들면 버튼이 문제가 생기옵니다
           height: 100%;
         }
 
         .slide {
-          display: none;
           width: 100%;
           height: 100%;
           text-align: center;
+          display: none;
         }
 
         .image-container {
@@ -111,15 +108,21 @@ const ImageSlide = (props) => {
           vertical-align: middle;
         }
 
-        img {
-          max-width: 100%;
-          max-height: 100%;
-          user-select: none;
+        .roomInfoImage {
+          width: 655px;
+          height: 345px;
+          object-fit: contain;
+        }
+
+        .roomDetailImage {
+          width: 310px;
+          height: 281px;
+          object-fit: contain;
         }
 
         .number-text {
           color: black;
-          font-size: 1em;
+          font-size: 1rem;
           font-weight: bold;
           padding: 10px 10px;
           position: absolute;
@@ -141,7 +144,7 @@ const ImageSlide = (props) => {
           height: 40px;
           color: white;
           font-weight: bold;
-          font-size: 1.5em;
+          font-size: 1.5rem;
           transition: 0.5s ease;
           user-select: none;
           border: none;

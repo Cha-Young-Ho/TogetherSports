@@ -34,10 +34,6 @@ public enum OAuth2Provider {
         this.attributeKey = attributeKey;
     }
 
-    public String getProviderName() {
-        return this.providerName;
-    }
-
     public String getAttributeKey() {
         return this.attributeKey;
     }

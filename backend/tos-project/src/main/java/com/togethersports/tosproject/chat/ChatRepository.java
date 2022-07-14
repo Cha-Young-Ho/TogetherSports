@@ -12,6 +12,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author younghocha
  */
 public interface ChatRepository extends JpaRepository<ChatMessage, Long> {
-    Page<ChatMessage> findByRoom(Room roomId, Pageable pageable);
+    Page<ChatMessage> findByRoomOrderBySendAtDesc(Room roomId, Pageable pageable);
 
 }

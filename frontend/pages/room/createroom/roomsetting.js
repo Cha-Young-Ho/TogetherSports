@@ -3,9 +3,11 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import RoomInfoNavBar from "../../../components/roomInfoNavBar";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 const RoomSetting = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
   const myInfo = useSelector((state) => state.myInfoReducer.userNickname);
   //방 제목
   const [roomTitle, setRoomTitle] = useState("");
@@ -140,18 +142,21 @@ const RoomSetting = () => {
     ) {
       e.preventDefault();
       alert("빈칸을 모두 설정해주세요!");
+      return;
     }
 
     // 종목 선택 안 한 경우
-    if (exercise === "선택") {
+    if (exercise === "none") {
       e.preventDefault();
       alert("종목을 선택해주세요!");
+      return;
     }
 
     // 최소 인원 2명
     if (limitPeopleCount < 2) {
       e.preventDefault();
       alert("최소 인원은 2명 이상이어야 합니다!");
+      return;
     }
 
     dispatch({
@@ -163,6 +168,8 @@ const RoomSetting = () => {
         roomArea: roomArea.areaDetail,
       },
     });
+
+    router.push("/room/createroom/roomschedule");
   };
 
   return (
@@ -209,19 +216,19 @@ const RoomSetting = () => {
                   value={exercise}
                   onChange={(e) => setExercise(e.target.value)}
                 >
-                  <option>선택</option>
-                  <option>축구</option>
-                  <option>야구</option>
-                  <option>농구</option>
-                  <option>당구</option>
-                  <option>탁구</option>
-                  <option>헬스</option>
-                  <option>자전거</option>
-                  <option>골프</option>
-                  <option>등산</option>
-                  <option>런닝</option>
-                  <option>배드민턴</option>
-                  <option>기타</option>
+                  <option value="none">선택</option>
+                  <option value="soccer">축구</option>
+                  <option value="baseball">야구</option>
+                  <option value="basketball">농구</option>
+                  <option value="billiards">당구</option>
+                  <option value="ping-pong">탁구</option>
+                  <option value="gym">헬스</option>
+                  <option value="bicycle">자전거</option>
+                  <option value="golf">골프</option>
+                  <option value="hiking">등산</option>
+                  <option value="running">런닝</option>
+                  <option value="badminton">배드민턴</option>
+                  <option value="etc">기타</option>
                 </select>
               </div>
 
@@ -263,11 +270,9 @@ const RoomSetting = () => {
           </div>
         </div>
 
-        <Link href="/room/createroom/roomschedule">
-          <button className="button-next" onClick={getNext}>
-            다음
-          </button>
-        </Link>
+        <button className="button-next" onClick={getNext}>
+          다음
+        </button>
       </div>
       <style jsx>{`
         input:focus {

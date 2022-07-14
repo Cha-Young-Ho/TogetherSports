@@ -1,6 +1,7 @@
 package com.togethersports.tosproject.area;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.togethersports.tosproject.room.Room;
 import com.togethersports.tosproject.user.User;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -17,7 +18,7 @@ import javax.persistence.*;
  *     사용자가 활동 지역으로 선택한 주소를 저장하며 사용자별 최대 5개까지 지정될 수 있다.
  * </p>
  * <p>
- *     신규 활동 지역을 생성하려면 다음 메소드를 참조 {@link #createActiveArea(String)}
+ *     신규 활동 지역을 생성하려면 다음 메소드를 참조
  * </p>
  * @see User
  * @author seunjeon
@@ -32,9 +33,11 @@ public class ActiveArea {
     @JsonIgnore
     private Long id;
 
-    @Column(name = "USER_ID")
+    //등록된 방
     @JsonIgnore
-    private String userId;
+    @ManyToOne
+    @JoinColumn(name = "USER_ID")
+    private User user;
 
     @Column(name = "LOCATION")
     private String location; // 지역 주소 명
@@ -53,7 +56,6 @@ public class ActiveArea {
         this.location = location;
 
     }
-
     protected ActiveArea() {}
 
     /**
@@ -67,5 +69,9 @@ public class ActiveArea {
                 .longitude(longitude)
                 .latitude(latitude)
                 .build();
+    }
+
+    public void updateUser(User user){
+        this.user = user;
     }
 }

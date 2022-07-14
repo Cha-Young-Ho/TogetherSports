@@ -1,11 +1,15 @@
 import { useDispatch, useSelector } from "react-redux";
 
+const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT;
+
 const ParticipantList = (props) => {
   const dispatch = useDispatch();
   const host = useSelector((state) => state.roomRealTimeInfoReducer.host);
   const participantArr = useSelector(
     (state) => state.roomRealTimeInfoReducer.participants
   );
+
+  const myID = useSelector((state) => state.myInfoReducer.id);
 
   const onClickUserInfo = (userId, userNickname) => {
     props.participantListOpenModal();
@@ -21,40 +25,130 @@ const ParticipantList = (props) => {
 
   return (
     <>
-      {participantArr.length !== 0 ? (
+      {Array.isArray(participantArr) ? (
         participantArr.map((participant, index) => {
-          // 방장이라면
-          if (participant.userNickname === host) {
-            return (
-              <button
-                className="participant"
-                onClick={() => {
-                  onClickUserInfo(participant.id, participant.userNickname);
-                }}
-                key={index}
-              >
-                <div className="profile">
-                  <div></div>
-                  <p>{participant.userNickname}</p>
-                </div>
-                <p>방장</p>
-              </button>
-            );
+          if (participant.id === myID) {
+            if (participant.userNickname === host) {
+              return (
+                <button
+                  className="participant"
+                  onClick={() => {
+                    onClickUserInfo(participant.id, participant.userNickname);
+                  }}
+                  key={index}
+                >
+                  <div className="profile">
+                    <img
+                      src={`${API_ENDPOINT}${participant.userProfileImagePath}`}
+                      alt="profile"
+                    ></img>
+                    <p>{`${participant.userNickname} (나)`}</p>
+                  </div>
+                  <p>방장</p>
+                </button>
+              );
+            } else {
+              return (
+                <button
+                  className="participant"
+                  onClick={() => {
+                    onClickUserInfo(participant.id, participant.userNickname);
+                  }}
+                  key={index}
+                >
+                  <div className="profile">
+                    <img
+                      src={`${API_ENDPOINT}${participant.userProfileImagePath}`}
+                      alt="profile"
+                    ></img>
+                    <p>{`${participant.userNickname} (나)`}</p>
+                  </div>
+                </button>
+              );
+            }
+          }
+
+          if (participant.status === "ONLINE") {
+            // 방장이라면
+            if (participant.userNickname === host) {
+              return (
+                <button
+                  className="participant"
+                  onClick={() => {
+                    onClickUserInfo(participant.id, participant.userNickname);
+                  }}
+                  key={index}
+                >
+                  <div className="profile">
+                    <img
+                      src={`${API_ENDPOINT}${participant.userProfileImagePath}`}
+                      alt="profile"
+                    ></img>
+                    <p>{participant.userNickname}</p>
+                  </div>
+                  <p>방장</p>
+                </button>
+              );
+            } else {
+              return (
+                <button
+                  className="participant"
+                  onClick={() => {
+                    onClickUserInfo(participant.id, participant.userNickname);
+                  }}
+                  key={index}
+                >
+                  <div className="profile">
+                    <img
+                      src={`${API_ENDPOINT}${participant.userProfileImagePath}`}
+                      alt="profile"
+                    ></img>
+                    <p>{participant.userNickname}</p>
+                  </div>
+                </button>
+              );
+            }
           } else {
-            return (
-              <button
-                className="participant"
-                onClick={() => {
-                  onClickUserInfo(participant.id, participant.userNickname);
-                }}
-                key={index}
-              >
-                <div className="profile">
-                  <div></div>
-                  <p>{participant.userNickname}</p>
-                </div>
-              </button>
-            );
+            // 방장이라면
+            if (participant.userNickname === host) {
+              return (
+                <button
+                  className="participant offline"
+                  onClick={() => {
+                    onClickUserInfo(participant.id, participant.userNickname);
+                  }}
+                  key={index}
+                >
+                  <div className="profile">
+                    <img
+                      src={`${API_ENDPOINT}${participant.userProfileImagePath}`}
+                      alt="profile"
+                    ></img>
+                    <p>{participant.userNickname}</p>
+                  </div>
+                  <p>방장(오프라인)</p>
+                </button>
+              );
+            } else {
+              return (
+                <button
+                  className="participant offline"
+                  onClick={() => {
+                    onClickUserInfo(participant.id, participant.userNickname);
+                  }}
+                  key={index}
+                >
+                  <div className="profile">
+                    <img
+                      src={`${API_ENDPOINT}${participant.userProfileImagePath}`}
+                      alt="profile"
+                    ></img>
+                    <p>{participant.userNickname}</p>
+                  </div>
+                  <p>오프라인</p>
+                </button>
+              );
+            }
           }
         })
       ) : (
@@ -77,11 +171,16 @@ const ParticipantList = (props) => {
         }
 
         p {
-          font-size: 1.1em;
+          font-size: 1.1rem;
+          font-weight: 600;
         }
 
         .participant > p {
           font-weight: bold;
+        }
+
+        .offline {
+          background-color: #f0f0f0;
         }
 
         .profile {
@@ -90,13 +189,12 @@ const ParticipantList = (props) => {
           align-items: center;
         }
 
-        .profile div {
+        .profile img {
           width: 30px;
           height: 30px;
           margin-right: 10px;
           border-radius: 100%;
-          box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.16);
-          background-color: #009baf;
+          background-color: white;
         }
       `}</style>
     </>

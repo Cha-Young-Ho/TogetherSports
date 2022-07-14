@@ -1,9 +1,16 @@
 import { getAvailability } from "../../api/rooms";
 import router from "next/router";
 import moment from "moment";
+import { FailResponse } from "../../api/failResponse";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+
+const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT;
 
 const RoomShowingBox = (props) => {
+  // 로그인 시 저장되는 데이터
+  const myInfo = useSelector((state) => state.myInfoReducer);
+
   const DayOfTheWeek = {
     1: "월요일",
     2: "화요일",
@@ -15,8 +22,29 @@ const RoomShowingBox = (props) => {
   };
   const [tagLayout, setTagLayout] = useState(true);
 
+  const exerciseArr = {
+    soccer: "축구",
+    baseball: "야구",
+    basketball: "농구",
+    "ping-pong": "탁구",
+    hiking: "등산",
+    running: "런닝",
+    billiards: "당구",
+    bicycle: "자전거",
+    badminton: "배드민턴",
+    gym: "헬스",
+    golf: "골프",
+    etc: "기타",
+  };
+
   // 해당 방에 이미 참가중인지 여부 체크
   const isAttendance = () => {
+    if (myInfo.isInformationRequired) {
+      props.setRoomID ? props.setRoomID(props.datas.roomId) : "";
+      props.openRoomExplainModal ? props.openRoomExplainModal() : "";
+      return;
+    }
+
     getAvailability(props.datas.roomId)
       .then((res) => {
         if (res.status.code === 1214 && res.content.attendance) {
@@ -55,14 +83,11 @@ const RoomShowingBox = (props) => {
       >
         <div className="thumbs-box">
           <img
-            src={
-              props.datas.roomImagePath === ""
-                ? "/base_profileImage.jpg"
-                : `/images/${props.datas.roomImagePath}`
-            }
+            src={`${API_ENDPOINT}${props.datas.roomImagePath}`}
+            alt={"room"}
           ></img>
           <div className="tags" onClick={handleTagLayout}>
-            {props.datas.tags.length !== 0
+            {Array.isArray(props.datas.tags)
               ? props.datas.tags.map((tag, index) => {
                   return <p key={index}>{tag}</p>;
                 })
@@ -75,11 +100,13 @@ const RoomShowingBox = (props) => {
         <div className="bodyLine">
           <h1>{`${props.datas.roomTitle}`}</h1>
           <p>
-            {`${props.datas.startAppointmentDate.slice(0, 10)} ${
+            {`${
+              exerciseArr[props.datas.exercise]
+            } ${props?.datas?.startAppointmentDate?.slice(0, 10)} ${
               DayOfTheWeek[
                 moment(props.datas.startAppointmentDate).isoWeekday()
               ]
-            } ${props.datas.startAppointmentDate.slice(11)} 모임`}
+            } ${props?.datas?.startAppointmentDate?.slice(11)} 모임`}
           </p>
         </div>
       </div>
@@ -92,7 +119,7 @@ const RoomShowingBox = (props) => {
         }
 
         .slider-wrapper {
-          min-width: 250px;
+          width: 250px;
           margin: 0 10px;
           border-radius: 10px;
           cursor: pointer;
@@ -100,7 +127,7 @@ const RoomShowingBox = (props) => {
         }
 
         .thumbs-box {
-          width: 100%;
+          width: 250px;
           height: 170px;
           background-color: #53927d;
           border-top-left-radius: 10px;
@@ -108,9 +135,10 @@ const RoomShowingBox = (props) => {
         }
 
         .thumbs-box img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
+          width: 250px;
+          height: 170px;
+          border-top-left-radius: 10px;
+          border-top-right-radius: 10px;
         }
 
         .tags {

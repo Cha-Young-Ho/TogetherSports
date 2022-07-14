@@ -44,13 +44,13 @@ public class JwtTokenRenewalExceptionHandler {
             responseValue = Response.of(JwtErrorCode.TOKEN_NOTFOUND, null);
 
         } else if (e instanceof JwtModulatedTokenException) {
-            responseValue = Response.of(JwtErrorCode.TOKEN_MODULATED, null);
+            responseValue = Response.of(JwtErrorCode.REFRESH_TOKEN_EXCEPTION, null);
 
         } else if (e instanceof JwtExpiredTokenException) {
-            responseValue = Response.of(JwtErrorCode.REFRESH_TOKEN_EXPIRATION, null);
+            responseValue = Response.of(JwtErrorCode.REFRESH_TOKEN_EXCEPTION, null);
 
         } else if (e instanceof RefreshTokenNotFoundException) {
-            responseValue = Response.of(JwtErrorCode.DELETED_REFRESH_TOKEN, null);
+            responseValue = Response.of(JwtErrorCode.REFRESH_TOKEN_EXCEPTION, null);
         }
 
         response.setStatus(HttpStatus.BAD_REQUEST.value());

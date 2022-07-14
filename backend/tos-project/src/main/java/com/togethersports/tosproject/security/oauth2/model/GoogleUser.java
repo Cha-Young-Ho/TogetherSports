@@ -7,33 +7,21 @@ import java.util.Map;
  *
  * @see com.togethersports.tosproject.security.oauth2.model.OAuth2UserInfo
  * @author younghocha
+ * @author seunjeon
  */
 public class GoogleUser extends OAuth2UserInfo{
 
-    // 구글 이메일 정보
-    private String googleEmail;
-
-    // 구글 프로필 정보
-    private String googleName;
-
     protected GoogleUser(Map<String, Object> attributes) {
         super(attributes);
-        this.googleEmail = attributes.get("email").toString();
-        this.googleName = attributes.get("name").toString();
     }
     @Override
-    public Long getOAuth2Id() {
-        return null;
+    public String getOAuth2Id() {
+        return (String) super.attributes.get("sub");
     }
 
     @Override
     public String getEmail() {
-        return this.googleEmail;
-    }
-
-    @Override
-    public String getNickname() {
-        return this.googleName;
+        return (String) super.attributes.get("email");
     }
 
     @Override

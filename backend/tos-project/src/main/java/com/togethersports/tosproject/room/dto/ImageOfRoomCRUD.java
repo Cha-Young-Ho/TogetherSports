@@ -13,6 +13,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class ImageOfRoomCRUD {
+
     private int order;
     private String roomImageExtension;
     private String imageSource;

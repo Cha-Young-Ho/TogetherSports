@@ -83,5 +83,10 @@ public class ExceptionControllerAdvice {
         return ResponseEntity.ok().body(Response.of(MannerPointCode.FAIL_MANNER_POINT_DOWN, null));
     }
 
+//    @ExceptionHandler({IllegalArgumentException.class, NullPointerException.class})
+//    public ResponseEntity<Response> handleIllegalArgumentException(){
+//        return ResponseEntity.badRequest().body(Response.of(CommonCode.ILLEGAL_REQUEST, null));
+//    }
+
 
 }

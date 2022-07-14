@@ -1,17 +1,21 @@
 package com.togethersports.tosproject.user;
 
+import com.togethersports.tosproject.area.ActiveArea;
 import com.togethersports.tosproject.chat.ChatMessage;
+import com.togethersports.tosproject.interest.Interest;
 import com.togethersports.tosproject.participant.Participant;
 import com.togethersports.tosproject.room.Room;
-import com.togethersports.tosproject.user.dto.UserOfModifyInfo;
-import com.togethersports.tosproject.area.ActiveArea;
-import com.togethersports.tosproject.interest.Interest;
 import com.togethersports.tosproject.security.Role;
 import com.togethersports.tosproject.security.oauth2.model.OAuth2Provider;
-import lombok.*;
+import com.togethersports.tosproject.user.dto.UserOfModifyInfo;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,7 +23,7 @@ import java.util.List;
  * <p>
  * 사용자 계정 엔티티
  * </p>
- * <p>신규 계정을 생성하려면 {@link #createUser(Long, String, OAuth2Provider)} 참조</p>
+ * <p>신규 계정을 생성하려면 {@link #createUser(String, String, OAuth2Provider)} 참조</p>
  * <p>기존 계정 정보를 계정 엔티티로 변환하려면 {@link #convertUser(Long, String, Role)} 참조</p>
  *
  * @author seunjeon
@@ -36,7 +40,7 @@ public class User {
     private Long id;
 
     @Column(name = "USER_OAUTH2_ID")
-    private Long oauth2Id;
+    private String oauth2Id;
 
     @Column(name = "USER_EMAIL")
     private String email;
@@ -68,9 +72,9 @@ public class User {
     @JoinColumn(name = "USER_ID")
     private List<Interest> interests;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "USER_ID")
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<ActiveArea> activeAreas;
+
 
     @Column(name = "MANNER_POINT", columnDefinition = "int default 10")
     private int mannerPoint;
@@ -101,13 +105,16 @@ public class User {
      * @author seunjeon
      * @author younghoCha
      */
-    public static User createUser(Long oauth2Id, String email, OAuth2Provider provider) {
+    public static User createUser(String oauth2Id, String email, OAuth2Provider provider) {
         User newUser = new User();
         newUser.oauth2Id = oauth2Id;
         newUser.email = email;
         newUser.provider = provider;
         newUser.role = Role.ROLE_USER;
         newUser.informationRequired = true;
+        newUser.userProfileImage = "/images/default_user_profile.jpeg";
+        //fixme : 익명 수정
+        newUser.nickname = "익명";
         return newUser;
     }
 
@@ -136,7 +143,9 @@ public class User {
         this.userBirth = userOfModifyInfo.getUserBirth();
         this.interests = interests;
         this.activeAreas = userOfModifyInfo.getActiveAreas();
-        this.userProfileImage = userProfileImage;
+        if(userProfileImage != null){
+            this.userProfileImage = userProfileImage;
+        }
         this.nickname = userOfModifyInfo.getUserNickname();
         this.informationRequired = false;
     }
@@ -155,4 +164,16 @@ public class User {
             i++;
         }
     }
+
+    public void deleteActiveArea(){
+        if(!(this.activeAreas.isEmpty())) {
+            this.activeAreas.clear();
+        }
+    }
+
+    public void updateActiveArea(ActiveArea activeAreaList){
+            this.activeAreas.add(activeAreaList);
+
+    }
+
 }

@@ -4,14 +4,16 @@ import axios from "axios";
 기타 API 정리
 */
 
+const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT;
+
 // GET
 
 // 네비게이션 바 요청
 const getNavBar = () => {
   const promise =
     localStorage.getItem("accessToken") === null
-      ? axios.get("http://localhost:8080/api/nav")
-      : axios.get("http://localhost:8080/api/nav", {
+      ? axios.get(`${API_ENDPOINT}/api/nav`)
+      : axios.get(`${API_ENDPOINT}/api/nav`, {
           headers: {
             "Content-type": "application/json; charset=UTF-8",
             Accept: "*/*",
@@ -26,7 +28,7 @@ const getNavBar = () => {
 
 // 메인페이지 방 개수 조회
 const getRoomCount = () => {
-  const promise = axios.get("http://localhost:8080/api/room/count", {
+  const promise = axios.get(`${API_ENDPOINT}/api/room/count`, {
     headers: {
       "Content-type": "application/json; charset=UTF-8",
       Accept: "*/*",
@@ -44,11 +46,11 @@ const getRoomCount = () => {
 const postRefreshToken = (refreshToken) => {
   const promise =
     localStorage.getItem("accessToken") === null
-      ? axios.post("http://localhost:8080/api/refresh", {
+      ? axios.post(`${API_ENDPOINT}/api/refresh`, {
           refreshToken: refreshToken,
         })
       : axios.post(
-          "http://localhost:8080/api/refresh",
+          `${API_ENDPOINT}/api/refresh`,
           {
             refreshToken: refreshToken,
           },

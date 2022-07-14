@@ -42,7 +42,7 @@ const MyRoom = () => {
         }
       })
       .catch((error) => {
-        if (error.response) {
+        if (error?.response?.data?.status) {
           FailResponse(error.response.data.status.code, func_getMyRoomInfo);
         }
       });
@@ -91,7 +91,7 @@ const MyRoom = () => {
                       );
                     })
                   ) : (
-                    <Link href="/room/roomlist">
+                    <Link href="/room/roomlist" passHref>
                       <img src="noImminent.png" className="noImminent"></img>
                     </Link>
                   )}
@@ -128,7 +128,7 @@ const MyRoom = () => {
                       );
                     })
                   ) : (
-                    <Link href="/room/createroom/roomschedule">
+                    <Link href="/room/createroom/roomschedule" passHref>
                       <img src="noHosting.png" className="noRoomImage"></img>
                     </Link>
                   )}
@@ -164,7 +164,7 @@ const MyRoom = () => {
                       );
                     })
                   ) : (
-                    <Link href="/room/roomlist">
+                    <Link href="/room/roomlist" passHref>
                       <img
                         src="noParticipate.png"
                         className="noRoomImage"

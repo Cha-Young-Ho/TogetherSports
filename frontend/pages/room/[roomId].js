@@ -17,6 +17,21 @@ import Head from "next/head";
 const Room = () => {
   const router = useRouter();
   const dispatch = useDispatch();
+  const exerciseArr = {
+    soccer: "축구",
+    baseball: "야구",
+    basketball: "농구",
+    "ping-pong": "탁구",
+    hiking: "등산",
+    running: "런닝",
+    billiards: "당구",
+    bicycle: "자전거",
+    badminton: "배드민턴",
+    gym: "헬스",
+    golf: "골프",
+    etc: "기타",
+  };
+
   const roomTitle = useSelector(
     (state) => state.roomRealTimeInfoReducer.roomTitle
   );
@@ -44,23 +59,11 @@ const Room = () => {
   const createdTime = useSelector(
     (state) => state.roomRealTimeInfoReducer.createdTime
   );
-  const updatedTime = useSelector(
-    (state) => state.roomRealTimeInfoReducer.updatedTime
-  );
-  // const creatorNickName = useSelector(
-  //   (state) => state.roomRealTimeInfoReducer.creatorNickName
-  // );
-  // const roomImages = useSelector(
-  //   (state) => state.roomRealTimeInfoReducer.roomImages
-  // );
   const host = useSelector((state) => state.roomRealTimeInfoReducer.host);
   const tags = useSelector((state) => state.roomRealTimeInfoReducer.tags);
   const viewCount = useSelector(
     (state) => state.roomRealTimeInfoReducer.viewCount
   );
-  // const participants = useSelector(
-  //   (state) => state.roomRealTimeInfoReducer.participants
-  // );
 
   const { roomId } = router.query;
   const [chatOpen, setChatOpen] = useState(false);
@@ -71,7 +74,10 @@ const Room = () => {
   // 방 수정하기
   const [modifyModalOpen, setModifyModalOpen] = useState(false);
   const openModifyModal = () => setModifyModalOpen(true);
-  const closeModifyModal = () => setModifyModalOpen(false);
+  const closeModifyModal = () => {
+    setModifyModalOpen(false);
+    document.body.style.overflow = "unset";
+  };
 
   // 접속자 목록 modal 관련 데이터
   const [participantListModalOpen, setParticipantListModalOpen] =
@@ -116,7 +122,6 @@ const Room = () => {
               startAppointmentDate: roomInfo.startAppointmentDate,
               endAppointmentDate: roomInfo.endAppointmentDate,
               createdTime: roomInfo.createdTime,
-              updatedTime: roomInfo.updatedTime,
               host: roomInfo.host,
               creatorNickName: roomInfo.creatorNickName,
               roomImages: roomInfo.roomImages,
@@ -149,7 +154,7 @@ const Room = () => {
         }
       })
       .catch((error) => {
-        if (error.response) {
+        if (error?.response?.data?.status) {
           FailResponse(error.response.data.status.code, func_getRoomDetail);
         }
       });
@@ -166,27 +171,8 @@ const Room = () => {
         }
       })
       .catch((error) => {
-        if (error.response) {
+        if (error?.response?.data?.status) {
           FailResponse(error.response.data.status.code, onLeaveRoom);
-        }
-      });
-    // 여기서 참가자목록 같은걸 업데이트 할 필요가 있나?
-  };
-
-  // 방 삭제하기 -> 보류
-  const onDeleteRoom = () => {
-    deleteRoom(roomId)
-      .then((res) => {
-        if (res.status.code === 5000) {
-          alert("방을 성공적으로 삭제하였습니다 !"); // 임시 텍스트
-          router.push("/room/roomlist"); // 방 목록 페이지로 이동
-        } else {
-          FailResponse(res.status.code);
-        }
-      })
-      .catch((error) => {
-        if (error.response) {
-          FailResponse(error.response.data.status.code, onDeleteRoom);
         }
       });
   };
@@ -215,19 +201,20 @@ const Room = () => {
         <div className="main-info">
           <div className="header">
             <div className="viewCount">
-              <p>{`조회수 : ${viewCount}`}</p>
-              <p>{`생성 일시 : ${createdTime.substr(0, 16)}`}</p>
-              {updatedTime === "" ? (
-                <></>
-              ) : (
-                <p>{`최근 수정 : ${updatedTime.substr(0, 16)}`}</p>
-              )}
+              <p>{`유저들이 ${viewCount}번 방문했어요!`}</p>
+              <p>{`${createdTime.slice(0, 4)}년 ${createdTime.slice(
+                5,
+                7
+              )}월 ${createdTime.slice(8, 10)}일 ${createdTime.slice(
+                11,
+                13
+              )}시 ${createdTime.slice(14, 16)}분에 생성된 방이에요!`}</p>
             </div>
 
             <div className="long-line"></div>
 
             <div className="tags">
-              {tags.length !== 0 ? (
+              {Array.isArray(tags) ? (
                 tags.map((tag, index) => {
                   return (
                     <div className="tag" key={index}>
@@ -298,7 +285,7 @@ const Room = () => {
                 </div>
                 <div className="option">
                   <p>종목</p>
-                  <p>{exercise}</p>
+                  <p>{exerciseArr[exercise]}</p>
                 </div>
                 <div className="option-time">
                   <p>시간</p>
@@ -357,12 +344,6 @@ const Room = () => {
             <Map setPOM={"true"} />
           </div>
         </div>
-
-        {myNickname === host ? (
-          <button className="button-deleteRoom">방 삭제하기</button>
-        ) : (
-          <></>
-        )}
 
         <img
           src="/floatingAlarm.png"
@@ -599,58 +580,6 @@ const Room = () => {
         .master p {
           font-size: 1.3rem;
         }
-
-        /* .chatting {
-          width: 100%;
-          height: 433px;
-          padding: 15px 15px;
-          border-radius: 15px;
-          box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
-          background-color: white;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-        }
-
-        .dialog {
-          width: 100%;
-          height: 90%;
-          margin-bottom: 10px;
-          overflow: scroll;
-          overflow-x: hidden;
-        }
-
-        .dialog-input {
-          width: 100%;
-          height: 30px;
-          display: flex;
-          flex-direction: row;
-          justify-content: space-between;
-          align-items: center;
-        }
-
-        .dialog-input input {
-          width: 300px;
-          height: 30px;
-          padding: 0 10px;
-          border: none;
-          border-radius: 15px;
-          background-color: #f4f4f4;
-        }
-
-        .dialog-input button {
-          width: 28px;
-          height: 28px;
-          border: none;
-          border-radius: 50%;
-          user-select: none;
-          cursor: pointer;
-        }
-
-        .dialog-input img {
-          width: 28px;
-          height: 28px;
-        } */
 
         .room-info > p,
         .location-info > div:nth-child(1) > p:nth-child(1) {
