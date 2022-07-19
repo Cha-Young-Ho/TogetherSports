@@ -198,6 +198,10 @@ const FilteredRooms = () => {
         func_getRoomList(page, true);
       }, 800);
     }
+
+    return () => {
+      page = 0;
+    };
   }, []);
 
   // 필터 버튼 눌렀을 때 실행
