@@ -1,26 +1,22 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getRoomList } from "../../api/rooms";
 import { useDispatch, useSelector } from "react-redux";
 import RoomModal from "../modals/roomModal";
 import RoomShowingBox from "./roomShowingBox";
 import { FailResponse } from "../../api/failResponse";
-import Loading from "../loading";
 
 let scrollHandlingTimer;
+let observer;
+let page = 0;
 const FilteredRooms = () => {
   const dispatch = useDispatch();
-  const [loading, setLoading] = useState(true);
+
+  const observerRef = useRef(null);
 
   const selectedTypeButtons = ["최신순", "임박한 시간순", "참여자순"];
   const [selectedSortType, setSelectedSortType] = useState("최신순");
 
-  const [page, setPage] = useState(0);
-  const [size, setSize] = useState(12);
   const [sort, setSort] = useState("updateTime,DESC");
-
-  // 스크롤 위치값
-  const [scrollY, setScrollY] = useState(0);
-  const handleFollowScroll = () => setScrollY(window.pageYOffset);
 
   const roomFilteringData = useSelector(
     (state) => state.roomFilteringDataReducer
@@ -122,7 +118,7 @@ const FilteredRooms = () => {
     }
   };
 
-  const func_getRoomList = (page, size, first, nextPage) => {
+  const func_getRoomList = (page, first) => {
     getRoomList(
       roomFilteringData.roomTitle,
       roomFilteringData.roomContent,
@@ -135,23 +131,22 @@ const FilteredRooms = () => {
       roomFilteringData.containNoAdmittance,
       roomFilteringData.requiredPeopleCount,
       page,
-      size,
+      12,
       sort
     )
       .then((res) => {
         if (res.status.code === 5000) {
-          setLoading(false);
           //방이 없을때 처리 필요
           if (res.content) {
             if (first) setEachRoomInfo(res.content.content);
             else {
-              if (res.content.content.length) {
+              if (res.content.content.length > 0) {
                 setEachRoomInfo((prev) => prev.concat(res.content.content));
+              } else {
+                observer.unobserve(observerRef.current);
               }
             }
-            setPage(nextPage);
           }
-          setLoading(true);
         } else {
           FailResponse(res.status.code);
         }
@@ -165,25 +160,44 @@ const FilteredRooms = () => {
 
   // 필터 적용 후 서버로 적용(1)
   const sendDatasToServer = () => {
-    func_getRoomList(0, 12, true, 1);
+    func_getRoomList(0, true);
 
     requestFilteringToFalse();
   };
 
-  // 첫 화면 렌더 시 아무런 필터 없이 요청
+  const callback = (entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      if (!scrollHandlingTimer) {
+        scrollHandlingTimer = setTimeout(() => {
+          scrollHandlingTimer = null;
+          func_getRoomList(++page, false);
+        }, 800);
+      }
+    });
+  };
+
+  const option = {
+    threshold: 1,
+  };
+
+  useEffect(() => {
+    if (observerRef) {
+      observer = new IntersectionObserver(callback, option);
+
+      observer.observe(observerRef.current);
+    }
+
+    return () => observer && observer.disconnect();
+  }, [observerRef]);
+
   useEffect(() => {
     if (!scrollHandlingTimer) {
       scrollHandlingTimer = setTimeout(() => {
         scrollHandlingTimer = null;
-        func_getRoomList(page, size, false, 1);
-      }, 500);
+        func_getRoomList(page, true);
+      }, 800);
     }
-
-    window.addEventListener("scroll", handleFollowScroll);
-    document.body.style.overflow = "unset";
-    return () => {
-      window.removeEventListener("scroll", handleFollowScroll);
-    };
   }, []);
 
   // 필터 버튼 눌렀을 때 실행
@@ -191,31 +205,16 @@ const FilteredRooms = () => {
     if (changeDectection.detection === "true") {
       checkException();
       sendDatasToServer();
+      page = 0;
+      observer.observe(observerRef.current);
     }
   }, [changeDectection.detection]);
 
   // 리셋 버튼 클릭
   useEffect(() => {
-    setPage(0);
-    setSize(12);
     setSort("updateTime,DESC");
     setSelectedSortType("최신순");
   }, [changeDectection.reset]);
-
-  // 화면 맨 아래 도착 시
-  useEffect(() => {
-    const windowHeight = window.innerHeight; // 스크린 창크기
-    const fullHeight = document.body.scrollHeight + 80; //  margin 값 80추가
-
-    if (scrollY + windowHeight >= fullHeight - 100) {
-      if (!scrollHandlingTimer) {
-        scrollHandlingTimer = setTimeout(() => {
-          scrollHandlingTimer = null;
-          func_getRoomList(page, 12, false, page + 1);
-        }, 800);
-      }
-    }
-  }, [scrollY]);
 
   return (
     <>
@@ -273,13 +272,7 @@ const FilteredRooms = () => {
               roomId={roomID}
             ></RoomModal>
           </div>
-          {!loading ? (
-            <div className="loading-container">
-              <Loading />
-            </div>
-          ) : (
-            ""
-          )}
+          <div className="observe-container" ref={observerRef}></div>
         </div>
       </div>
       <style jsx>{`
@@ -338,12 +331,9 @@ const FilteredRooms = () => {
           box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.16);
         }
 
-        .loading-container {
+        .observe-container {
           width: 100%;
-          height: 500px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
+          height: 10px;
         }
       `}</style>
     </>
